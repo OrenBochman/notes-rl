@@ -7,11 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Oren Bochman">
-<meta name="dcterms.date" content="2022-05-05">
 <meta name="keywords" content="Value Functions, Bellman Equations, Optimality, Optimal Policies, Optimal Value Functions, Dynamic programming">
 <meta name="description" content="In week 4 we learn how to compute value functions and optimal policies, assuming you have the MDP model. You will implement dynamic programming to compute value functions and optimal policies and understand the utility of dynamic programming.">
 
-<title>Dynamic Programming – rl-notes</title>
+<title>Dynamic Programming – Notes on Reinfocement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,15 +33,18 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d58cf0c17c84c672bbe6415fb2b2bd7c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-594d21605a7b9fb32547fedacd8fc358.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-d396125c57f3f0defba792e7b0e7a5dc.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -97,8 +99,22 @@ MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -138,7 +154,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">rl-notes</span>
+    <span class="navbar-title">Notes on Reinfocement Learning</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -164,6 +180,7 @@ window.Quarto = {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -200,7 +217,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">May 5, 2022</p>
+        <p class="date">Thursday, May 5, 2022</p>
       </div>
     </div>
     
@@ -244,7 +261,7 @@ window.Quarto = {
 <h1>Week 4: Dynamic Programming</h1>
 <p>In this week, we learn how to compute value functions and optimal policies, assuming you have the MDP model. You will implement dynamic programming to compute value functions and optimal policies and understand the utility of dynamic programming.</p>
 <p>The ‘programming’ in dynamic programming really means solving an optimization problem. We have learned about using the Bellman equations as update rules. Now we look at some basic applications of this idea to solve MDP.</p>
-<p>The intuition is pretty simple we have two tasks - one is to decide how good a policy <span class="math inline">\(\pi\)</span> is - think <mark>discounted summation of the rewards from the best actions over the <span class="math inline">\(s_ta_tr_t\)</span> tree</mark>. This policy evaluation step is named <strong>prediction</strong>, as we don’t really know what the actual rewards of stochastic actions will be, only their expectation. But what we really want is to find near optimal policy which is called ‘control’. We have a strong theoretical result on how to go about this by iteratively improving a policy by picking its the actions with highest value at each steps.</p>
+<p>The intuition is pretty simple we have two tasks - one is to decide how good a policy <span class="math inline">\pi</span> is - think <mark>discounted summation of the rewards from the best actions over the <span class="math inline">s_ta_tr_t</span> tree</mark>. This policy evaluation step is named <strong>prediction</strong>, as we don’t really know what the actual rewards of stochastic actions will be, only their expectation. But what we really want is to find near optimal policy which is called ‘control’. We have a strong theoretical result on how to go about this by iteratively improving a policy by picking its the actions with highest value at each steps.</p>
 <p>What is surprising at first is that even starting with a uniform random policy we don’t need to explore the tree too deeply in the prediction step to be able to pick better actions. Also we can see from the maze like grid world that we really need to update one or two states every iteration. Which suggest that there is great room for improvement with smarter algorithms.</p>
 </section>
 <section id="lesson-1-policy-evaluation-prediction" class="level1">
@@ -280,7 +297,7 @@ Learning Objectives
 <ul class="task-list">
 <li><label><input type="checkbox" checked="">Understand the distinction between <strong>policy evaluation</strong> and <strong>control</strong>. <a href="#sec-policy-evaluation-control">#</a></label></li>
 <li><label><input type="checkbox" checked="">Explain the setting in which dynamic programming can be applied, as well as its limitations. <a href="#sec-dynamic-programming">#</a></label></li>
-<li><label><input type="checkbox" checked="">Outline the <strong>iterative policy evaluation algorithm</strong> for estimating state values under a given policy <span class="math inline">\(\pi\)</span>. <a href="#sec-iterative-policy-evaluation">#</a></label></li>
+<li><label><input type="checkbox" checked="">Outline the <strong>iterative policy evaluation algorithm</strong> for estimating state values under a given policy <span class="math inline">\pi</span>. <a href="#sec-iterative-policy-evaluation">#</a></label></li>
 <li><label><input type="checkbox" checked="">Apply iterative policy evaluation to compute value functions. <a href="#sec-applying-iterative-policy-evaluation">#</a></label></li>
 </ul>
 </div>
@@ -291,15 +308,15 @@ Learning Objectives
 <dl>
 <dt>policy evaluation (prediction)</dt>
 <dd>
-is the task of evaluating the future, i.e.&nbsp;the value function given some specific policy <span class="math inline">\(\pi\)</span>.
+is the task of evaluating the future, i.e.&nbsp;the value function given some specific policy <span class="math inline">\pi</span>.
 </dd>
 <dt>control</dt>
 <dd>
-is the task of finding the optimal policy, given some specific value function <span class="math inline">\(v\)</span>.
+is the task of finding the optimal policy, given some specific value function <span class="math inline">v</span>.
 </dd>
 <dt>planning</dt>
 <dd>
-is the task of finding the optimal policy <span class="math inline">\(\pi_{\star}\)</span> and value function <span class="math inline">\(v\)</span>, given a model of the environment. this is typically done by dynamic programming methods.
+is the task of finding the optimal policy <span class="math inline">\pi_{\star}</span> and value function <span class="math inline">v</span>, given a model of the environment. this is typically done by dynamic programming methods.
 </dd>
 </dl>
 <p>Typically we need to solve the prediction problem before we can solve the control problem. This is because we need to know the value of the states under the policy to be able to pick the best actions.</p>
@@ -319,36 +336,36 @@ is the task of finding the optimal policy <span class="math inline">\(\pi_{\star
 <section id="sec-iterative-policy-evaluation" class="level2">
 <h2 class="anchored" data-anchor-id="sec-iterative-policy-evaluation">Iterative Policy Evaluation Algorithm</h2>
 <p>Continuing with our goal of finding the optimal policy, we now turn to the an algorithms that will allow us to predict the value all the state starting with even the most naive policy.</p>
-<p>The iterative policy evaluation algorithm is a simple iterative algorithm that estimates the value function for a given policy <span class="math inline">\(\pi\)</span>.</p>
+<p>The iterative policy evaluation algorithm is a simple iterative algorithm that estimates the value function for a given policy <span class="math inline">\pi</span>.</p>
 <p>We start with no knowledge of the value function or the policy. We set all the values to zero and we may even assume all actions are equally likely and all states are equally good. This is the uniform random policy. Alternatively we can start with some other policy.</p>
 <p>These two assumptions are implemented in the initialization step of the algorithm.</p>
-<p>The crux of the algorithm is the update step which is based on the recursive bellman equation for the value function under a policy <span class="math inline">\(\pi\)</span>:</p>
-<p><span class="math display">\[
+<p>The crux of the algorithm is the update step which is based on the recursive bellman equation for the value function under a policy <span class="math inline">\pi</span>:</p>
+<p><span class="math display">
 v_{\pi}(s) = \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')] \sum_{a} \pi(a|s)
-\]</span> I rearranged the terms to make it clear that we are iterating over the states we use this equation to update the value of each state using</p>
+</span> I rearranged the terms to make it clear that we are iterating over the states we use this equation to update the value of each state using</p>
 <ol type="1">
-<li>the four part dynamics function <span class="math inline">\(p(s',r|s,a)\)</span> to get the probability of receiving a reward <span class="math inline">\(r\)</span> at a successor state <span class="math inline">\(s'\)</span> given the current state <span class="math inline">\(s\)</span> and action <span class="math inline">\(a\)</span>.</li>
-<li>the value of the next state <span class="math inline">\(V(s')\)</span>. which we initially assumed is 0 and may have already updated</li>
-<li>the policy <span class="math inline">\(\pi(a|s)\)</span> which we use to weigh the previous term</li>
+<li>the four part dynamics function <span class="math inline">p(s',r|s,a)</span> to get the probability of receiving a reward <span class="math inline">r</span> at a successor state <span class="math inline">s'</span> given the current state <span class="math inline">s</span> and action <span class="math inline">a</span>.</li>
+<li>the value of the next state <span class="math inline">V(s')</span>. which we initially assumed is 0 and may have already updated</li>
+<li>the policy <span class="math inline">\pi(a|s)</span> which we use to weigh the previous term</li>
 </ol>
-<p>Al this will give us the expected value of the state under the policy <span class="math inline">\(\pi\)</span>.</p>
-<p>The final part of the algorithm is the stopping condition. We stop when the change in the value function is less than a small threshold <span class="math inline">\(\theta\)</span>.</p>
-<p>The algorithm is guaranteed to converge to the value function for the policy <span class="math inline">\(\pi\)</span>.</p>
+<p>Al this will give us the expected value of the state under the policy <span class="math inline">\pi</span>.</p>
+<p>The final part of the algorithm is the stopping condition. We stop when the change in the value function is less than a small threshold <span class="math inline">\theta</span>.</p>
+<p>The algorithm is guaranteed to converge to the value function for the policy <span class="math inline">\pi</span>.</p>
 <p>Here is the concise statement of the algorithm with just one array in pseudo code:</p>
-<div id="alg-Iterative-Policy-Evaluation" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-pseudocode-number="1" data-line-number="true" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em">
+<div id="alg-Iterative-Policy-Evaluation" class="pseudocode-container quarto-float" data-line-number="true" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number-punc=":" data-no-end="false">
 <div class="pseudocode">
 \begin{algorithm} \caption{Iterative Policy Evaluation, for estimating $V \approx v_{\pi}$}\begin{algorithmic} \State Input: $\pi$, the policy to be evaluated, default to uniform random policy \State Algorithm parameter: a small threshold $\theta &gt; 0$ determining accuracy of estimation \State $V(s) \leftarrow \leftarrow \vec 0 \forall s \in S$ \REPEAT \STATE $\Delta \leftarrow 0$ \FORALL { $s\in S$} \STATE $v \leftarrow V(s)$ \STATE $V(s) \leftarrow \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]\quad$ \comment{ Bellman equation} \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$ \ENDFOR \UNTIL{$\Delta &lt; \theta$} \State Output: $V \approx v_{\pi}$ \end{algorithmic} \end{algorithm}
 </div>
 </div>
 <p>note: the algorithm makes a couple of assumptions that are omitted in the pseudo code.</p>
 <ol type="1">
-<li>that we have access to the dynamics function <span class="math inline">\(p(s',r|s,a)\)</span></li>
-<li>that we have access to the reward function <span class="math inline">\(r(s,a,s')\)</span></li>
+<li>that we have access to the dynamics function <span class="math inline">p(s',r|s,a)</span></li>
+<li>that we have access to the reward function <span class="math inline">r(s,a,s')</span></li>
 </ol>
 </section>
 <section id="sec-applying-iterative-policy-evaluation" class="level2">
 <h2 class="anchored" data-anchor-id="sec-applying-iterative-policy-evaluation">Applying Iterative Policy Evaluation</h2>
-<p>The iterative policy evaluation algorithm can be applied to compute the value function for a given policy <span class="math inline">\(\pi\)</span>.</p>
+<p>The iterative policy evaluation algorithm can be applied to compute the value function for a given policy <span class="math inline">\pi</span>.</p>
 </section>
 </section>
 <section id="lesson-2-policy-iteration-control" class="level1 page-columns page-full">
@@ -374,25 +391,25 @@ Learning Objectives
 </div>
 <section id="sec-l2g1" class="level3">
 <h3 class="anchored" data-anchor-id="sec-l2g1">Policy Improvement Theorem</h3>
-<p>The policy improvement theorem states that given a policy <span class="math inline">\(\pi\)</span> and the value function <span class="math inline">\(v_{\pi}\)</span>, we can construct a new policy <span class="math inline">\(\pi'\)</span> that is as good as or better than <span class="math inline">\(\pi\)</span>.</p>
+<p>The policy improvement theorem states that given a policy <span class="math inline">\pi</span> and the value function <span class="math inline">v_{\pi}</span>, we can construct a new policy <span class="math inline">\pi'</span> that is as good as or better than <span class="math inline">\pi</span>.</p>
 </section>
 <section id="sec-l2g2" class="level3">
 <h3 class="anchored" data-anchor-id="sec-l2g2">Value Function for a Policy</h3>
-<p>The value function for a policy <span class="math inline">\(\pi\)</span> is the expected return when starting in state <span class="math inline">\(s\)</span> and following policy <span class="math inline">\(\pi\)</span> thereafter.</p>
-<p>The value function for a policy <span class="math inline">\(\pi\)</span> is denoted by <span class="math inline">\(v_{\pi}(s)\)</span>.</p>
-<p><span class="math display">\[
+<p>The value function for a policy <span class="math inline">\pi</span> is the expected return when starting in state <span class="math inline">s</span> and following policy <span class="math inline">\pi</span> thereafter.</p>
+<p>The value function for a policy <span class="math inline">\pi</span> is denoted by <span class="math inline">v_{\pi}(s)</span>.</p>
+<p><span class="math display">
 v_{\pi}(s) = \mathbb{E}[G_t \vert S_t = s]
-\]</span></p>
-<p>where <span class="math inline">\(G_t\)</span> is the return at time <span class="math inline">\(t\)</span> and <span class="math inline">\(S_t\)</span> is the state at time <span class="math inline">\(t\)</span>.</p>
+</span></p>
+<p>where <span class="math inline">G_t</span> is the return at time <span class="math inline">t</span> and <span class="math inline">S_t</span> is the state at time <span class="math inline">t</span>.</p>
 </section>
 <section id="sec-l2g3" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="sec-l2g3">Policy Iteration Algorithm</h3>
 <p>The policy iteration algorithm is a simple iterative algorithm that alternates between policy evaluation and policy improvement.</p>
-<p>The algorithm starts with an initial policy <span class="math inline">\(\pi\)</span> and iteratively evaluates the policy to get the value function <span class="math inline">\(v_{\pi}\)</span> and then improves the policy to get a new policy <span class="math inline">\(\pi'\)</span>.</p>
+<p>The algorithm starts with an initial policy <span class="math inline">\pi</span> and iteratively evaluates the policy to get the value function <span class="math inline">v_{\pi}</span> and then improves the policy to get a new policy <span class="math inline">\pi'</span>.</p>
 <p>The algorithm continues this process until the policy no longer changes, which indicates that the optimal policy has been found.</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \pi_0 \xrightarrow{\text{Evaluation}} v_{\pi_0} \xrightarrow{\text{Improvement}} \pi_1 \xrightarrow{\text{Evaluation}} v_{\pi_1} \xrightarrow{\text{Improvement}} \ldots \pi_* \xrightarrow{\text{Evaluation}} v_{\pi_*}
-\]</span></p>
+</span></p>
 
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -405,18 +422,18 @@ v_{\pi}(s) = \mathbb{E}[G_t \vert S_t = s]
 <figcaption>we iterate to an optimal policy</figcaption>
 </figure>
 </div></div>
-<p>Suppose we have computed for a deterministic policy <span class="math inline">\(v_{\pi}\)</span>, the value function for a deterministic policy <span class="math inline">\(\pi\)</span>.</p>
-<p>Now when would it be better to prefer some action ? <span class="math inline">\(a ≠ \pi(s)?\)</span> in some state s?</p>
-<p>It is better to switch to action a for state s if and only if: <span id="eq-action-switching-criterion"><span class="math display">\[
+<p>Suppose we have computed for a deterministic policy <span class="math inline">v_{\pi}</span>, the value function for a deterministic policy <span class="math inline">\pi</span>.</p>
+<p>Now when would it be better to prefer some action ? <span class="math inline">a ≠ \pi(s)?</span> in some state s?</p>
+<p>It is better to switch to action a for state s if and only if: <span id="eq-action-switching-criterion"><span class="math display">
 q_{\pi}(s,a) &gt; v_{\pi}(s)
-\tag{1}\]</span></span></p>
-<p>where <span class="math inline">\(q_{\pi}(s,a)\)</span> is the value of taking action a in state s and then following policy <span class="math inline">\(\pi\)</span>.</p>
-<p>And, we can compute <span class="math inline">\(q_π (s,a)\)</span> from <span class="math inline">\(v_π\)</span> by:</p>
-<p><span id="eq-action-value-function"><span class="math display">\[
+\tag{1}</span></span></p>
+<p>where <span class="math inline">q_{\pi}(s,a)</span> is the value of taking action a in state s and then following policy <span class="math inline">\pi</span>.</p>
+<p>And, we can compute <span class="math inline">q_π (s,a)</span> from <span class="math inline">v_π</span> by:</p>
+<p><span id="eq-action-value-function"><span class="math display">
 q_{\pi}(s,a) = \sum_{s',r} p(s',r|s,a)[r + \gamma v_{\pi}(s')]
-\tag{2}\]</span></span></p>
+\tag{2}</span></span></p>
 <p>this is the the key step the policy improvement step of the policy iteration algorithm.</p>
-<div id="alg-Policy-Iteration" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-pseudocode-number="2" data-line-number="true" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em">
+<div id="alg-Policy-Iteration" class="pseudocode-container quarto-float" data-line-number="true" data-pseudocode-number="2" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number-punc=":" data-no-end="false">
 <div class="pseudocode">
 \begin{algorithm} \caption{Policy Iteration, for estimating $\pi \approx \pi_{\star}$}\begin{algorithmic} \State Input: $\pi$, the policy to be evaluated \State Algorithm parameter: a small threshold $\theta &gt; 0$ determining accuracy of estimation \State Initialize $V(s) \in \mathbb{R}, \quad \pi(s) \in A(s)\ \forall s\in S,\quad V(terminal)= 0$ \State \State {Policy Evaluation} \REPEAT \STATE $\Delta \leftarrow 0$ \FORALL { $s\in S$} \STATE $v \leftarrow V(s)$ \STATE $V(s) \leftarrow \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$ \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$ \ENDFOR \UNTIL{$\Delta &lt; \theta$} \State \State {Policy Improvement} \ForAll { $s\in S$} \State old-action $\leftarrow \pi(s)$ \State $\pi(s) \leftarrow \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]\quad$ \comment{ greedyfication} \If {old-action $\neq \pi(s)$} \State policy-stable $\leftarrow$ false \EndIf \EndFor \If {policy-stable} \Return {$V \approx v_\star,\ \pi \approx \pi_\star$} \Else \State go to Policy Evaluation \EndIf \end{algorithmic} \end{algorithm}
 </div>
@@ -427,7 +444,7 @@ q_{\pi}(s,a) = \sum_{s',r} p(s',r|s,a)[r + \gamma v_{\pi}(s')]
 <p>Value iteration is an important example of Generalized Policy Iteration. It is an iterative algorithm that computes the optimal value function and the optimal policy for a given MDP but it does not directly referrence a particular policy.</p>
 <p>In value iteration, the algorithm starts with an initial estimate of the value function and iteratively runs a single step of greedy polict evaluation per step, using the greedy value to update the state-value function.</p>
 <p>updates the value function until it converges to the optimal value function.</p>
-<div id="alg-Value-Iteration" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-pseudocode-number="3" data-line-number="true" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em">
+<div id="alg-Value-Iteration" class="pseudocode-container quarto-float" data-line-number="true" data-pseudocode-number="3" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number-punc=":" data-no-end="false">
 <div class="pseudocode">
 \begin{algorithm} \caption{Value Iteration, for estimating $\pi \approx \pi_{\star}$}\begin{algorithmic} \State Input: $\pi$, the policy to be evaluated \State Algorithm parameter: a small threshold $\theta &gt; 0$ determining accuracy of estimation \State Initialize $V(s) \leftarrow \vec{0} \forall s \in \mathbb{R}$ \REPEAT \STATE $\Delta \leftarrow 0$ \FORALL { $s\in S$} \STATE $v \leftarrow V(s)$ \STATE $V(s) \leftarrow max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$ \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$ \ENDFOR \UNTIL{$\Delta &lt; \theta$} \State Output: $V \approx v_{\pi}$ such that \State $\pi(s) = \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$ \end{algorithmic} \end{algorithm}
 </div>
@@ -526,6 +543,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -594,9 +755,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
     clipboardModal.on('success', onCopySuccess);
   }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -610,6 +822,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         if (link.dataset.originalHref !== undefined) {
           link.href = link.dataset.originalHref;
         }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
       }
     }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {

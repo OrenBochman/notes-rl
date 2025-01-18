@@ -3,11 +3,9 @@ project:
   output-dir: docs
   preview:
     port: 7777
-filters:
-  - pseudocode
 
 website:
-  title: "rl-notes"
+  title: "Notes on Reinfocement Learning"
   navbar:
     right:
       - about.qmd
@@ -15,10 +13,13 @@ website:
         href: https://github.com/
       - icon: twitter
         href: https://twitter.com
-pseudocode:
-  caption-prefix: "Algorithm"
-  reference-prefix: "Algorithm"
-  caption-number: true
+  site-url: https://orenbochman.github.io/
+  description: Personal website, portfolio and blog
+  repo-url: https://github.com/OrenBochman/blog
+  favicon: favicon.ico
+
+date-format: full
+date: last-modified
 
 format:
   html:    
@@ -26,6 +27,14 @@ format:
       light: flatly
       dark: darkly
     css: styles.css
+    html-math-method: katex
+    code-fold: true
+    code-copy: true
+    code-tools: 
+      toggle: true
+      source: false
+    link-external-newwindow: true
+    from: "markdown+emoji"
     include-in-header:
       text: |
         <script>
@@ -62,3 +71,14 @@ crossref:
       latex-env: algo
       latex-list-of-description: Algorithm
 
+
+execute:
+  freeze: auto
+  cache: true
+  
+filters:
+  - pseudocode
+pseudocode:
+  caption-prefix: "Algorithm"
+  reference-prefix: "Algorithm"
+  caption-number: true

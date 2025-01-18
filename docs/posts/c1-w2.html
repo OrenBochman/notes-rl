@@ -7,11 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Oren Bochman">
-<meta name="dcterms.date" content="2022-05-03">
 <meta name="keywords" content="Markov decision processes, MDP">
 <meta name="description" content="In week 2 we learn about Markov Decision Processes (MDP) and how to compute value functions and optimal policies, assuming you have the MDP model. We implement dynamic programming to compute value functions and optimal policies.">
 
-<title>Markov Decision Processes – rl-notes</title>
+<title>Markov Decision Processes – Notes on Reinfocement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,15 +33,18 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d58cf0c17c84c672bbe6415fb2b2bd7c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-594d21605a7b9fb32547fedacd8fc358.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-d396125c57f3f0defba792e7b0e7a5dc.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -97,8 +99,22 @@ MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -138,7 +154,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">rl-notes</span>
+    <span class="navbar-title">Notes on Reinfocement Learning</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -164,6 +180,7 @@ window.Quarto = {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -200,7 +217,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">May 3, 2022</p>
+        <p class="date">Tuesday, May 3, 2022</p>
       </div>
     </div>
     
@@ -297,19 +314,19 @@ Learning Objectives
 <li>A second point is that there is always a state. The full history is also a state, but not a very useful one. The internal representation of the ram in the Atari game is also a state, much smaller but this is the representation used by the environment and contains more information than is available to the agent. Ideally the agent would want to model this state, but again it contains lots more information than is available would need to male a decision.</li>
 <li>Another useful property of the state is that it should have the Markov Property for a state space which is when the future is independent of the past given the present.</li>
 </ul>
-<p>A state S<span class="math inline">\(_t\)</span> is Markov if and only if:</p>
-<p><span id="eq-markov-property"><span class="math display">\[
+<p>A state S<span class="math inline">_t</span> is Markov if and only if:</p>
+<p><span id="eq-markov-property"><span class="math display">
 \mathbb{P}[S_{t+1}  \vert  S_{t}] =  \mathbb{P}[S_{t+1}  \vert  S_1,...,S_t] \qquad \text{(Markov Property)}
-\tag{1}\]</span></span></p>
+\tag{1}</span></span></p>
 <p><strong>The state captures all relevant information from the history</strong> Once the state is known, the history may be thrown away i.e.&nbsp;<mark>The state is a sufficient statistic of the future</mark></p>
 <p>Recall:</p>
 <blockquote class="blockquote">
 <p>a statistic satisfies the criterion for sufficency when no other statistic that can be calculated from the same <a href="https://en.wikipedia.org/wiki/Sample_(statistics)" title="Sample (statistics)">sample</a> provides any additional information as to the value of the parameter”. — <span class="citation" data-cites="doi:10.1098/rsta.1922.0009">[@doi:10.1098/rsta.1922.0009]</span></p>
 </blockquote>
-<p>For a Markov state <span class="math inline">\(s\)</span> and successor state <span class="math inline">\(s'\)</span>, the state transition probability is defined by:</p>
-<p><span class="math display">\[
+<p>For a Markov state <span class="math inline">s</span> and successor state <span class="math inline">s'</span>, the state transition probability is defined by:</p>
+<p><span class="math display">
 \mathbb{P}_{ss'} = \mathbb{P}[S_{t+1}=s'  \vert  S_t=s]
-\]</span></p>
+</span></p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -323,22 +340,22 @@ Markov Process or Chain Definion
 <dl>
 <dt>A Markov Process is</dt>
 <dd>
-<p>a tuple <span class="math inline">\(⟨S,P⟩\)</span></p>
+<p>a tuple <span class="math inline">⟨S,P⟩</span></p>
 </dd>
 </dl>
 <p>where:</p>
 <ul>
-<li><span class="math inline">\(S\)</span> is a (finite) set of states</li>
-<li><span class="math inline">\(P\)</span> is a state transition probability matrix, <span class="math inline">\(P_{ss'} = P[S_{t+1} = s'  \vert S_t=s]\)</span> State transition matrix <span class="math inline">\(P_{ss'}\)</span> defines transition probabilities from all states <span class="math inline">\(s\)</span> to all successor states <span class="math inline">\(s'\)</span>,</li>
+<li><span class="math inline">S</span> is a (finite) set of states</li>
+<li><span class="math inline">P</span> is a state transition probability matrix, <span class="math inline">P_{ss'} = P[S_{t+1} = s'  \vert S_t=s]</span> State transition matrix <span class="math inline">P_{ss'}</span> defines transition probabilities from all states <span class="math inline">s</span> to all successor states <span class="math inline">s'</span>,</li>
 </ul>
-<p><span id="eq-transition-matrix"><span class="math display">\[
+<p><span id="eq-transition-matrix"><span class="math display">
 \begin{align*}
   P=\left( \begin{array}{cc}
       p_{11} &amp; \cdots &amp; p_{1n} \newline
       \vdots &amp; \ddots &amp; \vdots \newline
       p_{n1} &amp; \cdots &amp; p_{nn} \end{array} \right)
 \end{align*}
-\tag{2}\]</span></span></p>
+\tag{2}</span></span></p>
 </div>
 </div>
 </section>
@@ -358,15 +375,15 @@ Markov Reward Process Definition
 <dl>
 <dt>A Markov Reward Process is</dt>
 <dd>
-<p>a tuple <span class="math inline">\(⟨S, P, R, \gamma⟩\)</span></p>
+<p>a tuple <span class="math inline">⟨S, P, R, \gamma⟩</span></p>
 </dd>
 </dl>
 <p>where:</p>
 <ul>
-<li><span class="math inline">\(S\)</span> is a finite set of states</li>
-<li><span class="math inline">\(P\)</span> is a state transition probability matrix, where <span class="math inline">\(P_{ss'} =  \mathbb{P}[S_{t+1} = s' \vert  S_t = s]\)</span></li>
-<li><span class="math inline">\(R\)</span> is a reward function, <span class="math inline">\(R_s = \mathbb{E}[R_{t+1} \vert S_t = s]\)</span></li>
-<li><span class="math inline">\(\gamma\)</span> is a discount factor, <span class="math inline">\(\gamma \in [0, 1]\)</span></li>
+<li><span class="math inline">S</span> is a finite set of states</li>
+<li><span class="math inline">P</span> is a state transition probability matrix, where <span class="math inline">P_{ss'} =  \mathbb{P}[S_{t+1} = s' \vert  S_t = s]</span></li>
+<li><span class="math inline">R</span> is a reward function, <span class="math inline">R_s = \mathbb{E}[R_{t+1} \vert S_t = s]</span></li>
+<li><span class="math inline">\gamma</span> is a discount factor, <span class="math inline">\gamma \in [0, 1]</span></li>
 </ul>
 </div>
 </div>
@@ -381,23 +398,23 @@ the return definition
 </div>
 <div class="callout-body-container callout-body">
 <dl>
-<dt>The return <span class="math inline">\(G_t\)</span></dt>
+<dt>The return <span class="math inline">G_t</span></dt>
 <dd>
 <p>is the total discounted reward from time-step t.</p>
 </dd>
 </dl>
-<p><span id="eq-return"><span class="math display">\[
+<p><span id="eq-return"><span class="math display">
 G_t =R_{t+1}+\gamma R_{t+2}+...=\sum_{k=0}^{\infty} \gamma^k R_{t+k+1}
-\tag{3}\]</span></span></p>
+\tag{3}</span></span></p>
 <p>where:</p>
 <ul>
-<li><span class="math inline">\(R_t\)</span> is the reward at time-step <span class="math inline">\(t\)</span></li>
-<li><span class="math inline">\(\gamma\)</span> the discount factor <span class="math inline">\(\gamma \in [0, 1]\)</span> is the present value of future rewards.</li>
-<li>The value of receiving reward <span class="math inline">\(R\)</span> after <span class="math inline">\(k+1\)</span> time-steps is <span class="math inline">\(\gamma^k R\)</span></li>
+<li><span class="math inline">R_t</span> is the reward at time-step <span class="math inline">t</span></li>
+<li><span class="math inline">\gamma</span> the discount factor <span class="math inline">\gamma \in [0, 1]</span> is the present value of future rewards.</li>
+<li>The value of receiving reward <span class="math inline">R</span> after <span class="math inline">k+1</span> time-steps is <span class="math inline">\gamma^k R</span></li>
 <li>This values immediate reward above delayed reward.
 <ul>
-<li><span class="math inline">\(\gamma = 0\)</span> makes the agent short-sighted.</li>
-<li><span class="math inline">\(\gamma = 1\)</span> makes the agent far-sighted.</li>
+<li><span class="math inline">\gamma = 0</span> makes the agent short-sighted.</li>
+<li><span class="math inline">\gamma = 1</span> makes the agent far-sighted.</li>
 </ul></li>
 </ul>
 </div>
@@ -415,23 +432,23 @@ The value function
 <dl>
 <dt>The value function:</dt>
 <dd>
-<p>The state value function <span class="math inline">\(v(s)\)</span> of an MRP is the expected return starting from state <span class="math inline">\(s\)</span></p>
+<p>The state value function <span class="math inline">v(s)</span> of an MRP is the expected return starting from state <span class="math inline">s</span></p>
 </dd>
 </dl>
-<p><span class="math display">\[
+<p><span class="math display">
 v(s) =\mathbb{E} [G_t  \vert  S_t = s]
-\]</span></p>
+</span></p>
 </div>
 </div>
 <section id="sec-bellman-MRP" class="level3">
 <h3 class="anchored" data-anchor-id="sec-bellman-MRP">Bellman equations for MRP</h3>
 <p>The value function can be decomposed into two parts:</p>
 <ul>
-<li>an immediate reward <span class="math inline">\(R_{t+1}\)</span> and</li>
-<li>a discounted value of successor state <span class="math inline">\(\gamma v(S_{t+1})\)</span></li>
+<li>an immediate reward <span class="math inline">R_{t+1}</span> and</li>
+<li>a discounted value of successor state <span class="math inline">\gamma v(S_{t+1})</span></li>
 </ul>
 <p>The Bellman equation for MRPs expresses this relationship:</p>
-<p><span id="eq-bellman-mrp"><span class="math display">\[
+<p><span id="eq-bellman-mrp"><span class="math display">
 \begin{align*}
 v(s) &amp;= \mathbb{E}[G_t  \vert  S_t=s] \newline
 &amp; = \mathbb{E}[R_{t+1} + \gamma R_{t+2}+\gamma^2 R_{t+3} + ...  \vert S_t = s]   \newline
@@ -439,12 +456,12 @@ v(s) &amp;= \mathbb{E}[G_t  \vert  S_t=s] \newline
 &amp; = \mathbb{E}[R_{t+1} + \gamma G_{t+1}  \vert  S_t = s]   \newline
 &amp; = \mathbb{E}[R_{t+1} + \gamma v(S_{t+1})  \vert S_t = s]
 \end{align*} \qquad \text{(Bellman Equation)}
-\tag{4}\]</span></span></p>
+\tag{4}</span></span></p>
 <p>The Bellman equation can also be expressed in terms of the dynamics matrix for state transitions:</p>
-<p><span id="eq-bellman-mrp-with-dynamics-matrix"><span class="math display">\[
+<p><span id="eq-bellman-mrp-with-dynamics-matrix"><span class="math display">
 v(s) = R_s + γ \sum_{s'\in S} P_{ss'}v(s) \qquad \text{value with dynamics}
-\tag{5}\]</span></span></p>
-<p>where we use the dynamics matrix <span class="math inline">\(P\)</span> to express the expected value of the successor state.</p>
+\tag{5}</span></span></p>
+<p>where we use the dynamics matrix <span class="math inline">P</span> to express the expected value of the successor state.</p>
 </section>
 </section>
 <section id="sec-MDP" class="level2 page-columns page-full">
@@ -472,30 +489,30 @@ MDP definition
 <dl>
 <dt>A Markov Decision Process is a Markov Reward Process with decisions.</dt>
 <dd>
-<p>a tuple <span class="math inline">\(⟨S, A, P, R, \gamma⟩\)</span></p>
+<p>a tuple <span class="math inline">⟨S, A, P, R, \gamma⟩</span></p>
 </dd>
 </dl>
 <p>where:</p>
 <ul>
-<li><span class="math inline">\(S\)</span> is a finite set of states</li>
-<li><span class="math inline">\(A\)</span> is a finite set of actions</li>
-<li><span class="math inline">\(P\)</span> is a state transition probability matrix, <span class="math inline">\(P_{ss'}^a = \mathbb{P}[S_{t+1} = s' \vert S_t = s, A_t = a]\)</span></li>
-<li><span class="math inline">\(R\)</span> is a reward function, <span class="math inline">\(R_s^a = \mathbb{E}[R_{t+1} \vert S_t = s, A_t = a]\)</span></li>
-<li><span class="math inline">\(\gamma\)</span> is a discount factor, <span class="math inline">\(\gamma \in [0, 1]\)</span></li>
+<li><span class="math inline">S</span> is a finite set of states</li>
+<li><span class="math inline">A</span> is a finite set of actions</li>
+<li><span class="math inline">P</span> is a state transition probability matrix, <span class="math inline">P_{ss'}^a = \mathbb{P}[S_{t+1} = s' \vert S_t = s, A_t = a]</span></li>
+<li><span class="math inline">R</span> is a reward function, <span class="math inline">R_s^a = \mathbb{E}[R_{t+1} \vert S_t = s, A_t = a]</span></li>
+<li><span class="math inline">\gamma</span> is a discount factor, <span class="math inline">\gamma \in [0, 1]</span></li>
 </ul>
 </div>
 </div>
 <section id="sec-MDP-dynamics" class="level3">
 <h3 class="anchored" data-anchor-id="sec-MDP-dynamics">The dynamics of an MDP</h3>
-<p>In a finite MDP, the sets of states, actions, and rewards (S, A and R) all have a finite number of elements. In this case, the random variables <span class="math inline">\(S_t\)</span> and <span class="math inline">\(R_t\)</span> have well defined discrete probability distributions dependent only on the preceding state and action.</p>
+<p>In a finite MDP, the sets of states, actions, and rewards (S, A and R) all have a finite number of elements. In this case, the random variables <span class="math inline">S_t</span> and <span class="math inline">R_t</span> have well defined discrete probability distributions dependent only on the preceding state and action.</p>
 <p>The dynamics of an MDP are defined by the four argument dynamics function:</p>
-<p><span id="eq-four-part-dynamics"><span class="math display">\[
+<p><span id="eq-four-part-dynamics"><span class="math display">
 p(s',r \vert s,a)\ \dot =\ Pr\{S_t = s', R_t = r \vert S_{t-1} = s, A_{t-1} = a\}\qquad  \forall s',s \in S\ \forall r\in R\ \forall a\in A
-\tag{6}\]</span></span></p>
+\tag{6}</span></span></p>
 <p>where the sum of the probabilities over fixed set of s,a is 1:</p>
-<p><span id="eq-dynamics-function-sum"><span class="math display">\[
+<p><span id="eq-dynamics-function-sum"><span class="math display">
 \sum_{s' \in S} \sum_{r \in R} p(s',r \vert s,a) = 1 \qquad \forall s \in S, \forall a \in A \qquad \text{(Dynamics function)}
-\tag{7}\]</span></span></p>
+\tag{7}</span></span></p>
 <p>This is just a regular function that takes a state and action and returns a probability distribution over the next state and reward.</p>
 <p>In a tabular setting, we can also express this function as a table. Here is my solution for ex 3.4, a table for the recycling robot</p>
 <div id="tbl-dynamics-function" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -507,11 +524,11 @@ Table&nbsp;1: Dynamics function for a recycling robot MDP
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th><span class="math inline">\(s\)</span></th>
-<th><span class="math inline">\(a\)</span></th>
-<th><span class="math inline">\(s'\)</span></th>
-<th><span class="math inline">\(r\)</span></th>
-<th><span class="math inline">\(p(s',r \mid s,a)\)</span></th>
+<th><span class="math inline">s</span></th>
+<th><span class="math inline">a</span></th>
+<th><span class="math inline">s'</span></th>
+<th><span class="math inline">r</span></th>
+<th><span class="math inline">p(s',r \mid s,a)</span></th>
 </tr>
 </thead>
 <tbody>
@@ -519,42 +536,42 @@ Table&nbsp;1: Dynamics function for a recycling robot MDP
 <td>high</td>
 <td>search</td>
 <td>high</td>
-<td><span class="math inline">\(r_{search}\)</span></td>
-<td><span class="math inline">\(\alpha\)</span></td>
+<td><span class="math inline">r_{search}</span></td>
+<td><span class="math inline">\alpha</span></td>
 </tr>
 <tr class="even">
 <td>high</td>
 <td>search</td>
 <td>low</td>
-<td><span class="math inline">\(r_{search}\)</span></td>
-<td><span class="math inline">\(1-\alpha\)</span></td>
+<td><span class="math inline">r_{search}</span></td>
+<td><span class="math inline">1-\alpha</span></td>
 </tr>
 <tr class="odd">
 <td>low</td>
 <td>search</td>
 <td>high</td>
 <td>-3</td>
-<td><span class="math inline">\(1-\beta\)</span></td>
+<td><span class="math inline">1-\beta</span></td>
 </tr>
 <tr class="even">
 <td>low</td>
 <td>search</td>
 <td>low</td>
-<td><span class="math inline">\(r_{search}\)</span></td>
-<td><span class="math inline">\(\beta\)</span></td>
+<td><span class="math inline">r_{search}</span></td>
+<td><span class="math inline">\beta</span></td>
 </tr>
 <tr class="odd">
 <td>high</td>
 <td>wait</td>
 <td>high</td>
-<td><span class="math inline">\(r_{wait}\)</span></td>
+<td><span class="math inline">r_{wait}</span></td>
 <td>1</td>
 </tr>
 <tr class="even">
 <td>low</td>
 <td>wait</td>
 <td>low</td>
-<td><span class="math inline">\(r_{wait}\)</span></td>
+<td><span class="math inline">r_{wait}</span></td>
 <td>1</td>
 </tr>
 <tr class="odd">
@@ -586,34 +603,34 @@ Table&nbsp;1: Dynamics function for a recycling robot MDP
 <figcaption>graphical MDP for cleaning robot</figcaption>
 </figure>
 </div></div><p>In an MDP, the probabilities given by four part dynamics function completely characterize the environment’s dynamics.</p>
-<p>That is, the probability of each possible value for <span class="math inline">\(S_{t+1}\)</span> and <span class="math inline">\(R_{t+1}\)</span> depends only on the immediately preceding state <span class="math inline">\(S_t\)</span> and action <span class="math inline">\(A_t\)</span>.</p>
+<p>That is, the probability of each possible value for <span class="math inline">S_{t+1}</span> and <span class="math inline">R_{t+1}</span> depends only on the immediately preceding state <span class="math inline">S_t</span> and action <span class="math inline">A_t</span>.</p>
 <p>This is best viewed a restriction not on the decision process, but on the state.</p>
 <p>The state must include information about all aspects of the past agent–environment interaction that make a difference for the future.</p>
 <p>If it does, then the state is said to have the Markov property.</p>
 <p>We can use the four-part dynamics function to compute the <strong>state transition probabilities</strong> for a given state and action:</p>
-<p><span id="eq-transition-probabilities"><span class="math display">\[
+<p><span id="eq-transition-probabilities"><span class="math display">
 \begin{align}
   p(s' \vert s,a) &amp;= \mathbb{P}[S_t = s'\vert S_{t-1} = s, A_{t-1} = a] \newline
   &amp;= \sum_{r \in R} p(s',r \vert s,a) \qquad \text{(state transition p)}
 \end{align}
-\tag{8}\]</span></span></p>
+\tag{8}</span></span></p>
 <p>where we summed over all possible rewards to get the state transition probability.</p>
 <p>We can use the four-part dynamics function to compute the <strong>expected rewards</strong> for a given state and action:</p>
-<p><span id="eq-expected-reward-for-state-action"><span class="math display">\[
+<p><span id="eq-expected-reward-for-state-action"><span class="math display">
 \begin{align}
   r(s,a) &amp;= \mathbb{E}[R_t \vert S_{t-1} = s, A_{t-1} = a] \newline
   &amp;= \sum_{r \in R} r  \times \sum_{s' \in S}  p(s', r, \vert s, a)
 \end{align}
-\tag{9}\]</span></span></p>
+\tag{9}</span></span></p>
 <p>where we summed over all possible rewards and all successor state to get the expected reward.</p>
 <p>We can also get the expected reward for a given state, action, and successor state using the four-part dynamics function:</p>
-<p><span id="eq-expected-reward-for-state-action-successor-state"><span class="math display">\[
+<p><span id="eq-expected-reward-for-state-action-successor-state"><span class="math display">
 \begin{align}
   r(s,a,s') &amp;= \mathbb{E}[R_t \vert S_{t-1} = s, A_{t-1} = a, S_t = s'] \newline
   &amp;= \sum_{r \in R} r \times
   \frac {  p(s', r \vert s, a) } {  p(s' \vert s, a) }
 \end{align}
-\tag{10}\]</span></span></p>
+\tag{10}</span></span></p>
 <p>where we summed over all possible rewards to get the expected reward.</p>
 <p>Note: perhaps implementing these in python might be further clarify the math for a given state transition graph.</p>
 </section>
@@ -641,12 +658,12 @@ Learning Objectives
 <h2 class="anchored" data-anchor-id="l2g1">Rewards and the Goal of an Agent</h2>
 <p>The agent interacts with the environment by taking actions and receiving rewards.</p>
 <p>In the bandit setting, it is enough to maximize immediate rewards. In the MDP setting, the agent must consider the long-term consequences of its actions.</p>
-<p>return <span class="math inline">\(G_t\)</span> is the total future reward from time-step <span class="math inline">\(t\)</span>.</p>
-<p><span class="math display">\[
+<p>return <span class="math inline">G_t</span> is the total future reward from time-step <span class="math inline">t</span>.</p>
+<p><span class="math display">
 G_t \dot= R_{t+1} + R_{t+2} +  R_{t+3} + \ldots
-\]</span></p>
+</span></p>
 <ul>
-<li><span class="math inline">\(G_t\)</span> is a random variable because both transition and the rewards can be stochastic.</li>
+<li><span class="math inline">G_t</span> is a random variable because both transition and the rewards can be stochastic.</li>
 </ul>
 <p>The goal of an agent is to maximize the expected cumulative reward.</p>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -752,32 +769,32 @@ Learning Objectives
 <h2 class="anchored" data-anchor-id="l3g1">Returns for Continuing Tasks</h2>
 <ul>
 <li>In continuing tasks, the agent interacts with the environment indefinitely.</li>
-<li>The return at time <span class="math inline">\(t\)</span> is the sum of the rewards from time <span class="math inline">\(t\)</span> to the end of the episode.</li>
-<li>The return can be formulated using discounting, where the rewards are discounted by a factor <span class="math inline">\(\gamma\)</span>.</li>
+<li>The return at time <span class="math inline">t</span> is the sum of the rewards from time <span class="math inline">t</span> to the end of the episode.</li>
+<li>The return can be formulated using discounting, where the rewards are discounted by a factor <span class="math inline">\gamma</span>.</li>
 </ul>
-<p><span id="eq-discounted-return-continuing"><span class="math display">\[
+<p><span id="eq-discounted-return-continuing"><span class="math display">
 \begin{align}
 G_t&amp;=R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots \newline
 &amp;= \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}
 \end{align}
-\tag{11}\]</span></span></p>
+\tag{11}</span></span></p>
 <ul>
-<li>returns have a recursive structure, where the return at time <span class="math inline">\(t\)</span> is related to the return at time <span class="math inline">\(t+1\)</span> by the discount factor <span class="math inline">\(\gamma\)</span>.</li>
+<li>returns have a recursive structure, where the return at time <span class="math inline">t</span> is related to the return at time <span class="math inline">t+1</span> by the discount factor <span class="math inline">\gamma</span>.</li>
 </ul>
-<p><span id="eq-return-recursive"><span class="math display">\[  
+<p><span id="eq-return-recursive"><span class="math display">  
 \begin{align}
 G_t &amp;= R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots \newline
 &amp;= R_{t+1} + \gamma ( R_{t+2} + \gamma R_{t+3} + \ldots ) \newline
 &amp;= R_{t+1} + \gamma G_{t+1}
 \end{align}
-\tag{12}\]</span></span></p>
+\tag{12}</span></span></p>
 <p>this form of the return is called the recursive form of the return and is usefull in developing algorithms for reinforcement learning.</p>
 </section>
 <section id="l3g2" class="level2">
 <h2 class="anchored" data-anchor-id="l3g2">Returns at Successive Time Steps</h2>
 <ul>
-<li>The return at time <span class="math inline">\(t\)</span> is related to the return at time <span class="math inline">\(t+1\)</span> by the discount factor <span class="math inline">\(\gamma\)</span>.</li>
-<li>The return at time <span class="math inline">\(t\)</span> is the sum of the reward at time <span class="math inline">\(t\)</span> and the discounted return at time $t+1.</li>
+<li>The return at time <span class="math inline">t</span> is related to the return at time <span class="math inline">t+1</span> by the discount factor <span class="math inline">\gamma</span>.</li>
+<li>The return at time <span class="math inline">t</span> is the sum of the reward at time <span class="math inline">t</span> and the discounted return at time $t+1.</li>
 </ul>
 </section>
 <section id="l3g3" class="level2">
@@ -786,41 +803,41 @@ G_t &amp;= R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots \newline
 <li>An episodic task has a well-defined terminal state, and the episode ends when the terminal state is reached.</li>
 <li>A continuing task does not have a terminal state, and the agent interacts with the environment indefinitely.</li>
 <li>To avoid infinite returns in continuing tasks, we use discounting to ensure that the return is finite.</li>
-<li>The discount factor <span class="math inline">\(\gamma\in(0,1)\)</span> is the present value of future rewards.</li>
+<li>The discount factor <span class="math inline">\gamma\in(0,1)</span> is the present value of future rewards.</li>
 </ul>
 <p><span class="citation" data-cites="sutton2018reinforcement">@sutton2018reinforcement</span> emphasizes that we can use the discount factor of [0,1] to unify both episodic and continuing tasks Here = 0 corresponds to myopic view of optimizing immediate rewards like in the k-armed bandit problem. The discount factor = 1 corresponds to the long-term view of optimizing undiscounted expected cumulative reward. into a single framework. This is a powerful idea that allows us to use the same algorithms for both types of tasks.</p>
 <p>I think it is a good place to consider a couple of ideas raised by Littman in the guest lecture:</p>
 <p>The first is hyperbolic discounting and the second risk aversion.</p>
 <p>Behavioral economics has considered a notion of hyperbolic discounting where the discount factor is not constant but changes over time. This is a more realistic model of human behavior but is harder to work with mathematically. This idea is not covered in the course perhaps because it is a departure from the more rational exponential discounting model which we use.</p>
 <p>two forms of hyperbolic discounting are:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 G(D) = \frac{1}{1 + \gamma D}
-\]</span></p>
-<p><span id="eq-hyperbolic-discounting"><span class="math display">\[
+</span></p>
+<p><span id="eq-hyperbolic-discounting"><span class="math display">
 φh(τ) = (1+ ατ)−γ/α
-\tag{13}\]</span></span> where:</p>
+\tag{13}</span></span> where:</p>
 <ul>
-<li><span class="math inline">\(φh(τ)\)</span> is the hyperbolic discount factor at time <span class="math inline">\(τ\)</span></li>
-<li><span class="math inline">\(α\)</span> is the rate of discounting</li>
-<li><span class="math inline">\(γ\)</span> is the delay parameter</li>
+<li><span class="math inline">φh(τ)</span> is the hyperbolic discount factor at time <span class="math inline">τ</span></li>
+<li><span class="math inline">α</span> is the rate of discounting</li>
+<li><span class="math inline">γ</span> is the delay parameter</li>
 </ul>
 <p>there is also quasi-hyperbolic discounting which is a combination of exponential and hyperbolic discounting.</p>
-<p><span class="math display">\[
+<p><span class="math display">
 G(D) = \begin{cases}
   1 &amp; \text{if } t = 0  \newline
   \beta^k \delta^{D} &amp; \text{if } t &gt; 0
   \end{cases}
-\]</span></p>
-<p>The notation for both terminal and non-terminal states is <span class="math inline">\(S^+\)</span></p>
+</span></p>
+<p>The notation for both terminal and non-terminal states is <span class="math inline">S^+</span></p>
 <p>Exercise 2.10 proof of Equation 3.10</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \begin{align*}
 G_t &amp;= \sum_{k=0}^\infty \gamma^k = lim_{n \rightarrow \infty} (1 + \gamma + \gamma^2 + ... + \gamma^n) \newline
 &amp;= lim_{n \rightarrow \infty} \frac{(1 + \gamma + \gamma^2 + ... + \gamma^n) (1 - \gamma)}{(1 - \gamma)} \newline
 &amp;= lim_{n \rightarrow \infty} \frac{1 - \gamma^{n+1}}{1 - \gamma} \newline
 &amp;= \frac{1}{1 - \gamma}
 \end{align*}
-\]</span></p>
+</span></p>
 
 
 </section>
@@ -851,6 +868,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -919,9 +1080,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
     clipboardModal.on('success', onCopySuccess);
   }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -935,6 +1147,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         if (link.dataset.originalHref !== undefined) {
           link.href = link.dataset.originalHref;
         }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
       }
     }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {

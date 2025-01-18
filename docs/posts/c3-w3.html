@@ -7,10 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Oren Bochman">
-<meta name="dcterms.date" content="2024-04-03">
 <meta name="keywords" content="neural networks, feature construction, Episodic Semi-Gradient SARSA Algorithm, Differential Semi-Gradient SARSA Algorithm">
 
-<title>Control with Approximation – rl-notes</title>
+<title>Control with Approximation – Notes on Reinfocement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -33,15 +32,18 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d58cf0c17c84c672bbe6415fb2b2bd7c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-594d21605a7b9fb32547fedacd8fc358.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-d396125c57f3f0defba792e7b0e7a5dc.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -96,8 +98,22 @@ MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -137,7 +153,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">rl-notes</span>
+    <span class="navbar-title">Notes on Reinfocement Learning</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -163,6 +179,7 @@ window.Quarto = {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -194,7 +211,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">April 3, 2024</p>
+        <p class="date">Wednesday, April 3, 2024</p>
       </div>
     </div>
     
@@ -340,7 +357,7 @@ SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-sarsa" class="pseudocode-container quarto-float" data-pseudocode-number="1" data-no-end="false" data-line-number="true" data-line-number-punc=":" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-indent-size="1.2em">
+<div id="alg-sarsa" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-pseudocode-number="1" data-line-number="true" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em" data-comment-delimiter="#">
 <div class="pseudocode">
 \begin{algorithm} \caption{SARSA($\alpha,\epsilon$)}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -365,7 +382,7 @@ SARSA
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-episodic-semi-grafient-sarsa-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: This figure shows the algorithm for Episodic semi-gradient SARSA which uses function approximation. The update rule is modified from tabular case, with an approximate action value function <span class="math inline">\(\hat{q}(s,a,\mathbf{w})\)</span> as well as the inclusion of the gradient of the action value function <span class="math inline">\(\nabla \hat{q} (S_t, A_t, \mathbf{w})\)</span> . These two modification allows us to update the weights of the function approximator The rest of the algorithm remains unchanged.
+Figure&nbsp;4: This figure shows the algorithm for Episodic semi-gradient SARSA which uses function approximation. The update rule is modified from tabular case, with an approximate action value function <span class="math inline">\hat{q}(s,a,\mathbf{w})</span> as well as the inclusion of the gradient of the action value function <span class="math inline">\nabla \hat{q} (S_t, A_t, \mathbf{w})</span> . These two modification allows us to update the weights of the function approximator The rest of the algorithm remains unchanged.
 </figcaption>
 </figure>
 </div></div><p><span class="citation" data-cites="Rummery1994OnlineQU">[@Rummery1994OnlineQU]</span> introduced SARSA, but the name is due to Rich Sutton.</p>
@@ -379,7 +396,7 @@ Episodic Semi-gradient SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-td-sarsa" class="pseudocode-container quarto-float" data-pseudocode-number="2" data-no-end="false" data-line-number="true" data-line-number-punc=":" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-indent-size="1.2em">
+<div id="alg-td-sarsa" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-pseudocode-number="2" data-line-number="true" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em" data-comment-delimiter="#">
 <div class="pseudocode">
 \begin{algorithm} \caption{Episodic Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)}\begin{algorithmic} \State $\textbf{Input:}$ \State $\qquad \text{a differentiable action-value fn parameterization } \hat{q}: \mathcal{S} \times A \times \mathbb{R}^d \to \mathbb{R}$ \State $\textbf{Initialize:}$ \State $\qquad$ value function weights $\mathbf{w} \in \mathbb{R}^d$ arbitrarily, (e.g., $\mathbf{w} = 0$) \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from $\color{red}\hat{q}(S'A,\mathbf{w})$ (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \If {$S'$ is terminal} \State $\color{red}\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ \State Go to next episode \EndIf \State Choose A' as a function of $\color{red}\hat{q}(S'A,\mathbf{w})$ (e.g., $\epsilon$-greedy) \State $\color{red}\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R + \gamma \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ \State $S \leftarrow S'$; \State $A \leftarrow A'$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -416,49 +433,49 @@ Over Thinking Semi-gradient SARSA {.unnumbered}:
 </ul></li>
 </ol>
 <p>If we define the MSE of the Q-value of the next state as the projected Bellman error, then we can see that the update rule is a projected gradient descent on the projected Bellman error. This is a semi-gradient method because we are not using the true value of the next state in the update rule.</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \overline{{QE}}(w) \doteq \sum_{s\in \mathcal{S},a\in \mathcal{A}} \mu(s)\left[  q^*(s,a) - \hat{q}(s,a,\mathbf{w})  \right]^2
-\]</span></p>
+</span></p>
 <p>since we dont know the action value function we can’t compute the true value of the next state. Instead we use the value of the next state.</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \begin{align*}
   \overline{{QE}}(w) &amp;\approx \sum_{s\in \mathcal{S},a\in \mathcal{A}} \mu(s)\left[ r+\gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w})  \right]^2 \\
   &amp;= \mathbb{E}_\mu \left[ (r+\gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w}))^2 \right]
 \end{align*}
-\]</span></p>
+</span></p>
 <p>then we have the following objective function:</p>
-<p><span class="math display">\[ J(w) = \mathbb{E}_\mu \left[ \sum_{t=0}^\infty \gamma^t  \left( r_t + \gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w}) \right)^2 \right]
-\]</span></p>
+<p><span class="math display"> J(w) = \mathbb{E}_\mu \left[ \sum_{t=0}^\infty \gamma^t  \left( r_t + \gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w}) \right)^2 \right]
+</span></p>
 <ul>
 <li>where:
 <ul>
-<li><span class="math inline">\(\mu\)</span> is the state visitation distribution</li>
-<li><span class="math inline">\(\hat{q}(s,a,\mathbf{w})\)</span> is the approximated action value function</li>
-<li><span class="math inline">\(\mathbf{w}\)</span> is the weight vector</li>
-<li><span class="math inline">\(r_t\)</span> is the reward at time step t</li>
-<li><span class="math inline">\(\gamma\)</span> is the discount factor</li>
+<li><span class="math inline">\mu</span> is the state visitation distribution</li>
+<li><span class="math inline">\hat{q}(s,a,\mathbf{w})</span> is the approximated action value function</li>
+<li><span class="math inline">\mathbf{w}</span> is the weight vector</li>
+<li><span class="math inline">r_t</span> is the reward at time step t</li>
+<li><span class="math inline">\gamma</span> is the discount factor</li>
 </ul></li>
 </ul>
-<p><span class="math display">\[
+<p><span class="math display">
 \begin{align*}
 \nabla_\mathbf{w} J(w) &amp;= \mathbb{E}_\mu \left[ \sum_{t=0}^\infty \gamma^t \nabla_\mathbf{w} \left( r_t + \gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w}) \right)^2 \right] \\
 &amp;= \mathbb{E}_\mu \left[ \sum_{t=0}^\infty \gamma^t 2 \left( r_t + \gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w}) \right) \nabla_\mathbf{w} \left( r_t + \gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w}) \right) \right] \newline
 &amp;= \mathbb{E}_\mu \left[ \sum_{t=0}^\infty \gamma^t 2 \delta  \left( \gamma \nabla_\mathbf{w} \hat{q}(s',a',\mathbf{w}) - \nabla_\mathbf{w} \hat{q}(s,a,\mathbf{w}) \right) \right] \\
 \end{align*}
-\]</span></p>
-<p>where <span class="math inline">\(\delta = r_t + \gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w})\)</span> is the TD error.</p>
+</span></p>
+<p>where <span class="math inline">\delta = r_t + \gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w})</span> is the TD error.</p>
 <p>this is the projected gradient of the projected Bellman error.</p>
 <p>which would give us the following update rule:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \mathbf{w} \leftarrow \mathbf{w} + \alpha \delta \left( \gamma \nabla_\mathbf{w} \hat{q}(s',a',\mathbf{w}) - \nabla_\mathbf{w} \hat{q}(s,a,\mathbf{w}) \right)
-\]</span></p>
+</span></p>
 <p>rather than the update rule we have in the algorithm:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \mathbf{w} \leftarrow \mathbf{w} + \alpha \delta \nabla_\mathbf{w} \hat{q}(s,a,\mathbf{w})
-\]</span></p>
-<p><span class="math display">\[
+</span></p>
+<p><span class="math display">
 \mathbf{w} \leftarrow \mathbf{w} + \alpha [R_{t+1} + \gamma \hat{q}(S_{t+1},A_{t+1},\mathbf{w}) - \hat{q}(S_t,A_t,\mathbf{w})] \nabla \hat{q}(S_t,A_t,\mathbf{w})
-\]</span></p>
+</span></p>
 <ol type="1">
 <li>Can we do better than this?</li>
 </ol>
@@ -485,13 +502,13 @@ Over Thinking Semi-gradient SARSA {.unnumbered}:
 <section id="sec-l1g1" class="level2">
 <h2 class="anchored" data-anchor-id="sec-l1g1">The update for Episodic SARSA with function approximation</h2>
 <p>So far we have only been using function approximation to parametrize state value function,</p>
-<p><span id="eq-parametize-state-value-function"><span class="math display">\[
+<p><span id="eq-parametize-state-value-function"><span class="math display">
 V_\pi(s) ≈ \hat{v}(s,w) \doteq \mathbf{w}^T \cdot \mathbf{x}(S) \qquad
-\tag{1}\]</span></span></p>
-<p>For SARSA we need a parametrized approximation <span class="math inline">\(\hat{q}\)</span> for the the action value function <span class="math inline">\(q_pi\)</span>,</p>
-<p><span id="eq-parametrized-action-value-function"><span class="math display">\[
+\tag{1}</span></span></p>
+<p>For SARSA we need a parametrized approximation <span class="math inline">\hat{q}</span> for the the action value function <span class="math inline">q_pi</span>,</p>
+<p><span id="eq-parametrized-action-value-function"><span class="math display">
 q_\pi(s,a) ≈ \hat{q}(s,a,\mathbf{w}) \doteq \mathbf{w}^T \cdot \mathbf{x}(s,a) \qquad
-\tag{2}\]</span></span></p>
+\tag{2}</span></span></p>
 </section>
 <section id="episodic-sarsa-in-mountain-car-video" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="episodic-sarsa-in-mountain-car-video">Episodic SARSA in Mountain Car (Video)</h2>
@@ -571,31 +588,31 @@ Figure&nbsp;10: The learning curve for the mountain car problem
 <h2 class="anchored" data-anchor-id="expected-sarsa-with-function-approximation-video">Expected SARSA with Function Approximation (Video)</h2>
 <p>Now we extend SARSA with under function approximation into Expected SARSA .</p>
 <p>First, recall the update rule for Tabular SARSA:</p>
-<p><span id="eq-tabular-sarsa-update"><span class="math display">\[
+<p><span id="eq-tabular-sarsa-update"><span class="math display">
 Q(S_t,A_t) \leftarrow Q(S_t,A_t) + \alpha (R_{t+1} + \gamma Q( \textcolor{red}{ S_{t+1}, A_{t+1} }) - Q(S_t,A_t)) \qquad
-\tag{3}\]</span></span></p>
+\tag{3}</span></span></p>
 <p>SARSA’s update target includes the action value for the next state in action.</p>
 <p>Next, recall how Tabular Expected SARSA uses the expectation over its target policy instead.</p>
-<p><span id="eq-tabular-expected-sarsa-update"><span class="math display">\[
+<p><span id="eq-tabular-expected-sarsa-update"><span class="math display">
 Q(S_t,A_t) \leftarrow Q(S_t,A_t) + \alpha (R_{t+1} + \gamma \textcolor{red}{ \sum_{a'} \pi (a' \mid S_{t+1}) Q(S_{t+1},a')} - Q(S_t,A_t)) \qquad
-\tag{4}\]</span></span></p>
+\tag{4}</span></span></p>
 <p>We can compute the same expectation using function approximation.</p>
-<p>First, recall the update for SARSA with function approximation. It looks similar to the tabular setting except the action value estimates are parameterized by the weight factor, <span class="math inline">\(\mathbf{w}\)</span>. i.e.&nbsp;<span class="math inline">\(q_\pi (s, a) \approx \hat{q} (s, a, \mathbf{w})\)</span></p>
-<p><span id="eq-semi-gradient-sarsa-update"><span class="math display">\[
+<p>First, recall the update for SARSA with function approximation. It looks similar to the tabular setting except the action value estimates are parameterized by the weight factor, <span class="math inline">\mathbf{w}</span>. i.e.&nbsp;<span class="math inline">q_\pi (s, a) \approx \hat{q} (s, a, \mathbf{w})</span></p>
+<p><span id="eq-semi-gradient-sarsa-update"><span class="math display">
 \mathbf{w} \leftarrow \mathbf{w} + \alpha [R_{t+1} + \gamma \hat{q}(\textcolor{red} { S_{t+1} } , \textcolor{red} { A_{t+1}}, \mathbf{w}) - \hat{q}(S_t, A_t, \mathbf{w})] \nabla \hat{q} (S_t, A_t, \mathbf{w}) \qquad
-\tag{5}\]</span></span></p>
+\tag{5}</span></span></p>
 <p>Expected Sarsa with function approximation follows a similar structure.</p>
-<p><span id="eq-semi-gradient-expected-sarsa-update"><span class="math display">\[
+<p><span id="eq-semi-gradient-expected-sarsa-update"><span class="math display">
 \mathbf{w} \leftarrow \mathbf{w} + \alpha [R_{t+1} + \gamma   \textcolor{red}{ \sum_{a'} \pi( a' \mid S_{t+1}) \hat{q} (S_{t+1}, a' , \mathbf{w} )} - \hat{q}(S_t , A_t , \mathbf{w})] \nabla \hat{q}(S_t , A_t , \mathbf{w}) \qquad
-\tag{6}\]</span></span></p>
+\tag{6}</span></span></p>
 </section>
 <section id="sec-l1g4" class="level2">
 <h2 class="anchored" data-anchor-id="sec-l1g4">How this extends to Q-learning easily, since it is a subset of Expected SARSA</h2>
 <p>Finally, for Q-learning with function approximation as Q-learning is a special case of expected SARSA in which we take the greedy. So next we replace the expectation over the target policy by argmax action to derive the Q-learning update rule.</p>
 <p>The Q-learning update rule is:</p>
-<p><span id="eq-semi-gradient-Q-learning-update"><span class="math display">\[
+<p><span id="eq-semi-gradient-Q-learning-update"><span class="math display">
 \mathbf{w} \leftarrow \mathbf{w} + \alpha [R_{t+1} + \gamma  \textcolor{red}{ \max_{a'} \hat{q}(S_{t+1},a',\mathbf{w})} −\hat{q}(S_t,A_t,\mathbf{w})] \nabla \hat{q}(S_t,A_t,\mathbf{w}) \qquad
-\tag{7}\]</span></span></p>
+\tag{7}</span></span></p>
 </section>
 </section>
 <section id="lesson-2-exploration-under-function-approximation" class="level1">
@@ -636,7 +653,7 @@ Learning Objectives
 <p>Q. Why is epsilon-greedy exploration ineffective in the function approximation setting?</p>
 <ol type="1">
 <li>like in the bandit setting, the agent keeps exploring even after it has found the optimal policy.</li>
-<li>like in environments with a changing maze multiple epsilon-greedy exploration steps may be required to explore states required by the optimal policy that are not near the current policy. The chance for such an exploration is <span class="math inline">\(\mu(s)\epsilon^n\)</span> where <span class="math inline">\(mu(s)\)</span> is importance of the nearest state and n is the number of steps required to reach the target state. This can be vanishingly small for large state spaces. Which means it can take too long to find the optimal policy using epsilon-greedy exploration. We need to think of better ways to organize exploration in the function approximation setting.</li>
+<li>like in environments with a changing maze multiple epsilon-greedy exploration steps may be required to explore states required by the optimal policy that are not near the current policy. The chance for such an exploration is <span class="math inline">\mu(s)\epsilon^n</span> where <span class="math inline">mu(s)</span> is importance of the nearest state and n is the number of steps required to reach the target state. This can be vanishingly small for large state spaces. Which means it can take too long to find the optimal policy using epsilon-greedy exploration. We need to think of better ways to organize exploration in the function approximation setting.</li>
 <li>Prioritizing using count based on a coarse coding may be more effective. Even better if we track the uncertainty in the value function for each if these features. This is a form of intrinsic motivation.</li>
 </ol>
 <p>However the last video by Satinder Singh discusses using intrinsic motivation to improve exploration in reinforcement learning systems. And in it he shows a different paradigm of exploration. Rather than getting agents to explore systematic one wants to explore in a way that is interesting to the agent.</p>
@@ -682,32 +699,32 @@ Figure&nbsp;11: The near sighted MDP. The lower discounting causes the agent to 
 </div></div><p>In most states, there’s only one action, so there are no decisions to be made. There’s only one state were a decision can be made. In this state, the agent can decide which ring to traverse.</p>
 <p>This means there are two deterministic policies, traversing the left ring or traversing the right ring. The reward is zero everywhere except for in one transition in each ring. In the left ring, the reward is +1 immediately after state S. In the right ring, the reward is +2 immediately before state S. Intuitively, you would pick the right action because you know you will get +2 reward. But what would the value function tell us to do?</p>
 <p><strong>If we use discounting, what are the values of state S under these two different policies?</strong></p>
-<p>The policy that chooses the left action has a value of <span class="math inline">\(v_l(S) = \frac{1}{1-\gamma^5}\)</span>. How do we figure this out? If you write out the infinite discounted return, you will see this is a fairly straightforward geometric series with a closed form solution.</p>
-<p>The policy that chooses the right action has a value of <span class="math inline">\(v_r(S) = \frac{2 \gamma^4}{1-\gamma^5}\)</span>. Let’s think of the value of state S under these two part policies for particular values of <span class="math inline">\(\gamma\)</span>.</p>
-<p><span class="math inline">\(\gamma= 0.5 \implies V_L \approx 1 \qquad V_R \approx 0.1\)</span></p>
+<p>The policy that chooses the left action has a value of <span class="math inline">v_l(S) = \frac{1}{1-\gamma^5}</span>. How do we figure this out? If you write out the infinite discounted return, you will see this is a fairly straightforward geometric series with a closed form solution.</p>
+<p>The policy that chooses the right action has a value of <span class="math inline">v_r(S) = \frac{2 \gamma^4}{1-\gamma^5}</span>. Let’s think of the value of state S under these two part policies for particular values of <span class="math inline">\gamma</span>.</p>
+<p><span class="math inline">\gamma= 0.5 \implies V_L \approx 1 \qquad V_R \approx 0.1</span></p>
 <p>This means the policy that takes the left action is preferable under this more myopic discount.</p>
 <p>Let’s try</p>
-<p><span class="math inline">\(\gamma= 0.9 \implies V_L \approx 2.4 \qquad V_R \approx 3.2\)</span></p>
+<p><span class="math inline">\gamma= 0.9 \implies V_L \approx 2.4 \qquad V_R \approx 3.2</span></p>
 <p>So now we prefer the other policy.</p>
-<p>In fact, we can figure out the minimum value of <span class="math inline">\(\gamma\)</span> so that the agent prefers the policy that goes right. <span class="math inline">\(\gamma\)</span> needs to be at least 0.841. So the problem here is that the discount magnitude depends on the problem.</p>
+<p>In fact, we can figure out the minimum value of <span class="math inline">\gamma</span> so that the agent prefers the policy that goes right. <span class="math inline">\gamma</span> needs to be at least 0.841. So the problem here is that the discount magnitude depends on the problem.</p>
 <p>For this example, 0.85 is sufficiently large. But if the rings had 100 states each, this discount factor would need to be over 0.99.</p>
 <p>In general, the only way to ensure that the agents actions maximize reward over time is to keep increasing the discount factor towards 1.</p>
-<p>Depending on the problem, we might need <span class="math inline">\(\gamma\)</span> to be quite large. And we can’t set it to 1 in a continuing setting as the return might be infinite.</p>
-<p>Now, what’s wrong with having larger <span class="math inline">\(\gamma\)</span>? Larger values of <span class="math inline">\(\gamma\)</span> can also result in larger and more variables sums, which might be difficult to learn. So is there an alternative?</p>
+<p>Depending on the problem, we might need <span class="math inline">\gamma</span> to be quite large. And we can’t set it to 1 in a continuing setting as the return might be infinite.</p>
+<p>Now, what’s wrong with having larger <span class="math inline">\gamma</span>? Larger values of <span class="math inline">\gamma</span> can also result in larger and more variables sums, which might be difficult to learn. So is there an alternative?</p>
 </section>
 <section id="sec-l3g1" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="sec-l3g1">The Average Reward Setting</h2>
-<p><span id="eq-average-reward"><span class="math display">\[
+<p><span id="eq-average-reward"><span class="math display">
 r(\pi) \doteq \lim _{h \to \infty} \frac{1}{h} \sum_{t=1}^{h} \mathbb{E}[R_t S_0,A_{0:t−1} \sim \pi]  \qquad
-\tag{8}\]</span></span></p>
-<p>Let’s discuss a new objective called the average reward. Imagine the agent has interacted with the world for H steps. This is the reward it has received on average across those H steps. In other words, it’s rate of reward. If the agents goal is to maximize this average reward, then it cares equally about nearby and distant rewards. We denote the average reward of a policy with <span class="math inline">\(R_\pi\)</span>.</p>
-<p><span id="eq-average-reward-visitation"><span class="math display">\[
+\tag{8}</span></span></p>
+<p>Let’s discuss a new objective called the average reward. Imagine the agent has interacted with the world for H steps. This is the reward it has received on average across those H steps. In other words, it’s rate of reward. If the agents goal is to maximize this average reward, then it cares equally about nearby and distant rewards. We denote the average reward of a policy with <span class="math inline">R_\pi</span>.</p>
+<p><span id="eq-average-reward-visitation"><span class="math display">
 r(\pi) = \sum_{s} \mu_\pi (s) \sum_{a} \pi(a \mid s) \sum_{s',r} p(s',r \mid s,a) r
-\tag{9}\]</span></span></p>
-<p>More generally, we can write the average reward using the state visitation, <span class="math inline">\(\mu\)</span>. This inner term is the expected reward in a state under policy <span class="math inline">\(\pi\)</span>. The outer sum takes the expectation over how frequently the policy is in that state. Together, we get the expected reward across states. In other words, the average reward for a policy.</p>
+\tag{9}</span></span></p>
+<p>More generally, we can write the average reward using the state visitation, <span class="math inline">\mu</span>. This inner term is the expected reward in a state under policy <span class="math inline">\pi</span>. The outer sum takes the expectation over how frequently the policy is in that state. Together, we get the expected reward across states. In other words, the average reward for a policy.</p>
 <p>In the nearsighted example, the two deterministic possible policies visit either the left loop or the right loop indefinitely. In both cases, the five states in each loop are visited equally many times. In the left loop, the immediate expected reward is +0 for all states except one, which gets +1. This results in an average reward of 1 every 5 steps or 0.2.</p>
-<p><span class="math inline">\(r(\pi_L)=1/5=0.2 \qquad r(\pi_R)=2/5=0.4\)</span></p>
-<p>Most states in the right loop also have +0 <span class="math inline">\(\mu\)</span> to expected reward. But this time, the last state gets +2. This gives an average reward of 2 every 5 steps or 0.4.</p>
+<p><span class="math inline">r(\pi_L)=1/5=0.2 \qquad r(\pi_R)=2/5=0.4</span></p>
+<p>Most states in the right loop also have +0 <span class="math inline">\mu</span> to expected reward. But this time, the last state gets +2. This gives an average reward of 2 every 5 steps or 0.4.</p>
 
 <div class="no-row-height column-margin column-container"><div id="fig-near-sighted-mdp-2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -734,30 +751,30 @@ Figure&nbsp;12: Return for the nearsighted MDP for average rewards. The average 
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-near-sighted-mdp-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;13: Return for the nearsighted MDP for average rewards. The average reward for the left policy is <span class="math inline">\(G_t=-1.8\)</span> and for the right policy is <span class="math inline">\(G_t=0.8\)</span>.
+Figure&nbsp;13: Return for the nearsighted MDP for average rewards. The average reward for the left policy is <span class="math inline">G_t=-1.8</span> and for the right policy is <span class="math inline">G_t=0.8</span>.
 </figcaption>
 </figure>
 </div></div>
 <p>We can see the average reward puts preference on the policy that receives more reward in total without having to consider larger and larger discounts.</p>
 <p>The average reward definition is intuitive for saying if one policy is better than another, but <strong>how can we decide which actions from a state are better?</strong></p>
-<p>What we need are action values for this new setting. The first step is to figure out what the return is. In the average reward setting, returns are defined in terms of differences between rewards and the average reward <span class="math inline">\(R_\pi\)</span>. This is called <strong>the differential return</strong>.</p>
-<p><span id="eq-differential-return"><span class="math display">\[
+<p>What we need are action values for this new setting. The first step is to figure out what the return is. In the average reward setting, returns are defined in terms of differences between rewards and the average reward <span class="math inline">R_\pi</span>. This is called <strong>the differential return</strong>.</p>
+<p><span id="eq-differential-return"><span class="math display">
 G_t = R_{t+1} −r_\pi + R_{t+2} −r_\pi + R_{t+2} −r_\pi \ldots \qquad
-\tag{10}\]</span></span></p>
+\tag{10}</span></span></p>
 <p>Let’s look at what the <strong>differential returns</strong> are in our nearsighted MDP.</p>
-<p>The differential return represents how much more reward the agent will receive from the current state in action compared to the average reward of the policy. Let’s look at the differential return starting in state <span class="math inline">\(s\)</span>, first choosing action L and then following <span class="math inline">\(\pi\)</span> L afterwards.</p>
+<p>The differential return represents how much more reward the agent will receive from the current state in action compared to the average reward of the policy. Let’s look at the differential return starting in state <span class="math inline">s</span>, first choosing action L and then following <span class="math inline">\pi</span> L afterwards.</p>
 <p>The average reward for this policy is 0.2.</p>
 <p>The differential return is the sum of rewards into the future with the average reward subtracted from each one. This sum starts in state S with the action L. We can compute it by summing to some finite horizon H. Then taking the limit as H goes to infinity. We are simplifying things slightly with this limit notation. While notation provider works in many cases, we need to use a different technique when the environment is periodic. In this case, we compute the return using a more general limit called the <a href="https://en.wikipedia.org/wiki/Ces%C3%A0ro_summation">Cesàro sum</a>, but this technical detail is not critical. The main point here is the intuition. We find that the differential return is 0.4. Now, let’s look at the other action. This time, we can break the differential return into two parts. First the sum for a single trajectory through the right loop. We can write the sum explicitly and it’s equal to 1. Then the sum corresponding to taking the left action indefinitely. This sum is the same as the differential return we just computed, 0.4. Adding the two parts together, we find that the differential return is 1.4.</p>
-<p>We can write the average reward using the state visitation, <span class="math inline">\(\pi\)</span>. This inner term is the expected reward in a state under policy <span class="math inline">\(\pi\)</span>. The outer sum takes the expectation over how frequently the policy is in that state. Together, we get the expected reward across states. In other words, the average reward for a policy</p>
-<p>In the average reward setting, returns are defined in terms of differences between rewards and the average reward <span class="math inline">\(r_\pi\)</span>, which is called the differential return. The differential return represents how much more reward the agent will receive from the current state in action compared to the average reward of the policy.</p>
+<p>We can write the average reward using the state visitation, <span class="math inline">\pi</span>. This inner term is the expected reward in a state under policy <span class="math inline">\pi</span>. The outer sum takes the expectation over how frequently the policy is in that state. Together, we get the expected reward across states. In other words, the average reward for a policy</p>
+<p>In the average reward setting, returns are defined in terms of differences between rewards and the average reward <span class="math inline">r_\pi</span>, which is called the differential return. The differential return represents how much more reward the agent will receive from the current state in action compared to the average reward of the policy.</p>
 <p>The differential return represents how much better it is to take an action in a state then on average under a certain policy. The differential return can only be used to compare actions if the same policy is followed on subsequent time steps. To compare policies, their average reward should be used instead</p>
 <p>This quantity captures how much more reward the agent will get by starting in a particular state than it would get on average over all states if it followed a fixed policy.</p>
-<p><span id="eq-differential-value-function"><span class="math display">\[
+<p><span id="eq-differential-value-function"><span class="math display">
 q_\pi(s,a) = \mathbb{E}_\pi[G_t \mid S_t = s,A_t = a] \qquad
-\tag{11}\]</span></span></p>
-<p>Like in the discounted setting, differential value functions can be written as Bellman equations. They only differ in that they subtract r() from the immediate reward and there is no discounting. <span id="eq-differential-bellman"><span class="math display">\[
+\tag{11}</span></span></p>
+<p>Like in the discounted setting, differential value functions can be written as Bellman equations. They only differ in that they subtract r() from the immediate reward and there is no discounting. <span id="eq-differential-bellman"><span class="math display">
 q_\pi(s,a) = \sum_{s',r} p(s',r \mid s,a)(r −r(\pi)) + \sum_{a'} \pi(a' \mid s')q_\pi(s',a') \qquad
-\tag{12}\]</span></span></p>
+\tag{12}</span></span></p>
 <p>Many algorithms from the discounted settings can be rewritten to apply to the average reward case.</p>
 </section>
 <section id="sec-l3g2" class="level2">
@@ -775,7 +792,7 @@ Episodic Semi-gradient SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-differential-sg-sarsa" class="pseudocode-container quarto-float" data-pseudocode-number="3" data-no-end="false" data-line-number="true" data-line-number-punc=":" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-indent-size="1.2em">
+<div id="alg-differential-sg-sarsa" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-pseudocode-number="3" data-line-number="true" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em" data-comment-delimiter="#">
 <div class="pseudocode">
 \begin{algorithm} \caption{Differential Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)}\begin{algorithmic} \State $\textbf{Input:}$ \State $\qquad \text{a differentiable action-value fn parameterization } \hat{q}: \mathcal{S} \times A \times \mathbb{R}^d \to \mathbb{R}$ \State $\textbf{Algorithm parameters:}$ \State $\qquad \alpha, \beta &gt; 0$ \State $\textbf{Initialize:}$ \State $\qquad$ value function weights $\mathbf{w} \in \mathbb{R}^d$ arbitrarily, (e.g., $\mathbf{w} = 0$) \State $\bar{R} source \in \mathbb{R}$ avg reward estimate \State Initialize $S$ and action $A$ \For {each step} \State Take action A, observe R, S' \State Choose A' as a function of $\hat{q}(S',\cdot,\mathbf{w})$ (e.g., $\epsilon$-greedy) \State $\delta \leftarrow R - \bar{R} + \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) $ \State $ \bar{R}\leftarrow \bar{R} + \beta \delta$ \State $\mathbf{w} \leftarrow \mathbf{w} + \alpha \delta \nabla \hat{q}(S, A, \mathbf{w})$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -867,6 +884,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -935,9 +1096,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
     clipboardModal.on('success', onCopySuccess);
   }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -951,6 +1163,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         if (link.dataset.originalHref !== undefined) {
           link.href = link.dataset.originalHref;
         }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
       }
     }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {

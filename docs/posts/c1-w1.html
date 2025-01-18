@@ -7,11 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Oren Bochman">
-<meta name="dcterms.date" content="2022-05-02">
 <meta name="keywords" content="the k-armed bandit problem, bandit algorithms, exploration, explotation, epsilon greedy algorithm, sample avarage method">
 <meta name="description" content="In week 1 we define some key concepts like rewards, states, action, value functions, action values functions. We consider the the multi-armed bandit problem, leading to exploration explotation dillema, and the epsilon greedy algorithm.">
 
-<title>The K-Armed Bandit Problem – rl-notes</title>
+<title>The K-Armed Bandit Problem – Notes on Reinfocement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -68,15 +67,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d58cf0c17c84c672bbe6415fb2b2bd7c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-594d21605a7b9fb32547fedacd8fc358.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-d396125c57f3f0defba792e7b0e7a5dc.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -131,8 +133,22 @@ MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -172,7 +188,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">rl-notes</span>
+    <span class="navbar-title">Notes on Reinfocement Learning</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -198,6 +214,7 @@ window.Quarto = {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -206,7 +223,7 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">The K-Armed Bandit Problem</h1>
+      <div class="quarto-title-block"><div><h1 class="title">The K-Armed Bandit Problem</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li></ul></div></div>
             <p class="subtitle lead">RL Fundamentals</p>
                   <div>
         <div class="description">
@@ -234,7 +251,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">May 2, 2022</p>
+        <p class="date">Monday, May 2, 2022</p>
       </div>
     </div>
     
@@ -318,7 +335,7 @@ Goals
 </blockquote>
 <section id="sec-k-armed-bandit" class="level2">
 <h2 class="anchored" data-anchor-id="sec-k-armed-bandit">K-armed bandits 🐙</h2>
-<p>In the <strong>k-armed bandit</strong> problem there is an <strong>agent</strong> who is assigned a <strong>state</strong> <span class="math inline">\(s\)</span> by the environment and must learn which action <span class="math inline">\(a\)</span> from the possible set of <strong>actions</strong> <span class="math inline">\(A\)</span> leads to the goal state through a signal based on the greatest <strong>expected reward</strong>.</p>
+<p>In the <strong>k-armed bandit</strong> problem there is an <strong>agent</strong> who is assigned a <strong>state</strong> <span class="math inline">s</span> by the environment and must learn which action <span class="math inline">a</span> from the possible set of <strong>actions</strong> <span class="math inline">A</span> leads to the goal state through a signal based on the greatest <strong>expected reward</strong>.</p>
 <p>One way this can be achieved is using a Bayesian updating scheme starting from a uniform prior.</p>
 </section>
 <section id="sec-l1g1" class="level2 page-columns page-full">
@@ -366,31 +383,31 @@ Difference between bandits and RL
 </div></div><section id="sec-l1g3" class="level4">
 <h4 class="anchored" data-anchor-id="sec-l1g3">Action Values and Greedy Action Selection</h4>
 <p>The <strong>value</strong> of an action is its <strong>expected reward</strong> which can be expressed mathematically as:</p>
-<p><span id="eq-action-value"><span class="math display">\[
+<p><span id="eq-action-value"><span class="math display">
 \begin{align}
 q_{\star}(a) &amp; \doteq \mathbb{E}[R_t  \vert  A_t=a] \space \forall a \in \{a_1 ... a_k\} \newline
              &amp; = \sum_r p(r|a)r \qquad \text{(action value)}
 \end{align}
-\tag{1}\]</span></span></p>
+\tag{1}</span></span></p>
 <p>where:</p>
 <ul>
-<li><span class="math inline">\(\doteq\)</span> means definition</li>
-<li><span class="math inline">\(\mathbb{E}[r \vert a]\)</span> means expectation of a reward given some action a Since agents want to maximize rewards, recalling the definition of expectations we can write this as:</li>
+<li><span class="math inline">\doteq</span> means definition</li>
+<li><span class="math inline">\mathbb{E}[r \vert a]</span> means expectation of a reward given some action a Since agents want to maximize rewards, recalling the definition of expectations we can write this as:</li>
 </ul>
 <p>The goal of the agent is to maximize the expected reward which we can express mathematically as:</p>
-<p><span id="eq-greedification"><span class="math display">\[
+<p><span id="eq-greedification"><span class="math display">
 \arg\max_a q(a)=\sum_r p(r \vert a) \times r \qquad \text{(Greedification)}
-\tag{2}\]</span></span></p>
+\tag{2}</span></span></p>
 <p>where:</p>
 <ul>
-<li><span class="math inline">\(\arg \max_a\)</span> means the argument <span class="math inline">\(a\)</span> maximizes - so the agent is looking for the action that maximizes the expected reward and the outcome is an action.</li>
+<li><span class="math inline">\arg \max_a</span> means the argument <span class="math inline">a</span> maximizes - so the agent is looking for the action that maximizes the expected reward and the outcome is an action.</li>
 </ul>
 </section>
 <section id="l1g4" class="level4 page-columns page-full">
 <h4 class="anchored" data-anchor-id="l1g4">Reward, Return, and Value Functions</h4>
-<p>The <strong>reward</strong> <span class="math inline">\(r\)</span> is the immediate feedback from the environment after the agent takes an action.</p>
-<p>The <strong>return</strong> <span class="math inline">\(G_t\)</span> is the total discounted reward from time-step <span class="math inline">\(t\)</span>.</p>
-<p>The <strong>value function</strong> <span class="math inline">\(v(s)\)</span> of an MRP is the expected return starting from state <span class="math inline">\(s\)</span>.</p>
+<p>The <strong>reward</strong> <span class="math inline">r</span> is the immediate feedback from the environment after the agent takes an action.</p>
+<p>The <strong>return</strong> <span class="math inline">G_t</span> is the total discounted reward from time-step <span class="math inline">t</span>.</p>
+<p>The <strong>value function</strong> <span class="math inline">v(s)</span> of an MRP is the expected return starting from state <span class="math inline">s</span>.</p>
 
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -450,7 +467,7 @@ Goals
 <p><img src="img/rl-clinical-trial-q(a).png" class="img-fluid figure-img"></p>
 <figcaption>estimating action values</figcaption>
 </figure>
-</div></div><p>In Tabular RL settings The action value function <span class="math inline">\(q\)</span> is nothing more than a table with one {state, action} pair per row and its value. More generally, like when we will consider function approximation in course 3, it is a mapping from {state, action} pair to a expected reward.</p>
+</div></div><p>In Tabular RL settings The action value function <span class="math inline">q</span> is nothing more than a table with one {state, action} pair per row and its value. More generally, like when we will consider function approximation in course 3, it is a mapping from {state, action} pair to a expected reward.</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -477,10 +494,10 @@ Goals
 </tr>
 </tbody>
 </table>
-<p>The higher the action value <span class="math inline">\(q(a)\)</span> of an action <strong>a</strong>, the more likely it is to lead us to a better state which is closer to the objective. We can choose for each state the best or one of the best choices giving us a <strong>plan</strong> for navigating the state space to the goal state.</p>
-<p><span id="eq-sample-average"><span class="math display">\[
+<p>The higher the action value <span class="math inline">q(a)</span> of an action <strong>a</strong>, the more likely it is to lead us to a better state which is closer to the objective. We can choose for each state the best or one of the best choices giving us a <strong>plan</strong> for navigating the state space to the goal state.</p>
+<p><span id="eq-sample-average"><span class="math display">
 Q_t(a) \doteq \frac{\text{sum of rewards for action a taken time } t}{\text{number of times action a was taken prior to } t} = \frac{\sum_{i=1}^{t-1} R_i}{t-1} \qquad
-\tag{3}\]</span></span></p>
+\tag{3}</span></span></p>
 <p>The main idea of RL is that we can propagate values from an one adjacent state to another. We can start with the uniform stochastic policy and use it to estimate/learn the action values. Action values will decrease for actions leads to a dead end. And it will increase in the direction of the goal but only once the influence of the goal has propagated. A continuing theme in RL is trying to increase the efficiency for propagation of rewards across the action values.</p>
 <p>Knowing the minimum number of action needed to reach a goal can be an approximate indicator of the action value.</p>
 <p>A second idea is that once we have let the influence of dead end and the goals spread enough we may have enough information to improve the initial action value to a point where each action is the one of the best choices. <mark>We call picking the one of the best action greedy selection and it leads to a deterministic policy.</mark> This is the optimal policy, it might not be unique since some actions might be tied in terms of their rewards. However for all of these we cannot do any better.</p>
@@ -514,17 +531,17 @@ Q_t(a) \doteq \frac{\text{sum of rewards for action a taken time } t}{\text{numb
 <section id="L2G5" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="L2G5">Sample Average Method for estimating Action Values Incrementally</h3>
 <p>Action values help us make decision. Let’s try and make estimate action values more formal using the following method:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 q_t(a)=\frac{\text{sum or rewards when a taken prior to t}}{\text{number of times a taken prior to t}}
        =\frac{\sum_{t=1}^{t-1} R_i \mathbb{I}_{A_i=a}}{\sum_{t=1}^{t-1}\mathbb{I}_{A_i=a} } \qquad
-\]</span></p>
+</span></p>
 
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="img/rl-sample-avarage-method.png" class="img-fluid figure-img"></p>
 <figcaption>example</figcaption>
 </figure>
-</div></div><p><span id="eq-sample-average-incremental-update-rule"><span class="math display">\[
+</div></div><p><span id="eq-sample-average-incremental-update-rule"><span class="math display">
 \begin{align}
 Q_{n+1} &amp;= \frac{1}{n} \sum_{i=1}^n R_i \newline
   &amp; = \frac{1}{n} \Bigg(R_n + \sum_i^{n-1} R_i\Bigg) \newline
@@ -533,25 +550,25 @@ Q_{n+1} &amp;= \frac{1}{n} \sum_{i=1}^n R_i \newline
   &amp;= \frac{1}{n} \Big(R_n + nQ_{n} -Q_{n} \Big) \newline
   &amp;= Q_n + \frac{1}{n} \Big[R_n - Q_{n}\Big]
 \end{align}
-\tag{4}\]</span></span></p>
+\tag{4}</span></span></p>
 </section>
 <section id="L2G6" class="level3">
 <h3 class="anchored" data-anchor-id="L2G6">What are action-value estimation methods?</h3>
 <p>We can now state this in English as:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \text{New Estimate} \leftarrow \text{Old Estimate} + \text{Step Size } \times [\text{Target} - \text{Old Estimate}] \qquad
-\]</span></p>
+</span></p>
 <p>here:</p>
 <ul>
 <li>step size can be adaptive - changing over time. but typically it is constant and in the range (0,1) to avoid divergence.</li>
-<li>for the sample average method the step size is <span class="math inline">\(\frac{1}{n}\)</span> where n is the number of times the action has been taken.</li>
+<li>for the sample average method the step size is <span class="math inline">\frac{1}{n}</span> where n is the number of times the action has been taken.</li>
 <li>(Target - OldEstimate) is called the <em>error</em>.</li>
 </ul>
 <p>More generally we will use the update rule as:</p>
-<p><span id="eq-general-incremental-update-rule"><span class="math display">\[
+<p><span id="eq-general-incremental-update-rule"><span class="math display">
 Q_{n+1} = Q_n + \alpha \Big[R_n - Q_{n}\Big] \qquad a\in (0,1)
-\tag{5}\]</span></span></p>
-<div id="simple-epsilon-greedy-bandit-algorithm" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-line-number="true" data-comment-delimiter="#" data-no-end="false" data-caption-prefix="Algorithm" data-indent-size="1.2em">
+\tag{5}</span></span></p>
+<div id="simple-epsilon-greedy-bandit-algorithm" class="pseudocode-container quarto-float" data-line-number-punc=":" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-pseudocode-number="1" data-no-end="false" data-comment-delimiter="#">
 <div class="pseudocode">
 \begin{algorithm} \caption{Simple Bandit($\epsilon$)}\begin{algorithmic} \State $Q(a) \leftarrow 0\ \forall a\ $ \Comment{ $\textcolor{blue}{initialize\ action\ values}$} \State $N(a) \leftarrow 0\ \forall a\ $ \Comment{ $\textcolor{blue}{initialize\ counter\ for\ actions\ taken}$} \For{$t = 1, 2, \ldots \infty$} \State $A_t \leftarrow \begin{cases} \arg\max_a Q(a) &amp; \text{with probability } 1 - \epsilon \\ \text{a random action} &amp; \text{with probability } \epsilon \end{cases}$ \State $R_t \leftarrow \text{Bandit}(A_t)$ \State $N(A_t) \leftarrow N(A_t) + 1$ \State $Q(A_t) \leftarrow Q(A_t) + \frac{1}{N(A_t)}[R_t - Q(A_t)]$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -571,7 +588,7 @@ Goals
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li>Define <span class="math inline">\(\epsilon\)</span>-greedy <a href="#sec-epsilon-greedy-policies">#</a></li>
+<li>Define <span class="math inline">\epsilon</span>-greedy <a href="#sec-epsilon-greedy-policies">#</a></li>
 <li>Compare the short-term benefits of exploitation and the long-term benefits of exploration <a href="#sec-benefits-of-exploitation-and-exploration">#</a></li>
 <li>Understand optimistic initial values <a href="#sec-optimistic-initial-values">#</a></li>
 <li>Describe the benefits of optimistic initial values for early exploration <a href="#sec-benefits-of-optimistic-initial-values-for-early-exploration">#</a></li>
@@ -582,15 +599,15 @@ Goals
 </div>
 </div>
 <p>the following is a Bernoulli greedy algorithm</p>
-<div id="alg-greedy-bandit" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="2" data-line-number="true" data-comment-delimiter="#" data-no-end="false" data-caption-prefix="Algorithm" data-indent-size="1.2em">
+<div id="alg-greedy-bandit" class="pseudocode-container quarto-float" data-line-number-punc=":" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-pseudocode-number="2" data-no-end="false" data-comment-delimiter="#">
 <div class="pseudocode">
 \begin{algorithm} \caption{BernGreedy(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \State \State \Comment{ estimate model} \For{$k = 1, . . . , K$} \State $\hat\theta_k \leftarrow a_k / (α_k + β_k)$ \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
 </div>
 <section id="sec-epsilon-greedy-policies" class="level2">
 <h2 class="anchored" data-anchor-id="sec-epsilon-greedy-policies">Ɛ-Greedy Policies</h2>
-<p>The Ɛ-greedy policy uses a simple heuristic to balance exploration with exploitation. The idea is to choose the best action with probability <span class="math inline">\(1-\epsilon\)</span> and to choose a random action with probability <span class="math inline">\(\epsilon\)</span>.</p>
-<div id="alg-epsilon-greedy" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="3" data-line-number="true" data-comment-delimiter="#" data-no-end="false" data-caption-prefix="Algorithm" data-indent-size="1.2em">
+<p>The Ɛ-greedy policy uses a simple heuristic to balance exploration with exploitation. The idea is to choose the best action with probability <span class="math inline">1-\epsilon</span> and to choose a random action with probability <span class="math inline">\epsilon</span>.</p>
+<div id="alg-epsilon-greedy" class="pseudocode-container quarto-float" data-line-number-punc=":" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-pseudocode-number="3" data-no-end="false" data-comment-delimiter="#">
 <div class="pseudocode">
 \begin{algorithm} \caption{EpsilonGreedy(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, \ldots $} \State p = random() \If {$p &lt; \epsilon$} \State select radom action $x_t \qquad$ \Comment{explore} \Else \State select $x_t = \arg\max_k \hat{\theta}_k \qquad$ \Comment{exploit} \EndIf \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -607,14 +624,16 @@ The problem with Ɛ-greedy policies
 <div class="callout-body-container callout-body">
 <ul>
 <li>A problem with Ɛ-greedy is that it is not optimal in the long run.</li>
-<li>Even after it has found the best course of action it will continue to explore with probability <span class="math inline">\(\epsilon\)</span>.</li>
+<li>Even after it has found the best course of action it will continue to explore with probability <span class="math inline">\epsilon</span>.</li>
 <li>This is because the policy is not adaptive.</li>
-<li>One method is too reduce <span class="math inline">\(\epsilon\)</span> over time. However unless there is a feedback from the environment this will likely stop exploring too soon or too late thus providing sub-optimal returns.</li>
+<li>One method is too reduce <span class="math inline">\epsilon</span> over time. However unless there is a feedback from the environment this will likely stop exploring too soon or too late thus providing sub-optimal returns.</li>
 </ul>
 </div>
 </div>
 <p>The following is a simple implementation of the Ɛ-greedy algorithm in Python from <a href="https://www.geeksforgeeks.org/epsilon-greedy-algorithm-in-reinforcement-learning/?ref=ml_lbp">geeksforgeeks.org</a></p>
-<div id="ed3e2261" class="cell" data-execution_count="1">
+<div id="22df15a2" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import required libraries </span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt </span>
@@ -668,10 +687,14 @@ The problem with Ɛ-greedy policies
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(a.mean) </span>
 <span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> cumulative_average </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
-<div id="c82dc063" class="cell" data-execution_count="2">
+<div id="1a5ed31a" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>c_1 <span class="op">=</span> run_experiment(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>, <span class="fl">0.1</span>, <span class="dv">100000</span>) </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#print(c_1)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -680,44 +703,52 @@ The problem with Ɛ-greedy policies
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.00128284480846
-1.9772182133818004
-2.9995979500235803</code></pre>
+<pre><code>0.9986145710058402
+1.9658660479954855
+3.0003123552514848</code></pre>
 </div>
 </div>
-<div id="9d18491e" class="cell" data-execution_count="3">
+<div id="a79852b6" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>c_05 <span class="op">=</span> run_experiment(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>, <span class="fl">0.05</span>, <span class="dv">100000</span>) </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#print(c_05)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="c1-w1_files/figure-html/cell-4-output-1.png" width="571" height="412" class="figure-img"></p>
+<p><img src="c1-w1_files/figure-html/cell-4-output-1.png" width="569" height="412" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.9456609617502858
-1.9870045683575968
-3.000997874695408</code></pre>
+<pre><code>0.9953708104175287
+2.0145256629031327
+3.001903056693574</code></pre>
 </div>
 </div>
-<div id="75367cd6" class="cell" data-execution_count="4">
+<div id="3c6823a4" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>c_01 <span class="op">=</span> run_experiment(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>, <span class="fl">0.01</span>, <span class="dv">100000</span>) </span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#print(c_01)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="c1-w1_files/figure-html/cell-5-output-1.png" width="582" height="412" class="figure-img"></p>
+<p><img src="c1-w1_files/figure-html/cell-5-output-1.png" width="579" height="412" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.9519921902358282
-2.0282848426389513
-3.0007815545503385</code></pre>
+<pre><code>1.036959235212011
+1.9936684441473502
+2.996446749853475</code></pre>
 </div>
 </div>
-<div id="574b95e6" class="cell" data-execution_count="5">
+<div id="70983abc" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># log scale plot </span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>plt.plot(c_1, label <span class="op">=</span><span class="st">'eps = 0.1'</span>) </span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>plt.plot(c_05, label <span class="op">=</span><span class="st">'eps = 0.05'</span>) </span>
@@ -725,10 +756,11 @@ The problem with Ɛ-greedy policies
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>plt.legend() </span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>) </span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>plt.show() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="c1-w1_files/figure-html/cell-6-output-1.png" width="582" height="412" class="figure-img"></p>
+<p><img src="c1-w1_files/figure-html/cell-6-output-1.png" width="569" height="412" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -750,8 +782,8 @@ The problem with Ɛ-greedy policies
 <p>Setting all initially action values greater than the algorithmically available values in [0,1]</p>
 </dd>
 </dl>
-<p>The methods we have discussed are dependent on the initial action-value estimates, <span class="math inline">\(Q_1(a)\)</span>. In the language of statistics, we call these methods biased by their initial estimates. For the sample-average methods, the bias disappears once all actions have been selected at least once. For methods with constant <span class="math inline">\(\alpha\)</span>, the bias is permanent, though decreasing over time.</p>
-<div id="alg-optimitc-greedy-bandit" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="4" data-line-number="true" data-comment-delimiter="#" data-no-end="false" data-caption-prefix="Algorithm" data-indent-size="1.2em">
+<p>The methods we have discussed are dependent on the initial action-value estimates, <span class="math inline">Q_1(a)</span>. In the language of statistics, we call these methods biased by their initial estimates. For the sample-average methods, the bias disappears once all actions have been selected at least once. For methods with constant <span class="math inline">\alpha</span>, the bias is permanent, though decreasing over time.</p>
+<div id="alg-optimitc-greedy-bandit" class="pseudocode-container quarto-float" data-line-number-punc=":" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-pseudocode-number="4" data-no-end="false" data-comment-delimiter="#">
 <div class="pseudocode">
 \begin{algorithm} \caption{OptimisticBernGreedy(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \State \State \Comment{ estimate model} \For{$k = 1, . . . , K$} \State $\hat\theta_k \leftarrow 1 \qquad$ \Comment{optimistic initial value} \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -790,17 +822,17 @@ Criticisms of optimistic initial values
 <h2 class="anchored" data-anchor-id="sec-the-ucb-action-selection-method">The UCB action selection method</h2>
 <p>UCB is an acronym for Upper Confidence Bound. The idea behind it is to select the action that has the highest upper confidence bound. This has the advantage over epsilon greedy that it will explore more in the beginning and then exploit more as the algorithm progresses.</p>
 <p>the upper confidence bound is defined as:</p>
-<p><span id="eq-ucb"><span class="math display">\[
+<p><span id="eq-ucb"><span class="math display">
 A_t = \arg\max\_a \Bigg[
   \underbrace{Q_t(a)}_{exploitation} +
   \underbrace{c \sqrt{\frac{\ln t}{N_t(a)} }}_{exploration}
 \Bigg] \qquad
-\tag{6}\]</span></span></p>
+\tag{6}</span></span></p>
 <p>where:</p>
 <ul>
-<li><span class="math inline">\(Q_t(a)\)</span> is the action value</li>
-<li><span class="math inline">\(c\)</span> is a constant that determines the degree of exploration</li>
-<li><span class="math inline">\(N_t(a)\)</span> is the number of times action <span class="math inline">\(a\)</span> has been selected prior to time <span class="math inline">\(t\)</span></li>
+<li><span class="math inline">Q_t(a)</span> is the action value</li>
+<li><span class="math inline">c</span> is a constant that determines the degree of exploration</li>
+<li><span class="math inline">N_t(a)</span> is the number of times action <span class="math inline">a</span> has been selected prior to time <span class="math inline">t</span></li>
 </ul>
 
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
@@ -810,7 +842,7 @@ A_t = \arg\max\_a \Bigg[
 </figure>
 </div></div><p>The idea is we the action for which the action value plus the highest possible uncertainty give the highest sum. We are being optimistic in assuming this choice will give the highest reward. In reality any value in the confidence interval could be the true value. Each time we select an action we reduce the uncertainty in the exploration term and we also temper our optimism of the upper confidence bound by the number of times we have selected the action. This means that we will prefer to visit the actions that have not been visited as often.</p>
 <p>The main advantage of UCB is that it is more efficient than epsilon greedy in the long run. If we measure the cost of learning in terms of the regret - the difference between the expected reward of the optimal action and the expected reward of the action we choose. UCB has a lower regret than epsilon greedy. The downside is that it is more complex and requires more computation.</p>
-<div id="alg-brn-UCB" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="5" data-line-number="true" data-comment-delimiter="#" data-no-end="false" data-caption-prefix="Algorithm" data-indent-size="1.2em">
+<div id="alg-brn-UCB" class="pseudocode-container quarto-float" data-line-number-punc=":" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-pseudocode-number="5" data-no-end="false" data-comment-delimiter="#">
 <div class="pseudocode">
 \begin{algorithm} \caption{UCB(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \For { $k = 1, . . . , K$ } \State \Comment{ $\textcolor{blue}{compute\ UCBs}$} \State $U_k = \hat\theta_k + c \sqrt{\frac{\ln t}{N_k}}$ \EndFor \State \Comment{ $\textcolor{blue}{select\ and\ apply\ action}$} \State $x_t \leftarrow \arg\max_k h(x,U_x)$ \State Apply xt and observe $y_t$ and $r_t$ \State \Comment{ $\textcolor{blue}{estimate\ model}$} \For{$k = 1, . . . , K$} \State $\hat\theta_k \leftarrow a_k / (α_k + β_k)$ \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -823,7 +855,7 @@ A_t = \arg\max\_a \Bigg[
 <section id="Sec-Thompson-Sampling-Algorithm" class="level3">
 <h3 class="anchored" data-anchor-id="Sec-Thompson-Sampling-Algorithm">Thompson Sampling Algorithm</h3>
 <p>The algorithm is as follows:</p>
-<div id="alg-bernoulli-thompson-sampling" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="6" data-line-number="true" data-comment-delimiter="#" data-no-end="false" data-caption-prefix="Algorithm" data-indent-size="1.2em">
+<div id="alg-bernoulli-thompson-sampling" class="pseudocode-container quarto-float" data-line-number-punc=":" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-pseudocode-number="6" data-no-end="false" data-comment-delimiter="#">
 <div class="pseudocode">
 \begin{algorithm} \caption{BernTS(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \State \State \Comment{ sample model} \For{$k = 1, . . . , K$} \State Sample $\hat\theta_k \sim beta(α_k, β_k)$ \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -870,7 +902,9 @@ A_t = \arg\max\_a \Bigg[
 </ul>
 <section id="coding-bandits-with-mesa" class="level2">
 <h2 class="anchored" data-anchor-id="coding-bandits-with-mesa">Coding Bandits with MESA</h2>
-<div id="3334f024" class="cell" data-execution_count="6">
+<div id="6135b06a" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mesa <span class="im">import</span> Model, Agent</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mesa.time <span class="im">import</span> RandomActivation</span>
@@ -957,13 +991,14 @@ A_t = \arg\max\_a \Bigg[
 <span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_steps):</span>
 <span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a>        model.step()</span>
 <span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a>    model.step()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stderr">
 <pre><code>/home/oren/.local/lib/python3.10/site-packages/mesa/time.py:82: FutureWarning:
 
 The AgentSet is experimental. It may be changed or removed in any and all future releases, including patch releases.
 We would love to hear what you think about this new feature. If you have any thoughts, share them with us here: https://github.com/projectmesa/mesa/discussions/1919
 
-  0%|          | 0/200 [00:00&lt;?, ?it/s]  4%|▍         | 9/200 [00:00&lt;00:02, 81.98it/s]  9%|▉         | 18/200 [00:00&lt;00:02, 80.70it/s] 14%|█▎        | 27/200 [00:00&lt;00:02, 81.32it/s] 18%|█▊        | 36/200 [00:00&lt;00:02, 81.29it/s] 22%|██▎       | 45/200 [00:00&lt;00:01, 81.86it/s] 27%|██▋       | 54/200 [00:00&lt;00:01, 81.70it/s] 32%|███▏      | 63/200 [00:00&lt;00:01, 81.58it/s] 36%|███▌      | 72/200 [00:00&lt;00:01, 80.68it/s] 40%|████      | 81/200 [00:00&lt;00:01, 80.60it/s] 45%|████▌     | 90/200 [00:01&lt;00:01, 79.74it/s] 50%|████▉     | 99/200 [00:01&lt;00:01, 80.08it/s] 54%|█████▍    | 108/200 [00:01&lt;00:01, 79.71it/s] 58%|█████▊    | 116/200 [00:01&lt;00:01, 78.32it/s] 62%|██████▏   | 124/200 [00:01&lt;00:00, 77.90it/s] 66%|██████▌   | 132/200 [00:01&lt;00:00, 76.05it/s] 70%|███████   | 140/200 [00:01&lt;00:00, 75.62it/s] 74%|███████▍  | 148/200 [00:01&lt;00:00, 75.34it/s] 78%|███████▊  | 156/200 [00:01&lt;00:00, 75.78it/s] 82%|████████▏ | 164/200 [00:02&lt;00:00, 75.74it/s] 86%|████████▌ | 172/200 [00:02&lt;00:00, 76.25it/s] 90%|█████████ | 180/200 [00:02&lt;00:00, 76.38it/s] 94%|█████████▍| 188/200 [00:02&lt;00:00, 76.82it/s] 98%|█████████▊| 196/200 [00:02&lt;00:00, 76.67it/s]100%|██████████| 200/200 [00:02&lt;00:00, 78.33it/s]</code></pre>
+  0%|          | 0/200 [00:00&lt;?, ?it/s]  4%|▍         | 8/200 [00:00&lt;00:02, 78.08it/s]  8%|▊         | 16/200 [00:00&lt;00:02, 77.85it/s] 12%|█▏        | 24/200 [00:00&lt;00:02, 78.08it/s] 16%|█▌        | 32/200 [00:00&lt;00:02, 78.05it/s] 20%|██        | 40/200 [00:00&lt;00:02, 78.39it/s] 24%|██▍       | 48/200 [00:00&lt;00:01, 78.24it/s] 28%|██▊       | 56/200 [00:00&lt;00:01, 78.25it/s] 32%|███▏      | 64/200 [00:00&lt;00:01, 78.19it/s] 36%|███▌      | 72/200 [00:00&lt;00:01, 78.01it/s] 40%|████      | 80/200 [00:01&lt;00:01, 77.99it/s] 44%|████▍     | 88/200 [00:01&lt;00:01, 77.66it/s] 48%|████▊     | 96/200 [00:01&lt;00:01, 77.58it/s] 52%|█████▏    | 104/200 [00:01&lt;00:01, 77.93it/s] 56%|█████▌    | 112/200 [00:01&lt;00:01, 78.03it/s] 60%|██████    | 120/200 [00:01&lt;00:01, 78.24it/s] 64%|██████▍   | 128/200 [00:01&lt;00:00, 78.20it/s] 68%|██████▊   | 136/200 [00:01&lt;00:00, 77.77it/s] 72%|███████▏  | 144/200 [00:01&lt;00:00, 77.96it/s] 76%|███████▌  | 152/200 [00:01&lt;00:00, 77.79it/s] 80%|████████  | 160/200 [00:02&lt;00:00, 78.08it/s] 84%|████████▍ | 168/200 [00:02&lt;00:00, 78.29it/s] 88%|████████▊ | 176/200 [00:02&lt;00:00, 78.33it/s] 92%|█████████▏| 184/200 [00:02&lt;00:00, 78.30it/s] 96%|█████████▌| 192/200 [00:02&lt;00:00, 78.10it/s]100%|██████████| 200/200 [00:02&lt;00:00, 78.25it/s]100%|██████████| 200/200 [00:02&lt;00:00, 78.06it/s]</code></pre>
 </div>
 </div>
 
@@ -992,6 +1027,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -1060,9 +1239,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
     clipboardModal.on('success', onCopySuccess);
   }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -1076,6 +1306,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         if (link.dataset.originalHref !== undefined) {
           link.href = link.dataset.originalHref;
         }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
       }
     }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {

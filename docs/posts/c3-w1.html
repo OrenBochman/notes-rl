@@ -7,10 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Oren Bochman">
-<meta name="dcterms.date" content="2024-04-01">
 <meta name="keywords" content="neural networks, feature construction, coarse coding, feed-forward architecture, activation functions, deep networks, online setting, offline setting, representation, learning capacity">
 
-<title>On-Policy Prediction with Approximation – rl-notes</title>
+<title>On-Policy Prediction with Approximation – Notes on Reinfocement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -33,15 +32,18 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d58cf0c17c84c672bbe6415fb2b2bd7c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-594d21605a7b9fb32547fedacd8fc358.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-d396125c57f3f0defba792e7b0e7a5dc.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -96,8 +98,22 @@ MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -137,7 +153,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">rl-notes</span>
+    <span class="navbar-title">Notes on Reinfocement Learning</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -163,6 +179,7 @@ window.Quarto = {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -194,7 +211,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">April 1, 2024</p>
+        <p class="date">Monday, April 1, 2024</p>
       </div>
     </div>
     
@@ -321,22 +338,22 @@ Learning Objectives
 <ul>
 <li>In the previous courses we represented value functions as tables or arrays:
 <ul>
-<li>For <span class="math inline">\(V(s)\)</span> we had an array of size <span class="math inline">\(|S|\)</span>,</li>
-<li>For <span class="math inline">\(Q(s,a)\)</span> we had an array of size <span class="math inline">\(|S| \times |A|\)</span>. This becomes impractical as <span class="math inline">\(|S| \rightarrow \infty\)</span>. We can use <strong>parameterized functions</strong> to approximate value functions. This is called <strong>function approximation</strong>.</li>
+<li>For <span class="math inline">V(s)</span> we had an array of size <span class="math inline">|S|</span>,</li>
+<li>For <span class="math inline">Q(s,a)</span> we had an array of size <span class="math inline">|S| \times |A|</span>. This becomes impractical as <span class="math inline">|S| \rightarrow \infty</span>. We can use <strong>parameterized functions</strong> to approximate value functions. This is called <strong>function approximation</strong>.</li>
 </ul></li>
 <li><strong>Linear value function approximation</strong> is a simple and popular method.
 <ul>
 <li>We represent the value function as a linear combination of features:</li>
 </ul></li>
 </ul>
-<p><span id="eq-fn-approx"><span class="math display">\[
+<p><span id="eq-fn-approx"><span class="math display">
 \hat{v}(s, \mathbb{w}) \approx v_\pi(s) \qquad
-\tag{1}\]</span></span></p>
+\tag{1}</span></span></p>
 <ul>
 <li>where:
 <ul>
-<li><span class="math inline">\(\hat{v}()\)</span> is the approximate value function</li>
-<li><span class="math inline">\(\mathbf{w}\)</span> is a weight vector</li>
+<li><span class="math inline">\hat{v}()</span> is the approximate value function</li>
+<li><span class="math inline">\mathbf{w}</span> is a weight vector</li>
 </ul></li>
 <li>for example:</li>
 </ul>
@@ -346,14 +363,14 @@ Learning Objectives
 <ul>
 <li>We can write the approximate value function as a linear combination of features:</li>
 </ul>
-<p><span id="eq-lin-fn-approx"><span class="math display">\[
+<p><span id="eq-lin-fn-approx"><span class="math display">
 \hat{v}(s, \mathbb{w}) \dot = w_1 X + w_2 + Y \qquad
-\tag{2}\]</span></span></p>
+\tag{2}</span></span></p>
 <ul>
 <li>where:
 <ul>
-<li><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are features of the state <span class="math inline">\(s\)</span></li>
-<li><span class="math inline">\(w_1\)</span> and <span class="math inline">\(w_2\)</span> are the weights of the features</li>
+<li><span class="math inline">X</span> and <span class="math inline">Y</span> are features of the state <span class="math inline">s</span></li>
+<li><span class="math inline">w_1</span> and <span class="math inline">w_2</span> are the weights of the features</li>
 </ul></li>
 <li>now learning becomes finding better weights that parameterize the value function.</li>
 </ul>
@@ -361,17 +378,17 @@ Learning Objectives
 </section>
 <section id="sec-l1g3" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="sec-l1g3">Tabular case is a special case of linear value function approximation</h2>
-<div class="page-columns page-full"><p> <span class="math display">\[
+<div class="page-columns page-full"><p> <span class="math display">
 \begin{align*}
 \hat{v}(s, \mathbb{w}) &amp; \dot = \sum w_i x_i(s) \newline
                        &amp; = &lt;\mathbf{w}, \mathbf{x}(s)&gt; \qquad
 \end{align*}
-\]</span></p><div class="no-row-height column-margin column-container"><img src="img/c3-w2-parametrized_functions.png" id="fig-rl-linear-approximation" class="img-fluid" alt="Linear value function generalize the tabular case"></div></div>
+</span></p><div class="no-row-height column-margin column-container"><img src="img/c3-w2-parametrized_functions.png" id="fig-rl-linear-approximation" class="img-fluid" alt="Linear value function generalize the tabular case"></div></div>
 <ul>
 <li>here:
 <ul>
-<li><span class="math inline">\(\mathbf{w}\)</span> is a weight vector</li>
-<li><span class="math inline">\(\mathbf{x}(s)\)</span> is a feature vector that is 1 in the <span class="math inline">\(i\)</span>-th position and 0 elsewhere.</li>
+<li><span class="math inline">\mathbf{w}</span> is a weight vector</li>
+<li><span class="math inline">\mathbf{x}(s)</span> is a feature vector that is 1 in the <span class="math inline">i</span>-th position and 0 elsewhere.</li>
 </ul></li>
 <li>linear value function approximation is a generalization of the tabular case.</li>
 <li>limitations of linear value function approximation:
@@ -545,12 +562,12 @@ Bias-variance tradeoff
 <li>In the case of Monte Carlo methods,
 <ul>
 <li>the inputs are the states and</li>
-<li>the outputs are the returns <span class="math inline">\(G\)</span>.</li>
+<li>the outputs are the returns <span class="math inline">G</span>.</li>
 </ul></li>
 <li>In the case of TD methods,
 <ul>
 <li>the inputs are the states and</li>
-<li>the outputs are the one step bootstrapped returns. <span class="math inline">\(U_t \dot=R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})\)</span></li>
+<li>the outputs are the one step bootstrapped returns. <span class="math inline">U_t \dot=R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})</span></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -569,7 +586,7 @@ Bias-variance tradeoff
 </ul></li>
 </ul>
 <p>In fact much of the learning in RL is about learning such correlations and quickly adapting to non-stationary in the environment.</p>
-<p>In TD learning the target depends on <span class="math inline">\(w\)</span> but in supervised learning the target is fixed and given.</p>
+<p>In TD learning the target depends on <span class="math inline">w</span> but in supervised learning the target is fixed and given.</p>
 </section>
 </section>
 <section id="lesson-2-the-objective-for-on-policy-prediction" class="level1 page-columns page-full">
@@ -600,8 +617,8 @@ Learning Objectives
 <h2 class="anchored" data-anchor-id="the-value-error-objective-video">The Value Error Objective (Video)</h2>
 <p>In this video Adam White covers the first two learning objectives of the unit.<br>
 The main subject about using the mean squared error as a loss for the approximate value function.</p>
-<p>we get a sequence of <span class="math inline">\((S_1,v_{\pi}(S_1) ),(S_2,v_{\pi}(S_2) ),(S_3,v_{\pi}(S_3) ), \ldots\)</span> and we want to approximate the value function . We can track how well we are approximating <span class="math inline">\(v_{\pi}(s)\)</span> by using <span class="math inline">\(\hat{v}(s,\mathbb{w})\)</span>. The difference can be positive or negative so if we average it the sum will tend to cancel out. If we square the error we get a positive number we have a much better estimate of the error. And if normalize it by taking the mean we can get use it to compare runs of different lengths. This is called the mean squared error.</p>
-<p>It turns out that this is not enough for RL and we need to take a weighted average using the state distribution <span class="math inline">\(\mu(s)\)</span>. This is because we care more about some states than others. The state distribution is the long run probability of visiting the state <span class="math inline">\(s\)</span> under the policy <span class="math inline">\(\pi\)</span>. This weighted average is called <em>the mean squared <strong>value</strong> error</em>.</p>
+<p>we get a sequence of <span class="math inline">(S_1,v_{\pi}(S_1) ),(S_2,v_{\pi}(S_2) ),(S_3,v_{\pi}(S_3) ), \ldots</span> and we want to approximate the value function . We can track how well we are approximating <span class="math inline">v_{\pi}(s)</span> by using <span class="math inline">\hat{v}(s,\mathbb{w})</span>. The difference can be positive or negative so if we average it the sum will tend to cancel out. If we square the error we get a positive number we have a much better estimate of the error. And if normalize it by taking the mean we can get use it to compare runs of different lengths. This is called the mean squared error.</p>
+<p>It turns out that this is not enough for RL and we need to take a weighted average using the state distribution <span class="math inline">\mu(s)</span>. This is because we care more about some states than others. The state distribution is the long run probability of visiting the state <span class="math inline">s</span> under the policy <span class="math inline">\pi</span>. This weighted average is called <em>the mean squared <strong>value</strong> error</em>.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -635,28 +652,28 @@ Figure&nbsp;4: mean-squared value error objective
 </div></div><ul>
 <li>An idealized Scenario:
 <ul>
-<li>input: <span class="math inline">\(\{(S_1, v_\pi(S_1)), (S_2, v_\pi(S_2)), \ldots, (S_n, v_\pi(S_n))\}\)</span></li>
-<li>output: <span class="math inline">\(\hat v(s,w) \approx v_\pi(s)\)</span></li>
+<li>input: <span class="math inline">\{(S_1, v_\pi(S_1)), (S_2, v_\pi(S_2)), \ldots, (S_n, v_\pi(S_n))\}</span></li>
+<li>output: <span class="math inline">\hat v(s,w) \approx v_\pi(s)</span></li>
 <li>however in reality we may get some some error in the approximation.
 <ul>
 <li>this could be due to our choice of the approximation.</li>
 <li>but initially we just don’t have good weights - to fit the data.</li>
 </ul></li>
 <li>What we need is a way to measure the error in the approximation.</li>
-<li>Also we may care more about some states than others and we can encode this using the state distribution <span class="math inline">\(\mu(s)\)</span>.</li>
+<li>Also we may care more about some states than others and we can encode this using the state distribution <span class="math inline">\mu(s)</span>.</li>
 </ul></li>
 <li>The mean-squared value error objective for policy evaluation is to minimize the mean-squared error between the true value function and the approximate value function:</li>
 </ul>
-<p><span id="eq-msve"><span class="math display">\[
+<p><span id="eq-msve"><span class="math display">
 \overline{VE} = \sum_{s\in S}\mu(s)[v_\pi(S) - \hat{v}(S, \mathbf{w})]^2
-\tag{3}\]</span></span></p>
+\tag{3}</span></span></p>
 <ul>
 <li>where:
 <ul>
-<li><span class="math inline">\(\overline{VE}\)</span> is the mean-squared value error</li>
-<li><span class="math inline">\(\mu(s)\)</span> is the state distribution</li>
-<li><span class="math inline">\(v_\pi(s)\)</span> is the true value of state <span class="math inline">\(s\)</span></li>
-<li><span class="math inline">\(\hat{v}(s, \mathbf{w})\)</span> is the approximate value of state <span class="math inline">\(s\)</span> with weights <span class="math inline">\(\mathbf{w}\)</span></li>
+<li><span class="math inline">\overline{VE}</span> is the mean-squared value error</li>
+<li><span class="math inline">\mu(s)</span> is the state distribution</li>
+<li><span class="math inline">v_\pi(s)</span> is the true value of state <span class="math inline">s</span></li>
+<li><span class="math inline">\hat{v}(s, \mathbf{w})</span> is the approximate value of state <span class="math inline">s</span> with weights <span class="math inline">\mathbf{w}</span></li>
 </ul></li>
 <li>the goal is to find the weights that minimize the mean-squared value error.</li>
 </ul>
@@ -664,7 +681,7 @@ Figure&nbsp;4: mean-squared value error objective
 <section id="sec-l2g2" class="level2">
 <h2 class="anchored" data-anchor-id="sec-l2g2">Explaining the role of the state distribution in the objective</h2>
 <ul>
-<li>The state distribution <span class="math inline">\(\mu(s)\)</span> is the long run probability of visiting the state <span class="math inline">\(s\)</span> under the policy <span class="math inline">\(\pi\)</span>.</li>
+<li>The state distribution <span class="math inline">\mu(s)</span> is the long run probability of visiting the state <span class="math inline">s</span> under the policy <span class="math inline">\pi</span>.</li>
 <li>This makes more sense if our markov chain is ergodic - i.e.&nbsp;we can reach any state from any other state by following some transition trajectory.</li>
 <li>The state distribution is important because it determines how much we care about the error in each state.</li>
 <li>The state distribution is usually unknown, and hard to estimate as it has complex dependencies on the policy and the environment.</li>
@@ -679,25 +696,25 @@ Figure&nbsp;4: mean-squared value error objective
 <li>Gradient descent is an optimization algorithm that uses the gradient to find a local minimum of a function.</li>
 <li>The gradients points in the direction of the steepest ascent of the function and our objective is to minimize the mean squared error we move in the opposite direction.</li>
 <li>Hence the name gradient descent.</li>
-<li>The gradient of the mean-squared value error with respect to the weights <span class="math inline">\(\mathbf{w}\)</span> is given by:</li>
+<li>The gradient of the mean-squared value error with respect to the weights <span class="math inline">\mathbf{w}</span> is given by:</li>
 </ul>
-<p><span class="math display">\[
+<p><span class="math display">
     w \dot = \left [ \begin{matrix} w_1 \\ \vdots \\ w_d  \end{matrix} \right ] \qquad \nabla f = \left [ \begin{matrix} \frac{\partial f}{\partial w_1} \\ \vdots \\ \frac{\partial f}{\partial w_d}  \end{matrix} \right ] \qquad
-\]</span></p>
+</span></p>
 <ul>
 <li>for a linear function:</li>
 </ul>
-<p><span id="eq-grad-lin-fn"><span class="math display">\[
+<p><span id="eq-grad-lin-fn"><span class="math display">
 \hat{v}(s, \mathbf{w}) = \sum \mathbf{w}^T \mathbf{x}(s) \\
 \frac{\partial \hat{v}(s, \mathbf{w})}{\partial w_i} = \mathbf{x_i}(s) \\
 \nabla \hat{v}(s, \mathbf{w}) = \mathbf{x}(s) \qquad
-\tag{4}\]</span></span></p>
+\tag{4}</span></span></p>
 <ul>
 <li>we can write the update rule for the weights as:</li>
 </ul>
-<p><span id="eq-grad-descent"><span class="math display">\[
+<p><span id="eq-grad-descent"><span class="math display">
 w_{t+1} \dot= w_t - \alpha \nabla J(\mathbf{w_t}) \qquad
-\tag{5}\]</span></span></p>
+\tag{5}</span></span></p>
 <ul>
 <li>Stochastic gradient descent is a variant of gradient descent that uses a random sample of the data to estimate the gradient.</li>
 <li>Stochastic gradient descent uses mini-batches of data to estimate the gradient, which makes it computationally efficient and reduces the variance of the gradient estimate.</li>
@@ -731,37 +748,37 @@ Figure&nbsp;5: gradient descent
 </section>
 <section id="sec-l2g8" class="level2">
 <h2 class="anchored" data-anchor-id="sec-l2g8">How to use Gradient descent and Stochastic gradient descent to minimize the value error</h2>
-<p><span class="math display">\[
+<p><span class="math display">
 \begin{align*}
 \nabla J(\mathbf{w}) &amp; = \nabla \sum_{s\in S} \mu(s)[v_\pi(s) - \hat{v}(s, \mathbf{w})]^2 \qquad  \qquad  \hat{v}(s, \mathbf{w}) = &lt;\mathbf{w},\mathbf{x}(s)&gt;\newline
                     &amp; =  \sum_{s\in S}  \mu(s) \nabla [v_\pi(s) - \hat{v}(s, \mathbf{w})]^2 \qquad  \qquad \nabla   \hat{v}(s, \mathbf{w}) = \mathbf{x}(s)\newline
                     &amp; =  \sum_{s\in S} \mu(s) 2 [v_\pi(s) - \hat{v}(s, \mathbf{w})]\nabla \hat{v}(s, \mathbf{w})
 \end{align*} \qquad
-\]</span></p>
+</span></p>
 <section id="stochastic-gradient-descent" class="level3">
 <h3 class="anchored" data-anchor-id="stochastic-gradient-descent">Stochastic Gradient Descent</h3>
-<p>If we have a sample of states <span class="math inline">\(s_1, s_2, \ldots, s_n\)</span> observed by following <span class="math inline">\(pi\)</span><br>
+<p>If we have a sample of states <span class="math inline">s_1, s_2, \ldots, s_n</span> observed by following <span class="math inline">pi</span><br>
 we can write the update rule for a pair of weights as:</p>
-<p><span id="eq-sgd"><span class="math display">\[
+<p><span id="eq-sgd"><span class="math display">
 w_{t+1} \dot= w_t + \alpha [v_\pi(S_1) - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w}) \qquad
-\tag{6}\]</span></span></p>
+\tag{6}</span></span></p>
 <p>This allows us to decrease the error in the value function by making updates for one state at a time and moving the weights in the direction of the negative gradient. By making this type of update we might increase the error occasionally but in the long run we will decrease the error.</p>
 <blockquote class="blockquote">
 <p>This updating approach is called stochastic gradient descent, because it only uses a stochastic estimate of the gradient. In fact, the expectation of each stochastic gradient equals the gradient of the objective. You can think of this stochastic gradient as a noisy approximation to the gradient that is much cheaper to compute, but can nonetheless make steady progress to a minimum – Martha White</p>
 </blockquote>
-<p>we have here one issue - we don’t know the true value of the policy <span class="math inline">\(v_pi(s_1)\)</span>, how do we get around this?</p>
-<p>one option is to replace the true value with an estimate, one option is to use the return from the state <span class="math inline">\(s_1\)</span>.</p>
+<p>we have here one issue - we don’t know the true value of the policy <span class="math inline">v_pi(s_1)</span>, how do we get around this?</p>
+<p>one option is to replace the true value with an estimate, one option is to use the return from the state <span class="math inline">s_1</span>.</p>
 <p>recall that</p>
-<p><span class="math display">\[
+<p><span class="math display">
 v_\pi(s) = \mathbb{E}[G_t \mid S_t = s] \qquad
-\]</span></p>
-<p>so we can substitute the true value with the return from the state <span class="math inline">\(s_1\)</span>.</p>
-<p><span id="eq-gradient-mc-update"><span class="math display">\[
+</span></p>
+<p>so we can substitute the true value with the return from the state <span class="math inline">s_1</span>.</p>
+<p><span id="eq-gradient-mc-update"><span class="math display">
 \begin{align*}
 w_{t+1} &amp; \dot= w_t + \alpha [v_\pi(S_1) - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w}) \qquad \\
         &amp; \dot = w_t + \alpha [G_1 - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w}) \qquad
 \end{align*}
-\tag{7}\]</span></span></p>
+\tag{7}</span></span></p>
 </section>
 </section>
 <section id="sec-l2g4" class="level2">
@@ -773,11 +790,11 @@ w_{t+1} &amp; \dot= w_t + \alpha [v_\pi(S_1) - \hat{v}(s_1, \mathbf{w_1})]\nabla
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note&nbsp;1: MC prediction fist visit for estimating <span class="math inline">\(V \approx v_\pi\)</span>
+Note&nbsp;1: MC prediction fist visit for estimating <span class="math inline">V \approx v_\pi</span>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-gradient-mc" class="pseudocode-container quarto-float" data-comment-delimiter="#" data-caption-prefix="Algorithm" data-line-number-punc=":" data-no-end="false" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="1">
+<div id="alg-gradient-mc" class="pseudocode-container quarto-float" data-line-number="true" data-no-end="false" data-pseudocode-number="1" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number-punc=":" data-comment-delimiter="#">
 <div class="pseudocode">
 \begin{algorithm} \caption{GradientMC($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$ \State Algorithm parameters: \State $\qquad \alpha \in (0, 1]$ step size \State Initialize: \State $\qquad \mathbf{w} \leftarrow x \in \mathbb{R^d} \text{ arbiterly}$ (e.g. w=0) \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = 0, 1, \ldots, T-1$:} \State $\mathbf{w} \leftarrow w_t + \alpha [G_t - \hat{v}(S_t , \mathbf{w_1})] \nabla \hat{v}(S_t , \mathbf{w})$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -813,13 +830,13 @@ Figure&nbsp;6: gradient mc with state aggregation
 <li>there is one feature for each group of states.</li>
 <li>the weights are updated using the gradient of the mean-squared value error.</li>
 </ul>
-<p><span class="math display">\[
+<p><span class="math display">
 w \leftarrow w + \alpha [G_t - \hat{v}(S_t, \mathbf{w})] \nabla \hat{v}(S_t, \mathbf{w})
-\]</span></p>
+</span></p>
 <p>and the gradient of the approximate value function is given by:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \nabla \hat{v}(S_t, \mathbf{w}) = \mathbf{x}(S_t)
-\]</span></p>
+</span></p>
 <p>which is either 1 or 0 depending on the group of states.</p>
 </section>
 <section id="sec-l2g6" class="level2">
@@ -856,18 +873,18 @@ Learning Objectives
 <ul>
 <li>recall the Monte Carlo update rule:</li>
 </ul>
-<p><span class="math display">\[
+<p><span class="math display">
 w \leftarrow w + \alpha [G_t - \hat{v}(S_t, \mathbf{w})] \nabla \hat{v}(S_t, \mathbf{w})
-\]</span></p>
+</span></p>
 <ul>
-<li>we can use other targets for the update rule than the return <span class="math inline">\(G_t\)</span>.</li>
+<li>we can use other targets for the update rule than the return <span class="math inline">G_t</span>.</li>
 <li>we can replace the return with any estimate of the value of the next state.</li>
-<li>we can call this target <span class="math inline">\(U_t\)</span> and if it is unbiased it converge to a local minimum of the mean squared value error.</li>
+<li>we can call this target <span class="math inline">U_t</span> and if it is unbiased it converge to a local minimum of the mean squared value error.</li>
 <li>we can use the one step bootstrapped return:</li>
 </ul>
-<p><span id="eq-td-target"><span class="math display">\[
+<p><span id="eq-td-target"><span class="math display">
 U_t \dot=R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})
-\tag{8}\]</span></span></p>
+\tag{8}</span></span></p>
 <ul>
 <li>but this is not unbiased because it essential approximating the expected return using the current value of the state.</li>
 <li>there is no guarantee that the the update will converge to a local minimum of the mean squared value error.</li>
@@ -881,26 +898,26 @@ U_t \dot=R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})
 </ul></li>
 <li>the TD-update is nor a true gradient update because the target is not the true value of the state. we call it a semi-gradient update.
 <ul>
-<li>let’s estimate the gradient of the mean squared value error with respect to the weights <span class="math inline">\(\mathbf{w}\)</span>:</li>
+<li>let’s estimate the gradient of the mean squared value error with respect to the weights <span class="math inline">\mathbf{w}</span>:</li>
 </ul></li>
 </ul>
-<p><span id="eq-td-grad"><span class="math display">\[
+<p><span id="eq-td-grad"><span class="math display">
 \begin{align*}
 \nabla J(\mathbf{w}) &amp; = \nabla \frac{1}{2}[U_t - \hat{v}(S_t, \mathbf{w})]^2 \newline
                      &amp; = (U_t - \hat{v}(S_t, \mathbf{w})) (\nabla U_t - \nabla \hat{v}(S_t, \mathbf{w})) \\
                      &amp; \ne - (U_t - \hat{v}(S_t, \mathbf{w})) \nabla \hat{v}(S_t, \mathbf{w}) \quad \text{unless} \quad \nabla  U_t = 0
 \end{align*}
-\tag{9}\]</span></span></p>
+\tag{9}</span></span></p>
 <ul>
 <li>but for TD we have:</li>
 </ul>
-<p><span id="eq-td-grad-ut"><span class="math display">\[
+<p><span id="eq-td-grad-ut"><span class="math display">
 \begin{align*}
 \nabla U_t = &amp; = \nabla (R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})) \newline
             &amp; = \gamma \nabla \hat{v}(S_{t+1}, \mathbf{w}) \newline
             &amp; \ne 0
 \end{align*}
-\tag{10}\]</span></span></p>
+\tag{10}</span></span></p>
 <ul>
 <li>So the TD-update isn’t a true gradient update. However TD often converge in many cases we care updates.</li>
 </ul>
@@ -929,11 +946,11 @@ U_t \dot=R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-The Semi-gradient TD(0) algorithm for estimating <span class="math inline">\(v_\pi\)</span>
+The Semi-gradient TD(0) algorithm for estimating <span class="math inline">v_\pi</span>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-td-zero" class="pseudocode-container quarto-float" data-comment-delimiter="#" data-caption-prefix="Algorithm" data-line-number-punc=":" data-no-end="false" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="2">
+<div id="alg-td-zero" class="pseudocode-container quarto-float" data-line-number="true" data-no-end="false" data-pseudocode-number="2" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number-punc=":" data-comment-delimiter="#">
 <div class="pseudocode">
 \begin{algorithm} \caption{Semi-gradient TD(0) for estimating $v_\pi$}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$ \State Algorithm parameters: \State $\qquad \alpha \in (0, 1]$ step size \State $\qquad \gamma \in [0, 1]$ discount factor \State Initialize: \State $\qquad value function weights w \leftarrow x \in \mathbb{R}^d \quad \forall s \in \mathcal{S}$ (e.g. w=0) \FORALL {episode $e$:} \State $Initialize S$ \FORALL {step $S \in e$:} \State $\text{Choose } A \sim \pi(\cdot \mid S)$ \State Take action $A$, observe $R, S'$ \State $w \leftarrow w + \alpha [R + \gamma \hat{v}(S', \mathbf{w}) - \hat{v}(S, \mathbf{w})] \nabla \hat{v}(S, \mathbf{w})$ \State $S \leftarrow S'$ \State until $S$ is terminal \ENDFOR \ENDFOR \end{algorithmic} \end{algorithm}
 </div>
@@ -1018,9 +1035,9 @@ Figure&nbsp;9: Options are a temporal generalization
 </ul></li>
 <li>Options consists of
 <ul>
-<li>an initiation set <span class="math inline">\(\iota_\omega(s)\)</span> the precondition which is a probability of starting the option in state <span class="math inline">\(s\)</span>.</li>
-<li>a policy <span class="math inline">\(\pi_\omega(a\mid s)\)</span> that is executed in the option</li>
-<li>a termination condition <span class="math inline">\(\beta_\omega(s)\)</span>. the termination condition is a probability of terminating the option in state <span class="math inline">\(s\)</span>.</li>
+<li>an initiation set <span class="math inline">\iota_\omega(s)</span> the precondition which is a probability of starting the option in state <span class="math inline">s</span>.</li>
+<li>a policy <span class="math inline">\pi_\omega(a\mid s)</span> that is executed in the option</li>
+<li>a termination condition <span class="math inline">\beta_\omega(s)</span>. the termination condition is a probability of terminating the option in state <span class="math inline">s</span>.</li>
 </ul></li>
 <li>Options are “chunks of behavior” that can be executed over an extended period of time.</li>
 <li>The model will need to learn options and work with them.</li>
@@ -1089,22 +1106,22 @@ Learning Objectives
 <li>The TD-update with linear function approximation is a way to update the weights of the value function using the TD-error.</li>
 <li>The TD-update with linear function approximation works as follows:
 <ul>
-<li>Compute the TD-error <span class="math inline">\(\delta\)</span> as the difference between the one-step bootstrapped return and the approximate value of the next state.</li>
-<li>Update the weights <span class="math inline">\(\mathbf{w}\)</span> in the direction of the TD-error.</li>
+<li>Compute the TD-error <span class="math inline">\delta</span> as the difference between the one-step bootstrapped return and the approximate value of the next state.</li>
+<li>Update the weights <span class="math inline">\mathbf{w}</span> in the direction of the TD-error.</li>
 </ul></li>
 </ul>
 <p>recall the TD-update rule:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \delta \dot= R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w}) - \hat{v}(S_t, \mathbf{w}) \\
 w \leftarrow w + \alpha \delta_t \nabla \hat{v}(S_t, \mathbf{w})
-\]</span> in the linear case we can write the value function as:</p>
-<p><span class="math display">\[
+</span> in the linear case we can write the value function as:</p>
+<p><span class="math display">
 \hat{v}(S_t, \mathbf{w}) \dot = \sum \mathbf{w}^T \mathbf{x}(S_t) \\
 \nabla \hat{v}(S_t, \mathbf{w}) = \mathbf{x}(S_t)
-\]</span></p>
-<p><span class="math display">\[
+</span></p>
+<p><span class="math display">
 w \leftarrow w + \alpha \delta_t \mathbf{x}(S_t)
-\]</span></p>
+</span></p>
 </section>
 <section id="sec-l4g2" class="level2">
 <h2 class="anchored" data-anchor-id="sec-l4g2">Tabular TD(0) is a special case of linear semi-gradient TD(0)</h2>
@@ -1131,54 +1148,54 @@ w \leftarrow w + \alpha \delta_t \mathbf{x}(S_t)
 </section>
 <section id="sec-l4g5" class="level2">
 <h2 class="anchored" data-anchor-id="sec-l4g5">The fixed point of linear TD learning</h2>
-<p><span class="math display">\[
+<p><span class="math display">
 w_{t+1} \dot= w_t + \alpha [R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w}) - \hat{v}(S_t, \mathbf{w})] \nabla \hat{v}(S_t, \mathbf{w})
-\]</span> recall that in the linear case we defined the approximate value function as:</p>
-<p><span class="math display">\[
+</span> recall that in the linear case we defined the approximate value function as:</p>
+<p><span class="math display">
 \hat{v}(S_{t+1}, \mathbf{w}) \cdot=  \mathbf{w}^T \mathbf{x}(S_{t+1})
-\]</span> with :</p>
+</span> with :</p>
 <ul>
-<li><span class="math inline">\(\mathbf{w}\)</span> the weights of the value function</li>
-<li><span class="math inline">\(\mathbf{x}(S_{t+1})\)</span> the features of the next state</li>
+<li><span class="math inline">\mathbf{w}</span> the weights of the value function</li>
+<li><span class="math inline">\mathbf{x}(S_{t+1})</span> the features of the next state</li>
 </ul>
 <p>using this definition we can write the update rule as:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \begin{align*}
 w_{t+1} &amp; = w_t + \alpha [R_{t+1} + \gamma \mathbf{w}^T \mathbf{x}_{t+1} - \mathbf{w}^T \mathbf{x}] \mathbf{x}_t \newline
         &amp;=  w_t + \alpha [R_{t+1} \mathbf{x}_t -  \mathbf{x}_t( \mathbf{x}_t - \gamma \mathbf{x_{t+1}})^T \mathbf{w_t}] \newline
 \end{align*}
-\]</span></p>
+</span></p>
 <p>let us now consider what this update looks like in expectation:</p>
 <p>we can think about it as an expected update plus a noise term but the noise term is dominated by the behaviour of the expected update.</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \mathbb{E}[\Delta w_{t}]  = \alpha(b-Aw_t)
-\]</span> where:</p>
+</span> where:</p>
 <ul>
-<li><span class="math inline">\(b = \mathbb{E}[R_{t+1} \mathbf{x}_t]\)</span> - expectation over the features and the rewards</li>
-<li><span class="math inline">\(A = \mathbb{E}[\mathbf{x}_t( \mathbf{x}_t - \gamma \mathbf{x_{t+1}})^T]\)</span> - an expectation over the rewards</li>
+<li><span class="math inline">b = \mathbb{E}[R_{t+1} \mathbf{x}_t]</span> - expectation over the features and the rewards</li>
+<li><span class="math inline">A = \mathbb{E}[\mathbf{x}_t( \mathbf{x}_t - \gamma \mathbf{x_{t+1}})^T]</span> - an expectation over the rewards</li>
 </ul>
 <p>note: this is a linear system of equations that looks like a <strong>linear regression problem</strong>.</p>
 <p>when the weights do not change we have a fixed point:</p>
-<p><span id="eq-fixed-point"><span class="math display">\[
+<p><span id="eq-fixed-point"><span class="math display">
 \begin{align*}
 \mathbb{E}[\Delta w_{TD}] &amp; = \alpha(b-Aw_{TD}) = 0 \newline
 \implies &amp; w_{TD} = A^{-1}b
 \end{align*}
-\tag{11}\]</span></span> more generally <span class="math inline">\(w_{TD}\)</span> is the solution to this equation and we could show that it minimises</p>
-<p><span id="eq-min-lin-td"><span class="math display">\[
+\tag{11}</span></span> more generally <span class="math inline">w_{TD}</span> is the solution to this equation and we could show that it minimises</p>
+<p><span id="eq-min-lin-td"><span class="math display">
 (b-Aw)^T(b-Aw)
-\tag{12}\]</span></span></p>
+\tag{12}</span></span></p>
 <p>this is related to Bellman equations via the projected Bellman error.</p>
 </section>
 <section id="sec-l4g6" class="level2">
 <h2 class="anchored" data-anchor-id="sec-l4g6">Theoretical guarantee on the mean squared value error at the TD fixed point</h2>
-<p><span id="eq-td-fixed-point-and-minimum-ve"><span class="math display">\[
+<p><span id="eq-td-fixed-point-and-minimum-ve"><span class="math display">
 \overline{VE}(w_{TD}) \leq \frac{1}{1-\gamma} \min_{w} \overline{VE}(w)
-\tag{13}\]</span></span></p>
+\tag{13}</span></span></p>
 <ul>
-<li>if <span class="math inline">\(\gamma \approx 1\)</span> then the mean squared value error at the TD fixed point can be large</li>
-<li>if <span class="math inline">\(\gamma \approx 0\)</span> then the mean squared value error at the TD fixed point can be small</li>
-<li>if the features representation is good then the two will be equal regardless of <span class="math inline">\(\gamma\)</span>. since both will be almost zero.</li>
+<li>if <span class="math inline">\gamma \approx 1</span> then the mean squared value error at the TD fixed point can be large</li>
+<li>if <span class="math inline">\gamma \approx 0</span> then the mean squared value error at the TD fixed point can be small</li>
+<li>if the features representation is good then the two will be equal regardless of <span class="math inline">\gamma</span>. since both will be almost zero.</li>
 </ul>
 </section>
 <section id="sec-l4g7" class="level2">
@@ -1217,6 +1234,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -1285,9 +1446,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
     clipboardModal.on('success', onCopySuccess);
   }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -1301,6 +1513,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         if (link.dataset.originalHref !== undefined) {
           link.href = link.dataset.originalHref;
         }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
       }
     }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {

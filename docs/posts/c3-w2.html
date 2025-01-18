@@ -7,10 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Oren Bochman">
-<meta name="dcterms.date" content="2024-04-02">
 <meta name="keywords" content="neural networks, feature construction, tile coding, coarse coding, feed-forward architecture, activation functions, deep networks, gradient, online setting, offline setting, representation">
 
-<title>Constructing Features for Prediction – rl-notes</title>
+<title>Constructing Features for Prediction – Notes on Reinfocement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -33,15 +32,18 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d58cf0c17c84c672bbe6415fb2b2bd7c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-594d21605a7b9fb32547fedacd8fc358.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-d396125c57f3f0defba792e7b0e7a5dc.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -96,8 +98,22 @@ MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -137,7 +153,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">rl-notes</span>
+    <span class="navbar-title">Notes on Reinfocement Learning</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -163,6 +179,7 @@ window.Quarto = {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -194,7 +211,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">April 2, 2024</p>
+        <p class="date">Tuesday, April 2, 2024</p>
       </div>
     </div>
     
@@ -293,7 +310,7 @@ Learning Objectives
 <p><img src="img/rl-coding_states.png" class="img-fluid figure-img"></p>
 <figcaption>approximation</figcaption>
 </figure>
-</div></div><p>Recall that linear function approximation are paramertized by a weight vector <span class="math inline">\(\mathbf{w}\)</span> and a feature vector <span class="math inline">\(\mathbf{x}(s)\)</span>.</p>
+</div></div><p>Recall that linear function approximation are paramertized by a weight vector <span class="math inline">\mathbf{w}</span> and a feature vector <span class="math inline">\mathbf{x}(s)</span>.</p>
 <p>As we saw in the previous unit tabular representations associates one feature per state, this is called a one-hot encoding of the state space.</p>
 
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
@@ -301,7 +318,7 @@ Learning Objectives
 <p><img src="img/rl-tabular_coding.png" class="img-fluid figure-img"></p>
 <figcaption>one hot coding</figcaption>
 </figure>
-</div></div><p>We associate one hot encoding with an indicator function <span class="math inline">\(\delta_{ij}(s)\)</span>. This is a very discriminative representation but it does generalize.</p>
+</div></div><p>We associate one hot encoding with an indicator function <span class="math inline">\delta_{ij}(s)</span>. This is a very discriminative representation but it does generalize.</p>
 
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -383,15 +400,15 @@ Learning Objectives
 <p>In the textbook we see two forms of features for linear methods that are not covered in the videos.</p>
 <p>The first are polynomials. We might use polynomials features for the state to represent the state space. This seems to be a good for problems where RL is dealing to a greater extent with interpolation or regression.</p>
 <p>The following is given as an example of a polynomial feature representation of the state space. It took a bit of time to understand what was going on here.</p>
-<p>They explain about the different combination of two features <span class="math inline">\(s_1\)</span> and <span class="math inline">\(s_2\)</span> doesn’t cover some edge cases but using four <span class="math inline">\((1,s_1,s_2,s_1s_2)\)</span> covers all the possible combinations of the two features. We might also want to include higher powers of the atoms and that is what the polynomial representation is doing.</p>
-<p><span class="math display">\[
+<p>They explain about the different combination of two features <span class="math inline">s_1</span> and <span class="math inline">s_2</span> doesn’t cover some edge cases but using four <span class="math inline">(1,s_1,s_2,s_1s_2)</span> covers all the possible combinations of the two features. We might also want to include higher powers of the atoms and that is what the polynomial representation is doing.</p>
+<p><span class="math display">
 x_i(s) = \prod_{j=1}^k s_j^{c_{ij}}
-\]</span></p>
-<p>It important to point out that we are not using the polynomials as a function approximation basis function. What we are talking about is a formulation of multinomial from a set of fixed numbers <span class="math inline">\(s_1 \lsots s_k\)</span> I.e. we are talking about all the possible products product from powers of these atoms.</p>
+</span></p>
+<p>It important to point out that we are not using the polynomials as a function approximation basis function. What we are talking about is a formulation of multinomial from a set of fixed numbers <span class="math inline">s_1 \lsots s_k</span> I.e. we are talking about all the possible products product from powers of these atoms.</p>
 <p>The second are Fourier bases.</p>
-<p><span class="math display">\[
+<p><span class="math display">
 x_i(s) = \cos\left(\frac{2\pi s^T a_i}{b}\right)
-\]</span></p>
+</span></p>
 <p>The book mentions that the Fourier basis is particularly useful for periodic functions.</p>
 <p>There are many other orthogonal bases used as functnio expansions that could be used, as features for linear function approximation.</p>
 <ul>
@@ -411,13 +428,13 @@ is a real-valued function whose value depends only on the distance between the i
 </dd>
 </dl>
 <p>Visualizing - Imagine a hill or bump centered at a specific point. The height of the hill at any other point depends solely on its distance from the center. The hill gets flatter as you move away from the cente</p>
-<div class="page-columns page-full"><p> <span class="math display">\[
+<div class="page-columns page-full"><p> <span class="math display">
 x_i(s) = \exp\left(-\frac{\|s-c_i\|^2}{2\sigma_i^2}\right)
-\]</span></p><div class="no-row-height column-margin column-container"><img src="rl-radial-basis-functions.png" class="img-fluid" alt="one dimensional radial basis functions"></div></div>
+</span></p><div class="no-row-height column-margin column-container"><img src="rl-radial-basis-functions.png" class="img-fluid" alt="one dimensional radial basis functions"></div></div>
 <ul>
 <li>Where</li>
-<li><span class="math inline">\(c_i\)</span> is the center of the radial basis function and</li>
-<li><span class="math inline">\(\sigma_i\)</span> is the width.</li>
+<li><span class="math inline">c_i</span> is the center of the radial basis function and</li>
+<li><span class="math inline">\sigma_i</span> is the width.</li>
 </ul>
 <p>This is a form of coarse coding where the features are the distance from a set of centers. This is a more general representation than tile coding but less discriminative. The advantage of RBFs over tiles is that they are approximate functions that vary smoothly and are differentiable. However it appears there is both a computational cost and no real advantage in having continuous/differential features according to the book.</p>
 <div id="cell-fig-radial-basis-functions" class="cell page-columns page-full" data-fig.height="3" data-fig.width="3" data-execution_count="1">
@@ -462,7 +479,7 @@ Learning Objectives
 </div>
 <section id="what-is-a-neural-network-video" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-a-neural-network-video">What is a Neural Network? (Video)</h2>
-<p>In this video, Martha White introduces the concept of a neural network. We look at a simple one layer feed forward neural network. Where the <span class="math inline">\(output=f(sW)\)</span> is a non-linear function of the input.</p>
+<p>In this video, Martha White introduces the concept of a neural network. We look at a simple one layer feed forward neural network. Where the <span class="math inline">output=f(sW)</span> is a non-linear function of the input.</p>
 </section>
 <section id="sec-l2g1" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="sec-l2g1">Define a neural network</h2>
@@ -482,19 +499,19 @@ Learning Objectives
 <section id="neural-networks-mechanics" class="level2">
 <h2 class="anchored" data-anchor-id="neural-networks-mechanics">Neural Networks Mechanics</h2>
 <p>A node in the network is a function</p>
-<p><span class="math display">\[
+<p><span class="math display">
 output = f[(w_1 \times input_1) + (w_2 \times input_2) + \ldots + (w_n \times input_n) + b]
-\]</span></p>
+</span></p>
 <ul>
 <li>where:
 <ul>
-<li><span class="math inline">\(w_i\)</span> are the weights,</li>
-<li><span class="math inline">\(input_i\)</span> are the inputs, and</li>
-<li><span class="math inline">\(b\)</span> is the bias.</li>
-<li><span class="math inline">\(f\)</span> is the activation function.</li>
+<li><span class="math inline">w_i</span> are the weights,</li>
+<li><span class="math inline">input_i</span> are the inputs, and</li>
+<li><span class="math inline">b</span> is the bias.</li>
+<li><span class="math inline">f</span> is the activation function.</li>
 </ul></li>
 </ul>
-<p>The sum of the product of the weights and inputs is a linear operation. The activation function <span class="math inline">\(f\)</span> is where a non-linearity is introduced into the network.</p>
+<p>The sum of the product of the weights and inputs is a linear operation. The activation function <span class="math inline">f</span> is where a non-linearity is introduced into the network.</p>
 </section>
 <section id="sec-l2g2" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="sec-l2g2">Define activation functions</h2>
@@ -553,9 +570,9 @@ output = f[(w_1 \times input_1) + (w_2 \times input_2) + \ldots + (w_n \times in
 </div></div>
 <p>We construct a non-linear function of the state using a neural network.</p>
 <p>recall A node takes the form</p>
-<p><span class="math display">\[
+<p><span class="math display">
 output = f[(w_1 \times input_1) + \ldots + (w_n \times input_n) + b]
-\]</span></p>
+</span></p>
 <p>We call this output of the node a feature! We can see that these features are a non-linear function of the inputs. We repeat this process until we evaluate all the nodes of the final layer. And the output of this final layer is called the representation.</p>
 <p>Note: This is not very different from tile coding where we pass input to a tile coder and get back a new representation of the state.</p>
 <p>In both cases we are constructing a non-linear mapping of the input of the features. And we take a nonlinear function of the representation to form the output - a nonlinear approximation of the state.</p>
@@ -634,94 +651,94 @@ Discussion prompt
 <div class="no-row-height column-margin column-container"><div class="">
 <p><img src="nn-notation.png" class="img-fluid"></p>
 </div></div><p>If we use the square error loss then</p>
-<p><span id="eq-loss"><span class="math display">\[
+<p><span id="eq-loss"><span class="math display">
 L(\hat y_k,y_k) = (\hat y_k-y_k)^2 \qquad
-\tag{1}\]</span></span></p>
-<p><span class="math display">\[
+\tag{1}</span></span></p>
+<p><span class="math display">
 A = A −αδ^As
-\]</span></p>
-<p><span class="math display">\[
+</span></p>
+<p><span class="math display">
 B = B −αδ^Bx
-\]</span></p>
-<p>Let’s start at the output of the network and work backwards. Recall: <span class="math display">\[
+</span></p>
+<p>Let’s start at the output of the network and work backwards. Recall: <span class="math display">
 x = f_A(sA)
-\]</span></p>
-<p><span class="math display">\[
+</span></p>
+<p><span class="math display">
 \hat{y} = f_B(xB)
-\]</span></p>
+</span></p>
 <p>We start by taking the partial derivative of the loss function with respect to the first set of weights B.</p>
-<p>We use the chain rule given the derivative of L with respect to <span class="math inline">\(\hat{Y} \times \frac{∂\hat{y}}{∂B}\)</span>. The next step is again to use the chain rule for this derivative.</p>
-<p><span class="math display">\[
+<p>We use the chain rule given the derivative of L with respect to <span class="math inline">\hat{Y} \times \frac{∂\hat{y}}{∂B}</span>. The next step is again to use the chain rule for this derivative.</p>
+<p><span class="math display">
 \frac{∂L(\hat{y}_k,y_k)}{∂B_{jk}} = \frac {∂L(\hat{y}_k,y_k)}{∂\hat{y}_k} \frac{∂\hat{y}_k}{∂B_{jk}}
-\]</span></p>
+</span></p>
 <p>let’s introduce a new variable, θ where θ is the output of the hidden layer times the last set of weights.</p>
-<p><span class="math display">\[
+<p><span class="math display">
 θ \dot = xB
-\]</span></p>
+</span></p>
 <p>Thus</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \hat y \dot = f_B(θ)
-\]</span></p>
+</span></p>
 <p>Rewriting we have:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \frac{∂L(\hat{y}_k,y_k)}{∂B_{jk}} = \frac {∂L(\hat{y}_k,y_k)}{∂\hat{y}_k} \frac{∂f_B(\theta_k)}{∂\theta} \frac{∂\theta_k}{∂B_{jk}}
-\]</span></p>
+</span></p>
 <p>and since</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \frac{∂\theta_k}{∂B_{jk}} = x_j
-\]</span></p>
-<p><span class="math display">\[
+</span></p>
+<p><span class="math display">
 \frac{∂L(\hat{y}_k,y_k)}{∂B_{jk}} = \frac {∂L(\hat{y}_k,y_k)}{∂\hat{y}_k} \frac{∂f_B(\theta_k)}{∂\theta} x_j
-\]</span></p>
+</span></p>
 <p>now that we calculated the gradient for the last layer we can move to the previous layer.</p>
 <p>we use</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \Psi \dot =  sA
-\]</span></p>
+</span></p>
 <p>and</p>
-<p><span class="math display">\[
+<p><span class="math display">
 x \dot = f_A(\Psi)
-\]</span></p>
-<p><span class="math display">\[
+</span></p>
+<p><span class="math display">
 \begin{aligned}
 \frac{∂L(\hat{y}_k,y_k)}{∂A_{ij}} &amp;= \delta_k^B \frac {∂\theta_k}{∂A_{ij}} \newline
 &amp; = \delta_k^B B_{jk} \frac {∂x_j}{∂A_{ij}} \newline
   &amp; = \delta_k^B B_{jk} \frac {∂f_A(\Psi_j)}{∂\Psi_j} \frac {∂\Psi_j}{∂A_{ij}}
 \end{aligned}
-\]</span></p>
+</span></p>
 <p>since</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \frac {∂\Psi_j}{∂A_{ij}} = s_{ij}
-\]</span></p>
+</span></p>
 <p>we have</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \frac{∂L(\hat{y}_k,y_k)}{∂A_{ij}} = \delta_k^B B_{jk} \frac {∂f_A(\Psi_j)}{∂\Psi_j} s_{ij}
-\]</span></p>
-<p>We can clean up this derivative by again, defining a term <span class="math inline">\(δ_A\)</span>.</p>
-<p><span class="math display">\[
+</span></p>
+<p>We can clean up this derivative by again, defining a term <span class="math inline">δ_A</span>.</p>
+<p><span class="math display">
 δ^A_j = (B_{jk}δ^B_k ) \frac{∂f_A(ψ_j)}{∂ψ_j}
-\]</span></p>
+</span></p>
 <p>The final result will be:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \frac{∂L(\hat{y}_k,y_k)}{∂A_{ij}}= δ^A_j s_i
-\]</span></p>
+</span></p>
 <p>Obtaining as a final result for both gradients the next expressions</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \frac {∂L(\hat{y}_k,y_k)}{∂B_{jk}} = δ^B_k x_j
-\]</span></p>
+</span></p>
 </section>
 <section id="sec-l3g1" class="level2">
 <h2 class="anchored" data-anchor-id="sec-l3g1">Computing the Gradient for a Single Hidden Layer Neural Network</h2>
 <p>Let’s summerize the results:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 \frac {∂L(\hat{y}_k,y_k)}{∂B_{jk}} = δ^B_k x_j \qquad
 \frac{∂L(\hat{y}_k,y_k)}{∂A_{ij}}= δ^A_j s_i
-\]</span></p>
+</span></p>
 <p>where:</p>
-<p><span class="math display">\[
+<p><span class="math display">
 δ^B_k = \frac {∂L(\hat{y}_k,y_k)}{∂\hat{y}_k} \frac{∂f_B(\theta_k)}{∂\theta} \qquad
 δ^A_j = (B_{jk}δ^B_k ) \frac{∂f_A(ψ_j)}{∂ψ_j}
-\]</span></p>
+</span></p>
 </section>
 <section id="sec-l3g2" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="sec-l3g2">Computing the Gradient for Arbitrarily Deep Networks</h2>
@@ -747,13 +764,13 @@ Figure&nbsp;3: Gradient Descent Pseudo-code for RELU
 </div></div>
 <p>Now that we have estimated the gradient for a hidden layer neural network. We can use it to learn to optimize the weights of the network by updating the weights to minimize the error in the loss function in the direction of the negative gradient.</p>
 <p>The <a href="#fig-gradient-descent-pseudo-code">pseudocode in the figure</a> outlines how to implementing the backprop algorithm with Stochastic gradient descent.</p>
-<p>For each data point s, y in our dataset, we first get our prediction <span class="math inline">\(\hat{y}\)</span> from the network. This is the forward pass. Then we can estimate the loss using the actual value <span class="math inline">\(y\)</span></p>
-<p>Next we compute the gradients starting from the output. We first compute <span class="math inline">\(δ^B\)</span> and the gradient for <span class="math inline">\(B\)</span>, then we use this gradient to update the parameters <span class="math inline">\(B\)</span>, with the step size <span class="math inline">\(α_B\)</span> for the last layer.</p>
-<p>Next, we update the parameters <span class="math inline">\(A\)</span>. We compute <span class="math inline">\(δ^A\)</span> which reuses <span class="math inline">\(δ^B\)</span>.</p>
-<p>Notice, that by computing the gradients of the end of the network first, we avoid recomputing the same terms for A, that were already computed for <span class="math inline">\(δB\)</span>. We then compute the gradient for A and update A with this gradient using step size <span class="math inline">\(α_A\)</span>.</p>
+<p>For each data point s, y in our dataset, we first get our prediction <span class="math inline">\hat{y}</span> from the network. This is the forward pass. Then we can estimate the loss using the actual value <span class="math inline">y</span></p>
+<p>Next we compute the gradients starting from the output. We first compute <span class="math inline">δ^B</span> and the gradient for <span class="math inline">B</span>, then we use this gradient to update the parameters <span class="math inline">B</span>, with the step size <span class="math inline">α_B</span> for the last layer.</p>
+<p>Next, we update the parameters <span class="math inline">A</span>. We compute <span class="math inline">δ^A</span> which reuses <span class="math inline">δ^B</span>.</p>
+<p>Notice, that by computing the gradients of the end of the network first, we avoid recomputing the same terms for A, that were already computed for <span class="math inline">δB</span>. We then compute the gradient for A and update A with this gradient using step size <span class="math inline">α_A</span>.</p>
 <hr>
 <p>Next we look at how we adapt the <a href="#fig-fig-gradient-descent-RELU">pseudocode</a> to work with the ReLU activation on the hidden layer and a linear unit for the output.</p>
-<p>First, we compute the error for the output layer, then we compute the derivative of the ReLU units with respect to <span class="math inline">\(\Psi\)</span>, and finally, we use the aerial signal from the output layer along with you to compute the air signal for the hidden layer, the rest remains the same</p>
+<p>First, we compute the error for the output layer, then we compute the derivative of the ReLU units with respect to <span class="math inline">\Psi</span>, and finally, we use the aerial signal from the output layer along with you to compute the air signal for the hidden layer, the rest remains the same</p>
 </section>
 <section id="optimization-strategies-for-nns-video" class="level2">
 <h2 class="anchored" data-anchor-id="optimization-strategies-for-nns-video">Optimization Strategies for NNs (Video)</h2>
@@ -771,23 +788,23 @@ Figure&nbsp;3: Gradient Descent Pseudo-code for RELU
 </section>
 <section id="sec-l3g4" class="level2">
 <h2 class="anchored" data-anchor-id="sec-l3g4">Strategies for Initializing Neural Networks</h2>
-<p><span class="math display">\[
+<p><span class="math display">
 W_{init} ~ N(0,1)
-\]</span></p>
-<p><span class="math display">\[
+</span></p>
+<p><span class="math display">
 W_{init} ~ \frac{N(0,1)}{\sqrt{n_{in}}}
-\]</span></p>
+</span></p>
 </section>
 <section id="sec-l3g5" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="sec-l3g5">Optimization Techniques for Training Neural Networks</h2>
 <ul>
-<li>momentum update AKA heavy ball method <span class="math display">\[
+<li>momentum update AKA heavy ball method <span class="math display">
 W_{t+1} ← W_t −α∇_wL(W_t) + λM_t
-\]</span></li>
+</span></li>
 </ul>
-<p><span class="math display">\[
+<p><span class="math display">
 M_{t+1} = λM_t −α∇_wL
-\]</span></p>
+</span></p>
 <p>vector step size adaptation</p>
 <ul>
 <li>separate step size for each weight</li>
@@ -819,6 +836,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -887,9 +1048,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
     clipboardModal.on('success', onCopySuccess);
   }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -903,6 +1115,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         if (link.dataset.originalHref !== undefined) {
           link.href = link.dataset.originalHref;
         }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
       }
     }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {

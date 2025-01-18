@@ -7,10 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Oren Bochman">
-<meta name="dcterms.date" content="2024-04-02">
 <meta name="keywords" content="reinforcement learning, neural networks, feature construction, tile coding, coarse coding, feed-forward architecture, fourier basis functions, radial basis functions, gradient rl algorithms, 1000 step Random Walk, Gymnasium Environment, Einstein Tiling">
 
-<title>Constructing Features for Prediction – rl-notes</title>
+<title>Constructing Features for Prediction – Notes on Reinfocement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -67,15 +66,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d58cf0c17c84c672bbe6415fb2b2bd7c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-594d21605a7b9fb32547fedacd8fc358.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-d396125c57f3f0defba792e7b0e7a5dc.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -142,7 +144,7 @@ MathJax = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">rl-notes</span>
+    <span class="navbar-title">Notes on Reinfocement Learning</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -168,6 +170,7 @@ MathJax = {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -176,7 +179,7 @@ MathJax = {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Constructing Features for Prediction</h1>
+      <div class="quarto-title-block"><div><h1 class="title">Constructing Features for Prediction</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li></ul></div></div>
             <p class="subtitle lead">Prediction and Control with Function Approximation</p>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Coursera</div>
@@ -199,7 +202,7 @@ MathJax = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">April 2, 2024</p>
+        <p class="date">Tuesday, April 2, 2024</p>
       </div>
     </div>
     
@@ -329,7 +332,9 @@ Learning Objectives
 <section id="the-1000-step-random-walk-environment" class="level2">
 <h2 class="anchored" data-anchor-id="the-1000-step-random-walk-environment">The 1000 Step Random Walk Environment</h2>
 <p>In this lesson we implement the 1000 Random Walk example as an environment. This is good to demonstrate how to construct features for linear methods. We will use tile coding and coarse coding to create features for the Random Walk 1000 environment.</p>
-<div id="003ad8eb" class="cell" data-execution_count="1">
+<div id="6655d173" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gymnasium <span class="im">as</span> gym</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gymnasium <span class="im">import</span> spaces</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -413,8 +418,11 @@ Learning Objectives
 <span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
 <span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
-<div id="9bf9c829" class="cell" data-execution_count="2">
+<div id="578e007e" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#import gymnasium as gym</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#from random_walk_gym import RandomWalk1000</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -433,15 +441,17 @@ Learning Objectives
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>env.close()</span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>plot_trajectory(env.trajectory, num_states<span class="op">=</span>env.num_states)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>State: 420, Reward: 0, Terminated: False
-State: 374, Reward: 0, Terminated: False
-State: 293, Reward: 0, Terminated: False
-State: 233, Reward: 0, Terminated: False
-State: 194, Reward: 0, Terminated: False
-State: 162, Reward: 0, Terminated: False
-State: 62, Reward: 0, Terminated: False
-State: 47, Reward: 0, Terminated: False
+State: 410, Reward: 0, Terminated: False
+State: 363, Reward: 0, Terminated: False
+State: 321, Reward: 0, Terminated: False
+State: 235, Reward: 0, Terminated: False
+State: 139, Reward: 0, Terminated: False
+State: 128, Reward: 0, Terminated: False
+State: 83, Reward: 0, Terminated: False
+State: 44, Reward: 0, Terminated: False
 State: 1, Reward: -1, Terminated: True</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -452,7 +462,9 @@ State: 1, Reward: -1, Terminated: True</code></pre>
 </div>
 </div>
 </div>
-<div id="08a554cb" class="cell" data-execution_count="3">
+<div id="d3f83acb" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>env <span class="op">=</span> RandomWalk1000(num_states<span class="op">=</span><span class="dv">1000</span>, neighborhood_size<span class="op">=</span><span class="dv">100</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>obs, info <span class="op">=</span> env.reset()</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>terminated <span class="op">=</span> <span class="va">False</span></span>
@@ -464,88 +476,79 @@ State: 1, Reward: -1, Terminated: True</code></pre>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'</span><span class="sc">{</span>obs<span class="op">=</span><span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>action<span class="op">=</span><span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>reward<span class="op">=</span><span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>terminated<span class="op">=</span><span class="sc">}</span><span class="ss">'</span>)</span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>plot_trajectory(env.trajectory, num_states<span class="op">=</span>env.num_states)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
-<pre><code>obs=436, action=0, reward=0, terminated=False
-obs=498, action=1, reward=0, terminated=False
-obs=457, action=0, reward=0, terminated=False
-obs=512, action=1, reward=0, terminated=False
-obs=459, action=0, reward=0, terminated=False
-obs=533, action=1, reward=0, terminated=False
-obs=487, action=0, reward=0, terminated=False
-obs=449, action=0, reward=0, terminated=False
-obs=542, action=1, reward=0, terminated=False
-obs=546, action=1, reward=0, terminated=False
+<pre><code>obs=582, action=1, reward=0, terminated=False
+obs=681, action=1, reward=0, terminated=False
+obs=670, action=0, reward=0, terminated=False
+obs=637, action=0, reward=0, terminated=False
+obs=676, action=1, reward=0, terminated=False
+obs=646, action=0, reward=0, terminated=False
+obs=560, action=0, reward=0, terminated=False
+obs=582, action=1, reward=0, terminated=False
 obs=632, action=1, reward=0, terminated=False
-obs=669, action=1, reward=0, terminated=False
-obs=724, action=1, reward=0, terminated=False
-obs=705, action=0, reward=0, terminated=False
-obs=622, action=0, reward=0, terminated=False
-obs=683, action=1, reward=0, terminated=False
-obs=585, action=0, reward=0, terminated=False
-obs=613, action=1, reward=0, terminated=False
-obs=623, action=1, reward=0, terminated=False
-obs=636, action=1, reward=0, terminated=False
-obs=562, action=0, reward=0, terminated=False
-obs=483, action=0, reward=0, terminated=False
-obs=458, action=0, reward=0, terminated=False
-obs=463, action=1, reward=0, terminated=False
-obs=399, action=0, reward=0, terminated=False
-obs=422, action=1, reward=0, terminated=False
-obs=489, action=1, reward=0, terminated=False
-obs=441, action=0, reward=0, terminated=False
-obs=452, action=1, reward=0, terminated=False
-obs=387, action=0, reward=0, terminated=False
-obs=386, action=0, reward=0, terminated=False
-obs=396, action=1, reward=0, terminated=False
-obs=415, action=1, reward=0, terminated=False
-obs=462, action=1, reward=0, terminated=False
-obs=374, action=0, reward=0, terminated=False
-obs=329, action=0, reward=0, terminated=False
-obs=393, action=1, reward=0, terminated=False
-obs=479, action=1, reward=0, terminated=False
-obs=381, action=0, reward=0, terminated=False
-obs=436, action=1, reward=0, terminated=False
-obs=508, action=1, reward=0, terminated=False
-obs=578, action=1, reward=0, terminated=False
-obs=599, action=1, reward=0, terminated=False
-obs=673, action=1, reward=0, terminated=False
-obs=706, action=1, reward=0, terminated=False
-obs=757, action=1, reward=0, terminated=False
-obs=719, action=0, reward=0, terminated=False
-obs=765, action=1, reward=0, terminated=False
-obs=751, action=0, reward=0, terminated=False
-obs=737, action=0, reward=0, terminated=False
-obs=742, action=1, reward=0, terminated=False
-obs=727, action=0, reward=0, terminated=False
-obs=696, action=0, reward=0, terminated=False
-obs=643, action=0, reward=0, terminated=False
-obs=562, action=0, reward=0, terminated=False
-obs=532, action=0, reward=0, terminated=False
-obs=553, action=1, reward=0, terminated=False
-obs=619, action=1, reward=0, terminated=False
-obs=639, action=1, reward=0, terminated=False
+obs=540, action=0, reward=0, terminated=False
+obs=517, action=0, reward=0, terminated=False
+obs=559, action=1, reward=0, terminated=False
+obs=646, action=1, reward=0, terminated=False
+obs=701, action=1, reward=0, terminated=False
+obs=713, action=1, reward=0, terminated=False
+obs=644, action=0, reward=0, terminated=False
 obs=707, action=1, reward=0, terminated=False
-obs=735, action=1, reward=0, terminated=False
-obs=793, action=1, reward=0, terminated=False
-obs=694, action=0, reward=0, terminated=False
-obs=663, action=0, reward=0, terminated=False
-obs=564, action=0, reward=0, terminated=False
-obs=616, action=1, reward=0, terminated=False
-obs=703, action=1, reward=0, terminated=False
-obs=688, action=0, reward=0, terminated=False
+obs=636, action=0, reward=0, terminated=False
+obs=696, action=1, reward=0, terminated=False
+obs=708, action=1, reward=0, terminated=False
+obs=611, action=0, reward=0, terminated=False
+obs=691, action=1, reward=0, terminated=False
+obs=762, action=1, reward=0, terminated=False
+obs=704, action=0, reward=0, terminated=False
+obs=706, action=1, reward=0, terminated=False
+obs=691, action=0, reward=0, terminated=False
+obs=757, action=1, reward=0, terminated=False
+obs=693, action=0, reward=0, terminated=False
+obs=786, action=1, reward=0, terminated=False
+obs=861, action=1, reward=0, terminated=False
+obs=874, action=1, reward=0, terminated=False
+obs=787, action=0, reward=0, terminated=False
+obs=800, action=1, reward=0, terminated=False
+obs=707, action=0, reward=0, terminated=False
+obs=784, action=1, reward=0, terminated=False
+obs=692, action=0, reward=0, terminated=False
+obs=706, action=1, reward=0, terminated=False
+obs=756, action=1, reward=0, terminated=False
+obs=768, action=1, reward=0, terminated=False
+obs=699, action=0, reward=0, terminated=False
+obs=789, action=1, reward=0, terminated=False
+obs=804, action=1, reward=0, terminated=False
+obs=855, action=1, reward=0, terminated=False
+obs=771, action=0, reward=0, terminated=False
+obs=747, action=0, reward=0, terminated=False
+obs=792, action=1, reward=0, terminated=False
+obs=710, action=0, reward=0, terminated=False
+obs=711, action=1, reward=0, terminated=False
+obs=742, action=1, reward=0, terminated=False
+obs=796, action=1, reward=0, terminated=False
+obs=812, action=1, reward=0, terminated=False
+obs=770, action=0, reward=0, terminated=False
+obs=847, action=1, reward=0, terminated=False
+obs=841, action=0, reward=0, terminated=False
+obs=780, action=0, reward=0, terminated=False
+obs=786, action=1, reward=0, terminated=False
+obs=836, action=1, reward=0, terminated=False
+obs=858, action=1, reward=0, terminated=False
+obs=843, action=0, reward=0, terminated=False
+obs=877, action=1, reward=0, terminated=False
+obs=836, action=0, reward=0, terminated=False
+obs=767, action=0, reward=0, terminated=False
+obs=701, action=0, reward=0, terminated=False
 obs=736, action=1, reward=0, terminated=False
+obs=683, action=0, reward=0, terminated=False
+obs=688, action=1, reward=0, terminated=False
 obs=787, action=1, reward=0, terminated=False
-obs=819, action=1, reward=0, terminated=False
-obs=760, action=0, reward=0, terminated=False
-obs=823, action=1, reward=0, terminated=False
-obs=733, action=0, reward=0, terminated=False
-obs=824, action=1, reward=0, terminated=False
-obs=761, action=0, reward=0, terminated=False
-obs=791, action=1, reward=0, terminated=False
-obs=863, action=1, reward=0, terminated=False
-obs=945, action=1, reward=0, terminated=False
-obs=988, action=1, reward=0, terminated=False
-obs=954, action=0, reward=0, terminated=False
+obs=858, action=1, reward=0, terminated=False
+obs=807, action=0, reward=0, terminated=False
+obs=896, action=1, reward=0, terminated=False
+obs=982, action=1, reward=0, terminated=False
 obs=1001, action=1, reward=1, terminated=True</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -557,7 +560,9 @@ obs=1001, action=1, reward=1, terminated=True</code></pre>
 </div>
 </div>
 <p>Lets simulate the random walk till success and plot its trajectory.</p>
-<div id="bc8251bd" class="cell" data-execution_count="4">
+<div id="16befd85" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>env <span class="op">=</span> RandomWalk1000(num_states<span class="op">=</span><span class="dv">1000</span>, neighborhood_size<span class="op">=</span><span class="dv">100</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>obs, info <span class="op">=</span> env.reset()</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>terminated <span class="op">=</span> <span class="va">False</span></span>
@@ -568,6 +573,7 @@ obs=1001, action=1, reward=1, terminated=True</code></pre>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>plot_trajectory(env.trajectory, num_states<span class="op">=</span>env.num_states)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -623,6 +629,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -691,9 +841,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
     clipboardModal.on('success', onCopySuccess);
   }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -707,6 +908,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         if (link.dataset.originalHref !== undefined) {
           link.href = link.dataset.originalHref;
         }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
       }
     }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {

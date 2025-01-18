@@ -6,11 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2024-03-03">
 <meta name="keywords" content="Temporal Difference Learning Methods, SARSA algorithm, Q-learning algorithm, Expected Sarsa algorithm">
 <meta name="description" content="This week, we will learn to using TD learning for control, as a generalized policy iteration strategy. We will see three different algorithms based on bootstrapping and Bellman equations for control: Sarsa, Q-learning and Expected Sarsa. We will see some of the differences between the methods for on-policy and off-policy control, and that Expected Sarsa is a unified algorithm for both.">
 
-<title>Temporal Difference Learning Methods for Control – rl-notes</title>
+<title>Temporal Difference Learning Methods for Control – Notes on Reinfocement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -33,15 +32,18 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d58cf0c17c84c672bbe6415fb2b2bd7c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-594d21605a7b9fb32547fedacd8fc358.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-d396125c57f3f0defba792e7b0e7a5dc.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script src="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -96,8 +98,22 @@ MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -137,7 +153,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">rl-notes</span>
+    <span class="navbar-title">Notes on Reinfocement Learning</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -163,6 +179,7 @@ window.Quarto = {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -193,7 +210,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">March 3, 2024</p>
+        <p class="date">Sunday, March 3, 2024</p>
       </div>
     </div>
     
@@ -255,7 +272,7 @@ window.Quarto = {
 <p>lets recap the Generalized Policy Iteration (GPI) algorithm:</p>
 <ul>
 <li><strong>Policy Evaluation</strong>: Update the value function V to be closer to the true value function of the current policy</li>
-<li><strong>Policy Improvement</strong>: Improve the policy <span class="math inline">\(\pi\)</span> based on the current value function V</li>
+<li><strong>Policy Improvement</strong>: Improve the policy <span class="math inline">\pi</span> based on the current value function V</li>
 <li><strong>Generalized Policy Iteration</strong>: Repeated steps of policy evaluation and policy improvement</li>
 <li>GPI does not require full evaluation of the value function, just an improvement can be used to update the policy.</li>
 <li>policy iteration
@@ -293,16 +310,16 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="sec-l1g2">Sarsa: On-policy TD Control</h2>
 <p>Next we consider how we can derive and use a similar approximate updating of the action-value function to learn the action-value function directly from experience.</p>
 <p>lets recap the Bellman equation for the action-value function:</p>
-<p><span id="eq-belman-action-value"><span class="math display">\[
+<p><span id="eq-belman-action-value"><span class="math display">
 \begin{aligned}
 q_\pi(s,a) &amp; \dot = \mathbb{E}_\pi[G_t | S_t = s, A_t = a] \qquad \newline
 &amp; = \sum_{s', r} p(s', r | s, a) [r + \gamma \sum_{a'}\pi(a' \mid s') q_\pi(s', a')] \qquad
 \end{aligned}
-\tag{1}\]</span></span></p>
+\tag{1}</span></span></p>
 <p>We can now use the same idea of bootstrapping to update the action-value function after each step. This is basis of Sarsa algorithm.</p>
-<p><span id="eq-sarsa-update"><span class="math display">\[
+<p><span id="eq-sarsa-update"><span class="math display">
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha [R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t)]
-\tag{2}\]</span></span></p>
+\tag{2}</span></span></p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -313,14 +330,14 @@ SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-sarsa" class="pseudocode-container quarto-float" data-pseudocode-number="1" data-comment-delimiter="#" data-line-number-punc=":" data-no-end="false" data-line-number="true" data-caption-prefix="Algorithm" data-indent-size="1.2em">
+<div id="alg-sarsa" class="pseudocode-container quarto-float" data-line-number="true" data-pseudocode-number="1" data-line-number-punc=":" data-indent-size="1.2em" data-no-end="false" data-comment-delimiter="#" data-caption-prefix="Algorithm">
 <div class="pseudocode">
 \begin{algorithm} \caption{SARSA($\alpha,\epsilon$)}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
 </div>
 </div>
 </div>
-<p>The SARSA algorithm is due to Rummery, Gavin Adrian, and Mahesan Niranjan. The name Sarsa is due to Rich Sutton and comes from the fact that the algorithm uses the tuple <span class="math inline">\((S_t, A_t, R_{t+1}, S_{t+1}, A_{t+1})\)</span> to update the action-value function. <span class="citation" data-cites="Rummery1994OnlineQU">[@Rummery1994OnlineQU]</span></p>
+<p>The SARSA algorithm is due to Rummery, Gavin Adrian, and Mahesan Niranjan. The name Sarsa is due to Rich Sutton and comes from the fact that the algorithm uses the tuple <span class="math inline">(S_t, A_t, R_{t+1}, S_{t+1}, A_{t+1})</span> to update the action-value function. <span class="citation" data-cites="Rummery1994OnlineQU">[@Rummery1994OnlineQU]</span></p>
 <p>SARSA is a sample-based algorithm to solve the Bellman equation for action-values. - It picks an action based on the current policy and then - It policy evaluation by a TD updates of Q the action-value function based on the reward and the next action. - Then it does a policy improvement.</p>
 </section>
 <section id="sec-l1g3" class="level2 page-columns page-full">
@@ -338,7 +355,7 @@ SARSA
 <h2 class="anchored" data-anchor-id="sec-l1g4">Performance of Learning Algorithms in an MDP</h2>
 <p>On the right side of the figure we see the performance of the learning algorithms in the windy grid world. We see that in this chart the Sarsa algorithm learns the optimal policy at Around step 7000 where the gradient becomes constant.</p>
 <p>Q. why is SARSA called an on-policy algorithm?</p>
-<p>this is because it learns by sampling from the policy induced by Q while following the same policy <span class="math inline">\(\pi\)</span>.</p>
+<p>this is because it learns by sampling from the policy induced by Q while following the same policy <span class="math inline">\pi</span>.</p>
 </section>
 <section id="lesson-2-off-policy-td-control-q-learning" class="level2">
 <h2 class="anchored" data-anchor-id="lesson-2-off-policy-td-control-q-learning">Lesson 2: Off-policy TD Control: Q-learning</h2>
@@ -355,16 +372,16 @@ SARSA
 </ul>
 </section>
 <p>lets recap the Bellman optimality equation for the action-value function:</p>
-<p><span id="eq-belman-optimality-action-value"><span class="math display">\[
+<p><span id="eq-belman-optimality-action-value"><span class="math display">
 \begin{aligned}
 q_{\star}(s,a) = \sum_{s', r} p(s', r | s, a) [r + \gamma \max_{a'} q_{\star}(s', a')]
 \end{aligned}
-\tag{3}\]</span></span></p>
+\tag{3}</span></span></p>
 <p>The following is an update rule for Q-learning:</p>
 <p>We can now use the same idea of bootstrapping to update the action-value function after each step. This is basis of Sarsa algorithm.</p>
-<p><span id="eq-q-learning-update"><span class="math display">\[
+<p><span id="eq-q-learning-update"><span class="math display">
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha [R_{t+1} + \gamma \max_a Q(S_{t+1}, a') - Q(S_t, A_t)]
-\tag{4}\]</span></span></p>
+\tag{4}</span></span></p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -375,7 +392,7 @@ Q-learning (off-policy TD control)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-q-learning" class="pseudocode-container quarto-float" data-pseudocode-number="2" data-comment-delimiter="#" data-line-number-punc=":" data-no-end="false" data-line-number="true" data-caption-prefix="Algorithm" data-indent-size="1.2em">
+<div id="alg-q-learning" class="pseudocode-container quarto-float" data-line-number="true" data-pseudocode-number="2" data-line-number-punc=":" data-indent-size="1.2em" data-no-end="false" data-comment-delimiter="#" data-caption-prefix="Algorithm">
 <div class="pseudocode">
 \begin{algorithm} \caption{Q-learning Off-policy TD control}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \For {each step of e} \State Choose A from $A_B(S)$ using any ergodic Behavioural policy $B$ - perhaps the $\epsilon$-greedy induced by Q. \State Take action A, observe R, S' \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \max_a Q(S',a) - Q(S, A)]$ \State $S \leftarrow S'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -396,15 +413,15 @@ The behavioral policy in Q-learning
 <p>Q-learning has a subtle issue I found confusing at first.</p>
 <p>Here I first state the issue:</p>
 <p>What is the behavioral policy we follow in these three td-learning algorithms when we sample the next action to follow?</p>
-<p>We are not writing here that Q function is <span class="math inline">\(Q_\pi\)</span> but the value functions are by definitions expectations under some policy. In these algorithms we keep updating the Q function using TD(0) updates. If we update the Q function in a sense that the best action changes at a given step then the updated function now uses a new policy. (In the case of Sarsa we can actually get a worse policy after the update.) I figured this out very quickly.</p>
+<p>We are not writing here that Q function is <span class="math inline">Q_\pi</span> but the value functions are by definitions expectations under some policy. In these algorithms we keep updating the Q function using TD(0) updates. If we update the Q function in a sense that the best action changes at a given step then the updated function now uses a new policy. (In the case of Sarsa we can actually get a worse policy after the update.) I figured this out very quickly.</p>
 <p>A fully specified Q-functions isn’t just defined by following a policy. It also <strong>induces a policy</strong>. This in generaly is a stochastic policy. But if we take the greedy action with arbitrary tie breaks we get one or more deterministic policies. So it seems that off policy algorithms like Q-learning and Expected Sarsa are following a sequence of policies that are induced by the Q function that is being learned.</p>
 <p>In general off policy learning may be using S,A,R sequences that have been sampled like we clearly did in MC. So the question which arises is can sample from any ergodic policy as our behavioral policy in these off-policy algorithms or are we supposed to learn from experience and sample using the policy induced by latest and greatest Q function that we are learning?</p>
 <p><strong>Luckily Martha White is very clear about this</strong>:</p>
 <ul>
-<li>The target policy is the easy part - we are targeting <span class="math inline">\(Q_{\pi_\star}\)</span>.</li>
+<li>The target policy is the easy part - we are targeting <span class="math inline">Q_{\pi_\star}</span>.</li>
 <li>The behavior policy is the policy can be any policy so long as it is ergodic.
 <ul>
-<li>Using an <span class="math inline">\(\epsilon\)</span>-greedy policy derived from Q is very logical choice but we could use any other policy.</li>
+<li>Using an <span class="math inline">\epsilon</span>-greedy policy derived from Q is very logical choice but we could use any other policy.</li>
 </ul></li>
 </ul>
 </div>
@@ -430,10 +447,10 @@ Do these algorithms converge?
 <li>It is an off-policy algorithm.</li>
 </ol>
 <ul>
-<li>The <strong>target policy</strong> is the easy part - we are targeting <span class="math inline">\(Q_{\pi_\star}\)</span>.</li>
+<li>The <strong>target policy</strong> is the easy part - we are targeting <span class="math inline">Q_{\pi_\star}</span>.</li>
 <li>The <strong>behavior policy</strong> is the policy that we are following but what is that ?
 <ul>
-<li>it is clearly not <span class="math inline">\(Q_{\pi_\star}\)</span> as we don’t know it yet.</li>
+<li>it is clearly not <span class="math inline">Q_{\pi_\star}</span> as we don’t know it yet.</li>
 <li>we initialized Q(s,a) arbitrarily - so we may have a uniform random policy.</li>
 <li>bu we actual have any random policy.
 <ul>
@@ -455,8 +472,8 @@ Do these algorithms converge?
 <li>When we select the action A’ what policy are we using ?</li>
 </ol>
 <ul>
-<li><p>we are clearly not using the policy that we are learning <span class="math inline">\(\pi_\star\)</span> - we dont know it yet.</p></li>
-<li><p>we are could use an <span class="math inline">\(\epsilon\)</span>-greedy policy by greedifying Q. this seems the most logical</p></li>
+<li><p>we are clearly not using the policy that we are learning <span class="math inline">\pi_\star</span> - we dont know it yet.</p></li>
+<li><p>we are could use an <span class="math inline">\epsilon</span>-greedy policy by greedifying Q. this seems the most logical</p></li>
 <li><p>but we could pretty much use any other policy.</p></li>
 <li><p>this is because Q-learning is an off-policy algorithm.</p></li>
 <li><p>the confusion arises because it is not clear what “any policy derived from Q” means in the algorithm.</p></li>
@@ -506,7 +523,7 @@ why can’t q-learning account for the consequences of exploration in its policy
 <li>the target policy is the optimal policy since the update rule approximates the Bellman optimality equation.</li>
 <li>the behavior policy is initially given updated at each step from the inital get updated a bit towards the optimal policy at each step.</li>
 </ul>
-<p>because it is learning <span class="math inline">\(\pi_*\)</span> (the optimal policy) but it samples a different policy.</p>
+<p>because it is learning <span class="math inline">\pi_*</span> (the optimal policy) but it samples a different policy.</p>
 <p>This is in contrast to Sarsa, which is an on-policy algorithm because it learns the policy that it follows.</p>
 </section>
 <section id="lesson-3-expected-sarsa" class="level2">
@@ -521,32 +538,32 @@ why can’t q-learning account for the consequences of exploration in its policy
 <li><label><input type="checkbox">Explain how Expected SARSA generalizes Q-learning <a href="#sec-l3g5">#</a></label></li>
 </ul>
 </section>
-<p><span class="math display">\[
+<p><span class="math display">
 \begin{aligned}
 Q(S_t, A_t) &amp; \leftarrow Q(S_t, A_t) + \alpha [R_{t+1} + \gamma \mathbb{E}[Q(S_{t+1}, A_{t+1})] - Q(S_t, A_t)] \newline
 &amp; \leftarrow Q(S_t, A_t) + \alpha [R_{t+1} + \gamma \sum_a \pi(a|S_{t+1}) \cdot Q(S_{t+1}, a) - Q(S_t, A_t)]
 \end{aligned}
-\]</span></p>
+</span></p>
 <section id="sec-l3g1" class="level3">
 <h3 class="anchored" data-anchor-id="sec-l3g1">Understanding Expected Sarsa</h3>
 <p>lets recap the Bellman equation for the action-value function:</p>
-<p><span id="eq-belman-action-value"><span class="math display">\[
+<p><span id="eq-belman-action-value"><span class="math display">
 \begin{aligned}
 q_\pi(s,a) &amp; \dot = \mathbb{E}_\pi[G_t | S_t = s, A_t = a] \qquad \newline
 &amp; = \sum_{s', r} p(s', r | s, a) [r + \gamma \sum_{a'}\pi(a' \mid s') q_\pi(s', a')] \qquad
 \end{aligned}
-\tag{5}\]</span></span></p>
+\tag{5}</span></span></p>
 <p>We can now use the same idea of bootstrapping to update the action-value function after each step. This is basis of Sarsa algorithm.</p>
 <p>in the sarsa update rule:</p>
-<p><span id="eq-sarsa-update"><span class="math display">\[
+<p><span id="eq-sarsa-update"><span class="math display">
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha [R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t)]
-\tag{6}\]</span></span></p>
-<p>we knows the policy <span class="math inline">\(\pi\)</span> so we can make a better update by replacing the sampled next action with the expected value of the next action under the policy <span class="math inline">\(\pi\)</span>.</p>
+\tag{6}</span></span></p>
+<p>we knows the policy <span class="math inline">\pi</span> so we can make a better update by replacing the sampled next action with the expected value of the next action under the policy <span class="math inline">\pi</span>.</p>
 <p>This is the basis of Expected Sarsa.</p>
 <p>which uses the update rule:</p>
-<p><span id="eq-expected-sarsa-update"><span class="math display">\[
+<p><span id="eq-expected-sarsa-update"><span class="math display">
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha [R_{t+1} + \gamma \sum_a \pi(a|S_{t+1}) \cdot Q(S_{t+1}, a) - Q(S_t, A_t)]
-\tag{7}\]</span></span></p>
+\tag{7}</span></span></p>
 <p>Otherwise the algorithm is the same as Sarsa.</p>
 <ul>
 <li>This target is more stable than the Sarsa target because it is less noisy.</li>
@@ -563,7 +580,7 @@ Expected Sarsa
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-q-learning" class="pseudocode-container quarto-float" data-pseudocode-number="3" data-comment-delimiter="#" data-line-number-punc=":" data-no-end="false" data-line-number="true" data-caption-prefix="Algorithm" data-indent-size="1.2em">
+<div id="alg-q-learning" class="pseudocode-container quarto-float" data-line-number="true" data-pseudocode-number="3" data-line-number-punc=":" data-indent-size="1.2em" data-no-end="false" data-comment-delimiter="#" data-caption-prefix="Algorithm">
 <div class="pseudocode">
 \begin{algorithm} \caption{expected SARSA}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \sum_a \pi(a|S') Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \State $S$ is terminal \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -584,11 +601,11 @@ Summary - Connecting the dots
 <li>Expected Sarsa is a generalization of Q-learning and Sarsa.</li>
 <li>There are many RL algorithms in our specialization flowchart.</li>
 <li>We would like to find a few or even one algorithm that may be widely applicable to many different settings, carrying over the insights we learned from each new algorithm.</li>
-<li>The first step in this direction was introducing the <span class="math inline">\(epsilon\)</span> parameter to the bandit algorithms, which allowed us to treat the exploration-exploitation trade-off. We have seen additional strategies for exploration but we have been using either an <span class="math inline">\(\epsilon\)</span>-greedy strategy or a epsilon-soft strategy in most algorithms.
+<li>The first step in this direction was introducing the <span class="math inline">epsilon</span> parameter to the bandit algorithms, which allowed us to treat the exploration-exploitation trade-off. We have seen additional strategies for exploration but we have been using either an <span class="math inline">\epsilon</span>-greedy strategy or a epsilon-soft strategy in most algorithms.
 <ul>
 <li>We also got the powerful idea of using confidence intervals as tie breakers in the case of multiple actions with the same expected reward.</li>
 </ul></li>
-<li>Another step in this direction was to introduce discounting of rewards which let us parameter discounting with <span class="math inline">\(\gamma\)</span> and thus treat episodic and continuing tasks in the same way.</li>
+<li>Another step in this direction was to introduce discounting of rewards which let us parameter discounting with <span class="math inline">\gamma</span> and thus treat episodic and continuing tasks in the same way.</li>
 <li>The MC algorithms showed that this is not enough to fully generalize to episodic and continuing tasks. However we got a powerful new ideas of inverse sampling and doubly robust estimators. For use with off-policy learning.</li>
 <li>Next we introduced GPI in which we combined policy evaluation and policy improvement algorithms to iteratively approximate the optimal policy in a single algorithm.</li>
 <li>Another lesson was to using the TD error to bootstrap the value function. This let us update value functions after each step, rather than waiting until the end of the episode, increasing the data efficiency of the algorithms.
@@ -599,7 +616,7 @@ Summary - Connecting the dots
 <ul>
 <li>It can be used in episodic and continuing tasks,</li>
 <li>It can be used for on-policy and off-policy learning.</li>
-<li>It is a GPI algorithm that uses the TD error to update the action-value function. And it the <span class="math inline">\(\epsilon\)</span>-greedy strategy implicit in its action-value function.</li>
+<li>It is a GPI algorithm that uses the TD error to update the action-value function. And it the <span class="math inline">\epsilon</span>-greedy strategy implicit in its action-value function.</li>
 </ul></li>
 </ul>
 </div>
@@ -631,6 +648,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -699,9 +860,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
     clipboardModal.on('success', onCopySuccess);
   }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -715,6 +927,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         if (link.dataset.originalHref !== undefined) {
           link.href = link.dataset.originalHref;
         }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
       }
     }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
