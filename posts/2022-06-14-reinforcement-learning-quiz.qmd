@@ -1,0 +1,320 @@
+---
+title: Reinforcement Learning Quiz
+description: Reinforcement Learning Quiz
+author: oren bochman
+date: 2022-05-07
+lastmod: 2022-05-07
+draft: true
+categories:
+  - quiz
+  - rl
+---
+
+
+# RL learning an introduction
+
+## Chapter 1: Introduction
+
+> Exercise 1.1: Self-Play Suppose, instead of playing against a random opponent, the reinforcement learning algorithm described above played against itself, with both sides learning. What do you think would happen in this case? Would it learn a different policy for selecting moves?
+
+In tic tac toe it likely that self play can lead to fully exploring the game tree and learning the optimal strategy.
+
+In more complex games it is likely that self play will lead to a good strategy but not necessarily the optimal one as exploring the full game tree is intractable.
+
+Playing with random opponents will lead to broader experiences as different players use different strategies and different capabilities. However there is nothing stopping us from concluding that with a good algorithm
+an agent can, with self play learn an optimal strategy. So unless human have something special to bring to 
+the game self play should be able to learn the optimal strategy. 
+
+If it is not possible to reach an optimal strategy then there is likely to advantages from playing with diverse opponents.
+Another advantage is that playing with diverse opponents might allow the agent to learn faster than playing with itself.
+
+Another question arises - is playing two player game like tic tac toe a RL problem or a MARL problem?
+
+
+> Exercise 1.2: Symmetries Many tic-tac-toe positions appear different but are really the same because of symmetries. How might we amend the learning process described above to take advantage of this? In what ways would this change improve the learning process? Now think again. Suppose the opponent did not take advantage of symmetries.
+
+In that case, should we? Is it true, then, that symmetrically equivalent positions should necessarily have the same value?
+
+Amending the learning process described above to take advantage of symmetris can be done as follows:
+
+a. we can enumerate all the states in the game and place each into equivalence classes using symmetry.
+b. We can use rotation and reflection.
+c. We can apply the learning updates to all members of each equivalent class.
+d. This should increase learnig by the amount of symmetries which I think is 8 for tic tac toe.
+
+The optimal value or action value function should be the same for all symmetrically equivalent states. And the 
+same should be said for the optimal policy. And we can learn it faster using a smaller state space.
+
+If the opponent does not take advantage of symmetries we can still use them to learn faster. However to beat an oponnent
+who does not play optimally we be able to learn a sufficently good strategy. If the opponent plays is suboptimal in a
+non-symetrical form we may want to learn the sufficent strategy for that form and may prefer to avoid symmetries
+to exploit such opponents.
+
+ We can then learn the value of each class and use this to learn the value of the states. This will reduce the number of states we need to learn and will make learning faster.
+
+Exercise 1.3: Greedy Play Suppose the reinforcement learning player was greedy, that is,
+it always played the move that brought it to the position that it rated the best. Might it
+learn to play better, or worse, than a nongreedy player? What problems might occur? 
+
+Greedy play may miss out on experiences that are needed to learn an optimal policy.
+By using greedy play the agent might become biased by the early experience.
+
+
+> Exercise 1.4: Learning from Exploration Suppose learning updates occurred after all
+moves, including exploratory moves. If the step-size parameter is appropriately reduced
+over time (but not the tendency to explore), then the state values would converge to
+a different set of probabilities. What (conceptually) are the two sets of probabilities
+computed when we do, and when we do not, learn from exploratory moves? Assuming
+that we do continue to make exploratory moves, which set of probabilities might be better
+to learn? Which would result in more wins?
+
+
+Reducing the learning rate will slow down learning. But it can also reduce the variance due to lost games 
+due to exploration.
+
+We can suppose there is a zone of step size where learning will continue but that once we cross its lower threshold learning will
+effectively stop. And we can call this the Goldilocks zone.
+
+While in the goldilocks zone we can continue to learn an optimal policy and perhaps also adapt to expoloit an opponents weaknesses
+as described above.
+
+However the question seems to be more about policies with and without explorations. If there is no exploration we might learn a biased and therfor suboptimal policy. Exploration might get us to the optimal policy.
+
+If we keep exploring we might as well keep learning. In the broader view we might be considering a lifelong learning scenario where the environment keeps changing and so we may want to stay in the Goldilocks zone.
+
+Once we have found an optimal policy we will get more wins if we stop exploring and just exploit it.
+
+> Exercise 1.5: Other Improvements Can you think of other ways to improve the reinforcement learning player? 
+Can you think of any better way to solve the tic-tac-toe problem as posed?
+
+I take some exception woth minmax leading to a sub-optimal policy - as it should leads to an optimal policy against best play. However it is true that it does not lead to the best strategy against suboptimal play. However it is not clear that it won't beat a suboptimal player too. As minimax can be used from
+any state to find the optimal policy - even if that state is due to a bad move.
+
+I think that one idea for tick tack toe is to run an exhustive search and more so if we eploit symmetry. There are 3^9 possible states. If we use symmetry 
+we can redcuce it by a factor of 8. And if we discard illegal states we can get an amount of moves that is managble on a typical computer. We can then
+learn the optimal policy by backtracking from the winning states that lead to the initial state. This will give us the optimal policy for all states
+in the game tree. (less any uncreachable one.)
+
+I think that if our an RL agent would do better by learning heuristics rather than the value function. In tic tac toe is might be enough to become 
+unbeatable.
+
+## Chapter 2: Multi-armed Bandits
+
+Exercise 2.1 In epsilon-greedy action selection, for the case of two actions and " = 0.5, what is
+the probability that the greedy action is selected?
+
+0.5 by expliotation + 0.25 by exloitation 
+so 0.75.
+
+> Exercise 2.2: Bandit example Consider a k -armed bandit problem with k = 4 actions,
+denoted 1, 2, 3, and 4. Consider applying to this problem a bandit algorithm using
+"-greedy action selection, sample-average action-value estimates, and initial estimates
+of Q1 (a) = 0, for all a. Suppose the initial sequence of actions and rewards is 
+A1 = 1, R1 = 1,
+A2 = 2, R2 = 1, 
+A3 = 2, R3 = 2, 
+A4 = 2, R4 = 2,
+A5 = 3, R5 = 0. On some of these time steps the " case may have occurred, causing an action to be selected at
+random. 
+
+> On which time steps did this definitely occur? 
+
+2 and 5 are exploration steps.
+
+> On which time steps could this possibly have occurred?
+
+at any time step.
+
+> Exercise 2.3 In the comparison shown in Figure 2.2, which method will perform best in
+the long run in terms of cumulative reward and probability of selecting the best action?
+How much better will it be? Express your answer quantitatively.
+
+Assuming the agents are operating for a finite but long time the agent in red with smaller epsilon the long term exploitation is .99 once it find the optimal arm. And even exploring it has a 0.01*0.1 chance of picking the best arm lets call it a 
+The next best has 0.9 + 0.1 * 0.1 of exploiting. lets call it b
+
+Thus it has a-b greater chance of selecting the best arm, let call it c
+and cummulative advantage it $\sum_k^N c^\mu$.
+
+> Exercise 2.4 If the step-size parameters, $\alpha_n$ , are not constant, then the estimate $Q_n$ is 
+a weighted average of previously received rewards with a weighting different from that given by (2.6). 
+What is the weighting on each prior reward for the general case, analogous to (2.6), in terms of the 
+sequence of step-size parameters? 
+
+
+> Exercise 2.5 (programming) Design and conduct an experiment to demonstrate the difficulties that sample-average methods have for non-stationary problems. Use a modified version of the 10-armed testbed in which all the $q_{*}(a)$ start out equal and then take
+independent random walks (say by adding a normally distributed increment with mean zero and standard deviation 0.01 to all the $q(a)$ on each step). Prepare plots like Figure 2.2 for an action-value method using sample averages, incrementally computed,
+and another action-value method using a constant step-size parameter, $\alpha = 0.1$. Use $\epsilon= 0.1$ and longer runs, say of 10,000 steps.
+
+
+
+For pole balancing we had
+
+> Episodic: The reward in this case could be +1 for every time step on which failure did not occur, so that the return at each time would be the number of steps until failure. In this case, successful balancing forever would mean a return of infinity.
+
+> Continuing: Alternatively, we could treat pole-balancing as a continuing task, using discounting. In this case the reward would be -1 on each failure and zero at all other times. The return at each time would then be related to -\gamma^{K-1}, where K is 
+the number of time steps before failure (as well as to the times of later failures)
+
+
+> Exercise 3.6 Suppose you treated pole-balancing as an episodic task but also used discounting, with all rewards zero except for -1 upon failure. What then would the return be at each time? How does this return differ from that in the discounted, continuing
+formulation of this task?
+
+
+In the episodic task the return would be -1 at the end of the episode and 0 at all other times. In the continuing task the return would be -1 at the end of the episode and 0 at all other times. The difference is that in the episodic task the return is zero at all other times.
+
+> Exercise 3.7 Imagine that you are designing a robot to run a maze. You decide to give it a reward of +1 for escaping from the maze and a reward of zero at all other times. The task seems to break down naturally into episodes—the successive runs through the maze—so you decide to treat it as an episodic task, where the goal is to maximize expected total reward (3.7). After running the learning agent for a while, you find that it is showing
+no improvement in escaping from the maze. What is going wrong? Have you effectively communicated to the agent what you want it to achieve? 
+
+### Solution
+
+perhaps not - as running around the maze carries no penalty and the escape signal is very sparse. 
+
+We may want to give the agent some penalty for running around the maze aimlessly. 
+
+Perhaps we might give it a better signal by using penalty for visting the any states more than once so we don't discourage exploration.
+
+
+> Exercise 3.8 Suppose $\gamma = 0.5$ and the following sequence of rewards is received $R_1 = -1, R_2 = 2, R_3 = 6, R_4 = 3, and R_5 = 2, with $T=5$. What are $G_0, G_1 , . . . , G_5$ ? 
+> Hint:
+Work backwards. 
+
+> Exercise 3.9 Suppose   = 0 . 9 and the reward sequence is R 1 = 2 followed by an infinite sequence of 7s. 
+> What are G 1 and G 0 ?
+
+> Exercise 3.10 Prove the second equality in (3.10).
+
+
+this is the sum of the geometric series
+$$
+\sum_{k=0}^{\infty} \gamma^k = \frac{1}{1-\gamma}
+$$
+
+proof:
+
+$$
+\begin{align*}
+  S_n &= ar^0 + ar^1 + \cdots + ar^{n},\\
+ rS_n &= ar^1 + ar^2 + \cdots + ar^{n+1},\\
+  S_n - rS_n &= ar^0 - ar^{n+1},\\
+  S_n\left(1-r\right) &= a\left(1-r^{n+1}\right),\\
+  S_n &= a\left(\frac{1-r^{n+1}}{1-r}\right),
+\end{align*}
+$$
+
+$$
+\begin{align*}
+S &= a+ar+ar^2+ar^3+ar^4+\cdots\\
+  &= \lim_{n \rightarrow \infty} S_n\\
+  &= \lim_{n \rightarrow \infty} \frac{a(1-r^{n+1})}{1-r} \\
+  &= \frac{a}{1-r} - \frac{a}{1-r} \lim_{n \rightarrow \infty} r^{n+1} \\
+  &= \frac{a}{1-r},
+\end{align*}
+$$
+
+> Exercise 3.11 If the current state is $S_t$ , and actions are selected according to a stochastic  policy $\pi$ , then what is the expectation of $R_{t+1}$ in terms of $\pi$ and the four-argument
+function p (3.2)?
+
+$$
+ \mathbb{E}[R_{t+1} \mid S_t, A_t, \pi] = \sum_{r} r \sum_{s'} p(s', r \mid S_t, A_t, \pi)
+$$
+
+
+
+
+
+# Reinforcement Learning Q&A
+
+Many of the learning objectives from the RL specilization can be put into question format and are thus useful as a FAQ or as a Quizz to keep knowledge fresh after ending the learning.
+ 
+1. Define reward?
+    - the immediate value for taking an action.
+1. What is the **temporal** nature of the bandit problem?
+    - this is a tricky question that highlights one of the three issues that impose limits on the bandit setting. 
+    - bandits are one step problem where the agent must choose an action and then receive a reward. What it learns is a the expected value of each action. I.e. a distribution of rewards for each action. Since there is only ever one step a bandit agent cannot plan.
+1. what is the **spatial** nature of the bandit problem?
+    - this is the other issue that limits the bandit setting. 
+    - bandits are a single state problem. 
+    - contextual bandits relax this assumption by allowing the agent to observe a state before taking an action.
+1. What is the **partial observability** of the bandit problem?
+    - The agent does not know the value of the actions it does not takes. Also for the action it takes there can be some stochasticity.
+
+
+1. Define k-armed bandit
+    - it is a problem in which we must pick the arm of a slot machine with the highest expected return.
+1. Define action-values
+    - $q_\pi(s,a)$ it is a function aggregating future expected returns associated with taking an action a in stats s, assuming that the agent will sample trajectories from  some policy $\pi$.
+1. Define action-value estimation methods
+    - it is 
+1. Define *exploration* and *exploitation*
+    - if an choosing an optimal action it called a greedy action then exploration is selecting from non-greedy actions while exploitation is selection from greedy ones
+1. Select actions greedily using an action-value function
+    - Since the action-value function v(a) assigns a value to each action and selecting greedily is picking any of the highest performing actions.
+    
+    $$ a : v = argmax_a v(a) $$
+
+1. Define online learning
+    - this is learning in a setting where one is given a state and and one infers for it an action and we are not told what the correct action was, only the reward, possibly later.
+1. Understand a simple online sample-average action-value estimation method
+1. Define the general online update equation
+1. Understand why we might use a constant step size in the case of non-stationarity
+1. Define epsilon-greedy
+    this is a bandit strategy that
+$$ 
+    \pi_{\epsilon}(X=x)= \left\{ 
+        \begin{array}{ c l }
+         \text{exploit} & x \geq 1-\epsilon   \newline
+         \text{ explore}  & x < \epsilon
+        \end{array}
+   \right\}.
+ $$
+
+1. Compare the short-term benefits of exploitation and the long-term benefits of exploration
+    - exploit returns the best short term returns.
+    - explore lets one discover the best long term returns.
+1. Understand optimistic initial values
+    - By assigning optimistic initial values to Q or V we bias the agent to explore all unvisited states and to try all action. If the values are too high the agent will downgrade thier values and then prefer other unvisited states. This will continue until all optimism is eliminated from all state action pairs. 
+1. Describe the benefits of optimistic initial values for early exploration
+    - they are a mechanism to make the bandits alg try out all options but once they have been tried once the value is revised and early exploration can end with the top option being exploited. 
+1. Explain the criticisms of optimistic initial values
+    - In the limited horizon settings (if there are few episodes or time steps or a limited number of moves) and there are many states action pairs to explore. The agent may learn a optimal policy but not get a chance to exploit it before play ends.
+    - In the changing environment setting lifelong exploration is required but this mechanism eventually stops exploring
+    - In the non tabular setting where values are not independent of each other value updates may correct optimism for most action values before they are visited due to optimism. 
+    - For an continuous action space this implies infinite exploration in the tabular setting and in the function approximation setting we have the problem of non-independence.
+    - Thus we would like a generalization of optimistic initial values that can be tuned to work in
+        - limited horizon/lifelong learning
+        - tabular/approximation
+    
+    One idea is to create an intrinsic motivation for novelty which 
+    will reward the agent to do a a bayesian search on the space of
+    feature factors. 
+        - We thus treat continuous action spaces as a set of finite ranges.
+        - We consider novelty at the level that combines a number of features. To overcome the non-independence problem.
+        If {f1, f2, f3} are the features of the state space then we can consider factors  {f1, f2}, {f1, f3}, {f2, f3}, {f1, f2, f3} as different feature factors. rather than just considering {f1}, {f2}, {f3} as the features.
+        - We can also decay the novelty of a feature factor with its recency and we can tie to the uncertainty of the value of the feature factor using upper confidence bounds on these feature 
+        graphs. This would allow us to use it as an intrinsic that  maintains exploration for lifelong learning at a level that is appropriate for the problem. 
+        - Another feature that may be of use is the idea of recursive re-partitioning of the continuous feature space to let us keep searching for higher values in smaller regions with higher probability density of greater values.
+        
+
+
+1. Describe the upper confidence bound action selection method
+1. Define optimism in the face of uncertainty
+
+- [ ] TODO: complete Q&A for the above
+- [ ] TODO: append more learning objectives.
+
+
+## Online learning 
+
+In RL, we focus on the problem of learning while interacting with an ever changing world. We do not expect our agents to compute a good behavior and then execute that behavior in an open-loop fashion. Instead, we expect our agents to sometimes make mistakes and refine their understanding as they go. The world is not a static place: we get injured, the weather changes, and we encounter new situations in which our goals change.  An agent that immediately integrates its most recent experience should do well especially compared with ones that attempt to simply perfectly memorize how the world works.
+
+The idea of learning \emph{online} is an extremely powerful if not defining feature of RL. Even the way that this course introduces concepts tries to reflect this fact. For example, bandits and exploration will be covered before we derive inspiration from supervised learning. Getting comfortable learning \emph{online} requires a new perspective. Today, RL is evolving at what feels like breakneck pace: search companies, online retailers, and hardware manufacturers are exploring RL solutions for their day to day operations. There are convincing arguments to be made that such systems can be more efficient, save money, and keep humans out of risky situations. As the field evolves, it's important to focus on the fundamentals. E.g. DQN combines Q-learning, neural networks, and experienced replay. This course covers the fundamentals used in modern RL systems. By the end of the course, you'll implement a neural network learning system to solve an infinite state control task. We'll start with the multi-armed bandit problem: this introduces us to estimating values, incremental learning, exploration, non-stationarity, and parameter tuning.
+
+# Multi-armed Bandits
+
+What distinguishes RL from other types of learning is that it uses training information that evaluates the actions rather than instructs by giving correct actions. Because we do not know what the correct actions are, this creates the need for active exploration to search for good behavior.
+
+- Purely evaluative feedback indicates how good the action was, but not   whether it was the best or the worst action possible.
+- Purely instructive feedback indicates the correct action to take, independently of the action actually taken.
+
+To emphasize: evaluative feedback depends entirely on the action taken, whereas instructive feedback is independent of the action taken.
+
+To start, we study the evaluative aspect of reinforcement learning in a simplified setting: one that does not involve learning to act in more than one situation. This is known as a non-associative setting. We can then take one-step closer to the full RL problem by discussing what happens when the bandit problem becomes associative, i.e. when actions are taken in more than one situation.

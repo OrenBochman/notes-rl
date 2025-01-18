@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Oren Bochman">
+<meta name="dcterms.date" content="2024-04-04">
+<meta name="keywords" content="reinforcement learning, neural networks, deep learning, policy parameterization, policy gradient theorem, policy gradient methods, reinforce algorithm, actor-critic algorithm, softmax policies, softmax actor-critic algorithm, gaussian policies, gaussian actor-critic algorithm">
+
+<title>Policy Gradient – rl-notes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-d58cf0c17c84c672bbe6415fb2b2bd7c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+
+      .quarto-title-block .quarto-title-banner {
+        background: /images/banner_black_3.jpg;
+      }
+</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">rl-notes</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Policy Gradient</h1>
+            <p class="subtitle lead">Prediction and Control with Function Approximation</p>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Coursera</div>
+                <div class="quarto-category">notes</div>
+                <div class="quarto-category">rl</div>
+                <div class="quarto-category">reinforcement learning</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Oren Bochman </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 4, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+
+  <div>
+    <div class="keywords">
+      <div class="block-title">Keywords</div>
+      <p>reinforcement learning, neural networks, deep learning, policy parameterization, policy gradient theorem, policy gradient methods, reinforce algorithm, actor-critic algorithm, softmax policies, softmax actor-critic algorithm, gaussian policies, gaussian actor-critic algorithm</p>
+    </div>
+  </div>
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+
+
+
+
+
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/logo.png" class="img-fluid figure-img"></p>
+<figcaption>RL logo</figcaption>
+</figure>
+</div><div id="fig-episodic-semi-gradient-sarsa" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-episodic-semi-gradient-sarsa-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/alg_selector.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>RL algorithm decision tree</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-episodic-semi-gradient-sarsa-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: The algorithms discussed in this lesson are all part of the policy gradient family. These allow us to consider both discrete and continuous actions in the the average rewards settings. We will consider Softmax Actor-Critic, Gaussian Actor-Critic, and the REINFORCE algorithm. The last is missing from the chart.
+</figcaption>
+</figure>
+</div></div>
+<p>Sometimes, the behavior codified in the policy is much simpler than the action value function. Thus, learning the policy directly can be more efficient. Learning policies is an end-to-end solution for solving many real-world RL problems. Coding such end-to-end solutions may be done under the umbrella of policy gradient methods. Once we cover the policy gradient theorem, we will see how we still need to use action value approximations to estimate the gradient of the average reward objective. A second way that we will use value function approximations is in the actor-critic algorithms. Here, the policy is called the actor, and the value function is called the critic. The critic evaluates the policy, and the actor is used to update the policy. The actor-critic algorithms are a hybrid of policy gradient and value function methods. They are more stable than policy gradient methods and can be used in more complex environments.</p>
+
+<div class="no-row-height column-margin column-container"><div id="fig-policy-gradient-theorem-proof" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-policy-gradient-theorem-proof-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-13-pg-theorem.png" class="img-fluid figure-img"></p>
+<figcaption>the policy gradient theorem</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-policy-gradient-theorem-proof-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: The policy gradient theorem &amp; proof from <span class="citation" data-cites="sutton2018reinforcement">[@sutton2018reinforcement pp.325]</span> In it <span class="math inline">\(\nabla\)</span> are with respect to <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\theta\)</span> is the parameter of the policy <span class="math inline">\(\pi\)</span> but is omitted for brevity.
+</figcaption>
+</figure>
+</div></div><div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+TL;DR This lesson in a nutshell
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/in_a_nutshell.jpg" class="img-fluid figure-img"></p>
+<figcaption>in a nutshell</figcaption>
+</figure>
+</div>
+<p>I found policy gradient methods to be rather complicated at first blush. Eventually, as the finer points sunk in, I developed bits and pieces of intuition that made me feel more comfortable.</p>
+<p><strong>Parametrized policies</strong> are much easier to conceptualize than <em>parametrized value functions</em>. One intuition is that the parameters are weights for the action, and the policy’s actions are drawn in proportion to these weights. The <strong>softmax policy</strong> does precisely this type of weighting. My Bayesian-trained intuition for these weights comes from the <em>categorical distribution</em> <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. For this distribution, we can define <strong>success</strong> as the action that gets my agent closest to its goal. This intuition is just my first-order mental model; we will develop more sophisticated machinery as we go along.</p>
+<p>The obvious question that will arise as soon as you deal with some environment is:</p>
+<blockquote class="blockquote">
+<p>“How can we get some <em>arbitrary</em> feature <span class="math inline">\(\theta\)</span> to participate in the parametrized policy?”</p>
+</blockquote>
+<p>The answer that comes to mind is <em>use it to build the weights</em>.</p>
+<p>The usual suspect is a (Bayesian) linear regression that includes the feature .</p>
+<blockquote class="blockquote">
+<p>How is my feature <span class="math inline">\(\theta\)</span> going to participate in the decisions made by <span class="math inline">\(\pi\)</span>?</p>
+</blockquote>
+<p>If we tweak this feature, how will the policy give us better returns? Since we want to maximize returns, we should adjust the weights in the direction that provides us with the best returns.</p>
+<p>That is also the intuition for a parametrized policy’s <strong>update rule</strong>. The direction is just the gradient of the policy. The big hurdle lies in estimating this gradient.</p>
+<p>The course material is very concise and laser-focused on very specific learning goals. <strong>The policy gradient theorem</strong> is the key result that allows us to estimate policy gradients. Unfortunately, the course instructors did not cover the <a href="#fig-policy-gradient-theorem-proof">proof</a>, which is silently relegated to the readings.</p>
+<p>This proof is not as simple as represented in its preamble in the book. I saw both longer and shorter versions of proofs and felt that there is a bit of hand waving in one of the steps<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Many people who are seriously interested in RL will be compelled to go through the proof in detail. Also, more experienced students can make greater leaps.</p>
+<p>One of my goals is to make satisfactory proofs for episodic and continuing cases that I can walk though at ease.</p>
+</div>
+</div>
+<p>Also, I was disappointed that this course does not cover more modern algorithms, such as <a href="https://arxiv.org/abs/1502.05477">TRPO</a>, <a href="https://arxiv.org/abs/1707.06347">PPO</a>, or other Deep learning algorithms. I cannot stress this point enough.</p>
+<p>In the last video in the previous lecture’s notes by <a href="https://scholar.google.com/citations?user=8RgDBoEAAAAJ&amp;hl=en">Satinder Singh</a>, all of the research on using Meta gradients to learn intrinsic rewards is also built on top of policy gradient methods - where he and his students looked at propagating these gradients through multiple the planing algorithms and later through the learning algorithm to learn a reward function and tackle the issues of exploration.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Course Readings
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox" checked=""><span class="citation" data-cites="sutton2018reinforcement">[@sutton2018reinforcement§13 pp. 321-336]</span> <a href="#fig-chapter-13-policy-gradient" class="quarto-xref">Figure&nbsp;18</a></label></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Extra Readings
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Extra resources I found useful to review though not required, nor part of the course material</p>
+<ul>
+<li><a href="https://spinningup.openai.com/en/latest/spinningup/rl_intro3.html">Intro to Policy Optimization @ Spinning Up</a></li>
+<li><a href="https://johnwlambert.github.io/policy-gradients/">Understanding Policy Gradients</a></li>
+<li><a href="https://jonathan-hui.medium.com/rl-policy-gradients-explained-9b13b688b146">Policy Gradient Explained</a></li>
+<li><a href="https://danieltakeshi.github.io/2017/03/28/going-deeper-into-reinforcement-learning-fundamentals-of-policy-gradients/">Going Deeper Into Reinforcement Learning: Fundamentals of Policy Gradients</a></li>
+<li><a href="https://danieltakeshi.github.io/2017/04/02/notes-on-the-generalized-advantage-estimation-paper/">Notes on the Generalized Advantage Estimation Paper</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Videos
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+
+
+
+<p>Here are three extra videos by experts in the field that delve deeper into this topic. Each of these instructors have published papers with some of the most groundbreaking algorithms in the field and have a lot of insights to share.</p>
+<ol type="1">
+<li><p>In <a href="#fig-deep-reinforcement-learning">this lecture</a> <a href="http://joschu.net/">John Schulman</a> covers Deep Reinforcement Learning Policy Gradients and Q-Learning. John Schulman is a research scientist at OpenAI and has published many papers on RL and Robotics. John Schulman who developed PPO and TRPO and Chat-GPT</p></li>
+<li><p>In <a href="#fig-policy-gradients-and-advantage-estimation">this lecture</a> <a href="https://people.eecs.berkeley.edu/~pabbeel/">Pieter Abbeel</a> covers policy gradients and advantage estimation. Pieter Abbeel is a professor at UC Berkeley and has published many papers on RL and Robotics.</p></li>
+<li><p>In <a href="#fig-policy-grad-limitations">this lesson from a Deep Mind Course</a> <a href="https://hadovanhasselt.com/about/">Hado van Hasselt</a> covers some advantages as well as challenges of policy gradient methods.</p></li>
+</ol>
+</div>
+</div>
+</div><div class="no-row-height column-margin column-container"><div id="fig-deep-reinforcement-learning" class="quarto-float quarto-figure quarto-figure-center anchored callout-4-contents callout-collapse collapse callout-margin-content">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-deep-reinforcement-learning-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/PtAIh9KSnjo" title="Deep Reinforcement Learning" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-deep-reinforcement-learning-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Talk titled ‘Deep Reinforcement Learning Policy Gradients and Q-Learning’ by John Schulman on Reinforcement Learning at at the Deep Learning School on September 24/25, 2016
+</figcaption>
+</figure>
+</div><div id="fig-policy-gradients-and-advantage-estimation" class="quarto-float quarto-figure quarto-figure-center anchored callout-4-contents callout-collapse collapse callout-margin-content">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-policy-gradients-and-advantage-estimation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/AKbX1Zvo7r8" title="Policy Gradients and Advantage Estimation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-policy-gradients-and-advantage-estimation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Talk titled ‘Policy Gradients and Advantage Estimation’ by Pieter Abbeel. in his ‘Foundations of Deep RL Series’
+</figcaption>
+</figure>
+</div><div id="fig-policy-grad-limitations" class="quarto-float quarto-figure quarto-figure-center anchored callout-4-contents callout-collapse collapse callout-margin-content">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-policy-grad-limitations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/y3oqOjHilio" title="Policy-Gradient and Actor-Critic methods" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-policy-grad-limitations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Research Scientist Hado van Hasselt from Deep Mind covers policy algorithms that can learn policies directly and actor critic algorithms that combine value predictions for more efficient learning. From DeepMind x UCL | Deep Learning Lecture Series 2021
+</figcaption>
+</figure>
+</div></div>
+<section id="lesson-1-learning-parameterized-policies" class="level1 page-columns page-full">
+<h1>Lesson 1: Learning Parameterized Policies</h1>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox" checked="">Understand how to define policies as parameterized functions <a href="#sec-l1g1">#</a></label></li>
+<li><label><input type="checkbox" checked="">Define one class of parameterized policies based on the softmax function <a href="#sec-l1g2">#</a></label></li>
+<li><label><input type="checkbox" checked="">Understand the advantages of using parameterized policies over action-value based methods <a href="#sec-l1g3">#</a></label></li>
+</ul>
+</div>
+</div>
+<section id="learning-policies-directly-video" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="learning-policies-directly-video">Learning policies directly (Video)</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-policy-gradient" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-policy-gradient-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-01.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>Energy pumping policy</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-policy-gradient-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: In the mountain car environment, the parameterized value function is complex, but the parameterized policy is simple.
+</figcaption>
+</figure>
+</div></div><p>In this lesson course instructor Adam White introduces the idea of learning policies directly. He contrasts this with learning value functions and explains why learning policies directly can be more flexible and powerful.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Rethinking policies
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Moving on we will need to think very clearly about policies.</p>
+<p>To this end it is worth spending a minute to quickly recap the definition properties and notation of a policy from the previous lessons:</p>
+<ol type="1">
+<li><p><em>Intuitively</em> a policy <span class="math inline">\(\pi\)</span> is just decision making rule.</p></li>
+<li><p>A <em>deterministic policy</em> is just a function that maps a state to an action. <span class="math display">\[
+\pi : s\in \mathcal{S} \to a \in \mathcal{A} \qquad \text{(deterministic policy)}
+\]</span></p></li>
+<li><p>A stochastic policy is a function that maps a state to a probability distribution over actions. Stochastic policies are more general and include deterministic policies as a special case. So while we may talk of deterministic policies, we will use the mathematical form of a stochastic policy.</p></li>
+</ol>
+<p><span class="math display">\[
+\pi : s\in \mathcal{S} \to \mathbb{P}(\mathcal{A}) \qquad \text{(stochastic policy)}
+\]</span></p>
+<ol type="1">
+<li>Formally, the policy is defined probabilistically as follows:</li>
+</ol>
+<p><span id="eq-policy-def"><span class="math display">\[
+\pi(a \mid s) \doteq Pr(A_t = a \mid S_t = s) \qquad \text{(policy)}
+\tag{1}\]</span></span></p>
+<ol type="1">
+<li>note that this is a shorthand for the following:</li>
+</ol>
+<p><span class="math display">\[
+\pi(a \mid s) = \mathbb{E}[A_t \mid S_t = s] \qquad \text{(policy)}
+\]</span></p>
+<p>Where <span class="math inline">\(\pi\)</span> is a probability distribution over actions given a state.</p>
+</div>
+</div>
+</section>
+<section id="sec-l1g1" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="sec-l1g1">How to Parametrize a Policies?</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-policy-gradient-param" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-policy-gradient-param-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-02.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>policy parametrization</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-policy-gradient-param-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: When we parametrize a policy we will use the greek letter <span class="math inline">\(\theta \in \mathbb{R}^d\)</span> to denote the parameters of the policy.
+</figcaption>
+</figure>
+</div><div id="fig-policy-gradient-constraint" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-policy-gradient-constraint-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-03.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>policy parametrization constraints</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-policy-gradient-constraint-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Constraints on the policy parameters can be used to ensure that the policy is valid.
+</figcaption>
+</figure>
+</div></div>
+<p>So far we have been mostly looking at learning value functions. But when it comes to function approximation, it is often simpler to learn a policy directly.</p>
+<p>In <a href="#fig-policy-gradient">the mountain car environment</a> we see the power pumping policy which accelerates the car in the direction it is moving. This is a near optimal policy for this environment. The policy is simple and can be learned directly and it makes no use of value functions. This may not always be the case.</p>
+<p>A visual summary of the policy parametrization is shown in <a href="#fig-policy-gradient-param">the figure</a>. Recall that the policy is a function that takes in a state and outputs a probability distribution over actions. We will use the greek letter <span class="math inline">\(\theta \in \mathbb{R}^d\)</span> to denote the parameters of the policy. This way we can reference the parameters of <span class="math inline">\(\hat{Q}(s,a,w)\)</span> the action value function are denoted by <span class="math inline">\(\mathbf{w}\)</span>.</p>
+<p>The parametrized policy is defined as follows:</p>
+<p><span id="eq-parametrized-policy-def"><span class="math display">\[
+\pi(a \mid s, \theta) \doteq Pr(A_t = a \mid S_t = s, \theta) \qquad \text{(parametrized policy)}
+\tag{2}\]</span></span></p>
+<p>is a probability distribution over actions given a state and the policy parameters.</p>
+<p>Since we are dealing with probabilities, the policy parameters must satisfy certain constraints. For example, the probabilities must sum to one. This is shown in <a href="#fig-policy-gradient-constraint">the figure</a>. These policy parameters constraints will ensure that the policy is valid.</p>
+<p>Policy Gradient use gradient ascent:</p>
+<p><span id="eq-gradient-ascent"><span class="math display">\[
+\theta_{t+1} = \theta_t + \alpha \nabla_\theta J(\theta) \qquad \text{(gradient ascent)}
+\tag{3}\]</span></span></p>
+<p>where <span class="math inline">\(\alpha\)</span> is the step size and <span class="math inline">\(\nabla_\theta J(\theta)\)</span> is the gradient of the objective function <span class="math inline">\(J(\theta)\)</span> with respect to the policy parameters <span class="math inline">\(\theta\)</span>.</p>
+<ul>
+<li>methods that follow this update rule are called <strong>policy gradient methods</strong>.</li>
+<li>methods that learn both a value function and a policy are called <strong>actor-critic methods</strong>.</li>
+</ul>
+</section>
+<section id="sec-l1g2" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="sec-l1g2">Define one class of parameterized policies based on the softmax function</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-policy-softmax" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-policy-softmax-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-04-softmax-policy.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>softmax properties</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-policy-softmax-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9
+</figcaption>
+</figure>
+</div></div><p>The <strong>Softmax policy</strong> based on the Boltzmann distribution is a probability distribution over actions given a state. It is parameterized by a vector of action preferences <span class="math inline">\(h(s, a, \theta)\)</span>.</p>
+<p><span id="eq-softmax-policy"><span class="math display">\[
+\pi(a \mid s, \theta) \doteq \frac{e^{h(s, a, \theta)}}{\sum_{b\in \mathcal{A}} e^{h(s, b, \theta)}} \text{(softmax policy)} \qquad
+\tag{4}\]</span></span></p>
+<ul>
+<li>the numerator is the exponential of the action preference</li>
+<li>the denominator is the sum of the exponentials of all action preferences</li>
+</ul>
+<p>Some properties of the softmax policy are that it can take in a vector of weights for different actions and output a probability distribution over actions. A second property is that the softmax policy generalizes the max function. A third property is that unlike the max function which is discontinuous the softmax policy is differentiable, making it amenable to gradient-based optimization.</p>
+<ul>
+<li>negative values of h lead to positive action probabilities.</li>
+<li>equal values of h lead to equal action probabilities.</li>
+<li>the softmax policy is a better option over than the <span class="math inline">\(\epsilon\)</span>-greedy policy over the action-value based methods.</li>
+</ul>
+</section>
+<section id="advantages-of-policy-parameterization-video" class="level2">
+<h2 class="anchored" data-anchor-id="advantages-of-policy-parameterization-video">Advantages of Policy Parameterization (Video)</h2>
+<p>In this video we consider the advantages of using parameterized policies over action-value based methods. We will see that parameterized policies are more flexible than action-value based methods and can start off stochastic and then become deterministic.</p>
+</section>
+<section id="sec-l1g3" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="sec-l1g3">Advantages of using parameterized policies over action-value based methods</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-policy-action-preferences" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-policy-action-preferences-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-05-action-preferences.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>softmax policy v.s. epsilon-greedy</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-policy-action-preferences-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10: Softmax policy v.s. <span class="math inline">\(\epsilon\)</span>-greedy
+</figcaption>
+</figure>
+</div><div id="fig-short-corridor-env" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-short-corridor-env-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-06-stochastic-policy.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>Short corridor with switched action</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-short-corridor-env-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11: In the Short corridor with switched action environment a deterministic policy fails to reach the goal. The only optimal policy is stochastic.
+</figcaption>
+</figure>
+</div></div>
+<blockquote class="blockquote">
+<p>One advantage of parameterizing policies according to the softmax in action preferences is <strong>that the approximate policy can approach a deterministic policy</strong>, whereas with <span class="math inline">\(\epsilon\)</span>-greedy action selection over action values there is always an <span class="math inline">\(\epsilon\)</span> probability of selecting a random action.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>A second advantage of parameterizing policies according to the softmax in action preferences is that <strong>it enables the selection of actions with arbitrary probabilities</strong>. In problems with significant function approximation, the best approximate policy may be stochastic.</p>
+</blockquote>
+<p>For example, in card games with imperfect information the optimal play is often a mixed strategy which means you should take two different actions each with a specific probability, such as when bluffing in Poker.</p>
+<p>Action-value methods have no natural way of finding stochastic optimal policies, whereas policy approximating methods can, as shown in <a href="#fig-short-corridor-env">The short Corridor environment</a></p>
+</section>
+</section>
+<section id="lesson-2-policy-gradient-for-continuing-tasks" class="level1 page-columns page-full">
+<h1>Lesson 2: Policy Gradient for Continuing Tasks</h1>
+<ul>
+<li>parameterized policies are more flexible than action-value based methods</li>
+<li>can start off stochastic and then become deterministic</li>
+</ul>
+<p>In function approximation, the optimal policy is not necessarily deterministic. Thus it is best to be able to learn stochastic policies.</p>
+<p>Example where the optimal policy is stochastic:</p>
+<ul>
+<li>Sometimes it is just easier to learn a stochastic policy.</li>
+<li>E.g. in mountain car, the parameterized value function is complex, but the parameterized policy is simple.</li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div id="fig-mountain-car-policy" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mountain-car-policy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-07-stochastic-simpler.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>mountain car environment values and policy</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mountain-car-policy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12: In mountain car, the parameterized value function is complex, but the parameterized policy is simple.
+</figcaption>
+</figure>
+</div></div><div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox" checked="">Describe the objective for policy gradient algorithms <a href="#sec-l2g1">#</a></label></li>
+<li><label><input type="checkbox" checked="">Describe the results of the policy gradient theorem <a href="#sec-l2g2">#</a></label></li>
+<li><label><input type="checkbox" checked="">Understand the importance of the policy gradient theorem <a href="#sec-l2g3">#</a></label></li>
+</ul>
+</div>
+</div>
+<section id="the-objective-for-learning-policies-video" class="level2">
+<h2 class="anchored" data-anchor-id="the-objective-for-learning-policies-video">The Objective for Learning Policies (Video)</h2>
+<p>In this video Martha White dive deep into the objective for policy gradient algorithms. She then contrasts this with the gradient of the value fn objectives and lists some challenges for estimating the gradient of the average reward objective. We will learn that we can use the policy gradient theorem and to overcome these challenges and derive a gradient with an neat update rule .</p>
+</section>
+<section id="sec-l2g1" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l2g1">The objective for policy gradient algorithms</h2>
+<p>Formalizing the goal as an Objective</p>
+<p><span id="eq-objectives"><span class="math display">\[
+\begin{align*}
+G_t &amp;= \sum_{t=0}^{T}  R_{t}  \quad &amp;&amp; \text{(episodic)} \newline
+G_t &amp;= \sum_{t=0}^{\infty} \gamma^t R_{t}   \quad &amp;&amp; \text{(continuing - discounted reward)} \newline
+G_t &amp;= \sum_{t=0}^{\infty} R_{t} - r(\pi)  \quad &amp;&amp; \text{(continuing - avg. reward)}
+\end{align*}
+\tag{5}\]</span></span></p>
+<p>The average reward Objective for a policy is as follows: <span id="eq-average-reward-objective"><span class="math display">\[
+r(\pi) = \sum_{t=0}^{T} \mu(s) \sum_{a} \pi(a \mid s, \theta)  \sum_{s',r} p(s',r \mid s,a) r \quad \text{(avg. reward objective)}
+\tag{6}\]</span></span></p>
+<p>What does this mean?</p>
+<ul>
+<li>the last sum is the expected reward for a state-action pair. <span class="math inline">\(\mathbb{E}[R_t \mid S_t = s , A_t=a]\)</span></li>
+<li>the last two sums together are the expected reward for a state under weighted by the policy <span class="math inline">\(\pi\)</span>. <span class="math inline">\(\mathbb{E}_\pi[R_t \mid S_t = s]\)</span></li>
+<li>full sum ads the time we spend in state <span class="math inline">\(s\)</span> under <span class="math inline">\(\pi\)</span> therefore the expected reward for a state under the policy <span class="math inline">\(\pi\)</span> and the environment dynamics <span class="math inline">\(p\)</span>. <span class="math inline">\(\mathbb{E}_\pi[R_t]\)</span></li>
+</ul>
+<p>to optimize the average reward, we need to estimate the gradient of <a href="#eq-average-reward-objective">the avg. objective</a></p>
+<p><span id="eq-average-reward-objective-gradient"><span class="math display">\[
+\nabla_\theta r(\pi) = \nabla_\theta \sum_{t=0}^{T} \textcolor{red}{\underbrace{\mu(s)}_{\text{Depends on }\theta}} \sum_{a} \pi(a \mid s, \theta) \sum_{s',r} p(s',r \mid s,a) r \qquad
+\tag{7}\]</span></span></p>
+<ol type="1">
+<li>Methods based on this are called policy gradient methods.</li>
+<li>We are trying to maximize the average reward.</li>
+</ol>
+<p>There are a few challenges with using the gradient in <a href="#eq-average-reward-objective-gradient">the above equation</a>:</p>
+<p>According to the lesson <span class="math inline">\(\mu(s)\)</span> depends on <span class="math inline">\(\theta\)</span>. Martha White point out that this state importance though parameterized only by s actually depends on the the policy <span class="math inline">\(\pi\)</span> which will evolve during its training based on the values of <span class="math inline">\(\theta\)</span>. Which means out notation here is a bit misleading. She then contrasts it with the value function gradient is being evaluated using a fixed policy.</p>
+<p><span id="eq-value-function-gradient"><span class="math display">\[
+\begin{align*}
+\nabla_w \bar{VE} &amp;= \nabla_w \sum_{s}\textcolor{red}{\underbrace{\mu(s)}_{\text{Independent of }\mathbf{w}}}  [V_{\pi}(s)-\bar{v}(s,w)]^2 \newline
+&amp;=\sum_{s} \textcolor{red}{\mu(s)} \nabla_w [V_{\pi}(s)-\bar{v}(s,w)]^2
+\end{align*} \text{(value function gradient)} \qquad
+\tag{8}\]</span></span></p>
+<p>We can avg reward as an objective for policy optimization and the its for the stochastic gradient ascent. Next we will consider how the policy gradient theorem can help us estimate the gradient of the average reward objective despite these setbacks.</p>
+</section>
+<section id="the-policy-gradient-theorem-video" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="the-policy-gradient-theorem-video">The Policy Gradient Theorem (Video)</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-policy-gradient-theorem" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-policy-gradient-theorem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-08-gridworld-policy.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>Understanding the pg theorem up</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-policy-gradient-theorem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13
+</figcaption>
+</figure>
+</div><div id="fig-policy-gradient-theorem" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-policy-gradient-theorem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-09-gridworld-policy.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>Understanding the pg theorem left</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-policy-gradient-theorem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14
+</figcaption>
+</figure>
+</div><div id="fig-policy-gradient-theorem" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-policy-gradient-theorem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-10-gridworld-policy.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>Understanding the pg theorem all</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-policy-gradient-theorem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15
+</figcaption>
+</figure>
+</div></div>
+
+<p>In this video course instructor Martha White explains the policy gradient theorem, a key result for optimizing policy in reinforcement learning. The goal is to maximize the average reward by adjusting policy parameters <span class="math inline">\(\theta\)</span> using gradient ascent. The challenge is estimating the gradient of the average reward, which initially involves a complex expression with the gradient of the stationary distribution over states (<span class="math inline">\(\mu(s)\)</span>).</p>
+</section>
+<section id="sec-l2g2" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l2g2">The results of the policy gradient theorem</h2>
+<p>The policy gradient theorem simplifies this by providing a new expression for the gradient. This expression involves summing, over all states and actions, the product of the gradient of the policy and the action-value function (Q). The gradient of the policy indicates how to adjust parameters to increase the probability of an action, while the action-value function represents the expected return from taking that action.</p>
+<p>The video illustrates this with a grid world example, showing how gradients for different actions point in different directions. By weighting these gradients with the corresponding action values, the theorem provides a direction to update the policy parameters that increases the probability of high-value actions and decreases the probability of low-value actions.</p>
+<p>The product rule <span id="eq-product-rule"><span class="math display">\[
+\nabla(f(x)g(x)) = \nabla f(x)g(x) + f(x)\nabla g(x) \qquad \text{(product rule)}
+\tag{9}\]</span></span></p>
+<p>therefore:</p>
+<p><span id="eq-policy-gradient-naive"><span class="math display">\[
+\begin{align*}
+\nabla_\theta r(\pi) &amp;= \sum_{t=0}^{T} \nabla \mu(s) \sum_{a} \pi(a \mid s,\theta) \sum_{s',r} p(s',r \mid s,a) r \newline &amp;+  \sum_{t=0}^{T} \mu(s) \nabla \sum_{a} \pi(a \mid s, \theta) \sum_{s',r} p(s',r \mid s,a) r
+\end{align*}
+\tag{10}\]</span></span></p>
+<p>The first term is the gradient of the stationary distribution and the second term is the gradient of the policy. The policy gradient theorem simplifies this expression by eliminating the need to estimate the gradient of the stationary distribution.</p>
+<p><span id="eq-policy-gradient-theorem"><span class="math display">\[
+\begin{align*}
+\nabla_\theta r(\pi) &amp;= \sum_{s\in \mathcal{S}} \mu(s) \textcolor{red}{ \sum_{a\in{\mathcal{A}}} \nabla \pi(a \mid s,\theta)  q_\pi(s,a) }
+\end{align*}
+\tag{11}\]</span></span></p>
+<p>The policy gradient theorem provides a new expression for the gradient of the average reward objective. This expression involves summing, over all states and actions, the product of the gradient of the policy and the action-value function (Q). The gradient of the policy indicates how to adjust parameters to increase the probability of an action, while the action-value function represents the expected return from taking that action.</p>
+<p>Martha White points out that this expression is much easier to estimate.</p>
+<p>Now let’s try to understand how we use the theorem to estimate the gradient.</p>
+<p>What we will use it to approximate the gradient. Computing the sum over states is impractical.</p>
+<p>What we will do do is take a stochastic samples. This involves updating the policy parameters based on the gradient observed at the current state.</p>
+<p>To simplify the update rule, the concept of expectations is introduced. By re-expressing the gradient as an expectation under the <strong>stationary distribution of the policy</strong>, the update can be further simplified to involve only a single action sampled from the current policy.</p>
+<p>The final update rule resembles other learning rules seen in the course, where the policy parameters are adjusted proportionally to a stochastic gradient of the objective. The magnitude of the step is controlled by a step-size parameter</p>
+<p>The actual computation of the stochastic gradient requires two components: the gradient of the policy and an estimate of the action-value function</p>
+</section>
+<section id="the-policy-gradient-theorem" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="the-policy-gradient-theorem">The policy gradient theorem</h2>
+<p>We need some preliminary results and definitions.</p>
+<ol type="1">
+<li><a href="#eq-dynamics-function">The four part dynamics function</a> from the <span class="citation" data-cites="sutton2018reinforcement">[@sutton2018reinforcement pp. 48]</span> book:</li>
+<li>Next we need the result from <a href="#note-318">Exercise 3.18</a> in <span class="citation" data-cites="sutton2018reinforcement">[@sutton2018reinforcement pp. 62]</span></li>
+<li>Next we need the result from <a href="#note-319">Exercise 3.19</a> in <span class="citation" data-cites="sutton2018reinforcement">[@sutton2018reinforcement pp. 62]</span></li>
+</ol>
+<p><span id="eq-dynamics-function"><span class="math display">\[
+p(s', r \mid s, a) \doteq Pr\{S_t=s', R_t=r \mid S_{t-1} = s , A_{t-1}= a\} \qquad \text{(S.B. 3.2)}
+\tag{12}\]</span></span></p>
+<div id="note-318" class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise 3.18
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<blockquote class="blockquote">
+<p>The value of a state depends on the values of the actions possible in that state and on how likely each action is to be taken under the current policy. We can think of this in terms of a small backup diagram rooted at the state and considering each possible action:</p>
+</blockquote>
+
+<blockquote class="blockquote">
+<p>Give the equation corresponding to this intuition and diagram for the value at the root node, <span class="math inline">\(v_\pi(s)\)</span>, in terms of the value at the expected leaf node, <span class="math inline">\(q_\pi(s, a)\)</span>, given <span class="math inline">\(S_t = s\)</span>. This equation should include an expectation conditioned on following the policy, <span class="math inline">\(\pi\)</span>. Then give a second equation in which the expected value is written out explicitly in terms of <span class="math inline">\(\pi(a \mid s)\)</span> such that no expected value notation appears in the equation.</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div class="no-row-height column-margin column-container"><div id="fig-ex-3-18" class="quarto-float quarto-figure quarto-figure-center anchored callout-8-contents callout-collapse collapse show callout-margin-content">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ex-3-18-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ex-3-18.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>backup diagram from v() to q()</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ex-3-18-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16: backup diagram from <span class="math inline">\(v_\pi(s)\)</span> to <span class="math inline">\(q_\pi(s,a)\)</span>
+</figcaption>
+</figure>
+</div></div><section id="solution" class="level3 unnumbered page-columns page-full">
+<h3 class="unnumbered anchored" data-anchor-id="solution">Solution</h3>
+<p><span id="eq-3-18-solution"><span class="math display">\[
+\begin{align}
+V_\pi(s) &amp;= \mathbb{E_\pi}[q(s_t,a)  \mid s_t = s, a_t=a ] &amp;&amp; \text{(def. of Value)} \newline
+&amp;= \sum_a Pr(a \mid s) q_\pi(s,a) &amp;&amp; \text{(def. of Expectation)} \newline
+&amp;= \textcolor{red}{\sum_a \pi(a \mid s)} \textcolor{green}{q_\pi(s,a)} &amp;&amp; \text {(def. of policy)}
+\end{align}
+\tag{13}\]</span></span></p>
+<div id="note-319" class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise 3.19
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<blockquote class="blockquote">
+<p>The value of an action, <span class="math inline">\(q_\pi(s, a)\)</span>, depends on the expected next reward and the expected sum of the remaining rewards. Again we can think of this in terms of a small backup diagram, this one rooted at an action (state—action pair) and branching to the possible next states:</p>
+</blockquote>
+
+<blockquote class="blockquote">
+<p>Give the equation corresponding to this intuition and diagram for the action value, <span class="math inline">\(q_\pi(s, a)\)</span>, in terms of the expected next reward, <span class="math inline">\(R_{t+1}\)</span>, and the expected next state value, <span class="math inline">\(v_\pi(S_{t+1})\)</span>, given that <span class="math inline">\(S_t = s\)</span> and <span class="math inline">\(A_t = a\)</span>. This equation should include an expectation but not one conditioned on following the policy. Then give a second equation, writing out the expected value explicitly in terms of <span class="math inline">\(p(s_0, r \mid s, a)\)</span> defined by <a href="#eq-dynamics-function">eq 3.2</a>, such that no expected value notation appears in the equation.</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div class="no-row-height column-margin column-container"><div id="fig-ex-3-19" class="quarto-float quarto-figure quarto-figure-center anchored callout-9-contents callout-collapse collapse show callout-margin-content">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ex-3-19-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ex-3-19.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>backup diagram from q() to v()</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ex-3-19-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17: backup diagram from <span class="math inline">\(q_\pi(s,a)\)</span> to <span class="math inline">\(v_\pi(s')\)</span>
+</figcaption>
+</figure>
+</div></div></section>
+<section id="solution-1" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="solution-1">Solution</h3>
+<p><span class="math display">\[
+\begin{align*}
+q_\pi(s, a) &amp;= \mathbb{E}[R_{t+1} v_\pi (s_{t+1}) \mid s_t = s, a_t = a] \newline
+&amp;= \textcolor{blue}{\sum_{s', r} p(s', r \mid s, a)} \textcolor{pink}{[r + v_\pi(s')]}
+\end{align*} \qquad
+\]</span> {#ex-319-solution}</p>
+<p><span class="math display">\[
+\begin{align*}
+q_\pi(s, a) &amp;= \sum_{s'} \mathbb{E}_\pi[G_{t} \mid S_{t+1}=s'] Pr\{S_{t+1} = s' \mid S_t = s, A_t = a\}
+\newline &amp;= \sum_{s'} \mathbb{E}[R_{t+1} + \gamma G_{t+1} \mid S_t = s, A_t = a, S_{t+1} = s'] Pr\{S_{t+1} = s' \mid S_t = s, A_t = a\}
+\newline &amp;= \sum_{s',r} \left( r + \gamma \underbrace{\mathbb{E}[G_{t+1} \mid S_{t+1} = s']}_{v_\pi|(s')} \right) p(s', r \mid s, a)
+\newline &amp;= \sum_{s',r} [ r + \gamma v_\pi(s')] p(s', r \mid s, a)
+\end{align*}
+\]</span></p>
+<p>Here is my version of the proof:</p>
+<p><span id="eq-policy-gradient-theorem-proof"><span class="math display">\[
+\begin{align*}
+\textcolor{cyan}{\nabla_\theta V_\pi(s)} &amp;= \nabla_\theta \sum_a \textcolor{red}{\pi(a \mid s)} \textcolor{green}{ q_\pi(s,a) } &amp;&amp; \text{backup } v_\pi \to q_\pi \text{ (Ex 3.18)}
+\newline &amp;= \sum_a \nabla_\theta \pi(a \mid s) q_\pi(s,a) + \pi(a \mid s) \nabla_\theta q_\pi(s,a) &amp;&amp; \text{product rule}
+\newline &amp;= \sum_a \nabla_\theta \pi(a \mid s) q_\pi(s,a) + \pi(a \mid s) \nabla_\theta \sum_{s'} \textcolor{blue}{P(s',r \mid s, a)} \textcolor{pink}{[r + V_\pi(s')]} &amp;&amp; \text{backup } q_\pi \to v_\pi \text{ (Ex 3.19)}
+\newline &amp;= \sum_a \nabla_\theta \pi(a \mid s) q_\pi(s,a) + \pi(a \mid s) \sum_{s'} P(s',r \mid s, a) \nabla_\theta V_\pi(s') &amp;&amp; P, r \text{ are const w.r.t. } \theta \newline
+=&amp; \sum_{a \in \mathcal{A}} \Big( \nabla_\theta \pi(a \mid s)Q_\pi(s, a) + \pi(a \mid s) \sum_{s'} P(s' \mid s,a)  \textcolor{cyan}{\nabla_\theta V_\pi(s')} \Big) &amp;&amp; \text{total rule of probability on r for P }
+\newline &amp; \blacksquare &amp;&amp; \qquad
+\end{align*}
+\tag{14}\]</span></span></p>
+</section>
+</section>
+<section id="sec-l2g3" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l2g3">The importance of the policy gradient theorem</h2>
+<p>Crucially, the policy gradient theorem eliminates the need to estimate the gradient of the stationary distribution (<span class="math inline">\(\mu\)</span>), making the gradient much easier to estimate from experience. This sets the stage for building incremental policy gradient algorithms, which will be discussed in the next lecture.</p>
+</section>
+</section>
+<section id="lesson-3-actor-critic-for-continuing-tasks" class="level1">
+<h1>Lesson 3: Actor-Critic for Continuing Tasks</h1>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox" checked="">Derive a sample-based estimate for the gradient of the average reward objective <a href="#sec-l3g1">#</a></label></li>
+<li><label><input type="checkbox" checked="">Describe the actor-critic algorithm for control with function approximation, for continuing tasks <a href="#sec-l3g2">#</a></label></li>
+</ul>
+</div>
+</div>
+<section id="sec-l3g1" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l3g1">Derive a sample-based estimate for the gradient of the average reward objective</h2>
+<p><span class="math display">\[
+\theta_{t+1} \doteq \theta_t + \alpha \frac{ \nabla_ \pi (a_t \mid s_t, \theta)}{\pi (a_t \mid s_t, \theta)} q_\pi(s_t, a_t) \qquad \text{()}
+\]</span></p>
+<p><span id="eq-gradient-ascent"><span class="math display">\[
+\theta_{t+1} = \theta_t + \alpha \nabla_\theta ln \pi(a_t \mid s_t, \theta) q_\pi(s_t, a_t) \qquad \text{()}
+\tag{15}\]</span></span></p>
+<p>where <span class="math inline">\(\alpha\)</span> is the step size and <span class="math inline">\(\nabla_\theta J(\theta)\)</span> is the gradient of the objective function <span class="math inline">\(J(\theta)\)</span> with respect to the policy parameters <span class="math inline">\(\theta\)</span>.</p>
+<p><span id="eq-log-derivative"><span class="math display">\[
+\nabla \ln (f(x)) = \frac{\nabla f(x)}{f(x)} \qquad \text{(log derivative)}
+\tag{16}\]</span></span></p>
+</section>
+<section id="reinforce-algorithm-extra" class="level2">
+<h2 class="anchored" data-anchor-id="reinforce-algorithm-extra">Reinforce Algorithm (Extra)</h2>
+<p>The reinforce algorithm isn’t covered in the course. However, it is in the readings. Also the reinforce algorithm is said to be the most direct implementation of the policy gradient theorem. Finaly the reinforce algorithm is used in one of my research projects and this seems to be a great opportunity to understand it better.</p>
+<p>So without further ado, let’s dive into the reinforce algorithm.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-30-reinfoce.png" class="img-fluid figure-img"></p>
+<figcaption>Reinforce Algorithm</figcaption>
+</figure>
+</div>
+<p><strong>Reinforce</strong> reveals the main issues with the policy gradient theorem. While the policy gradient theorem provides an unbiased estimate of the gradient of the average reward objective, it is a high variance estimator. This means that the gradient is very noisy and can lead to slow learning.</p>
+<p>One wat to reduce the variance of the policy gradient theorem is to use a baseline. A baseline is a function that is subtracted from the reward to reduce the variance of the policy gradient theorem. Subtracting the baseline does not change the expected value of the gradient<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, but it can reduce the variance of the gradient estimate.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-31-reinforce-with-baselines.png" class="img-fluid figure-img"></p>
+<figcaption>Reinforce Algorithm</figcaption>
+</figure>
+</div>
+<p>the change is in the last three lines. The baseline is subtracted from the return G and the gradient is scaled by the baseline.</p>
+</section>
+<section id="sec-l3g2" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l3g2">Describe the actor-critic algorithm for control with function approximation, for continuing tasks</h2>
+</section>
+</section>
+<section id="lesson-4-policy-parameterizations" class="level1">
+<h1>Lesson 4: Policy Parameterizations</h1>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox" checked="">Derive the actor-critic update for a softmax policy with linear action preferences <a href="#sec-l4g1">#</a></label></li>
+<li><label><input type="checkbox" checked="">Implement this algorithm <a href="#sec-l4g2">#</a></label></li>
+<li><label><input type="checkbox" checked="">Design concrete function approximators for an average reward actor-critic algorithm <a href="#sec-l4g3">#</a></label></li>
+<li><label><input type="checkbox" checked="">Analyze the performance of an average reward agent <a href="#sec-l4g4">#</a></label></li>
+<li><label><input type="checkbox" checked="">Derive the actor-critic update for a gaussian policy <a href="#sec-l4g5">#</a></label></li>
+<li><label><input type="checkbox" checked="">Apply average reward actor-critic with a gaussian policy to a particular task with continuous actions <a href="#sec-l4g6">#</a></label></li>
+</ul>
+</div>
+</div>
+<section id="actor-critic-with-softmax-policies-video" class="level2">
+<h2 class="anchored" data-anchor-id="actor-critic-with-softmax-policies-video">Actor-Critic with Softmax Policies (video)</h2>
+<p>Adam White discusses one specific implementation of the actor-critic reinforcement learning algorithm using a linear function approximation of the action value with tile coding and a Softmax policy parameterization.</p>
+<p>Actor-critic methods combine direct policy optimization (actor) with value estimation (critic) using temporal difference learning.</p>
+<p>The critic evaluates the policy by updating state value estimates, while the actor updates policy parameters based on feedback from the critic. This implementation is designed for finite action sets and continuous states. It employs a Softmax policy that maps state-dependent action preferences to probabilities, ensuring these probabilities are positive and sum to one. Each state effectively has its own Softmax distribution, and actions are sampled proportionally to these probabilities.</p>
+<p>Both the value function and action preferences are parameterized linearly. The critic uses a feature vector representing the current state to estimate the value function. For the actor, the action preferences depend on both state and action, necessitating a state-action feature vector. The parameterization requires duplicating state feature vectors for each action, resulting in a policy parameter vector (θ) larger than the critic’s weight vector (W).</p>
+<p>The algorithm’s update equations include:</p>
+<p>Critic Update: A straightforward semi-gradient TD update using the feature vector scaled by the temporal difference residual (TDR). Actor Update: A more complex gradient that involves two components: State-action features for the selected action. A sum over all actions of state-action features scaled by the policy probabilities.</p>
+</section>
+<section id="sec-l4g1" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l4g1">Derive the actor-critic update for a softmax policy with linear action preferences</h2>
+<p>The critic’s update rule is:</p>
+<p><span class="math display">\[
+\mathbf{w} \leftarrow \mathbf{w} + α^\mathbf{w} \delta \nabla \hat{v}(S,w)
+\]</span></p>
+<p>which uses semigradient TD(0) to update the value function.</p>
+<p>The actor uses the tf-error from the critic to update the policy parameters: <span class="math display">\[
+θ \leftarrow θ + α^θ δ ∇ \ln \pi (A \mid S,\theta)
+\]</span></p>
+<p>policy update with a softmax policy is:</p>
+<p><span class="math display">\[
+\pi(a \mid s, \theta) \doteq \frac{e^{h(s, a, \theta)}}{\sum_{b\in \mathcal{A}} e^{h(s, b, \theta)}}
+\]</span></p>
+<p>this is like having a different softmax for each state</p>
+<p><img src="pg-21.png" class="img-fluid"> <img src="pg-20.png" class="img-fluid"> <img src="pg-22-features.png" class="img-fluid" alt="stacking"></p>
+<p>Feature of the action preferences function</p>
+<p>for the critic <span class="math display">\[
+\hat{v}(s,w) \doteq w^T x(s)
+\]</span></p>
+<p>for the actor</p>
+<p><span class="math display">\[
+h(s,a,θ) \doteq θ^T x_h(s,a)
+\]</span></p>
+<p>we can do this by stacking</p>
+<p>So with the softmax policy the critic’s update is:</p>
+<p><span class="math display">\[
+w  \leftarrow w + α^w \delta x(s)
+\]</span></p>
+<p>and the actor’s update to the preferences looks as follows.</p>
+<p><span class="math display">\[
+\nabla \ln \pi(a \mid s, \theta) = x_h(s,a) - \sum_b \pi(b \mid s, \theta) x_h(s,b)
+\]</span></p>
+<p>The gradient has two parts.</p>
+<p>The first is the state action features for the selected action xh(s,a).</p>
+<p>The second part is the state action features multiplied by the policy summed over all actions ∑ b π(b|s,θ)xh(s,b).</p>
+</section>
+<section id="sec-l4g2" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l4g2">Implement this algorithm</h2>
+</section>
+<section id="sec-l4g3" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l4g3">Design concrete function approximators for an average reward actor-critic algorithm</h2>
+</section>
+<section id="sec-l4g4" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l4g4">Analyze the performance of an average reward agent</h2>
+</section>
+<section id="sec-l4g5" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l4g5">Derive the actor-critic update for a gaussian policy</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-11-actor-critic.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>Actor-Critic</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-12-actor-critic-alg.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>Actor-Critic Continuing</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pg-32-actor-critic.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>Actor-Critic Episodic</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-l4g6" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l4g6">Apply average reward actor-critic with a gaussian policy to a particular task with continuous actions</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Discussion prompt
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<blockquote class="blockquote">
+<p>Are tasks really ever continuing? Everything eventually breaks or dies. It’s clear that individual people do not learn from death, but we don’t live forever. Why might the continuing problem formulation be a reasonable model for long-lived agents?</p>
+</blockquote>
+</div>
+</div>
+<div id="fig-chapter-13-policy-gradient" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-chapter-13-policy-gradient-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="ch13-policy-gradient.pdf" class="col-page" width="700" height="1000"></p>
+<figcaption>Chapter 13</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chapter-13-policy-gradient-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18: Chapter 13 of <span class="citation" data-cites="sutton2018reinforcement">[@sutton2018reinforcement]</span> covering policy gradient methods.
+</figcaption>
+</figure>
+</div>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>which models a single roll of a die based on its historical performance. It generalizes the Bernoulli and a special case of the Multinomial for a single trial<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>A step that does not logically follow from the previous one<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>the bias<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

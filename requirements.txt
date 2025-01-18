@@ -1,0 +1,29 @@
+numpy
+pandas
+# statsmodels
+# matplotlib
+# seaborn
+# plotly
+# altair
+# bokeh 
+# jax[cuda12]
+# torch
+# torchvision 
+# torchaudio
+# shinywidgets
+# scikit-learn
+# scipy
+# tabulate
+# itables
+jupyter
+# joblib==1.4.2
+jupyter-cache
+pyyaml
+# trax
+mesa
+# tqdm
+# semantic-kernel
+gymnasium
+# #mesa_models @ git+https://github.com/projectmesa/mesa-examples#egg=mesa-models
+# pettingzoo
+# torcheval

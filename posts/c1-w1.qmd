@@ -1,0 +1,718 @@
+---
+date: 2022-05-02
+lastmod: 2024-05-07
+title: The K-Armed Bandit Problem
+subtitle: RL Fundamentals
+description: In week 1 we define some key concepts like rewards, states, action, value functions, action values functions. We consider the the multi-armed bandit problem, leading to exploration explotation dillema, and the epsilon greedy algorithm.
+author: Oren Bochman
+categories:
+  - rl
+  - Coursera
+keywords:
+
+  - notes
+  - rl
+  - reinforcement learning
+  - the k-armed bandit problem
+  - bandit algorithms
+  - exploration 
+  - explotation
+  - epsilon greedy algorithm
+  - sample avarage method
+jupyter: python3
+image: img/nlp-brain-wordcloud.jpg
+---
+
+![RL logo](img/logo.png){.column-margin} 
+
+![RL algorithms](img/alg_selector.png){.column-margin group="slides"}
+
+# Lesson 1: The K-Armed Bandit {#sec-lesson-k-armed-bandit}
+
+::: {.callout-tip collapse="true"}
+### Read {.unnumbered}
+
+-   [x] [\@sutton2018reinforcement§2.1-7, pp. 25-36](http://incompleteideas.net/book/RLbook2020.pdf#page=47)
+-   [x] [\@sutton2018reinforcement§2.8, pp. 42-43](http://incompleteideas.net/book/RLbook2020.pdf#page=47)
+:::
+
+::: callout-note
+### Goals {.unnumbered}
+
+-   [x] Understand the temporal nature of the bandit problem [\#](#sec-k-armed-bandit)
+-   [x] Define k-armed bandit problem [\#](#l1g2)
+-   [x] Define action-values and the greedy action selection method [\#](#sec-l1g3)
+-   [x] Define reward, time steps, and value functions [\#](#l1g4)
+:::
+
+> In reinforcement learning, the agent generates its own training data by interacting with the world. The agent must learn the consequences of his own actions through trial and error, rather than being told the correct action -- [@white2020fundamental]
+
+## K-armed bandits 🐙 {#sec-k-armed-bandit}
+
+In the **k-armed bandit** problem there is an **agent** who is assigned a **state** $s$ by the environment and must learn which action $a$ from the possible set of **actions** $A$ leads to the goal state through a signal based on the greatest **expected reward**.
+
+One way this can be achieved is using a Bayesian updating scheme starting from a uniform prior.
+
+## Temporal nature of the bandit problem {#sec-l1g1}
+
+The **bandit problem** cam be static problem with a fixed reward distribution. However, more generally it is a **temporal** problem when the rewards distribution changes over time and agent must learn to adapt to these changes.
+
+::: callout-note
+## Difference between bandits and RL
+
+In the typical **bandit setting** there is only one state. So after we pull the arm nothing in the problem changes.
+
+Bandits problems where agents can discriminate between states are called *contextual bandits.*
+
+However, bandits embody one of the main themes of RL - that of estimating an expected reward for different actions.
+
+In the more general **RL setting** we will be interested in more general problems where actions will lead the agent to new states and the goal is some specific state we need to reach.
+:::
+
+![bandit](img/multi_armed_bandit.webm){.column-margin}
+
+::: {#exm-clinical-trials}
+## Using Multi-armed bandit to randomize a medical trial
+
+-   agent is the doctor
+-   actions {blue, yellow, red} treatment
+-   k = 3
+-   the rewards are the health of the patients' blood pressure.
+-   a random trial in which a doctor need to pick one of three treatments.
+-   q(a) is the mean of the blood pressure for the patient.
+:::
+
+![clinical trial](img/rl-clinical-trial.png){.column-margin}
+
+#### Action Values and Greedy Action Selection {#sec-l1g3}
+
+The **value** of an action is its **expected reward** which can be expressed mathematically as:
+
+$$
+\begin{align}
+q_{\star}(a) & \doteq \mathbb{E}[R_t  \vert  A_t=a] \space \forall a \in \{a_1 ... a_k\} \newline 
+             & = \sum_r p(r|a)r \qquad \text{(action value)}
+\end{align}
+$$ {#eq-action-value}
+
+where:
+
+-   $\doteq$ means definition
+-   $\mathbb{E}[r \vert a]$ means expectation of a reward given some action a Since agents want to maximize rewards, recalling the definition of expectations we can write this as:
+
+The goal of the agent is to maximize the expected reward which we can express mathematically as:
+
+$$
+ \arg\max_a q(a)=\sum_r p(r \vert a) \times r \qquad \text{(Greedification)}
+$$ {#eq-greedification}
+
+where:
+
+-   $\arg \max_a$ means the argument $a$ maximizes - so the agent is looking for the action that maximizes the expected reward and the outcome is an action.
+
+#### Reward, Return, and Value Functions {#l1g4}
+
+The **reward** $r$ is the immediate feedback from the environment after the agent takes an action.
+
+The **return** $G_t$ is the total discounted reward from time-step $t$.
+
+The **value function** $v(s)$ of an MRP is the expected return starting from state $s$.
+
+![decisions](img/rl-descion-problems.png){.column-margin}
+
+example of decisions under uncertainty:
+
+-   movie recommendation.
+-   clinical trials.
+-   music recommendation.
+-   food ordering at a restaurant.
+
+![why discuss bandits](img/rl-why-bandits.png){.column-margin}
+
+It best to consider issues and algorithms design choices in the simplest setting first. The bandit problem is the simplest setting for RL. More advanced algorithms will incorporate parts we use to solve this simple settings.
+
+-   maximizing rewards.
+-   balancing exploration and exploitation.
+-   estimating expected rewards for different actions.
+
+are all problems we will encounter in both the bandit and the more general RL setting.
+
+# Lesson 2: What to learn: understanding Action Values {#sec-lesson-action-values}
+
+::: callout-note
+### Goals
+
+1.  [x] Define action-value estimation methods. [\#](#L2G1)
+2.  [x] Define exploration and exploitation [\#](#L2G2)
+3.  [x] Select actions greedily using an action-value function [\#](#L2G3)
+4.  [x] Define online learning [\#](#L2G4)
+5.  [x] Understand a simple online sample-average action-value estimation method [\#](#L2G5)
+6.  [x] Define the general online update equation [\#](#L2G6)
+:::
+
+### What are action-value estimation methods? {#L2G1}
+
+![estimating action values](img/rl-clinical-trial-q(a).png){.column-margin}
+
+In Tabular RL settings The action value function $q$ is nothing more than a table with one {state, action} pair per row and its value. More generally, like when we will consider function approximation in course 3, it is a mapping from {state, action} pair to a expected reward.
+
+| State s | Action a         | Action value q(s,a) |
+|---------|------------------|---------------------|
+| 0       | red treatment    | 0.25                |
+| 0       | yellow treatment | 0.75                |
+| 0       | blue treatment   | 0.5                 |
+
+The higher the action value $q(a)$ of an action **a**, the more likely it is to lead us to a better state which is closer to the objective. We can choose for each state the best or one of the best choices giving us a **plan** for navigating the state space to the goal state.
+
+$$
+Q_t(a) \doteq \frac{\text{sum of rewards for action a taken time } t}{\text{number of times action a was taken prior to } t} = \frac{\sum_{i=1}^{t-1} R_i}{t-1} \qquad
+$$ {#eq-sample-average}
+
+The main idea of RL is that we can propagate values from an one adjacent state to another. We can start with the uniform stochastic policy and use it to estimate/learn the action values. Action values will decrease for actions leads to a dead end. And it will increase in the direction of the goal but only once the influence of the goal has propagated. A continuing theme in RL is trying to increase the efficiency for propagation of rewards across the action values.
+
+Knowing the minimum number of action needed to reach a goal can be an approximate indicator of the action value.
+
+A second idea is that once we have let the influence of dead end and the goals spread enough we may have enough information to improve the initial action value to a point where each action is the one of the best choices. [We call picking the one of the best action greedy selection and it leads to a deterministic policy.]{.mark} This is the optimal policy, it might not be unique since some actions might be tied in terms of their rewards. However for all of these we cannot do any better.
+
+### Exploration and Exploitation definition and dilemma {#L2G2}
+
+In the bandit setting we can define:
+
+Exploration
+
+:   Testing any action that might be better than our best.
+
+Exploitation
+
+:   Using the best action.
+
+Should the doctor explore new treatments that might harm his patients or exploit the current treatment. In real life bacteria gain immunity to antibiotics so there is merit to exploring new treatments. However, a new treatment can be harmful to some patients. Ideally we want to enjoy the benefits of the best treatment but to be open to new and better alternatives but we can only do one at a time.
+
+[Since exploitation is by definition mutually exclusive with exploration we must choose one and give up the benefits of the other. This is the **dilemma of Exploration and Exploitation**.]{.marked} How an agent resolves this dilemma in practice depends on the agent's preferences and the type of state space it inhabits, if it has just started or encounters a **changing landscape,** it should make an effort to explore, on the other hand if it has explored enough to be certain of a global maximum it would prefer to exploit.
+
+### Defining Online learning ? {#L2G4}
+
+Online learning
+
+:   learning by updating the agent's value function or the action value function step by step as an agent transverses the states seeking the goal. Online learning is important to handle MDP which can change.
+
+One simple way an agent can use online learning is to try actions by random and keep track of the subsequent states. Eventually we should reach the goal state. If we repeat this many times we can estimate the expected rewards for each action.
+
+### Sample Average Method for estimating Action Values Incrementally {#L2G5}
+
+Action values help us make decision. Let's try and make estimate action values more formal using the following method:
+
+$$
+ q_t(a)=\frac{\text{sum or rewards when a taken prior to t}}{\text{number of times a taken prior to t}}
+       =\frac{\sum_{t=1}^{t-1} R_i \mathbb{I}_{A_i=a}}{\sum_{t=1}^{t-1}\mathbb{I}_{A_i=a} } \qquad
+$$
+
+![example](img/rl-sample-avarage-method.png){.column-margin}
+
+$$
+\begin{align}
+Q_{n+1} &= \frac{1}{n} \sum_{i=1}^n R_i \newline
+  & = \frac{1}{n} \Bigg(R_n + \sum_i^{n-1} R_i\Bigg) \newline
+  & = \frac{1}{n} \Bigg(R_n + (n-1) \frac{1}{(n-1)}\sum_i^{n-1} R_i\Bigg) \newline
+  &= \frac{1}{n} \Big(R_n + (n-1) Q_{n}\Big) \newline
+  &= \frac{1}{n} \Big(R_n + nQ_{n} -Q_{n} \Big) \newline
+  &= Q_n + \frac{1}{n} \Big[R_n - Q_{n}\Big]
+\end{align}
+$$ {#eq-sample-average-incremental-update-rule}
+
+### What are action-value estimation methods? {#L2G6}
+
+We can now state this in English as:
+
+$$
+\text{New Estimate} \leftarrow \text{Old Estimate} + \text{Step Size } \times [\text{Target} - \text{Old Estimate}] \qquad
+$$
+
+here:
+
+-   step size can be adaptive - changing over time. but typically it is constant and in the range (0,1) to avoid divergence.
+-   for the sample average method the step size is $\frac{1}{n}$ where n is the number of times the action has been taken.
+-   (Target - OldEstimate) is called the *error*.
+
+More generally we will use the update rule as:
+
+$$
+Q_{n+1} = Q_n + \alpha \Big[R_n - Q_{n}\Big] \qquad a\in (0,1)
+$$ {#eq-general-incremental-update-rule}
+
+``` pseudocode
+#| label: simple-epsilon-greedy-bandit-algorithm
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{Simple Bandit($\epsilon$)}
+\begin{algorithmic}[1]
+\State $Q(a) \leftarrow 0\ \forall a\ $ \Comment{ $\textcolor{blue}{initialize\ action\ values}$}
+\State $N(a) \leftarrow 0\ \forall a\ $ \Comment{ $\textcolor{blue}{initialize\ counter\ for\ actions\ taken}$}
+\For{$t = 1, 2, \ldots \infty$}
+  \State  $A_t \leftarrow \begin{cases}
+    \arg\max_a Q(a) & \text{with probability } 1 - \epsilon \\
+    \text{a random action} & \text{with probability } \epsilon
+    \end{cases}$
+  \State $R_t \leftarrow \text{Bandit}(A_t)$
+  \State $N(A_t) \leftarrow N(A_t) + 1$
+  \State $Q(A_t) \leftarrow Q(A_t) + \frac{1}{N(A_t)}[R_t - Q(A_t)]$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+
+# Lesson 3: Exploration vs Exploitation {#sec-lesson-exploration-exploitation}
+
+::: callout-note
+### Goals
+
+-   Define $\epsilon$-greedy [\#](#sec-epsilon-greedy-policies)
+-   Compare the short-term benefits of exploitation and the long-term benefits of exploration [\#](#sec-benefits-of-exploitation-and-exploration)
+-   Understand optimistic initial values [\#](#sec-optimistic-initial-values)
+-   Describe the benefits of optimistic initial values for early exploration [\#](#sec-benefits-of-optimistic-initial-values-for-early-exploration)
+-   Explain the criticisms of optimistic initial values [\#](#sec-criticisms-of-optimistic-initial-values)
+-   Describe the upper confidence bound action selection method [\#](#L3G6)
+-   Define optimism in the face of uncertainty [\#](#L3G7)
+:::
+
+the following is a Bernoulli greedy algorithm
+
+``` pseudocode
+#| label: alg-greedy-bandit
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{BernGreedy(K, α, β)}
+\begin{algorithmic}[1]
+\For{$t = 1, 2, . . .$}
+\State
+\State \Comment{ estimate model}
+\For{$k = 1, . . . , K$}
+\State $\hat\theta_k \leftarrow  a_k / (α_k + β_k)$
+\EndFor
+\State \Comment{ select and apply action:}
+\State $x_t \leftarrow \arg\max_k \hat{\theta}_k$
+\State Apply $x_t$ and observe $r_t$
+\State \Comment{ update distribution:}
+\State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+
+## Ɛ-Greedy Policies {#sec-epsilon-greedy-policies}
+
+The Ɛ-greedy policy uses a simple heuristic to balance exploration with exploitation. The idea is to choose the best action with probability $1-\epsilon$ and to choose a random action with probability $\epsilon$.
+
+``` pseudocode
+#| label: alg-epsilon-greedy
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{EpsilonGreedy(K, α, β)}
+\begin{algorithmic}[1]
+\For{$t = 1, 2, \ldots $}
+\State p = random()
+  \If {$p < \epsilon$}
+    \State select radom action $x_t \qquad$ \Comment{explore}
+  \Else
+    \State select $x_t = \arg\max_k \hat{\theta}_k \qquad$  \Comment{exploit}
+  \EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+
+::: callout-caution
+### The problem with Ɛ-greedy policies
+
+-   A problem with Ɛ-greedy is that it is not optimal in the long run.
+-   Even after it has found the best course of action it will continue to explore with probability $\epsilon$.
+-   This is because the policy is not adaptive.
+-   One method is too reduce $\epsilon$ over time. However unless there is a feedback from the environment this will likely stop exploring too soon or too late thus providing sub-optimal returns.
+:::
+
+The following is a simple implementation of the Ɛ-greedy algorithm in Python from [geeksforgeeks.org](https://www.geeksforgeeks.org/epsilon-greedy-algorithm-in-reinforcement-learning/?ref=ml_lbp)
+
+```{python}
+# Import required libraries 
+import numpy as np 
+import matplotlib.pyplot as plt 
+  
+# Define Action class 
+class Actions: 
+  def __init__(self, m): 
+    self.m = m 
+    self.mean = 0
+    self.N = 0
+  
+  # Choose a random action 
+  def choose(self):  
+    return np.random.randn() + self.m 
+  
+  # Update the action-value estimate 
+  def update(self, x): 
+    self.N += 1
+    self.mean = (1 - 1.0 / self.N)*self.mean + 1.0 / self.N * x 
+  
+  
+def run_experiment(m1, m2, m3, eps, N): 
+      
+  actions = [Actions(m1), Actions(m2), Actions(m3)] 
+  
+  data = np.empty(N) 
+    
+  for i in range(N): 
+    # epsilon greedy 
+    p = np.random.random() 
+    if p < eps: 
+      j = np.random.choice(3) 
+    else: 
+      j = np.argmax([a.mean for a in actions]) 
+    x = actions[j].choose() 
+    actions[j].update(x) 
+  
+    # for the plot 
+    data[i] = x 
+  cumulative_average = np.cumsum(data) / (np.arange(N) + 1) 
+  
+  # plot moving average ctr 
+  plt.plot(cumulative_average) 
+  plt.plot(np.ones(N)*m1) 
+  plt.plot(np.ones(N)*m2) 
+  plt.plot(np.ones(N)*m3) 
+  plt.xscale('log') 
+  plt.show() 
+  
+  for a in actions: 
+    print(a.mean) 
+  
+  return cumulative_average 
+```
+
+```{python}
+c_1 = run_experiment(1.0, 2.0, 3.0, 0.1, 100000) 
+#print(c_1)
+```
+
+```{python}
+c_05 = run_experiment(1.0, 2.0, 3.0, 0.05, 100000) 
+#print(c_05)
+```
+
+```{python}
+c_01 = run_experiment(1.0, 2.0, 3.0, 0.01, 100000) 
+#print(c_01)
+```
+
+```{python}
+# log scale plot 
+plt.plot(c_1, label ='eps = 0.1') 
+plt.plot(c_05, label ='eps = 0.05') 
+plt.plot(c_01, label ='eps = 0.01') 
+plt.legend() 
+plt.xscale('log') 
+plt.show() 
+```
+
+## Benefits of Exploitation & Exploration {#sec-benefits-of-exploitation-and-exploration}
+
+-   In the short term we may maximize rewards following the best known course of action. However this may represent a local maximum.
+-   In the long term agents that explore different options and keep uncovering better options until they find the best course of action corresponding to the global maximum.
+
+To get the best of both worlds we need to balance exploration and exploitation ideally using a policy that uses feedback to adapt to its environment.
+
+## Optimistic initial values {#sec-optimistic-initial-values}
+
+Optimistic initial values
+
+:   Setting all initially action values greater than the algorithmically available values in \[0,1\]
+
+The methods we have discussed are dependent on the initial action-value estimates, $Q_1(a)$. In the language of statistics, we call these methods biased by their initial estimates. For the sample-average methods, the bias disappears once all actions have been selected at least once. For methods with constant $\alpha$, the bias is permanent, though decreasing over time.
+
+``` pseudocode
+#| label: alg-optimitc-greedy-bandit
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{OptimisticBernGreedy(K, α, β)}
+\begin{algorithmic}[1]
+\For{$t = 1, 2, . . .$}
+\State
+\State \Comment{ estimate model}
+\For{$k = 1, . . . , K$}
+\State $\hat\theta_k \leftarrow  1 \qquad$ \Comment{optimistic initial value}
+\EndFor
+\State \Comment{ select and apply action:}
+\State $x_t \leftarrow \arg\max_k \hat{\theta}_k$
+\State Apply $x_t$ and observe $r_t$
+\State \Comment{ update distribution:}
+\State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+
+## Benefits of optimistic initial values for early exploration {#sec-benefits-of-optimistic-initial-values-for-early-exploration}
+
+Setting the initial action values to be higher than the true values has the effect of causing various bandit algorithm to try to exploit them - only to find out that most values are not as rewarding as it was led to expect.
+
+What happens is that the algorithm will initially explore more than it would have otherwise. Possibly even trying all the actions at least once.
+
+In the short-term it will perform worse than Ɛ- greedy which tend to exploit. But as more of the state space is explored at least once the algorithm will beat an Ɛ-greedy policy which can take far longer to explore the space and find the optimal options.
+
+![The effect of optimistic initial action-value estimates](img/rl-optimistic-initial-conditions.png)
+
+::: callout-caution
+### Criticisms of optimistic initial values {#sec-criticisms-of-optimistic-initial-values}
+
+-   Optimistic initial values only drive early exploration. The agent will stop exploring once this is done.
+-   For a non-stationary problems - this is inadequate.
+-   In a real world problems the maximum reward is an unknown quantity.
+:::
+
+## The UCB action selection method {#sec-the-ucb-action-selection-method}
+
+UCB is an acronym for Upper Confidence Bound. The idea behind it is to select the action that has the highest upper confidence bound. This has the advantage over epsilon greedy that it will explore more in the beginning and then exploit more as the algorithm progresses.
+
+the upper confidence bound is defined as:
+
+$$
+A_t = \arg\max\_a \Bigg[
+  \underbrace{Q_t(a)}_{exploitation} + 
+  \underbrace{c \sqrt{\frac{\ln t}{N_t(a)} }}_{exploration}
+\Bigg] \qquad
+$$ {#eq-ucb}
+
+where:
+
+-   $Q_t(a)$ is the action value
+-   $c$ is a constant that determines the degree of exploration
+-   $N_t(a)$ is the number of times action $a$ has been selected prior to time $t$
+
+![UCB intuition](img/rl_wk1_ucb.png){.column-margin}
+
+The idea is we the action for which the action value plus the highest possible uncertainty give the highest sum. We are being optimistic in assuming this choice will give the highest reward. In reality any value in the confidence interval could be the true value. Each time we select an action we reduce the uncertainty in the exploration term and we also temper our optimism of the upper confidence bound by the number of times we have selected the action. This means that we will prefer to visit the actions that have not been visited as often.
+
+The main advantage of UCB is that it is more efficient than epsilon greedy in the long run. If we measure the cost of learning in terms of the regret - the difference between the expected reward of the optimal action and the expected reward of the action we choose. UCB has a lower regret than epsilon greedy. The downside is that it is more complex and requires more computation.
+
+``` pseudocode
+#| label: alg-brn-UCB
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{UCB(K, α, β)}
+\begin{algorithmic}[1]
+\For{$t = 1, 2, . . .$}
+  \For { $k = 1, . . . , K$ }
+    \State \Comment{ $\textcolor{blue}{compute\ UCBs}$}
+    \State $U_k = \hat\theta_k + c \sqrt{\frac{\ln t}{N_k}}$
+  \EndFor
+\State \Comment{ $\textcolor{blue}{select\ and\ apply\ action}$}
+\State $x_t \leftarrow \arg\max_k h(x,U_x)$
+\State Apply xt and observe $y_t$ and $r_t$
+\State \Comment{ $\textcolor{blue}{estimate\ model}$}
+\For{$k = 1, . . . , K$}
+\State $\hat\theta_k \leftarrow  a_k / (α_k + β_k)$
+\EndFor
+\State \Comment{ select and apply action:}
+\State $x_t \leftarrow \arg\max_k \hat{\theta}_k$
+\State Apply $x_t$ and observe $r_t$
+\State \Comment{ update distribution:}
+\State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+
+Note we can model UCB using an urn model.
+
+## Thompson Sampling {#Sec-Thompson-Sampling}
+
+Thompson sampling is basically like UCB but taking the Bayesian approach to the bandit problem. We start with a prior distribution over the action values and then update this distribution as we take actions. The action we choose is then sampled from the posterior distribution. This has the advantage that it is more robust to non-stationary problems than UCB. The downside is that it is more computationally expensive.
+
+### Thompson Sampling Algorithm {#Sec-Thompson-Sampling-Algorithm}
+
+The algorithm is as follows:
+
+``` pseudocode
+#| label: alg-bernoulli-thompson-sampling
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{BernTS(K, α, β)}
+\begin{algorithmic}[1]
+\For{$t = 1, 2, . . .$}
+\State
+\State \Comment{ sample model}
+\For{$k = 1, . . . , K$}
+\State Sample $\hat\theta_k \sim beta(α_k, β_k)$
+\EndFor
+\State \Comment{ select and apply action:}
+\State $x_t \leftarrow \arg\max_k \hat{\theta}_k$
+\State Apply $x_t$ and observe $r_t$
+\State \Comment{ update distribution:}
+\State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+
+-   [this is a tutorial on Thompson Sampling](https://web.stanford.edu/~bvr/pubs/TS_Tutorial.pdf)
+
+## Optimism in the face of uncertainty {#L3G7}
+
+Optimism in the face of uncertainty
+
+:   This is a heuristic to ensure initial exploration of all actions by assuming that untried actions have a high expected reward. We then try to exploit them but end up successively downgrading their expected reward when they do not match our initial optimistic assessment.
+
+The downside to this approach is when the space of action is continuous so we can never get to the benefits of exploration.
+
+# Awesome RL resources
+
+Let's list some useful RL resources.
+
+**Books**
+
+-   Richard S. Sutton & Andrew G. Barto [RL An Introduction](http://incompleteideas.net/book/RLbook2020.pdf)
+-   [Tor Latimore's](https://tor-lattimore.com/) [Book](https://tor-lattimore.com/downloads/book/book.pdf) and [Blog](https://banditalgs.com/) on Bandit Algorithms.
+-   [Csaba Szepesvari](https://sites.ualberta.ca/~szepesva/)'s [Book](https://www.ualberta.ca/~szepesva/papers/RLAlgsInMDPs.pdf)
+
+**Courses & Tutorials**
+
+-   [David Silver's](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Home.html) 2015 [UCL Course on RL](https://www.davidsilver.uk/teaching/) [Video](https://www.youtube.com/watch?v=2pWv7GOvuf0) and Slides.
+-   [Charles Isbell](https://faculty.cc.gatech.edu/~isbell/pubs/) and [Michael Littman](https://www.littmania.com/) A free Udacity course on RL, with some emphasis on game theory proofs, and some novel algorithms like [Coco-Q: Learning in Stochastic Games with Side Payments](http://proceedings.mlr.press/v28/sodomka13.pdf).
+-   **Contextual Bandits** [tutorial](https://hunch.net/~rwil/) [video](https://vimeo.com/240429210) + papers from MS research videos on contextual bandit algorithms.
+-   Interesting papers:
+    -   We discussed how Dynamic Programming can't handle games like chess. Here are some RL methods that can.
+        -   [Muzero](https://www.nature.com/articles/s41586-020-03051-4.epdf?sharing_token=kTk-xTZpQOF8Ym8nTQK6EdRgN0jAjWel9jnR3ZoTv0PMSWGj38iNIyNOw_ooNp2BvzZ4nIcedo7GEXD7UmLqb0M_V_fop31mMY9VBBLNmGbm0K9jETKkZnJ9SgJ8Rwhp3ySvLuTcUr888puIYbngQ0fiMf45ZGDAQ7fUI66-u7Y%3D)
+        -   [MuZero](https://arxiv.org/abs/2202.06626) and
+        -   [EfficentZero](https://arxiv.org/abs/2111.00210) [code](https://github.com/YeWR/EfficientZero)
+
+## Coding Bandits with MESA
+
+```{python}
+from tqdm import tqdm
+from mesa import Model, Agent
+from mesa.time import RandomActivation
+import numpy as np
+
+
+
+class EpsilonGreedyAgent(Agent):
+    """
+    This agent implements the epsilon-greedy 
+    """
+
+    def __init__(self, unique_id, model, num_arms, epsilon=0.1):
+        super().__init__(unique_id,model)
+        self.num_arms = num_arms
+        self.epsilon = epsilon
+        self.q_values = np.zeros(num_arms)  # Initialize Q-value estimates
+        self.action_counts = np.zeros(num_arms)  # Track action counts
+
+    def choose_action(self):
+        if np.random.rand() < self.epsilon:
+            # Exploration: Choose random arm
+            return np.random.randint(0, self.num_arms)
+        else:
+            # Exploitation: Choose arm with highest Q-value
+            return np.argmax(self.q_values)
+
+    def step(self, model):
+        chosen_arm = self.choose_action()
+        reward = model.get_reward(chosen_arm)
+        assert reward is not None, "Reward is not provided by the model"
+        self.action_counts[chosen_arm] += 1
+        self.q_values[chosen_arm] = (self.q_values[chosen_arm] * self.action_counts[chosen_arm] + reward) / (self.action_counts[chosen_arm] + 1)
+
+
+class TestbedModel(Model):
+    """
+    This model represents the 10-armed bandit testbed environment.
+    """
+
+    def __init__(self, num_arms, mean_reward, std_dev,num_agents=1):
+        super().__init__()
+        self.num_agents = num_agents
+        self.num_arms = num_arms
+        self.mean_reward = mean_reward
+        self.std_dev = std_dev
+        self.env_init()
+        #self.arms = [None] * num_arms  # List to store arm rewards
+        self.schedule = RandomActivation(self)
+        for i in range(self.num_agents):
+          self.create_agent(EpsilonGreedyAgent, i, 0.1) 
+
+    def env_init(self,env_info={}):
+        self.arms = np.random.randn(self.num_arms)  # Initialize arm rewards
+
+    def create_agent(self, agent_class, agent_id, epsilon):
+        """
+        Create an RL agent instance with the specified class and parameters.
+        """
+        agent = agent_class(agent_id, self, self.num_arms, epsilon)
+        self.schedule.add(agent)
+        return agent
+
+    def step(self):
+        for agent in self.schedule.agents:
+            chosen_arm = agent.choose_action()
+            reward = np.random.normal(self.mean_reward, self.std_dev)
+            self.arms[chosen_arm] = reward  # Update arm reward in the model
+            agent.step(self)  # Pass the model instance to the agent for reward access
+
+    def get_reward(self, arm_id):
+        # Access reward from the stored list
+        return self.arms[arm_id]
+
+
+# Example usage
+model = TestbedModel(10, 0, 1)  # Create model with 10 arms
+num_runs = 200                  # The number of times we run the experiment
+num_steps = 1000                # The number of pulls of each arm the agent takes
+
+
+# Run simulation for multiple steps
+for _ in tqdm(range(num_runs)):
+    for _ in range(num_steps):
+        model.step()
+    model.step()
+```

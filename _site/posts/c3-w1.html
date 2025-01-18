@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Oren Bochman">
+<meta name="dcterms.date" content="2024-04-01">
+<meta name="keywords" content="neural networks, feature construction, coarse coding, feed-forward architecture, activation functions, deep networks, online setting, offline setting, representation, learning capacity">
+
+<title>On-Policy Prediction with Approximation – rl-notes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-d58cf0c17c84c672bbe6415fb2b2bd7c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+
+      .quarto-title-block .quarto-title-banner {
+        background: /images/banner_black_3.jpg;
+      }
+</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">rl-notes</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">On-Policy Prediction with Approximation</h1>
+            <p class="subtitle lead">Prediction and Control with Function Approximation</p>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Coursera</div>
+                <div class="quarto-category">notes</div>
+                <div class="quarto-category">rl</div>
+                <div class="quarto-category">reinforcement learning</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Oren Bochman </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 1, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+
+  <div>
+    <div class="keywords">
+      <div class="block-title">Keywords</div>
+      <p>neural networks, feature construction, coarse coding, feed-forward architecture, activation functions, deep networks, online setting, offline setting, representation, learning capacity</p>
+    </div>
+  </div>
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+
+
+
+
+
+<section id="introduction" class="level1 page-columns page-full">
+<h1>Introduction</h1>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/logo.png" class="img-fluid figure-img"></p>
+<figcaption>RL logo</figcaption>
+</figure>
+</div><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/alg_selector.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>RL algorithms</figcaption>
+</figure>
+</div></div>
+<ul>
+<li>We now start the third course in the reinforcement learning specialization.</li>
+<li>In terms of the <strong>?@fig-rl-chart</strong> we are on the left branch of the tree.</li>
+<li>This course is about prediction and control with function approximation.</li>
+<li>The main difference in this course is that will start consider continuous state spaces and action spaces which cannot be represented as tables.
+<ul>
+<li>However many of the methods we will develop will be useful in handling large scale tabular problems as well.</li>
+<li>We will use methods from supervised learning but only online methods that can handle non-stationary data.</li>
+<li>The main differences are the use of weights to parameterize the value functions.</li>
+<li>The use of function approximation to estimate value functions and policies in reinforcement learning.
+<ul>
+<li>Weights lead to using a loss function to estimate the value function.</li>
+<li>Minimizing the continuous loss function leads to Gradient descent and</li>
+<li>Using sampling leads to Stochastic gradient descent.</li>
+</ul></li>
+<li>The idea of learning weights rather than values is a key idea in this course.</li>
+<li>The tradeoff between discrimination and generalization is also a key idea in this course.</li>
+</ul></li>
+<li>We will learn how to use function approximation to estimate value functions and policies in reinforcement learning.</li>
+<li>We will also learn how to use function approximation to solve large-scale reinforcement learning problems.</li>
+<li>We will see some simple linear function approximation methods and later</li>
+<li>We will see modern nonlinear approximation methods using deep neural networks.</li>
+</ul>
+<p>I did not find the derivation of the SGD alg particularly enlightening and I have seen it several times. However the online setting is the best motivation for the use of SGD and makes perfect sense in the context of reinforcement learning. Minibatches are then a natural extension of this idea.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Readings
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox" checked=""><span class="citation" data-cites="sutton2018reinforcement">[@sutton2018reinforcement§9.1-9.4, pp. 194-209]</span> <a href="http://incompleteideas.net/book/RLbook2020.pdf#page=194">book</a></label></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="lesson-1-estimating-value-functions-as-supervised-learning" class="level1 page-columns page-full">
+<h1>Lesson 1: Estimating Value Functions as Supervised Learning</h1>
+<p>In this lesson we will cover some important notation that will remain with us till the end of the course. Mathematically most of it is trivial, but it is important to understand the notation - otherwise the rest of the course will be hard to follow.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><p><label><input type="checkbox" checked=""><em>Understand</em> how we can use <strong>parameterized functions</strong> to approximate value functions <a href="#sec-l1g1">#</a></label></p></li>
+<li><p><label><input type="checkbox" checked=""><em>Explain</em> the meaning of <strong>linear value function approximation</strong> <a href="#sec-l1g2">#</a></label></p></li>
+<li><p><label><input type="checkbox" checked=""><em>Recognize</em> that the tabular case is a special case of linear value function approximation <a href="#sec-l1g3">#</a></label></p></li>
+<li><p><label><input type="checkbox" checked=""><em>Understand</em> that there are many ways to parameterize an approximate value function <a href="#sec-l1g4">#</a></label></p></li>
+<li><p><label><input type="checkbox" checked=""><em>Understand</em> what is meant by <strong>generalization</strong> and <strong>discrimination</strong> <a href="#sec-l1g5">#</a></label></p></li>
+<li><p><label><input type="checkbox" checked=""><em>Understand</em> how generalization can be beneficial <a href="#sec-l1g6">#</a></label></p></li>
+<li><p><label><input type="checkbox" checked=""><em>Explain</em> why we want both generalization and discrimination from our function approximation <a href="#sec-l1g7">#</a></label></p></li>
+<li><p><label><input type="checkbox" checked=""><em>Understand</em> how value estimation can be framed as a <strong>supervised learning</strong> problem <a href="#sec-l1g8">#</a></label></p></li>
+<li><p><label><input type="checkbox" checked=""><em>Recognize</em> not all function approximation methods are well suited for reinforcement learning <a href="#sec-l1g9">#</a></label></p></li>
+</ul>
+</div>
+</div>
+<section id="moving-to-parameterized-policies-video" class="level2">
+<h2 class="anchored" data-anchor-id="moving-to-parameterized-policies-video">Moving to Parameterized Policies (video)</h2>
+<p>This video covers the first four learning objectives.</p>
+<p>This video covers parameterized policies and how they can be used to approximate value functions. The idea is that using a table has some limitations/ The first is that the tables can be very large. For continuous states they can become infinite.</p>
+<p>The second is that the tables can be very sparse and in a table we don’t generalize between states.</p>
+<p>We see that we don’t really want functions that directly approximate the value function. We want functions that have some structure that we can learn.</p>
+<p>This is called a parameterized function. The ideas is to use a weighted sum of the features of the state. This allows us to learn the weights and use them to approximate the value function. This is called linear function approximation. The way to get around this which is two fold. We first represent the salient properties of a states into features.</p>
+<p>Then we use weights to combine these features to approximate the value function. This is called linear function approximation.</p>
+<p>More generally we can use non linear parameterized functions to approximate value functions.</p>
+<p>Adam shows that is the features are not picked wisely we may not be able to discriminate between states - out function for one state will be the same as for another dissimilar state. Learning about one will make us forget what we learned about the other. This is called bias. On the other hand if we have too many features we may not be able to generalize between states. This is called variance. The goal is to balance between bias and variance.</p>
+</section>
+<section id="sec-l1g1" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l1g1">Understanding parameterized functions</h2>
+<ul>
+<li>In the previous courses we represented value functions as tables or arrays:
+<ul>
+<li>For <span class="math inline">\(V(s)\)</span> we had an array of size <span class="math inline">\(|S|\)</span>,</li>
+<li>For <span class="math inline">\(Q(s,a)\)</span> we had an array of size <span class="math inline">\(|S| \times |A|\)</span>. This becomes impractical as <span class="math inline">\(|S| \rightarrow \infty\)</span>. We can use <strong>parameterized functions</strong> to approximate value functions. This is called <strong>function approximation</strong>.</li>
+</ul></li>
+<li><strong>Linear value function approximation</strong> is a simple and popular method.
+<ul>
+<li>We represent the value function as a linear combination of features:</li>
+</ul></li>
+</ul>
+<p><span id="eq-fn-approx"><span class="math display">\[
+\hat{v}(s, \mathbb{w}) \approx v_\pi(s) \qquad
+\tag{1}\]</span></span></p>
+<ul>
+<li>where:
+<ul>
+<li><span class="math inline">\(\hat{v}()\)</span> is the approximate value function</li>
+<li><span class="math inline">\(\mathbf{w}\)</span> is a weight vector</li>
+</ul></li>
+<li>for example:</li>
+</ul>
+</section>
+<section id="sec-l1g2" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l1g2">Linear value function approximation</h2>
+<ul>
+<li>We can write the approximate value function as a linear combination of features:</li>
+</ul>
+<p><span id="eq-lin-fn-approx"><span class="math display">\[
+\hat{v}(s, \mathbb{w}) \dot = w_1 X + w_2 + Y \qquad
+\tag{2}\]</span></span></p>
+<ul>
+<li>where:
+<ul>
+<li><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are features of the state <span class="math inline">\(s\)</span></li>
+<li><span class="math inline">\(w_1\)</span> and <span class="math inline">\(w_2\)</span> are the weights of the features</li>
+</ul></li>
+<li>now learning becomes finding better weights that parameterize the value function.</li>
+</ul>
+<p>finding the weights that minimize the error between the approximate value function and the true value function:</p>
+</section>
+<section id="sec-l1g3" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="sec-l1g3">Tabular case is a special case of linear value function approximation</h2>
+<div class="page-columns page-full"><p> <span class="math display">\[
+\begin{align*}
+\hat{v}(s, \mathbb{w}) &amp; \dot = \sum w_i x_i(s) \newline
+                       &amp; = &lt;\mathbf{w}, \mathbf{x}(s)&gt; \qquad
+\end{align*}
+\]</span></p><div class="no-row-height column-margin column-container"><img src="img/c3-w2-parametrized_functions.png" id="fig-rl-linear-approximation" class="img-fluid" alt="Linear value function generalize the tabular case"></div></div>
+<ul>
+<li>here:
+<ul>
+<li><span class="math inline">\(\mathbf{w}\)</span> is a weight vector</li>
+<li><span class="math inline">\(\mathbf{x}(s)\)</span> is a feature vector that is 1 in the <span class="math inline">\(i\)</span>-th position and 0 elsewhere.</li>
+</ul></li>
+<li>linear value function approximation is a generalization of the tabular case.</li>
+<li>limitations of linear value function approximation:
+<ul>
+<li>the choice of features limits the expressiveness of the value function.</li>
+<li>it can only represent linear relationships between the features and the value function.</li>
+<li>it can only represent a limited number of features.</li>
+</ul></li>
+<li>so how are tabular functions a special case of linear value function approximation?
+<ul>
+<li>we can see from the figure that all we need is use one hot encoding for the features. Then the weighted vector will be the same as the value function in the table.</li>
+</ul></li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div id="fig-rl-failure" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rl-failure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/rl-linear-fn-fail.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rl-failure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Linear value function approximation failure
+</figcaption>
+</figure>
+</div></div></section>
+<section id="sec-l1g4" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="sec-l1g4">There are many ways to parameterize an approximate value function</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-neural-networks" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-neural-networks-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/rl-non-linear-fn-approximation.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-neural-networks-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: neural networks are non-linear fn approximators
+</figcaption>
+</figure>
+</div></div><ul>
+<li>We can use different types of functions to approximate the value function:
+<ul>
+<li>one hot encoding</li>
+<li>linear functions</li>
+<li>tile coding</li>
+<li>neural networks</li>
+</ul></li>
+</ul>
+</section>
+<section id="generalization-and-discrimination-video" class="level2">
+<h2 class="anchored" data-anchor-id="generalization-and-discrimination-video">Generalization and Discrimination (video)</h2>
+<p>In this video Martha covers the next three learning objectives. The video is about:</p>
+<ul>
+<li>Generalization - using knowledge (V,Q,Pi) about similar states.</li>
+<li>Discrimination - being able to distinguish between different states.</li>
+</ul>
+</section>
+<section id="sec-l1g5" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="sec-l1g5">Understanding generalization and discrimination</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-generalization-discrimination-chart" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-generalization-discrimination-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/rl-generalization-discrimination-matrix.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-generalization-discrimination-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: generalization and discrimination
+</figcaption>
+</figure>
+</div></div><ul>
+<li>Generalization:
+<ul>
+<li>the ability to estimate the value of states that were not seen during training.</li>
+<li>in the case of policy evaluation, generalization is the ability of updates of value functions in one state to affect the value of other states.</li>
+<li>in the tabular case, generalization is not possible because we only update the value of the state we are in.</li>
+<li>in the case of function approximation, we can think of generalization as corresponding to an embedding of the state space into a lower-dimensional space.</li>
+</ul></li>
+<li>Discrimination: the ability to distinguish between different states.</li>
+</ul>
+</section>
+<section id="sec-l1g6" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l1g6">How generalization can be beneficial</h2>
+<ul>
+<li>Generalization can be beneficial because:
+<ul>
+<li>It allows us to estimate the value of states that are similar to states seen during training.</li>
+<li>This includes states that were not seen during training.</li>
+<li>It allows us to estimate the value of states that are far from states seen during training. (So long as they are similar in terms of the features we are using to approximate the value function)</li>
+</ul></li>
+</ul>
+</section>
+<section id="sec-l1g7" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l1g7">Why we want both generalization and discrimination from our function approximation</h2>
+<ul>
+<li>We want both generalization and discrimination from our function approximation because:
+<ul>
+<li>generalization allows us to estimate the value of states that were not seen during training.</li>
+<li>discrimination allows us to distinguish between different states.</li>
+<li>generalization allows us to estimate the value of states that are similar to states seen during training.</li>
+<li>discrimination allows us to estimate the value of states that are far from states seen during training.</li>
+</ul></li>
+</ul>
+<p>We hear a lot about function approximation and gradient methods having a bias or high variance. I tracked this from wikipedia and statistical learning. While it makes sense for a Bayesian regression I’m not sure that it is quite correct for RL. Unfortunately I don’t have a better explanation, though reviewing <a href="https://www.youtube.com/watch?v=y3oqOjHilio">this policy gradient lecture might be helpful</a></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Bias-variance tradeoff
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>an important result called the <a href="https://en.wikipedia.org/wiki/Bias-variance_tradeoff"><strong>bias-variance tradeoff</strong></a>:
+<ul>
+<li>Bias is the error introduced by approximating a real-world problem, which may be extremely complicated, by a much simpler model. This means that since we cannot discriminate between different states that share weights for the same feature vector we have errors we characterize as bias.</li>
+<li>High bias corresponds to underfitting in our model.</li>
+<li>Variance is the opposite issue arising from having more features than we need to discriminate between states. This means that updating certain weights will affect only some of these related states and not others. This type of error is called variance and is also undesirable.</li>
+<li>High variance corresponds to overfitting in our model which can be due to our model fitting the noise in the data rather than the underlying signal.</li>
+<li>In general for a model there is some optimal point where the bias and variance are balanced. Going forward from that point we observe a trade off between bias and variance so we need to choose one or the other.</li>
+<li>This choice is usually governed by business realities and the nature of the data or the problem we are trying to solve.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="framing-value-estimation-as-supervised-learning-video" class="level2">
+<h2 class="anchored" data-anchor-id="framing-value-estimation-as-supervised-learning-video">Framing Value Estimation as Supervised Learning (video)</h2>
+<p>In this video we cover the next two learning objectives. Martha has a good background in supervised learning and she explains how many parts of RL can be framed as supervised learning problems.</p>
+<p>Things we like to learn in RL in this course:</p>
+<ul>
+<li>Value fn approximation (V)</li>
+<li>Action fn values (Q)</li>
+<li>Policies (Pi)</li>
+</ul>
+<p>In reality we may want to learn other things as well which can be framed as supervised learning problems:</p>
+<ul>
+<li>State representations - i.e.&nbsp;better features (CNNs, RNNs, etc)</li>
+<li>Models of Dynamics i.e.&nbsp;Transition probabilities (P)</li>
+<li>Reward precesses (R) What is a good reward function? How do we learn it? This is an inverse reinforcement learning problem. It is ill posed because there are many reward functions that can explain the data. We need to find the simplest one that explains the data. This is intertwined with learning internal motivations and goals. c.f. <a href="https://www.youtube.com/watch?v=jn1NE8uIxgw">Satinder Singh</a>’s work on intrinsic motivation.</li>
+<li>Generalized Value functions (Gvfs) c.f. <a href="https://www.youtube.com/watch?v=GmGL9cVfJG4&amp;t=1889s">Martha and Adam White’s work on GVFs</a>.</li>
+<li>Options (Spatial or Temporal Aggregations of actions) c.f. Doina Precup’s work on options and semi-markov decision processes.</li>
+</ul>
+<p>Even more things that we might want to learn in RL that might be framed as supervised learning problems:</p>
+<ul>
+<li>Approximate/Compressed policies for sub goals AKA heuristics
+<ul>
+<li>Fully Pooled policies (all states are the same) - Think random uniform policy</li>
+<li>Partial pooled policies, (some states are the same)</li>
+<li>Unpooled policies (all states are different - tabular setting)</li>
+<li>Priors for Policies</li>
+<li>Hierarchies of options - Think Nethack</li>
+</ul></li>
+<li>Beliefs about policies</li>
+<li>Beliefs about other agents (theory of mind)</li>
+<li>Beliefs about the environment.</li>
+<li>Causal models of the environment
+<ul>
+<li>what can we influence and what can’t we influence.</li>
+</ul></li>
+<li>Coordination and communication with other agents c.f. work by <a href="https://www.jakobfoerster.com/">Jakob Foerster</a>, <a href="https://natashajaques.ai/">Natasha Jacques</a>, and <a href="">Marco Baroni</a> on emergent communication.
+<ul>
+<li>What part of communication is cheap talk</li>
+<li>What part of communication is credible</li>
+</ul></li>
+</ul>
+</section>
+<section id="sec-l1g8" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l1g8">How value estimation can be framed as a supervised learning problem</h2>
+<ul>
+<li><p>The problem of policy evaluation in reinforcement learning can be framed as supervised learning problem</p>
+<ul>
+<li>In the case of Monte Carlo methods,
+<ul>
+<li>the inputs are the states and</li>
+<li>the outputs are the returns <span class="math inline">\(G\)</span>.</li>
+</ul></li>
+<li>In the case of TD methods,
+<ul>
+<li>the inputs are the states and</li>
+<li>the outputs are the one step bootstrapped returns. <span class="math inline">\(U_t \dot=R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})\)</span></li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="sec-l1g9" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l1g9">Not all function approximation methods are well suited for reinforcement learning</h2>
+<blockquote class="blockquote">
+<p>In principle, any function approximation technique from supervised learning can be applied to the <strong>policy evaluation task</strong>. However, not all are equally well-suited. – Martha White</p>
+</blockquote>
+<ul>
+<li>in RL the agent interacts with the environment and generates data, which corresponds to the online setting in supervised learning.</li>
+<li>When we want to use supervised learning we need to choose a method that is well suited for the online setting which can handle
+<ul>
+<li>non-stationary data.</li>
+<li>non-stationary and correlated data (which is the case in RL).</li>
+</ul></li>
+</ul>
+<p>In fact much of the learning in RL is about learning such correlations and quickly adapting to non-stationary in the environment.</p>
+<p>In TD learning the target depends on <span class="math inline">\(w\)</span> but in supervised learning the target is fixed and given.</p>
+</section>
+</section>
+<section id="lesson-2-the-objective-for-on-policy-prediction" class="level1 page-columns page-full">
+<h1>Lesson 2: The Objective for On-policy Prediction</h1>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox" checked=""><em>Understand</em> the <strong>mean-squared value error objective</strong> for policy evaluation <a href="#sec-l2g1">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Explain</em> the role of the <strong>State distribution</strong> in the objective <a href="#sec-l2g2">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Understand</em> the idea behind <strong>Gradient descent</strong> and <strong>Stochastic gradient descent</strong> <a href="#sec-l2g3">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Understand</em> that gradient descent converges to stationary points <a href="#sec-l2g7">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Understand</em> how to use <strong>Gradient descent</strong> and <strong>Stochastic gradient descent</strong> to minimize the value error <a href="#sec-l2g8">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Outline</em> the <strong>Gradient Monte Carlo</strong> algorithm for value estimation <a href="#sec-l2g4">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Understand</em> how <strong>state aggregation</strong> can be used to approximate the value function <a href="#sec-l2g5">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Apply</em> <strong>Gradient Monte-Carlo</strong> with state aggregation <a href="#sec-l2g6">#</a></label></li>
+</ul>
+</div>
+</div>
+<section id="the-value-error-objective-video" class="level2">
+<h2 class="anchored" data-anchor-id="the-value-error-objective-video">The Value Error Objective (Video)</h2>
+<p>In this video Adam White covers the first two learning objectives of the unit.<br>
+The main subject about using the mean squared error as a loss for the approximate value function.</p>
+<p>we get a sequence of <span class="math inline">\((S_1,v_{\pi}(S_1) ),(S_2,v_{\pi}(S_2) ),(S_3,v_{\pi}(S_3) ), \ldots\)</span> and we want to approximate the value function . We can track how well we are approximating <span class="math inline">\(v_{\pi}(s)\)</span> by using <span class="math inline">\(\hat{v}(s,\mathbb{w})\)</span>. The difference can be positive or negative so if we average it the sum will tend to cancel out. If we square the error we get a positive number we have a much better estimate of the error. And if normalize it by taking the mean we can get use it to compare runs of different lengths. This is called the mean squared error.</p>
+<p>It turns out that this is not enough for RL and we need to take a weighted average using the state distribution <span class="math inline">\(\mu(s)\)</span>. This is because we care more about some states than others. The state distribution is the long run probability of visiting the state <span class="math inline">\(s\)</span> under the policy <span class="math inline">\(\pi\)</span>. This weighted average is called <em>the mean squared <strong>value</strong> error</em>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Your Objective is My Loss
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>In the optimization literature the <strong>loss</strong> function is called the <strong>objective</strong> function. This is because we are trying to optimize the weights of the function to minimize the loss. So we will often hear the term objective function or just objective. Life is simpler if we recall that this is just a loss function for a supervised learning problem.</p>
+<p>A related point is that if we want to optimize our approximate value we can swap the with a different loss function or with a different approximation function and the outcome should remain the same, at least under certain conditions. This is how we can switch from the mean squared value error objective to the Monte Carlo objective and then to the TD learning objective.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-l2g1" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="sec-l2g1">Understanding the mean-squared value error objective for policy evaluation</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-mse" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/rl-mean-squared-value-error.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: mean-squared value error objective
+</figcaption>
+</figure>
+</div></div><ul>
+<li>An idealized Scenario:
+<ul>
+<li>input: <span class="math inline">\(\{(S_1, v_\pi(S_1)), (S_2, v_\pi(S_2)), \ldots, (S_n, v_\pi(S_n))\}\)</span></li>
+<li>output: <span class="math inline">\(\hat v(s,w) \approx v_\pi(s)\)</span></li>
+<li>however in reality we may get some some error in the approximation.
+<ul>
+<li>this could be due to our choice of the approximation.</li>
+<li>but initially we just don’t have good weights - to fit the data.</li>
+</ul></li>
+<li>What we need is a way to measure the error in the approximation.</li>
+<li>Also we may care more about some states than others and we can encode this using the state distribution <span class="math inline">\(\mu(s)\)</span>.</li>
+</ul></li>
+<li>The mean-squared value error objective for policy evaluation is to minimize the mean-squared error between the true value function and the approximate value function:</li>
+</ul>
+<p><span id="eq-msve"><span class="math display">\[
+\overline{VE} = \sum_{s\in S}\mu(s)[v_\pi(S) - \hat{v}(S, \mathbf{w})]^2
+\tag{3}\]</span></span></p>
+<ul>
+<li>where:
+<ul>
+<li><span class="math inline">\(\overline{VE}\)</span> is the mean-squared value error</li>
+<li><span class="math inline">\(\mu(s)\)</span> is the state distribution</li>
+<li><span class="math inline">\(v_\pi(s)\)</span> is the true value of state <span class="math inline">\(s\)</span></li>
+<li><span class="math inline">\(\hat{v}(s, \mathbf{w})\)</span> is the approximate value of state <span class="math inline">\(s\)</span> with weights <span class="math inline">\(\mathbf{w}\)</span></li>
+</ul></li>
+<li>the goal is to find the weights that minimize the mean-squared value error.</li>
+</ul>
+</section>
+<section id="sec-l2g2" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l2g2">Explaining the role of the state distribution in the objective</h2>
+<ul>
+<li>The state distribution <span class="math inline">\(\mu(s)\)</span> is the long run probability of visiting the state <span class="math inline">\(s\)</span> under the policy <span class="math inline">\(\pi\)</span>.</li>
+<li>This makes more sense if our markov chain is ergodic - i.e.&nbsp;we can reach any state from any other state by following some transition trajectory.</li>
+<li>The state distribution is important because it determines how much we care about the error in each state.</li>
+<li>The state distribution is usually unknown, and hard to estimate as it has complex dependencies on the policy and the environment.</li>
+<li>We will later see a result that shows how we can avoid the need to know the state distribution.</li>
+<li>In the diagram we see that the state distribution is a probability distribution over the states of the MDP and that there is little probability mass of visiting states at the edges of the state space.</li>
+<li>The mean square error has less impact in these low probability states.</li>
+</ul>
+</section>
+<section id="sec-l2g3" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l2g3">The idea behind gradient descent and stochastic gradient descent</h2>
+<ul>
+<li>Gradient descent is an optimization algorithm that uses the gradient to find a local minimum of a function.</li>
+<li>The gradients points in the direction of the steepest ascent of the function and our objective is to minimize the mean squared error we move in the opposite direction.</li>
+<li>Hence the name gradient descent.</li>
+<li>The gradient of the mean-squared value error with respect to the weights <span class="math inline">\(\mathbf{w}\)</span> is given by:</li>
+</ul>
+<p><span class="math display">\[
+    w \dot = \left [ \begin{matrix} w_1 \\ \vdots \\ w_d  \end{matrix} \right ] \qquad \nabla f = \left [ \begin{matrix} \frac{\partial f}{\partial w_1} \\ \vdots \\ \frac{\partial f}{\partial w_d}  \end{matrix} \right ] \qquad
+\]</span></p>
+<ul>
+<li>for a linear function:</li>
+</ul>
+<p><span id="eq-grad-lin-fn"><span class="math display">\[
+\hat{v}(s, \mathbf{w}) = \sum \mathbf{w}^T \mathbf{x}(s) \\
+\frac{\partial \hat{v}(s, \mathbf{w})}{\partial w_i} = \mathbf{x_i}(s) \\
+\nabla \hat{v}(s, \mathbf{w}) = \mathbf{x}(s) \qquad
+\tag{4}\]</span></span></p>
+<ul>
+<li>we can write the update rule for the weights as:</li>
+</ul>
+<p><span id="eq-grad-descent"><span class="math display">\[
+w_{t+1} \dot= w_t - \alpha \nabla J(\mathbf{w_t}) \qquad
+\tag{5}\]</span></span></p>
+<ul>
+<li>Stochastic gradient descent is a variant of gradient descent that uses a random sample of the data to estimate the gradient.</li>
+<li>Stochastic gradient descent uses mini-batches of data to estimate the gradient, which makes it computationally efficient and reduces the variance of the gradient estimate.</li>
+<li>In practice we will use variants like:
+<ul>
+<li>Adam - which adapts the learning rate based on the gradient.</li>
+<li>RMSProp - which uses a moving average of the squared gradient.</li>
+<li>Adagrad - which uses a different learning rate for each parameter.</li>
+<li>SGD - which uses a fixed learning rate.</li>
+</ul></li>
+</ul>
+</section>
+<section id="sec-l2g7" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="sec-l2g7">Gradient descent converges to stationary points</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-gradient-descent" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gradient-descent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/rl-sgd-convergence.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gradient-descent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: gradient descent
+</figcaption>
+</figure>
+</div></div><ul>
+<li>Gradient descent converges to stationary points because the gradient of the mean-squared value error is zero at the minimum.</li>
+<li>Gradient descent can get stuck in a local minima, so it is important to use a good initialization and learning rate.</li>
+<li>Stochastic gradient descent can escape a local minima because it uses a random sample of the data to estimate the gradient.</li>
+<li>In general the optimizer is not guaranteed to find the global minimum of the function - just a local minima</li>
+</ul>
+</section>
+<section id="sec-l2g8" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l2g8">How to use Gradient descent and Stochastic gradient descent to minimize the value error</h2>
+<p><span class="math display">\[
+\begin{align*}
+\nabla J(\mathbf{w}) &amp; = \nabla \sum_{s\in S} \mu(s)[v_\pi(s) - \hat{v}(s, \mathbf{w})]^2 \qquad  \qquad  \hat{v}(s, \mathbf{w}) = &lt;\mathbf{w},\mathbf{x}(s)&gt;\newline
+                    &amp; =  \sum_{s\in S}  \mu(s) \nabla [v_\pi(s) - \hat{v}(s, \mathbf{w})]^2 \qquad  \qquad \nabla   \hat{v}(s, \mathbf{w}) = \mathbf{x}(s)\newline
+                    &amp; =  \sum_{s\in S} \mu(s) 2 [v_\pi(s) - \hat{v}(s, \mathbf{w})]\nabla \hat{v}(s, \mathbf{w})
+\end{align*} \qquad
+\]</span></p>
+<section id="stochastic-gradient-descent" class="level3">
+<h3 class="anchored" data-anchor-id="stochastic-gradient-descent">Stochastic Gradient Descent</h3>
+<p>If we have a sample of states <span class="math inline">\(s_1, s_2, \ldots, s_n\)</span> observed by following <span class="math inline">\(pi\)</span><br>
+we can write the update rule for a pair of weights as:</p>
+<p><span id="eq-sgd"><span class="math display">\[
+w_{t+1} \dot= w_t + \alpha [v_\pi(S_1) - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w}) \qquad
+\tag{6}\]</span></span></p>
+<p>This allows us to decrease the error in the value function by making updates for one state at a time and moving the weights in the direction of the negative gradient. By making this type of update we might increase the error occasionally but in the long run we will decrease the error.</p>
+<blockquote class="blockquote">
+<p>This updating approach is called stochastic gradient descent, because it only uses a stochastic estimate of the gradient. In fact, the expectation of each stochastic gradient equals the gradient of the objective. You can think of this stochastic gradient as a noisy approximation to the gradient that is much cheaper to compute, but can nonetheless make steady progress to a minimum – Martha White</p>
+</blockquote>
+<p>we have here one issue - we don’t know the true value of the policy <span class="math inline">\(v_pi(s_1)\)</span>, how do we get around this?</p>
+<p>one option is to replace the true value with an estimate, one option is to use the return from the state <span class="math inline">\(s_1\)</span>.</p>
+<p>recall that</p>
+<p><span class="math display">\[
+v_\pi(s) = \mathbb{E}[G_t \mid S_t = s] \qquad
+\]</span></p>
+<p>so we can substitute the true value with the return from the state <span class="math inline">\(s_1\)</span>.</p>
+<p><span id="eq-gradient-mc-update"><span class="math display">\[
+\begin{align*}
+w_{t+1} &amp; \dot= w_t + \alpha [v_\pi(S_1) - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w}) \qquad \\
+        &amp; \dot = w_t + \alpha [G_1 - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w}) \qquad
+\end{align*}
+\tag{7}\]</span></span></p>
+</section>
+</section>
+<section id="sec-l2g4" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l2g4">The gradient Monte Carlo algorithm for value estimation</h2>
+<p>We now have a way to update the weights of the value function using the gradient of the mean-squared value error. Which allows us to present the gradient Monte Carlo algorithm for value estimation.</p>
+<div id="nte--gradient-mc" class="alg callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note&nbsp;1: MC prediction fist visit for estimating <span class="math inline">\(V \approx v_\pi\)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<pre class="pseudocode"><code>#| label: alg-gradient-mc
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+\caption{GradientMC($\pi$)}
+\begin{algorithmic}[1]
+\State Input
+  \State $\qquad \pi$ to be evaluated
+ \State  $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$
+\State Algorithm parameters:
+  \State $\qquad \alpha \in (0, 1]$ step size
+\State Initialize:
+  \State $\qquad \mathbf{w} \leftarrow x \in \mathbb{R^d} \text{ arbiterly}$ (e.g. w=0)
+\For {each episode:}
+  \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$
+  \State $G \leftarrow 0$
+  \For {each step of episode, $t = 0, 1, \ldots, T-1$:}
+      \State $\mathbf{w} \leftarrow w_t + \alpha [G_t - \hat{v}(S_t , \mathbf{w_1})] \nabla \hat{v}(S_t , \mathbf{w})$
+  \EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}</code></pre>
+</div>
+</div>
+<ul>
+<li>The Gradient Monte Carlo algorithm is a policy evaluation algorithm that uses stochastic gradient descent to minimize the mean-squared value error.</li>
+</ul>
+</section>
+<section id="sec-l2g5" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="sec-l2g5">How state aggregation can be used to approximate the value function</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-gradient-mc-state-agg" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gradient-mc-state-agg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/rl-gradient-mc-with-state-agg.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gradient-mc-state-agg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: gradient mc with state aggregation
+</figcaption>
+</figure>
+</div></div><ul>
+<li>State aggregation</li>
+<li>is a method for reducing the dimensionality of the state space by grouping similar states together.</li>
+<li>can be used to approximate the value function by representing each group of states as a single state.</li>
+<li>can be used to reduce the number of parameters in the value function and improve generalization.</li>
+<li>the example used a 1000 state MDP with 10 groups of 100 states each.</li>
+<li>left and right jump left 1-100 states and right 1-100 states.</li>
+<li>if they pass the terminal state they get to the terminal state.</li>
+<li>state aggregation is a way to reduce the number of parameters in the value function by grouping similar states together.</li>
+<li>it is an example of linear function approximation.</li>
+<li>there is one feature for each group of states.</li>
+<li>the weights are updated using the gradient of the mean-squared value error.</li>
+</ul>
+<p><span class="math display">\[
+w \leftarrow w + \alpha [G_t - \hat{v}(S_t, \mathbf{w})] \nabla \hat{v}(S_t, \mathbf{w})
+\]</span></p>
+<p>and the gradient of the approximate value function is given by:</p>
+<p><span class="math display">\[
+\nabla \hat{v}(S_t, \mathbf{w}) = \mathbf{x}(S_t)
+\]</span></p>
+<p>which is either 1 or 0 depending on the group of states.</p>
+</section>
+<section id="sec-l2g6" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l2g6">Applying Gradient Monte-Carlo with state aggregation</h2>
+<ul>
+<li>Gradient Monte Carlo with state aggregation is a policy evaluation algorithm that uses state aggregation to approximate the value function.</li>
+<li>The algorithm works as follows:</li>
+</ul>
+</section>
+</section>
+<section id="lesson-3-the-objective-for-td" class="level1 page-columns page-full">
+<h1>Lesson 3: The Objective for TD</h1>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox" checked=""><em>Understand</em> the <strong>TD-update</strong> for function approximation <a href="#sec-l3g1">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Highlight</em> the advantages of TD compared to Monte-Carlo <a href="#sec-l3g2">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Outline</em> the <strong>Semi-gradient TD(0)</strong> algorithm for value estimation <a href="#sec-l3g3">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Understand</em> that TD converges to a <strong>biased</strong> value estimate <a href="#sec-l3g4">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Understand</em> that TD converges much <strong>faster</strong> than Gradient Monte Carlo <a href="#sec-l3g5">#</a></label></li>
+</ul>
+</div>
+</div>
+<section id="sec-l3g1" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l3g1">The TD-update for function approximation</h2>
+<ul>
+<li>recall the Monte Carlo update rule:</li>
+</ul>
+<p><span class="math display">\[
+w \leftarrow w + \alpha [G_t - \hat{v}(S_t, \mathbf{w})] \nabla \hat{v}(S_t, \mathbf{w})
+\]</span></p>
+<ul>
+<li>we can use other targets for the update rule than the return <span class="math inline">\(G_t\)</span>.</li>
+<li>we can replace the return with any estimate of the value of the next state.</li>
+<li>we can call this target <span class="math inline">\(U_t\)</span> and if it is unbiased it converge to a local minimum of the mean squared value error.</li>
+<li>we can use the one step bootstrapped return:</li>
+</ul>
+<p><span id="eq-td-target"><span class="math display">\[
+U_t \dot=R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})
+\tag{8}\]</span></span></p>
+<ul>
+<li>but this is not unbiased because it essential approximating the expected return using the current value of the state.</li>
+<li>there is no guarantee that the the update will converge to a local minimum of the mean squared value error.</li>
+<li>however the update has many advantages over the Monte Carlo update:
+<ul>
+<li>it has lower variance because it uses a single sample.</li>
+<li>it can update the value function after every step.</li>
+<li>it can learn online.</li>
+<li>it can learn from incomplete episodes.</li>
+<li>it can learn from non-episodic tasks.</li>
+</ul></li>
+<li>the TD-update is nor a true gradient update because the target is not the true value of the state. we call it a semi-gradient update.
+<ul>
+<li>let’s estimate the gradient of the mean squared value error with respect to the weights <span class="math inline">\(\mathbf{w}\)</span>:</li>
+</ul></li>
+</ul>
+<p><span id="eq-td-grad"><span class="math display">\[
+\begin{align*}
+\nabla J(\mathbf{w}) &amp; = \nabla \frac{1}{2}[U_t - \hat{v}(S_t, \mathbf{w})]^2 \newline
+                     &amp; = (U_t - \hat{v}(S_t, \mathbf{w})) (\nabla U_t - \nabla \hat{v}(S_t, \mathbf{w})) \\
+                     &amp; \ne - (U_t - \hat{v}(S_t, \mathbf{w})) \nabla \hat{v}(S_t, \mathbf{w}) \quad \text{unless} \quad \nabla  U_t = 0
+\end{align*}
+\tag{9}\]</span></span></p>
+<ul>
+<li>but for TD we have:</li>
+</ul>
+<p><span id="eq-td-grad-ut"><span class="math display">\[
+\begin{align*}
+\nabla U_t = &amp; = \nabla (R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})) \newline
+            &amp; = \gamma \nabla \hat{v}(S_{t+1}, \mathbf{w}) \newline
+            &amp; \ne 0
+\end{align*}
+\tag{10}\]</span></span></p>
+<ul>
+<li>So the TD-update isn’t a true gradient update. However TD often converge in many cases we care updates.</li>
+</ul>
+</section>
+<section id="sec-l3g2" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l3g2">Advantages of TD compared to Monte-Carlo</h2>
+<ul>
+<li>Adam point out that in Gradient Monte Carlo we need to run the alg for a long time and decay the step size to get convergence. But that in practice we don’t decay the step size and we use a fixed step size.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
+<li>TD has several advantages over Monte-Carlo:
+<ul>
+<li>TD can update the value function after every step, while Monte-Carlo can only update the value function after the episode is complete.</li>
+<li>TD can learn online, while Monte-Carlo can only learn offline.</li>
+<li>TD can learn from incomplete episodes, while Monte-Carlo requires complete episodes.</li>
+<li>TD can learn from non-episodic tasks, while Monte-Carlo can only learn from episodic tasks.</li>
+</ul></li>
+</ul>
+</section>
+<section id="sec-l3g3" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l3g3">The Semi-gradient TD(0) algorithm for value estimation</h2>
+<ul>
+<li>The Semi-gradient TD(0) algorithm is a policy evaluation algorithm that uses the TD-update for function approximation.</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The Semi-gradient TD(0) algorithm for estimating <span class="math inline">\(v_\pi\)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<pre class="pseudocode"><code>#| label: alg-td-zero
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{Semi-gradient TD(0) for estimating $v_\pi$}
+\begin{algorithmic}[1]
+\State Input:
+  \State $\qquad \pi \leftarrow \text{policy to be evaluated}$
+   \State  $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$
+\State Algorithm parameters:
+  \State $\qquad \alpha \in (0, 1]$ step size
+  \State $\qquad \gamma \in [0, 1]$ discount factor
+\State Initialize:
+  \State $\qquad value function weights w \leftarrow x \in \mathbb{R}^d \quad \forall s \in \mathcal{S}$ (e.g. w=0)
+\FORALL {episode $e$:}
+  \State $Initialize S$
+  \FORALL {step $S \in e$:}
+    \State $\text{Choose } A \sim \pi(\cdot \mid S)$
+    \State Take action $A$, observe $R, S'$
+    \State $w \leftarrow w + \alpha [R + \gamma \hat{v}(S', \mathbf{w}) - \hat{v}(S, \mathbf{w})] \nabla \hat{v}(S, \mathbf{w})$
+    \State $S \leftarrow S'$
+    \State until $S$ is terminal
+  \ENDFOR
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}</code></pre>
+</div>
+</div>
+</section>
+<section id="sec-l3g4" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l3g4">TD converges to a biased value estimate</h2>
+<ul>
+<li>TD converges to a biased value estimate because it updates the value function using an estimate of the next state.</li>
+<li>The bias of TD can be reduced by using a smaller step size or by using a more accurate estimate of the next state.</li>
+</ul>
+</section>
+<section id="sec-l3g5" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="sec-l3g5">TD converges much faster than Gradient Monte Carlo</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-early-learning-mc-vs-td" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-early-learning-mc-vs-td-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/rl-early-learning-mc-vs-td.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-early-learning-mc-vs-td-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: early learning experiment
+</figcaption>
+</figure>
+</div></div><ul>
+<li>We run the same random walk experiment for the 1000 episodes 1000 step random walk and we see that TD has a worse fit than MC on most of the range.</li>
+<li>We run a second experiments with only 30 episodes to see early learning performance and we see that TD has a better fit than MC on most of the range. In this case we used the best alpha for each method. MC needed a much smaller alpha to get a good fit.</li>
+<li>TD converges much faster than Gradient Monte Carlo because it updates the value function after every step.</li>
+<li>Gradient Monte Carlo can only update the value function after the episode is complete, which can be slow for long episodes.</li>
+<li>TD can learn online, while Gradient Monte Carlo can only learn offline.</li>
+<li>TD can learn from incomplete episodes, while Gradient Monte Carlo requires complete episodes.</li>
+<li>TD can learn from non-episodic tasks, while Gradient Monte Carlo can only learn from episodic tasks.</li>
+</ul>
+</section>
+<section id="sec-l3g6" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="sec-l3g6">Doina Precup’s talk on Building Knowledge for AI Agents with Reinforcement Learning</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-generelization" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-generelization-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/rl-dorina-precup.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-generelization-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Dorina Precup
+</figcaption>
+</figure>
+</div><div id="fig-options" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-options-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/rl-dorina-options.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-options-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Options are a temporal generalization
+</figcaption>
+</figure>
+</div></div>
+<p>In this talk, <a href="https://rl.cs.mcgill.ca/people/doina-precup/">Dorina Precup</a> discusses the challenges of building knowledge for AI agents using reinforcement learning.</p>
+<ul>
+<li>Dorina Precup is a professor at McGill University and a research team lead at DeepMind.</li>
+<li>She is an expert in reinforcement learning and machine learning.</li>
+<li>Her interests are in the areas of abstractions.</li>
+<li>When I think about generalization in RL I think about:
+<ul>
+<li>Learning a parameterized value function that can be used to estimate the value of any state.</li>
+<li>Learning a parameterized policy that can be used to select actions in any state.</li>
+<li>Being able to transfer this policy to a similar task</li>
+<li>Being able to learn using less interaction with the environment and more from replaying past experiences.</li>
+<li>Being able to learn from a small number of examples.</li>
+</ul></li>
+<li>Dorina talks about two other aspects of generalization:
+<ul>
+<li>Action duration are one time step in an MDP, yet in reality some actions like traveling from one city to another require sticking to the action over an extended period of time.</li>
+</ul></li>
+<li>This might be happen through planning but idealy, agents should be able to learn skills which are sequences of actions that are executed over an extended period of time.</li>
+<li>This has been formalized in the literature as options.</li>
+<li>She references two sources
+<ul>
+<li><span class="citation" data-cites="Sutton1999BetweenMA">[@Sutton1999BetweenMA]</span> a paper from 1999 on options in reinforcement learning.</li>
+<li><span class="citation" data-cites="precup2000temporal">[@precup2000temporal]</span> her doctoral thesis from 2000 on temporal abstraction in reinforcement learning.</li>
+</ul></li>
+<li>Options consists of
+<ul>
+<li>an initiation set <span class="math inline">\(\iota_\omega(s)\)</span> the precondition which is a probability of starting the option in state <span class="math inline">\(s\)</span>.</li>
+<li>a policy <span class="math inline">\(\pi_\omega(a\mid s)\)</span> that is executed in the option</li>
+<li>a termination condition <span class="math inline">\(\beta_\omega(s)\)</span>. the termination condition is a probability of terminating the option in state <span class="math inline">\(s\)</span>.</li>
+</ul></li>
+<li>Options are “chunks of behavior” that can be executed over an extended period of time.</li>
+<li>The model will need to learn options and work with them.</li>
+<li>IT needs expected reward over the option.</li>
+<li>A transition model over the option.</li>
+<li>These models are predictive models about outcomes conditioned on the model being executed.</li>
+<li>Adding options to the model weakens the MDP assumption, because the option duration is not fixed so state now have a longer dependence is a sequence of actions that are not Markovian <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</li>
+<li>Precup’s point out that combining temporal and spatial abstraction is an ongoing research challenge.</li>
+<li>She also points out that the model needs to learn the options and the value function at the same time.</li>
+<li>According to her profile Precup has a number of students working on this problem. Some additional references are:
+<ul>
+<li><span class="citation" data-cites="Bacon2016TheOA">[@Bacon2016TheOA]</span> a paper from 2016 on option-critic architecture which extends actor-critic algorithms to work with options.</li>
+</ul></li>
+<li>Earlier work uses the term macro-actions to refer to options.
+<ul>
+<li><span class="citation" data-cites="bradtke1994reinforcement">[@bradtke1994reinforcement]</span> a paper from 1994 on reinforcement learning with hierarchies of machines.</li>
+</ul></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Options &amp; CI
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>This type of formulation seems very similar to that used by <a href="https://www.youtube.com/watch?v=JxzjdTc15A0">Judea Pearl</a> in his structureal graphical model of Causality. If we can express options as a graph of states we can use his algorithms to infer the best options to take in a given state.</li>
+<li>options are like do operations (interventions)</li>
+<li>choosing between options is like conterfactual reasoning.</li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="lesson-4-linear-td" class="level1">
+<h1>Lesson 4: Linear TD</h1>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox" checked=""><em>Derive</em> the TD-update with linear function approximation <a href="#sec-l4g1">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Understand</em> that tabular TD(0) is a special case of linear semi-gradient TD(0) <a href="#sec-l4g2">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Understand</em> why we care about linear TD as a special case <a href="#sec-l4g3">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Highlight</em> the advantages of linear value function approximation over nonlinear <a href="#sec-l4g4">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Understand</em> the <strong>fixed point</strong> of linear TD learning <a href="#sec-l4g5">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Describe</em> a theoretical guarantee on the mean squared value error at the <strong>TD fixed point</strong> <a href="#sec-l4g6">#</a></label></li>
+</ul>
+</div>
+</div>
+<section id="sec-l4g1" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l4g1">Deriving the TD-update with linear function approximation</h2>
+<ul>
+<li>Linear function is both:</li>
+<li>simple enough to be understood, yet</li>
+<li>powerful enough that with TD to be useful to create agents that are stornger than human Atari games.</li>
+<li>The TD-update with linear function approximation is a way to update the weights of the value function using the TD-error.</li>
+<li>The TD-update with linear function approximation works as follows:
+<ul>
+<li>Compute the TD-error <span class="math inline">\(\delta\)</span> as the difference between the one-step bootstrapped return and the approximate value of the next state.</li>
+<li>Update the weights <span class="math inline">\(\mathbf{w}\)</span> in the direction of the TD-error.</li>
+</ul></li>
+</ul>
+<p>recall the TD-update rule:</p>
+<p><span class="math display">\[
+\delta \dot= R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w}) - \hat{v}(S_t, \mathbf{w}) \\
+w \leftarrow w + \alpha \delta_t \nabla \hat{v}(S_t, \mathbf{w})
+\]</span> in the linear case we can write the value function as:</p>
+<p><span class="math display">\[
+\hat{v}(S_t, \mathbf{w}) \dot = \sum \mathbf{w}^T \mathbf{x}(S_t) \\
+\nabla \hat{v}(S_t, \mathbf{w}) = \mathbf{x}(S_t)
+\]</span></p>
+<p><span class="math display">\[
+w \leftarrow w + \alpha \delta_t \mathbf{x}(S_t)
+\]</span></p>
+</section>
+<section id="sec-l4g2" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l4g2">Tabular TD(0) is a special case of linear semi-gradient TD(0)</h2>
+<ul>
+<li>Tabular TD(0) is a special case of linear semi-gradient TD(0) where the features are one-hot encoded.</li>
+<li>In the tabular case, the weights are the same as the value function in the table.</li>
+<li>In the linear case, the weights are the parameters of the value function.</li>
+<li>Tabular TD(0) can be seen as a special case of linear semi-gradient TD(0) where the features are one-hot encoded.</li>
+</ul>
+</section>
+<section id="sec-l4g4" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l4g4">Advantages of linear value function approximation over nonlinear</h2>
+<ul>
+<li>Linear value function approximation has several advantages over nonlinear value function approximation:
+<ul>
+<li>Linear value function approximation is computationally efficient and easy to implement.</li>
+<li>Linear value function approximation is easy to interpret and understand.</li>
+<li>Linear value function approximation is less prone to overfitting than nonlinear value function approximation.</li>
+<li>Linear value function approximation can be used to approximate any function, while nonlinear value function approximation is limited by the choice of features.</li>
+</ul></li>
+<li>If we have access to expert knowledge we can use it to define good features and use linear value function approximation to learn the value function quickly.</li>
+<li>Most of the theory of function approximation in reinforcement learning is based on linear value function approximation.</li>
+</ul>
+</section>
+<section id="sec-l4g5" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l4g5">The fixed point of linear TD learning</h2>
+<p><span class="math display">\[
+w_{t+1} \dot= w_t + \alpha [R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w}) - \hat{v}(S_t, \mathbf{w})] \nabla \hat{v}(S_t, \mathbf{w})
+\]</span> recall that in the linear case we defined the approximate value function as:</p>
+<p><span class="math display">\[
+\hat{v}(S_{t+1}, \mathbf{w}) \cdot=  \mathbf{w}^T \mathbf{x}(S_{t+1})
+\]</span> with :</p>
+<ul>
+<li><span class="math inline">\(\mathbf{w}\)</span> the weights of the value function</li>
+<li><span class="math inline">\(\mathbf{x}(S_{t+1})\)</span> the features of the next state</li>
+</ul>
+<p>using this definition we can write the update rule as:</p>
+<p><span class="math display">\[
+\begin{align*}
+w_{t+1} &amp; = w_t + \alpha [R_{t+1} + \gamma \mathbf{w}^T \mathbf{x}_{t+1} - \mathbf{w}^T \mathbf{x}] \mathbf{x}_t \newline
+        &amp;=  w_t + \alpha [R_{t+1} \mathbf{x}_t -  \mathbf{x}_t( \mathbf{x}_t - \gamma \mathbf{x_{t+1}})^T \mathbf{w_t}] \newline
+\end{align*}
+\]</span></p>
+<p>let us now consider what this update looks like in expectation:</p>
+<p>we can think about it as an expected update plus a noise term but the noise term is dominated by the behaviour of the expected update.</p>
+<p><span class="math display">\[
+\mathbb{E}[\Delta w_{t}]  = \alpha(b-Aw_t)
+\]</span> where:</p>
+<ul>
+<li><span class="math inline">\(b = \mathbb{E}[R_{t+1} \mathbf{x}_t]\)</span> - expectation over the features and the rewards</li>
+<li><span class="math inline">\(A = \mathbb{E}[\mathbf{x}_t( \mathbf{x}_t - \gamma \mathbf{x_{t+1}})^T]\)</span> - an expectation over the rewards</li>
+</ul>
+<p>note: this is a linear system of equations that looks like a <strong>linear regression problem</strong>.</p>
+<p>when the weights do not change we have a fixed point:</p>
+<p><span id="eq-fixed-point"><span class="math display">\[
+\begin{align*}
+\mathbb{E}[\Delta w_{TD}] &amp; = \alpha(b-Aw_{TD}) = 0 \newline
+\implies &amp; w_{TD} = A^{-1}b
+\end{align*}
+\tag{11}\]</span></span> more generally <span class="math inline">\(w_{TD}\)</span> is the solution to this equation and we could show that it minimises</p>
+<p><span id="eq-min-lin-td"><span class="math display">\[
+(b-Aw)^T(b-Aw)
+\tag{12}\]</span></span></p>
+<p>this is related to Bellman equations via the projected Bellman error.</p>
+</section>
+<section id="sec-l4g6" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l4g6">Theoretical guarantee on the mean squared value error at the TD fixed point</h2>
+<p><span id="eq-td-fixed-point-and-minimum-ve"><span class="math display">\[
+\overline{VE}(w_{TD}) \leq \frac{1}{1-\gamma} \min_{w} \overline{VE}(w)
+\tag{13}\]</span></span></p>
+<ul>
+<li>if <span class="math inline">\(\gamma \approx 1\)</span> then the mean squared value error at the TD fixed point can be large</li>
+<li>if <span class="math inline">\(\gamma \approx 0\)</span> then the mean squared value error at the TD fixed point can be small</li>
+<li>if the features representation is good then the two will be equal regardless of <span class="math inline">\(\gamma\)</span>. since both will be almost zero.</li>
+</ul>
+</section>
+<section id="sec-l4g7" class="level2">
+<h2 class="anchored" data-anchor-id="sec-l4g7">Semi-gradient TD(0) algorithm</h2>
+<p>In the assignment I implemented the Semi-gradient TD(0) algorithm for value estimation.</p>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>why not?<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>the property that the future is independent of the past given the present<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

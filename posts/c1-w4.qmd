@@ -1,0 +1,402 @@
+---
+date: 2022-05-05
+lastmod: 2022-05-07
+subtitle: RL Fundamentals 
+title: Dynamic Programming
+description: In week 4 we learn how to compute value functions and optimal policies, assuming you have the MDP model. You will implement dynamic programming to compute value functions and optimal policies and understand the utility of dynamic programming.
+author: Oren Bochman
+draft: false
+categories:
+  - Coursera
+  - notes
+  - rl
+  - reinforcement learning
+  - dynamic programming
+image: img/nlp-brain-wordcloud.jpg
+title-block-banner: /images/banner_black_3.jpg
+---
+
+![RL logo](img/logo.png){.column-margin} 
+
+![RL algorithms](img/alg_selector.png){.column-margin group="slides"}
+
+# Week 4: Dynamic Programming 
+
+In this week, we learn how to compute value functions and optimal policies, assuming you have the MDP model. You will implement dynamic programming to compute value functions and optimal policies and understand the utility of dynamic programming.
+
+The 'programming' in dynamic programming really means solving an optimization problem. We have learned about using the Bellman equations as update rules. Now we look at some basic applications of this idea to solve MDP.
+
+The intuition is pretty simple we have two tasks - one is to decide how good a policy $\pi$ is - think  [discounted summation of the rewards from the best actions over the $s_ta_tr_t$ tree]{.mark}. This policy evaluation step is named **prediction**, as we don't really know what the actual rewards of stochastic actions will be, only their expectation. But what we really want is to find near optimal policy which is called 'control'. We have a strong theoretical result on how to go about this by iteratively improving a policy by picking its the actions with highest value at each steps.
+
+What is surprising at first is that even starting with a uniform random policy we don't need to explore the tree too deeply in the prediction step to be able to pick better actions. Also we can see from the maze like grid world that we really need to update one or two states every iteration. Which suggest that there is great room for improvement with smarter algorithms.
+
+# Lesson 1: Policy Evaluation (Prediction)
+
+::: {.callout-tip collapse="true"}
+### Read {.unnumbered}
+
+- [x] [RL Book§4.1-5,6-7, pp73-88](http://incompleteideas.net/book/RLbook2020.pdf#page=72) 
+:::
+
+::: callout-note
+### Learning Objectives {.unnumbered}
+ 
+- [x] Understand the distinction between **policy evaluation** and **control**. [\#](#sec-policy-evaluation-control)
+- [x] Explain the setting in which dynamic programming can be applied, as well as its limitations. [\#](#sec-dynamic-programming)
+- [x] Outline the **iterative policy evaluation algorithm** for estimating state values under a given policy $\pi$. [\#](#sec-iterative-policy-evaluation)
+- [x] Apply iterative policy evaluation to compute value functions. [\#](#sec-applying-iterative-policy-evaluation)
+:::
+
+## Policy Evaluation and Control {#sec-policy-evaluation-control}
+
+The distinction between policy evaluation and control:
+
+policy evaluation (prediction)
+: is the task of evaluating the future, i.e. the value function given some specific policy $\pi$.
+
+control
+: is the task of finding the optimal policy, given some specific value function $v$.
+
+planning
+: is the task of finding the optimal policy $\pi_{\star}$ and value function $v$, given a model of the environment.
+this is typically done by dynamic programming methods.
+
+
+Typically we need to solve the prediction problem before we can solve the control problem.
+This is because we need to know the value of the states under the policy to be able to pick the best actions.
+
+## Dynamic Programming {#sec-dynamic-programming}
+
+- Dynamic programming is a method for solving complex problems by breaking them down into simpler sub-problems.
+- It is a general approach to solving problems that can be formulated as a sequence of decisions.
+- Dynamic programming can be applied to problems that have the following properties:
+  - Optimal substructure: The optimal solution to a problem can be obtained by combining the optimal solutions to its sub-problems.
+  - Overlapping sub-problems: The same sub-problems are solved multiple times.
+  
+## Iterative Policy Evaluation Algorithm {#sec-iterative-policy-evaluation}
+
+Continuing with our goal of finding the optimal policy, we now turn to the
+an algorithms that will allow us to predict the value all the state starting
+with even the most naive policy. 
+
+The iterative policy evaluation algorithm is a simple iterative algorithm 
+that estimates the value function for a given policy $\pi$.
+
+We start with no knowledge of the value function or the policy. 
+We set all the values to zero and we may even assume all actions are equally likely and all states are equally good.
+This is the uniform random policy. Alternatively we can start with some other policy. 
+
+These two assumptions are implemented in the initialization step of the algorithm.
+
+The crux of the algorithm is the update step which is based on the recursive
+bellman equation for the value function under a policy $\pi$:
+
+
+$$
+v_{\pi}(s) = \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')] \sum_{a} \pi(a|s)
+$$
+I rearranged the terms to make it clear that we are iterating over the states
+we use this equation to update the value of each state  using
+
+1. the four part dynamics function $p(s',r|s,a)$ to get the probability of receiving a reward $r$ 
+   at a successor state $s'$ given the current state $s$ and action $a$.
+2. the value of the next state $V(s')$. which we initially assumed is 0 and may have already updated
+3. the policy $\pi(a|s)$ which we use to weigh the previous term 
+
+Al this will give us the expected value of the state under the policy $\pi$.
+
+The final part of the algorithm is the stopping condition. We stop when the
+change in the value function is less than a small threshold $\theta$.
+
+The algorithm is guaranteed to converge to the value function for the policy $\pi$.
+
+Here is the concise statement of the algorithm with just one array in pseudo code:
+
+``` pseudocode
+#| label: alg-Iterative-Policy-Evaluation
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{Iterative Policy Evaluation, for estimating $V \approx v_{\pi}$}
+\begin{algorithmic}[1]
+\State Input: $\pi$, the policy to be evaluated, default to uniform random policy
+\State Algorithm parameter: a small threshold $\theta > 0$ determining accuracy of estimation
+\State $V(s) \leftarrow \leftarrow \vec 0 \forall s \in S$
+\REPEAT
+  \STATE $\Delta \leftarrow 0$
+  \FORALL { $s\in S$}
+    \STATE $v \leftarrow  V(s)$
+    \STATE $V(s) \leftarrow \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]\quad$ \comment{ Bellman equation}
+    \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$
+  \ENDFOR
+\UNTIL{$\Delta < \theta$}
+\State Output: $V \approx v_{\pi}$
+\end{algorithmic}
+\end{algorithm}
+```
+
+note: the algorithm makes a couple of assumptions that are omitted in the pseudo code.
+
+1. that we have access to the dynamics function $p(s',r|s,a)$
+2. that we have access to the reward function $r(s,a,s')$
+
+## Applying Iterative Policy Evaluation {#sec-applying-iterative-policy-evaluation}
+
+The iterative policy evaluation algorithm can be applied to compute the value function for a given policy $\pi$.
+
+# Lesson 2: Policy Iteration (Control) 
+
+::: callout-note
+
+### Learning Objectives
+
+- [x] Understand the **policy improvement theorem**. [\#](#sec-l2g1)
+- [x] Use a value function for a policy to produce a better policy for a given MDP. [\#](#sec-l2g2)
+- [x] Outline the **policy iteration algorithm for finding the optimal policy**. [\#](#sec-l2g3)
+- [x] Understand **the dance of policy and value**. [\#](#sec-l2g4)
+- [x] Apply policy iteration to compute **optimal policies** and optimal **value functions**. [\#](#sec-l2g5)
+
+:::
+
+### Policy Improvement Theorem {#sec-l2g1}
+
+The policy improvement theorem states that given a policy $\pi$ and the value 
+function $v_{\pi}$, we can construct a new policy $\pi'$ that is as good as or 
+better than $\pi$.
+
+### Value Function for a Policy {#sec-l2g2}
+
+The value function for a policy $\pi$ is the expected return when starting in 
+state $s$ and following policy $\pi$ thereafter. 
+
+The value function for a policy $\pi$ is denoted by $v_{\pi}(s)$.
+
+$$
+v_{\pi}(s) = \mathbb{E}[G_t \vert S_t = s]
+$$
+
+where $G_t$ is the return at time $t$ and $S_t$ is the state at time $t$.   
+
+### Policy Iteration Algorithm {#sec-l2g3}
+
+
+The policy iteration algorithm is a simple iterative algorithm that alternates 
+between policy evaluation and policy improvement. 
+
+The algorithm starts with an initial policy $\pi$ and iteratively evaluates 
+the policy to get the value function $v_{\pi}$ and then improves the policy 
+to get a new policy $\pi'$. 
+
+The algorithm continues this process until the policy no longer changes, which
+indicates that the optimal policy has been found.
+
+
+$$
+\pi_0 \xrightarrow{\text{Evaluation}} v_{\pi_0} \xrightarrow{\text{Improvement}} \pi_1 \xrightarrow{\text{Evaluation}} v_{\pi_1} \xrightarrow{\text{Improvement}} \ldots \pi_* \xrightarrow{\text{Evaluation}} v_{\pi_*}
+$$
+
+![starting with the uniform random policy](img/rl-iterative-pl-eval1.png){.column-margin}
+
+![we iterate to an optimal policy](img/rl-iterative-pl-eval2.png){.column-margin}
+
+
+Suppose we have computed for a deterministic policy $v_{\pi}$, the value function for a deterministic policy $\pi$. 
+
+Now when would it be better to prefer some action ? $a ≠ \pi(s)?$ in some state s?
+
+It is better to switch to action a for state s if and only if:
+$$
+q_{\pi}(s,a) > v_{\pi}(s)
+$$ {#eq-action-switching-criterion}
+
+where $q_{\pi}(s,a)$ is the value of taking action a in state s and then following policy $\pi$.
+
+And, we can compute $q_π (s,a)$ from $v_π$ by:
+
+$$
+q_{\pi}(s,a) = \sum_{s',r} p(s',r|s,a)[r + \gamma v_{\pi}(s')]
+$$ {#eq-action-value-function}
+
+this is the the key step the policy improvement step of the policy iteration algorithm.
+
+``` pseudocode
+#| label: alg-Policy-Iteration
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{Policy Iteration, for estimating $\pi \approx \pi_{\star}$}
+\begin{algorithmic}[1]
+\State Input: $\pi$, the policy to be evaluated
+\State Algorithm parameter: a small threshold $\theta > 0$ determining accuracy of estimation
+\State Initialize $V(s) \in \mathbb{R}, \quad \pi(s) \in A(s)\ \forall s\in S,\quad V(terminal)= 0$
+\State 
+\State {Policy Evaluation}
+\REPEAT
+  \STATE $\Delta \leftarrow 0$
+  \FORALL { $s\in S$}
+    \STATE $v \leftarrow  V(s)$
+    \STATE $V(s) \leftarrow \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$
+    \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$
+  \ENDFOR
+\UNTIL{$\Delta < \theta$}
+
+\State 
+\State {Policy Improvement}
+\ForAll { $s\in S$}
+  \State old-action $\leftarrow \pi(s)$
+  \State $\pi(s) \leftarrow \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]\quad$ \comment{ greedyfication}
+  \If {old-action $\neq \pi(s)$}
+      \State policy-stable $\leftarrow$ false
+    \EndIf
+\EndFor
+\If {policy-stable} 
+  \Return  {$V \approx v_\star,\ \pi \approx \pi_\star$}
+\Else
+  \State go to Policy Evaluation
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+```
+
+## Value Iteration {#sec-l2g5}
+
+Value iteration is an important example of Generalized Policy Iteration. 
+It is an iterative algorithm that computes the optimal value function and the 
+optimal policy for a given MDP but it does not directly referrence a particular
+policy. 
+
+In value iteration, the algorithm starts with an initial estimate of the value function 
+and iteratively runs a single step of greedy polict evaluation per step, using
+the greedy value to update the state-value function.
+
+updates the value function until it converges to the optimal value function.
+
+
+
+``` pseudocode
+#| label: alg-Value-Iteration
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{Value Iteration, for estimating $\pi \approx \pi_{\star}$}
+\begin{algorithmic}[1]
+\State Input: $\pi$, the policy to be evaluated
+\State Algorithm parameter: a small threshold $\theta > 0$ determining accuracy of estimation
+\State Initialize $V(s) \leftarrow \vec{0} \forall s \in \mathbb{R}$
+
+\REPEAT
+  \STATE $\Delta \leftarrow 0$
+  \FORALL { $s\in S$}
+    \STATE $v \leftarrow  V(s)$
+    \STATE $V(s) \leftarrow max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$
+    \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$
+  \ENDFOR
+\UNTIL{$\Delta < \theta$}
+\State Output: $V \approx v_{\pi}$ such that
+\State $\pi(s) = \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$
+
+\end{algorithmic}
+\end{algorithm}
+```
+
+### The Dance of Policy and Value {#sec-l2g4}
+
+![Dance of Policy and Value](img/rl-dance.png){.column-margin}
+
+The policy iteration algorithm is called the dance of policy and value because
+it alternates between policy evaluation and policy improvement. The policy
+evaluation step computes the value function for the current policy, and the
+policy improvement step constructs a new better greedyfied policy based on the value function.
+
+This is also true for other generalized policy iteration algorithms, such as
+value iteration, which alternates between policy evaluation and policy.
+
+
+# Lesson 3: Generalized Policy Iteration
+
+::: callout-note
+
+### Learning Objectives
+
+- [x] Understand the framework of **generalized policy iteration**. [\#](#sec-l3g1)
+- [x] Outline **value iteration**, an important example of generalized policy iteration. [\#](#sec-l3g2)
+- [x] Understand the distinction between **synchronous** and **asynchronous** dynamic programming methods. [\#](#sec-l3g3)
+- [x] Describe brute force search as an alternative method for searching for an optimal policy. [\#](#sec-l3g4)
+- [x] Describe **Monte Carlo** as an alternative method for learning a value function. [\#](#sec-l3g5)
+- [x] Understand the advantage of Dynamic programming and **bootstrapping** over these alternative strategies for finding the optimal policy. [\#](#sec-l3g6)
+:::
+
+### Generalized Policy Iteration {#sec-l3g1}
+
+Generalized policy iteration is a framework for solving reinforcement learning
+problems that combines policy evaluation and policy improvement in a single
+loop. The idea is to alternate between evaluating the policy and improving the
+policy until the policy converges to the optimal policy.
+
+### Value Iteration {#sec-l3g2}
+
+Value iteration is an important example of generalized policy iteration. It is
+an iterative algorithm that computes the optimal value function and the optimal
+policy for a given MDP. The algorithm starts with an initial estimate of the
+value function and iteratively updates the value function until it converges to
+the optimal value function.
+
+### Synchronous and Asynchronous Dynamic Programming {#sec-l3g3}
+
+Synchronous dynamic programming methods update all states in the MDP in each
+iteration, while asynchronous dynamic programming methods update only a subset
+of states in each iteration. Synchronous dynamic programming methods are
+typically slower than asynchronous dynamic programming methods, but they are
+guaranteed to converge to the optimal policy.
+
+### Brute Force Search {#sec-l3g4}
+
+Brute force search is an alternative method for searching for an optimal policy.
+It involves exploring all possible policies and selecting the policy that
+maximizes the expected return. Brute force search is computationally expensive
+and is not practical for large MDPs.
+
+### Monte Carlo {#sec-l3g5}
+
+Monte Carlo is an alternative method for learning a value function. It involves
+estimating the value function by sampling returns from the environment. Monte
+Carlo is computationally expensive and is not practical for large MDPs.
+
+### Advantage of Dynamic Programming {#sec-l3g6}
+
+Dynamic programming and bootstrapping are more efficient than brute force search
+and Monte Carlo for finding the optimal policy. Dynamic programming and
+bootstrapping exploit the structure of the MDP to update the value function
+iteratively, while brute force search and Monte Carlo do not.
+
+### Warren Powell: Approximate dynamic programming for fleet management
+
+In this lecture Warren Powell talks about the application of dynamic programming
+to fleet management. 
+
+- We want to calculate the marginal value of a single driver. 
+- This is a linear programming problem, solvable by [Gurobi](https://www.gurobi.com/) and [cplux](https://en.wikipedia.org/wiki/CPLEX).
+
+- For each driver, we drop them out of the system and calculate the system's new value. 
+- The difference in values between the original and driver dropped value is the 
+  value of the driver.
+
+

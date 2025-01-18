@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2024-03-02">
+<meta name="description" content="In these unit we define some key terms like rewards, states, action, value functions, action values functions. Then we consider at the the multi-armed bandit problem leading to exploration explotation dillema, the epsilon greedy algorithm.">
+
+<title>Temporal Difference Learning Methods for Prediction – rl-notes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-d58cf0c17c84c672bbe6415fb2b2bd7c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+
+      .quarto-title-block .quarto-title-banner {
+        background: /images/banner_black_3.jpg;
+      }
+</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">rl-notes</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Temporal Difference Learning Methods for Prediction</h1>
+            <p class="subtitle lead">Sample-based Learning Methods</p>
+                  <div>
+        <div class="description">
+          In these unit we define some key terms like rewards, states, action, value functions, action values functions. Then we consider at the the multi-armed bandit problem leading to exploration explotation dillema, the epsilon greedy algorithm.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Coursera</div>
+                <div class="quarto-category">notes</div>
+                <div class="quarto-category">rl</div>
+                <div class="quarto-category">reinforcement learning</div>
+                <div class="quarto-category">Temporal Difference Learning Methods</div>
+                <div class="quarto-category">TD(0) algorithm</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 2, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+
+
+
+
+
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/logo.png" class="img-fluid figure-img"></p>
+<figcaption>RL logo</figcaption>
+</figure>
+</div><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/alg_selector.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>RL algorithms</figcaption>
+</figure>
+</div></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Reading
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox" checked=""><a href="http://incompleteideas.net/book/RLbook2020.pdf#page=91">RL Book§5.0-5.5 (pp.91-104)</a></label></li>
+</ul>
+</div>
+</div>
+</div>
+<section id="lesson-1-introduction-to-temporal-difference-learning" class="level2">
+<h2 class="anchored" data-anchor-id="lesson-1-introduction-to-temporal-difference-learning">Lesson 1: Introduction to Temporal Difference Learning</h2>
+<section id="lesson-learning-goals" class="level3 unnumbered callout-info">
+<h3 class="unnumbered anchored" data-anchor-id="lesson-learning-goals">Lesson Learning Goals</h3>
+<ul class="task-list">
+<li><label><input type="checkbox">Define temporal-difference learning <a href="#sec-l1g1">#</a></label></li>
+<li><label><input type="checkbox">Define the temporal-difference error <a href="#sec-l1g2">#</a></label></li>
+<li><label><input type="checkbox">Understand the TD(0) algorithm <a href="#sec-l1g3">#</a></label></li>
+</ul>
+</section>
+<section id="temporal-difference-learning-definition" class="level3">
+<h3 class="anchored" data-anchor-id="temporal-difference-learning-definition">Temporal Difference Learning definition</h3>
+<p>Now we turn to a new class of methods called Temporal Difference (TD) learning. According to Bass, TD learning is one of the key innovations in RL. TD learning is a method that combines the sampling of Monte Carlo methods with the bootstrapping of Dynamic Programming methods. The term <strong>temporal</strong> in the name references learning from two subsequent time steps and the term <strong>difference</strong> refers to using the difference between the values of each state.</p>
+<p>Let us now derive the TD update rule for the value function:</p>
+<p>Recall the definition of the value function from the previous course, is the expected return when starting in a particular state and following a particular policy.<br>
+We write this as:</p>
+<p><span id="eq-value-function"><span class="math display">\[
+v_\pi(s_t) \dot = \mathbb{E}_\pi[G_t | S_t = s] \qquad
+\tag{1}\]</span></span></p>
+<p>We can motivate td update rule by considering the DP and MC update rules.</p>
+<p>In The MC update rule a sample update based on the return for the entire episode. Which means that we can only update our value function at the end of the episode.</p>
+<p><span id="eq-mc-online-update"><span class="math display">\[
+V(S_t) \leftarrow V(S_t) + \alpha [\underbrace{G_t}_{\text{MC target}} -V(S_t)]  \qquad
+\tag{2}\]</span></span></p>
+<p>where:</p>
+<p><span class="math inline">\(G_t\)</span> is the return at time step <span class="math inline">\(t\)</span> and <span class="math inline">\(S_t\)</span> is the state at time step <span class="math inline">\(t\)</span>.</p>
+<p>This is the actual return at time t.</p>
+<p>In the DP update rule, the target is a full backup based on the entire distribution of possible next states which we can solve for exactly since we have the full dynamics of the environment.</p>
+<p><span id="eq-dp-update"><span class="math display">\[
+V(S_t) \leftarrow V(S_t) + \sum_a\pi(a|S_t) ([r(s,a) + \gamma p(s'\mid s,a) V(s')]) \qquad
+\tag{3}\]</span></span></p>
+<p>where:</p>
+<ul>
+<li><span class="math inline">\(R_{t+1}\)</span> is the reward at time step <span class="math inline">\(t+1\)</span></li>
+<li><span class="math inline">\(V(S_{t+1})\)</span> is the approximate value of the state at time step <span class="math inline">\(t+1\)</span></li>
+<li><span class="math inline">\(\gamma\)</span> is the discount factor</li>
+<li><span class="math inline">\(\alpha\)</span> is the learning rate</li>
+</ul>
+<p>How can we make updates at each time step?</p>
+<p><span id="eq-return-definition"><span class="math display">\[
+\begin{aligned}
+G_t &amp; \dot= R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots \qquad \newline
+         &amp;= R_{t+1} + \gamma G_{t+1} \qquad
+\end{aligned}
+\tag{4}\]</span></span></p>
+<p><span class="math display">\[
+\begin{aligned}
+v_\pi(s_t)  &amp; = \mathbb{E}_\pi [G_t \mid S_t = s] &amp; \text{definition}\newline
+          &amp; = \mathbb{E}_\pi [R_{t+1} + \gamma G_{t+1} \mid S_t = s] &amp; \text{(subst. Recursive return)}\newline
+          &amp; = \mathbb{E}_\pi[R_{t+1} + \gamma v_\pi (S_{t+1}) |S_t=s]    &amp; \text{(subst. value function)}\newline
+          &amp; = \mathbb{E}_\pi[R_{t+1}|S_t=s]  + \gamma \mathbb{E}_\pi[v_\pi (S_{t+1}) |S_t=s] &amp; \text{(by linearity of Expectation)} \newline
+          &amp; = R_{t+1} + \gamma v_\pi (S_{t+1}) &amp; \text{(by Expectation of constant RV)}
+\end{aligned}
+\]</span></p>
+<p>In this formula we have replaced <span class="math inline">\(G_t\)</span> with <span class="math inline">\(R_{t+1} + \gamma V(S_{t+1})\)</span>. We now have a recursive formula for the value functions in terms of the next value function. The next value function is a stand in for the value of the Return <span class="math inline">\(G_{t+1}\)</span> which we don’t know.</p>
+<p>we can use this formula to make an online update to our value function using an MC estimate of the return, without saving the full list of rewards.</p>
+<p>since <span class="math inline">\(G_t\)</span>, the MC update target is the return for the entire episode, we can only update our value function at the end of the episode. We will soon look at TD learning, which allows us to make updates at each time step.</p>
+<p>the motivation for TD learning is based on the MC update rule. The MC update rule is a sample update based on the return for the entire episode. This means that we can only update our value function at the end of the episode. We will soon look at TD learning, which allows us to make updates at each time step.</p>
+<p><span class="math display">\[
+V_\pi(S_t) \leftarrow V(S_t) + \alpha [
+\underbrace{R_{t+1} + \gamma V(S_{t+1})}_{\text{TD target}} - V(S_t)]
+\]</span></p>
+<p>We can use the following to make online TD updates like we were able to update our value function without saving the full list of rewards. here:</p>
+<ul>
+<li><span class="math inline">\(V(S_t)\)</span> is the value of the state at time <span class="math inline">\(t\)</span></li>
+<li><span class="math inline">\(V(S_{t+1})\)</span> is the value of the state at time <span class="math inline">\(t+1\)</span></li>
+<li><span class="math inline">\(R_{t+1}\)</span> is the reward at time <span class="math inline">\(t+1\)</span></li>
+<li><span class="math inline">\(\alpha\)</span> is a constant the learning rate</li>
+<li>the target is an estimate of the return</li>
+</ul>
+<p><span class="math display">\[
+\begin{aligned}
+G_t &amp; \dot = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots \newline
+&amp;= R_{t+1} + \gamma G_{t+1} \newline
+\end{aligned}
+\]</span></p>
+<ul>
+<li>The MC target is an estimate of the expected value (average of sampled return) - The DP target is an estimate because the true value of the state is not known - The TD target is an estimate for both reasons: a sample of the expected value of the reward, and the current estimate of the value of the state rather than the true value.</li>
+</ul>
+<p>Like with MC, the target is a sample updates based on a single observed transition. This is in stark contrast to DP, where the target is a full backup based on the entire distribution of possible next states which we can solve for exactly since we have the full dynamics of the environment.</p>
+</section>
+<section id="temporal-difference-error" class="level3">
+<h3 class="anchored" data-anchor-id="temporal-difference-error">Temporal Difference Error</h3>
+<ul>
+<li>The TD error is the difference between the estimated value of a state and the value of the state at the next time step.</li>
+</ul>
+<p><span class="math display">\[
+\delta_t \dot = R_{t+1} + \gamma V(S_{t+1}) - V(S_t)
+\]</span> this is one of the most important equations in reinforcement learning - we will see it again and again.</p>
+</section>
+<section id="td0-algorithm" class="level3">
+<h3 class="anchored" data-anchor-id="td0-algorithm">TD(0) Algorithm</h3>
+<ul>
+<li>The TD(0) algorithm is a TD learning algorithm that uses a bootstrapping method to estimate the value of a state.</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The TD(0) algorithm for estimating <span class="math inline">\(v_\pi\)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<pre class="pseudocode"><code>#| label: alg-td-zero
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{TD(0) for estimating $v_\pi$}
+\begin{algorithmic}[1]
+\State Input:
+  \State $\qquad \pi \leftarrow \text{policy to be evaluated}$
+\State Initialize:
+  \State $\qquad V(s) \leftarrow x \in \mathbb{R} \quad \forall s \in \mathcal{S}$
+\FORALL {episode $e$:}
+  \State $S \leftarrow \text{initial state of episode}$
+  \State $\text{Choose } A \sim \pi(\cdot \mid S)$
+  \FORALL {step $S \in e$:}
+    \State Take action $A$, observe $R, S'$
+    \State $V(S) \leftarrow V(S) + \alpha [R + \gamma V(S') - V(S)]$
+    \State $S \leftarrow S'$
+    \State $\text{Choose} A' \sim \pi(\cdot \mid S)$
+    \State $S$ is terminal
+  \ENDFOR
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="lesson-2-advantages-of-td" class="level2">
+<h2 class="anchored" data-anchor-id="lesson-2-advantages-of-td">Lesson 2: Advantages of TD</h2>
+<section id="lesson-learning-goals-1" class="level3 unnumbered callout-info">
+<h3 class="unnumbered anchored" data-anchor-id="lesson-learning-goals-1">Lesson Learning Goals</h3>
+<ul class="task-list">
+<li><label><input type="checkbox">Understand the benefits of learning online with TD <a href="#sec-l2g1">#</a></label></li>
+<li><label><input type="checkbox">Identify key advantages of TD methods over Dynamic Programming and Monte Carlo methods <a href="#sec-l2g2">#</a></label></li>
+<li><label><input type="checkbox">Identify the empirical benefits of TD learning <a href="#sec-l2g3">#</a></label></li>
+</ul>
+</section>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

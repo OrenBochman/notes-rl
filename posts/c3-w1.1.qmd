@@ -1,0 +1,133 @@
+---
+date: 2024-04-01
+lastmod: 2024-04-01
+title: On-Policy Prediction with Approximation
+subtitle: Prediction and Control with Function Approximation
+author: Oren Bochman
+draft: false
+categories:
+  - Coursera
+  - notes
+  - rl
+  - reinforcement learning
+keywords:
+    - neural networks
+    - feature construction
+    - coarse coding
+    - feed-forward architecture
+    - activation functions
+    - deep networks
+    - online setting
+    - offline setting
+    - representation
+    - learning capacity
+image: img/nlp-brain-wordcloud.jpg
+title-block-banner: /images/banner_black_3.jpg
+---
+
+![RL logo](img/logo.png){.column-margin} 
+
+![RL algorithms](img/alg_selector.png){.column-margin group="slides"}
+
+Some of the notes I made in this course became a bit too long. Rather than break the flow of the lesson I decided to move them to a separate file. This is one of those notes.
+
+# A few Thought on Generalization and discrimination in RL
+
+There are a couple of issues on generalization.
+
+## How are generalization in ML is closely related to transfer learning in RL.
+
+In ML we have a rather clear understanding of generalization. We have a training set and a test set. We train on the training set and then test on the test set. The goal is to do well on the test set. The test set is a sample from the same distribution as the training. 
+
+Geometrically, for classification we want to a decision boundary that separates the classes with the least error and with a fewest number of parameters. This is the essence of the bias-variance tradeoff.
+
+In RL we tend to think of generalization as the ability of an agent to perform well on a task that is different from the one it was trained on. The algorithms can take decades of CPU compute to solve a simple video game. But change a few pixels in the game and the agent can't play at all. This suggest these agents are severely overfitting. 
+
+Would we be able to learn much faster if we could avoid overfitting i.e. if we could generalize better?
+
+One point worth considering here is that solving a general problem is harder than a specific one. 
+
+E.g. To solve a maze we need a policy matrix. To solve all mazes we need an algorithm.
+
+So in one sense it is harder to generalize than to solve a specific problem. However it also should allow us to discard most of the irrelevant information that take up most of the model's capacity and end up slowing down learning.
+
+
+-   Agents learn a policy that is only suitable to a specific task. The policy doesn't generalize to even small changes in the task, e.g. moving the start and goal in the same maze tasks.
+-   Learned representation for features are not abstract and thus can't be mapped to a slightly different task (e.g. changing a few pixels in a game)
+-   We definitely can't map the representation to different tasks.
+-   Ideally, we would like to deal with challenging problems by reusing knowledge from agents trained on other problems.
+-   One direction called options lays in decomposing learning a policy for a goal into reframing it into learning sub-goals, strategies and tactics and basic moves.
+-   Another direction I call heuristics concerns finding minimal policies that are just strong enough to get the agent to the goal a high percentage of the time.
+-   Learning should be aggregational and compositional. However, these terms require reinterpretation for each problem and at many levels of abstraction.
+
+## Human like to use Heuristic, which are are:
+
+    - A minimal sub-optimal policy that is suffiecnt to get the agent to its goal with high probability.
+    - In an MDP with lots of sub-goals, we may have benefit in learning learning heuristic style policy for each sub-goal and then compose them into a policy for the goal. 
+    - Composing heuristics is vague so let try make it clear.
+        - We want to follow the heuristic policy until we reach a sub-goal.
+        - We then switch to the policy for the next sub-goal. 
+        - If we have well established entry and exit points for each heuristic we can have two benefits one is generalization and the other is discrimination.
+            - Generalization is due to using the same heuristic from different starting points.
+            - Discrimination is due to having different heuristics for different sub-goals.
+            - A third advantage is that the heuristic policy is for a smaller state space and can be learned faster.
+            - Third advantage is may be that of mapping different sub-problem to the same heuristic may allow us to discard some of the features of the state space that are not required for the heuristic to work.
+        - Thus composing heuristics in this case is just about switching between heuristics at the right time.
+        - Another direction is to use the heuristics as a form of  priors for the policy we want to learn.  
+        - Simple models are often a good fit for more problems than complex models.
+        - If we are good at learning to decompose problems into simpler sub problems and then we might be able to leverage the power of heuristics.
+
+    -   Heuristics don't always work but overall they capture the essence of the solution to the problem.
+    -   Heuristics are usually more general than an optimal policy.
+    -   A heuristic might be a very good behavior policy for off policy learning the optimal policy.
+    -   I don't see RL algorithms for heuristics.
+
+##  Models in RL try to approximate MDP dynamics using its transition and rewards
+    -   In ML we often use boosting and bagging to aggregate very simple models.
+    -   In RL we often replace the model by sampling from a replay buffer of the agent's past experiences. 
+    
+##  The problem for a general ai is very much the problem of transfer learning in RL.
+
+-   agents learn a very specific policy for a very specific task - the learned representation cannot be mapped to other tasks or even other states in the same task.
+-   if agents learning was decomposed into
+    -   learning very general policies that solved more abstract problems and then
+    -   learning a good composition of these policies to solve the specific problem.
+    -   only after getting to this point would the agent try to optimize the policy for the specific task.
+    -   e.g. chess
+        -   learn the basic moves and average value of pieces
+        -   learning tactics - short term goals
+        -   learning about end game
+            -   update the value of pieces based on the ending
+        -   learning about strategy
+            -   positional play
+                -   learn about pawn formations and weak square
+                    -   value of pawn formations
+                    -   how they can be used with learned tactics.
+                -   the center
+                    -   add value to pieces based on their position on the board
+                -   open files and diagonals
+            -   long term plans
+                -   minority attack, king side attack, central breakthrough
+                -   creating a passed pawn
+                -   exchanging to win in the end game
+                -   sacrificing material to get a better position
+                -   attacking the king
+            -   castling
+            -   piece development and the center
+            -   tempo
+        -   localize value of pieces in different positions on the board using the learned tactics and strategy.
+
+## Bayesian models and hierarchical model encode knowledge using priors which can pool or bias beliefs towards a certain outcome.
+    -   learning in Bayesian models is about updating the initial beliefs based on incoming evidence.
+##  CI may be useful here
+
+-   Is in a big way about mapping knowledge into
+    -   Statistical joint probabilities,
+    -   Casual concepts that are not in the joint distributions like interventions and Contrafactuals, latent, missing, mediators, confounders, etc.
+    -   Hypothesizing a causal structural model, deriving a statistical model and Testing it against the data.
+    -   Interventions in the form of actions and options -
+-   Many key ideas in RL are counterfactual reasoning
+    -   Off-policy learning is about learning from data generated by a different policy.
+    -   Options are like do operations (interventions)
+    -   Choosing between actions and options is like contrafactual reasoning.
+-   Using and verifying CI models could be the way to unify the spatial and temporal abstraction in RL.
