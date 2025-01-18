@@ -5,7 +5,7 @@ project:
     port: 7777
 filters:
   - pseudocode
-  
+
 website:
   title: "rl-notes"
   navbar:
@@ -21,8 +21,10 @@ pseudocode:
   caption-number: true
 
 format:
-  html:
-    theme: cosmo
+  html:    
+    theme:
+      light: flatly
+      dark: darkly
     css: styles.css
     include-in-header:
       text: |
