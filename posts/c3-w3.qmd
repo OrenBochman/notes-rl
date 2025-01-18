@@ -7,11 +7,9 @@ author: Oren Bochman
 draft: false
 categories:
   - Coursera
-  - notes
-  - rl
-  - reinforcement learning
+  - Prediction and Control with Function Approximation
+  - Reinforcement Learning
 keywords:
-  - reinforcement learning
   - neural networks
   - feature construction
   - Episodic Semi-Gradient SARSA Algorithm

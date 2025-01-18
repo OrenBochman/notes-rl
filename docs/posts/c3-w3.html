@@ -8,7 +8,7 @@
 
 <meta name="author" content="Oren Bochman">
 <meta name="dcterms.date" content="2024-04-03">
-<meta name="keywords" content="reinforcement learning, neural networks, feature construction, Episodic Semi-Gradient SARSA Algorithm, Differential Semi-Gradient SARSA Algorithm">
+<meta name="keywords" content="neural networks, feature construction, Episodic Semi-Gradient SARSA Algorithm, Differential Semi-Gradient SARSA Algorithm">
 
 <title>Control with Approximation – rl-notes</title>
 <style>
@@ -175,9 +175,8 @@ window.Quarto = {
             <p class="subtitle lead">Prediction and Control with Function Approximation</p>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Coursera</div>
-                <div class="quarto-category">notes</div>
-                <div class="quarto-category">rl</div>
-                <div class="quarto-category">reinforcement learning</div>
+                <div class="quarto-category">Prediction and Control with Function Approximation</div>
+                <div class="quarto-category">Reinforcement Learning</div>
               </div>
                   </div>
   </div>
@@ -206,7 +205,7 @@ window.Quarto = {
   <div>
     <div class="keywords">
       <div class="block-title">Keywords</div>
-      <p>reinforcement learning, neural networks, feature construction, Episodic Semi-Gradient SARSA Algorithm, Differential Semi-Gradient SARSA Algorithm</p>
+      <p>neural networks, feature construction, Episodic Semi-Gradient SARSA Algorithm, Differential Semi-Gradient SARSA Algorithm</p>
     </div>
   </div>
   
@@ -341,7 +340,7 @@ SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-sarsa" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-no-end="false" data-line-number="true" data-comment-delimiter="#" data-line-number-punc=":" data-caption-prefix="Algorithm" data-pseudocode-number="1">
+<div id="alg-sarsa" class="pseudocode-container quarto-float" data-pseudocode-number="1" data-no-end="false" data-line-number="true" data-line-number-punc=":" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{SARSA($\alpha,\epsilon$)}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -380,7 +379,7 @@ Episodic Semi-gradient SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-td-sarsa" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-no-end="false" data-line-number="true" data-comment-delimiter="#" data-line-number-punc=":" data-caption-prefix="Algorithm" data-pseudocode-number="2">
+<div id="alg-td-sarsa" class="pseudocode-container quarto-float" data-pseudocode-number="2" data-no-end="false" data-line-number="true" data-line-number-punc=":" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{Episodic Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)}\begin{algorithmic} \State $\textbf{Input:}$ \State $\qquad \text{a differentiable action-value fn parameterization } \hat{q}: \mathcal{S} \times A \times \mathbb{R}^d \to \mathbb{R}$ \State $\textbf{Initialize:}$ \State $\qquad$ value function weights $\mathbf{w} \in \mathbb{R}^d$ arbitrarily, (e.g., $\mathbf{w} = 0$) \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from $\color{red}\hat{q}(S'A,\mathbf{w})$ (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \If {$S'$ is terminal} \State $\color{red}\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ \State Go to next episode \EndIf \State Choose A' as a function of $\color{red}\hat{q}(S'A,\mathbf{w})$ (e.g., $\epsilon$-greedy) \State $\color{red}\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R + \gamma \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ \State $S \leftarrow S'$; \State $A \leftarrow A'$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -776,7 +775,7 @@ Episodic Semi-gradient SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-differential-sg-sarsa" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-no-end="false" data-line-number="true" data-comment-delimiter="#" data-line-number-punc=":" data-caption-prefix="Algorithm" data-pseudocode-number="3">
+<div id="alg-differential-sg-sarsa" class="pseudocode-container quarto-float" data-pseudocode-number="3" data-no-end="false" data-line-number="true" data-line-number-punc=":" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{Differential Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)}\begin{algorithmic} \State $\textbf{Input:}$ \State $\qquad \text{a differentiable action-value fn parameterization } \hat{q}: \mathcal{S} \times A \times \mathbb{R}^d \to \mathbb{R}$ \State $\textbf{Algorithm parameters:}$ \State $\qquad \alpha, \beta &gt; 0$ \State $\textbf{Initialize:}$ \State $\qquad$ value function weights $\mathbf{w} \in \mathbb{R}^d$ arbitrarily, (e.g., $\mathbf{w} = 0$) \State $\bar{R} source \in \mathbb{R}$ avg reward estimate \State Initialize $S$ and action $A$ \For {each step} \State Take action A, observe R, S' \State Choose A' as a function of $\hat{q}(S',\cdot,\mathbf{w})$ (e.g., $\epsilon$-greedy) \State $\delta \leftarrow R - \bar{R} + \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) $ \State $ \bar{R}\leftarrow \bar{R} + \beta \delta$ \State $\mathbf{w} \leftarrow \mathbf{w} + \alpha \delta \nabla \hat{q}(S, A, \mathbf{w})$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \end{algorithmic} \end{algorithm}
 </div>

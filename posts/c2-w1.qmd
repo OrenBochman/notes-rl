@@ -5,41 +5,32 @@ subtitle: Sample-based Learning Methods
 description: "In this module we learn about Sample based MC methods that allow learning from sampled episodes. We revise our initial algorithm to better handle exploration. In off policy RL we see methods to learn a policy using samples from another policy, corrected using importance sampleing."
 categories:
   - Coursera
-  - notes
-  - rl
-  - reinforcement learning
-  - Monte-Carlo methods
-  - Any visit Monte-Carlo prediction
-  - First visit Monte-Carlo prediction
-  - Monte-Carlo with Exploring Starts GPI
+  - Sample-based Learning Methods
+  - Reinforcement Learning
+keywords:
   - Exploring Starts
+  - MC methods
+  - Any visit MC prediction
+  - First visit MC prediction
+  - MC with exploring starts GPI
   - Monte-Carlo with Ɛ-soft GPI
   - Ɛ-soft policies
   - Off-policy learning
   - Importance sampling
+jupyter: python3
 image: img/nlp-brain-wordcloud.jpg
 title-block-banner: /images/banner_black_3.jpg
 ---
 
-```{=html}
-<style>
-@counter-style repeating-emoji {
-  system: cyclic;
-  symbols: "🌰" "🥜" "🥔" "🥥"; // unicode code point
-  suffix: " ";
-}
-
-.tldr ul {
-  list-style-type: repeating-emoji;
-}
-</style>
-```
-::: {.callout-tip .tldr}
-## TLDR 🥜🥜🥜 {.unnumbered}
-
 ![RL logo](img/logo.png){.column-margin} 
 
 ![RL algorithms](img/alg_selector.png){.column-margin group="slides"}
+
+
+::: {.callout-tip .tldr}
+## TL;DR This lesson in a nutshell {.unnumbered}
+
+![in a nutshell](img/in_a_nutshell.jpg)
 
 -   In this module we will embrace the paradigm of "learning from experience".
 -   This is called Sample based Reinforcement Learning and it we will let us relax some strong of the requirements of dynamic programming, namely knowing the table of MDP dynamics.

@@ -6,13 +6,10 @@ subtitle: RL Fundamentals
 description: In week 1 we define some key concepts like rewards, states, action, value functions, action values functions. We consider the the multi-armed bandit problem, leading to exploration explotation dillema, and the epsilon greedy algorithm.
 author: Oren Bochman
 categories:
-  - rl
   - Coursera
+  - Fundamentals
+  - Reinforcement Learning
 keywords:
-
-  - notes
-  - rl
-  - reinforcement learning
   - the k-armed bandit problem
   - bandit algorithms
   - exploration 
@@ -21,6 +18,7 @@ keywords:
   - sample avarage method
 jupyter: python3
 image: img/nlp-brain-wordcloud.jpg
+title-block-banner: /images/banner_black_3.jpg
 ---
 
 ![RL logo](img/logo.png){.column-margin} 

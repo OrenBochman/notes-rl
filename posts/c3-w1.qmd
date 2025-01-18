@@ -7,9 +7,8 @@ author: Oren Bochman
 draft: false
 categories:
   - Coursera
-  - notes
-  - rl
-  - reinforcement learning
+  - Prediction and Control with Function Approximation
+  - Reinforcement Learning
 keywords:
     - neural networks
     - feature construction

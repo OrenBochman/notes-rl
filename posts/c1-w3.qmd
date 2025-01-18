@@ -8,14 +8,15 @@ author: Oren Bochman
 draft: false
 categories:
   - Coursera
-  - notes
-  - rl
-  - reinforcement learning
-  - Value Functions
-  - Bellman Equations
+  - Fundamentals
+  - Reinforcement Learning
+keywords:
+  - Value functions
+  - Bellman equations
   - Optimality
-  - Optimal Policies
-  - Optimal Value Functions
+  - Optimal policies
+  - Optimal value function
+  - Optimal action value function
 image: img/nlp-brain-wordcloud.jpg
 title-block-banner: /images/banner_black_3.jpg
 ---

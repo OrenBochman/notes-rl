@@ -5,9 +5,9 @@ subtitle: Sample-based Learning Methods
 description: "This week, we will learn to using TD learning for control, as a generalized policy iteration strategy. We will see three different algorithms based on bootstrapping and Bellman equations for control: Sarsa, Q-learning and Expected Sarsa. We will see some of the differences between the methods for on-policy and off-policy control, and that Expected Sarsa is a unified algorithm for both."
 categories:
   - Coursera
-  - notes
-  - rl
-  - reinforcement learning
+  - Sample-based Learning Methods
+  - Reinforcement Learning
+keywords:
   - Temporal Difference Learning Methods
   - SARSA algorithm
   - Q-learning algorithm

@@ -180,9 +180,8 @@ MathJax = {
             <p class="subtitle lead">Prediction and Control with Function Approximation</p>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Coursera</div>
-                <div class="quarto-category">notes</div>
-                <div class="quarto-category">rl</div>
-                <div class="quarto-category">reinforcement learning</div>
+                <div class="quarto-category">Prediction and Control with Function Approximation</div>
+                <div class="quarto-category">Reinforcement Learning</div>
               </div>
                   </div>
   </div>
@@ -330,7 +329,7 @@ Learning Objectives
 <section id="the-1000-step-random-walk-environment" class="level2">
 <h2 class="anchored" data-anchor-id="the-1000-step-random-walk-environment">The 1000 Step Random Walk Environment</h2>
 <p>In this lesson we implement the 1000 Random Walk example as an environment. This is good to demonstrate how to construct features for linear methods. We will use tile coding and coarse coding to create features for the Random Walk 1000 environment.</p>
-<div id="d4fddb79" class="cell" data-execution_count="1">
+<div id="003ad8eb" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gymnasium <span class="im">as</span> gym</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gymnasium <span class="im">import</span> spaces</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -415,7 +414,7 @@ Learning Objectives
 <span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
 <span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="5ba1159c" class="cell" data-execution_count="2">
+<div id="9bf9c829" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#import gymnasium as gym</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#from random_walk_gym import RandomWalk1000</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -435,16 +434,14 @@ Learning Objectives
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>plot_trajectory(env.trajectory, num_states<span class="op">=</span>env.num_states)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>State: 442, Reward: 0, Terminated: False
-State: 422, Reward: 0, Terminated: False
-State: 408, Reward: 0, Terminated: False
-State: 348, Reward: 0, Terminated: False
-State: 267, Reward: 0, Terminated: False
-State: 263, Reward: 0, Terminated: False
-State: 218, Reward: 0, Terminated: False
-State: 173, Reward: 0, Terminated: False
-State: 125, Reward: 0, Terminated: False
-State: 31, Reward: 0, Terminated: False
+<pre><code>State: 420, Reward: 0, Terminated: False
+State: 374, Reward: 0, Terminated: False
+State: 293, Reward: 0, Terminated: False
+State: 233, Reward: 0, Terminated: False
+State: 194, Reward: 0, Terminated: False
+State: 162, Reward: 0, Terminated: False
+State: 62, Reward: 0, Terminated: False
+State: 47, Reward: 0, Terminated: False
 State: 1, Reward: -1, Terminated: True</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -455,7 +452,7 @@ State: 1, Reward: -1, Terminated: True</code></pre>
 </div>
 </div>
 </div>
-<div id="e71a381b" class="cell" data-execution_count="3">
+<div id="08a554cb" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>env <span class="op">=</span> RandomWalk1000(num_states<span class="op">=</span><span class="dv">1000</span>, neighborhood_size<span class="op">=</span><span class="dv">100</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>obs, info <span class="op">=</span> env.reset()</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>terminated <span class="op">=</span> <span class="va">False</span></span>
@@ -468,37 +465,87 @@ State: 1, Reward: -1, Terminated: True</code></pre>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>plot_trajectory(env.trajectory, num_states<span class="op">=</span>env.num_states)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>obs=579, action=1, reward=0, terminated=False
-obs=538, action=0, reward=0, terminated=False
-obs=543, action=1, reward=0, terminated=False
-obs=587, action=1, reward=0, terminated=False
-obs=541, action=0, reward=0, terminated=False
+<pre><code>obs=436, action=0, reward=0, terminated=False
+obs=498, action=1, reward=0, terminated=False
+obs=457, action=0, reward=0, terminated=False
+obs=512, action=1, reward=0, terminated=False
+obs=459, action=0, reward=0, terminated=False
+obs=533, action=1, reward=0, terminated=False
 obs=487, action=0, reward=0, terminated=False
-obs=436, action=0, reward=0, terminated=False
-obs=501, action=1, reward=0, terminated=False
-obs=524, action=1, reward=0, terminated=False
-obs=586, action=1, reward=0, terminated=False
-obs=489, action=0, reward=0, terminated=False
-obs=586, action=1, reward=0, terminated=False
-obs=646, action=1, reward=0, terminated=False
-obs=627, action=0, reward=0, terminated=False
-obs=680, action=1, reward=0, terminated=False
-obs=776, action=1, reward=0, terminated=False
-obs=765, action=0, reward=0, terminated=False
-obs=826, action=1, reward=0, terminated=False
-obs=812, action=0, reward=0, terminated=False
-obs=720, action=0, reward=0, terminated=False
-obs=673, action=0, reward=0, terminated=False
-obs=574, action=0, reward=0, terminated=False
-obs=674, action=1, reward=0, terminated=False
-obs=662, action=0, reward=0, terminated=False
-obs=761, action=1, reward=0, terminated=False
-obs=802, action=1, reward=0, terminated=False
-obs=813, action=1, reward=0, terminated=False
-obs=770, action=0, reward=0, terminated=False
-obs=848, action=1, reward=0, terminated=False
-obs=852, action=1, reward=0, terminated=False
-obs=931, action=1, reward=0, terminated=False
+obs=449, action=0, reward=0, terminated=False
+obs=542, action=1, reward=0, terminated=False
+obs=546, action=1, reward=0, terminated=False
+obs=632, action=1, reward=0, terminated=False
+obs=669, action=1, reward=0, terminated=False
+obs=724, action=1, reward=0, terminated=False
+obs=705, action=0, reward=0, terminated=False
+obs=622, action=0, reward=0, terminated=False
+obs=683, action=1, reward=0, terminated=False
+obs=585, action=0, reward=0, terminated=False
+obs=613, action=1, reward=0, terminated=False
+obs=623, action=1, reward=0, terminated=False
+obs=636, action=1, reward=0, terminated=False
+obs=562, action=0, reward=0, terminated=False
+obs=483, action=0, reward=0, terminated=False
+obs=458, action=0, reward=0, terminated=False
+obs=463, action=1, reward=0, terminated=False
+obs=399, action=0, reward=0, terminated=False
+obs=422, action=1, reward=0, terminated=False
+obs=489, action=1, reward=0, terminated=False
+obs=441, action=0, reward=0, terminated=False
+obs=452, action=1, reward=0, terminated=False
+obs=387, action=0, reward=0, terminated=False
+obs=386, action=0, reward=0, terminated=False
+obs=396, action=1, reward=0, terminated=False
+obs=415, action=1, reward=0, terminated=False
+obs=462, action=1, reward=0, terminated=False
+obs=374, action=0, reward=0, terminated=False
+obs=329, action=0, reward=0, terminated=False
+obs=393, action=1, reward=0, terminated=False
+obs=479, action=1, reward=0, terminated=False
+obs=381, action=0, reward=0, terminated=False
+obs=436, action=1, reward=0, terminated=False
+obs=508, action=1, reward=0, terminated=False
+obs=578, action=1, reward=0, terminated=False
+obs=599, action=1, reward=0, terminated=False
+obs=673, action=1, reward=0, terminated=False
+obs=706, action=1, reward=0, terminated=False
+obs=757, action=1, reward=0, terminated=False
+obs=719, action=0, reward=0, terminated=False
+obs=765, action=1, reward=0, terminated=False
+obs=751, action=0, reward=0, terminated=False
+obs=737, action=0, reward=0, terminated=False
+obs=742, action=1, reward=0, terminated=False
+obs=727, action=0, reward=0, terminated=False
+obs=696, action=0, reward=0, terminated=False
+obs=643, action=0, reward=0, terminated=False
+obs=562, action=0, reward=0, terminated=False
+obs=532, action=0, reward=0, terminated=False
+obs=553, action=1, reward=0, terminated=False
+obs=619, action=1, reward=0, terminated=False
+obs=639, action=1, reward=0, terminated=False
+obs=707, action=1, reward=0, terminated=False
+obs=735, action=1, reward=0, terminated=False
+obs=793, action=1, reward=0, terminated=False
+obs=694, action=0, reward=0, terminated=False
+obs=663, action=0, reward=0, terminated=False
+obs=564, action=0, reward=0, terminated=False
+obs=616, action=1, reward=0, terminated=False
+obs=703, action=1, reward=0, terminated=False
+obs=688, action=0, reward=0, terminated=False
+obs=736, action=1, reward=0, terminated=False
+obs=787, action=1, reward=0, terminated=False
+obs=819, action=1, reward=0, terminated=False
+obs=760, action=0, reward=0, terminated=False
+obs=823, action=1, reward=0, terminated=False
+obs=733, action=0, reward=0, terminated=False
+obs=824, action=1, reward=0, terminated=False
+obs=761, action=0, reward=0, terminated=False
+obs=791, action=1, reward=0, terminated=False
+obs=863, action=1, reward=0, terminated=False
+obs=945, action=1, reward=0, terminated=False
+obs=988, action=1, reward=0, terminated=False
+obs=954, action=0, reward=0, terminated=False
 obs=1001, action=1, reward=1, terminated=True</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -510,7 +557,7 @@ obs=1001, action=1, reward=1, terminated=True</code></pre>
 </div>
 </div>
 <p>Lets simulate the random walk till success and plot its trajectory.</p>
-<div id="90c17e7c" class="cell" data-execution_count="4">
+<div id="bc8251bd" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>env <span class="op">=</span> RandomWalk1000(num_states<span class="op">=</span><span class="dv">1000</span>, neighborhood_size<span class="op">=</span><span class="dv">100</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>obs, info <span class="op">=</span> env.reset()</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>terminated <span class="op">=</span> <span class="va">False</span></span>

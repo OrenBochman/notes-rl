@@ -7,9 +7,9 @@ author: Oren Bochman
 draft: false
 categories:
   - Coursera
-  - Notes
-  - RL
-  - Reinforcement learning
+  - Sample-based Learning Methods
+  - Reinforcement Learning
+keywords:
   - Planning
   - Tabular Q-planning
   - Dyna architecture

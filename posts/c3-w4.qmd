@@ -6,23 +6,21 @@ subtitle: Prediction and Control with Function Approximation
 author: Oren Bochman
 draft: false
 categories:
- - Coursera
- - notes
- - rl
- - reinforcement learning
+    - Coursera
+    - Prediction and Control with Function Approximation
+    - Reinforcement Learning
 keywords:
- - reinforcement learning
- - neural networks
- - deep learning
- - policy parameterization
- - policy gradient theorem
- - policy gradient methods
- - reinforce algorithm
- - actor-critic algorithm
- - softmax policies
- - softmax actor-critic algorithm
- - gaussian policies
- - gaussian actor-critic algorithm
+    - Neural networks
+    - Deep learning
+    - policy parameterization
+    - policy gradient theorem
+    - policy gradient methods
+    - reinforce algorithm
+    - actor-critic algorithm
+    - softmax policies
+    - softmax actor-critic algorithm
+    - gaussian policies
+    - gaussian actor-critic algorithm
 image: img/nlp-brain-wordcloud.jpg
 title-block-banner: /images/banner_black_3.jpg
 ---

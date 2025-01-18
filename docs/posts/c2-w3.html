@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2024-03-03">
+<meta name="keywords" content="Temporal Difference Learning Methods, SARSA algorithm, Q-learning algorithm, Expected Sarsa algorithm">
 <meta name="description" content="This week, we will learn to using TD learning for control, as a generalized policy iteration strategy. We will see three different algorithms based on bootstrapping and Bellman equations for control: Sarsa, Q-learning and Expected Sarsa. We will see some of the differences between the methods for on-policy and off-policy control, and that Expected Sarsa is a unified algorithm for both.">
 
 <title>Temporal Difference Learning Methods for Control – rl-notes</title>
@@ -179,13 +180,8 @@ window.Quarto = {
       </div>
                           <div class="quarto-categories">
                 <div class="quarto-category">Coursera</div>
-                <div class="quarto-category">notes</div>
-                <div class="quarto-category">rl</div>
-                <div class="quarto-category">reinforcement learning</div>
-                <div class="quarto-category">Temporal Difference Learning Methods</div>
-                <div class="quarto-category">SARSA algorithm</div>
-                <div class="quarto-category">Q-learning algorithm</div>
-                <div class="quarto-category">Expected Sarsa algorithm</div>
+                <div class="quarto-category">Sample-based Learning Methods</div>
+                <div class="quarto-category">Reinforcement Learning</div>
               </div>
                   </div>
   </div>
@@ -204,6 +200,13 @@ window.Quarto = {
       
     </div>
     
+
+  <div>
+    <div class="keywords">
+      <div class="block-title">Keywords</div>
+      <p>Temporal Difference Learning Methods, SARSA algorithm, Q-learning algorithm, Expected Sarsa algorithm</p>
+    </div>
+  </div>
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
@@ -310,7 +313,7 @@ SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-sarsa" class="pseudocode-container quarto-float" data-line-number="true" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number-punc=":" data-pseudocode-number="1">
+<div id="alg-sarsa" class="pseudocode-container quarto-float" data-pseudocode-number="1" data-comment-delimiter="#" data-line-number-punc=":" data-no-end="false" data-line-number="true" data-caption-prefix="Algorithm" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{SARSA($\alpha,\epsilon$)}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -372,7 +375,7 @@ Q-learning (off-policy TD control)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-q-learning" class="pseudocode-container quarto-float" data-line-number="true" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number-punc=":" data-pseudocode-number="2">
+<div id="alg-q-learning" class="pseudocode-container quarto-float" data-pseudocode-number="2" data-comment-delimiter="#" data-line-number-punc=":" data-no-end="false" data-line-number="true" data-caption-prefix="Algorithm" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{Q-learning Off-policy TD control}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \For {each step of e} \State Choose A from $A_B(S)$ using any ergodic Behavioural policy $B$ - perhaps the $\epsilon$-greedy induced by Q. \State Take action A, observe R, S' \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \max_a Q(S',a) - Q(S, A)]$ \State $S \leftarrow S'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -560,7 +563,7 @@ Expected Sarsa
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-q-learning" class="pseudocode-container quarto-float" data-line-number="true" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number-punc=":" data-pseudocode-number="3">
+<div id="alg-q-learning" class="pseudocode-container quarto-float" data-pseudocode-number="3" data-comment-delimiter="#" data-line-number-punc=":" data-no-end="false" data-line-number="true" data-caption-prefix="Algorithm" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{expected SARSA}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \sum_a \pi(a|S') Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \State $S$ is terminal \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>

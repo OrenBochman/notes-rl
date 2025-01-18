@@ -1,1 +1,10 @@
 /* css styles */
+@counter-style repeating-emoji {
+    system: cyclic;
+    symbols: "🌰" "🥜" "🥔" "🥥"; // unicode code point
+    suffix: " ";
+  }
+  
+  .tldr ul {
+    list-style-type: repeating-emoji;
+  }

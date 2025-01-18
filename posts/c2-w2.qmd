@@ -5,9 +5,9 @@ subtitle: Sample-based Learning Methods
 description: In these unit we define some key terms like rewards, states, action, value functions, action values functions. Then we consider at the the multi-armed bandit problem leading to exploration explotation dillema, the epsilon greedy algorithm.
 categories:
   - Coursera
-  - notes
-  - rl
-  - reinforcement learning
+  - Sample-based Learning Methods
+  - Reinforcement Learning
+keyowrds:
   - Temporal Difference Learning Methods
   - TD(0) algorithm
 image: img/nlp-brain-wordcloud.jpg

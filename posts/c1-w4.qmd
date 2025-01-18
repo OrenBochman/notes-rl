@@ -8,10 +8,15 @@ author: Oren Bochman
 draft: false
 categories:
   - Coursera
-  - notes
-  - rl
-  - reinforcement learning
-  - dynamic programming
+  - Fundamentals
+  - Reinforcement Learning
+keywords:
+  - Value Functions
+  - Bellman Equations
+  - Optimality
+  - Optimal Policies
+  - Optimal Value Functions
+  - Dynamic programming
 image: img/nlp-brain-wordcloud.jpg
 title-block-banner: /images/banner_black_3.jpg
 ---

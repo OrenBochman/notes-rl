@@ -8,11 +8,10 @@ author: Oren Bochman
 draft: false
 categories:
   - Coursera
-  - rl
+  - Fundamentals
+  - Reinforcement Learning
 keywords:
-  - notes
-  - reinforcement learning
-  - Markov Decision  Processes
+  - Markov decision processes
   - MDP
 image: img/nlp-brain-wordcloud.jpg
 title-block-banner: /images/banner_black_3.jpg
