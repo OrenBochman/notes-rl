@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Oren Bochman">
+<meta name="dcterms.date" content="2022-05-01">
+<meta name="keywords" content="the k-armed bandit problem, bandit algorithms, exploration, explotation, epsilon greedy algorithm, sample avarage method">
+<meta name="description" content="In week 1 we define some key concepts like rewards, states, action, value functions, action values functions. We consider the the multi-armed bandit problem, leading to exploration explotation dillema, and the epsilon greedy algorithm.">
+
+<title>Course Introduction – rl-notes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-d58cf0c17c84c672bbe6415fb2b2bd7c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
+<link href="../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+MathJax = {
+  loader: {
+    load: ['[tex]/boldsymbol']
+  },
+  tex: {
+    tags: "all",
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    packages: {
+      '[+]': ['boldsymbol']
+    }
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">rl-notes</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Course Introduction</h1>
+<p class="subtitle lead">RL Fundamentals</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">Coursera</div>
+    <div class="quarto-category">notes</div>
+    <div class="quarto-category">rl</div>
+    <div class="quarto-category">reinforcement learning</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    In week 1 we define some key concepts like rewards, states, action, value functions, action values functions. We consider the the multi-armed bandit problem, leading to exploration explotation dillema, and the epsilon greedy algorithm.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Oren Bochman </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 1, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+<div>
+  <div class="keywords">
+    <div class="block-title">Keywords</div>
+    <p>the k-armed bandit problem, bandit algorithms, exploration, explotation, epsilon greedy algorithm, sample avarage method</p>
+  </div>
+</div>
+
+</header>
+
+
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/logo.png" class="img-fluid figure-img"></p>
+<figcaption>RL logo</figcaption>
+</figure>
+</div><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/alg_selector.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>RL algorithms</figcaption>
+</figure>
+</div></div>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<ul>
+<li>The course instructors, Adam and Martha White, are world class researches researchers.</li>
+<li>The University of Alberta is by far the strongest university for RL.</li>
+<li>RL builds on the foundations of Markov Decision Processes, Dynamic Programming, and Monte Carlo methods as well as Machine Learning and Deep Neural Networks.
+<ul>
+<li>I found that learning these topics is better motivated and there fore easier to grasp when presented in the context of RL.</li>
+</ul></li>
+<li>I read reviews by a number of people have taken this specialization. A few have had some background in RL and breezed through the material. The rest suggested that the material can be challenging particularly the last two courses.</li>
+<li>Some of the assignments appear in RL textbooks, but instead of a few lines of code for the main assignment, in the capstone we get to implement both Parts of the environment, the RL algorithm, the replay buffer, the neural net and the optimizer from scratch. This is a blessing in disguise as it really gives one more opportunity to get to grips with these complex subjects.</li>
+<li>A big chunk of the programming assignments have to handle the environment rather than the RL algorithm - many students complain about this.
+<ul>
+<li>My insight has repeatedly been that in RL the algorithms are often very general and that the key to success for solving a particular problem with RL is all about thinking the environment through.</li>
+<li>Many environments have different challenges and can reveal the weaknesses of many time tested algorithms.</li>
+<li>Real world problems are much more challenging but the more environments you work with, the better you will be able to find good features that can make solving them with RL very different.</li>
+<li>Another aspect of RL is called reward shaping which is defining a reward structure that can provide the algorithm with good signal so as to support better credit assignment to actions in the correct state. This is an integral part of environment design.</li>
+<li>Finally I found that when you try to implement RL algorithms for real world problems you will want to modify the algorithms to take advantage of some structure in the environment.</li>
+<li>Luckily there are today more environments available then I could list, it is easy to create new ones. The bottom line is that the challenges and algorithms of RL only make sense when considered in the context of environments.</li>
+</ul></li>
+<li>In my opinion many of the assignments are not very interesting - the coding problems often border on the trivial.</li>
+<li>If you want to work with RL professionally you will need to do a lot more coding.
+<ul>
+<li>You should consider some of the extra coding assignments that ware included in the text book.</li>
+<li>You should also consider implementing additional algorithms on the environments from the assignments.</li>
+<li>There are tons of other more interesting environments to work with consider taking you implementation to the next level in these environments.
+<ul>
+<li>In reality even many of the environments we use in the assignments have surprising challenges.</li>
+<li>The moon lander in the capstone for example tends to learn to hover for a long time to avoid crashing
+<ul>
+<li>The solution comes from a paper which suggests adding a time limit to the episode. However the assignment uses the time limit without mentioning this.</li>
+<li>I thought that the time limit was there to speed up grading until I tried to dive deeper.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>We spend lots of time tinkering with RL-Glue a library that is no longer being maintained.</li>
+<li>Although my background is in Mathematics I found the videos rather terse.
+<ul>
+<li>They often list goals at the start and at the end again, so all in all the instructional part can be very brief.</li>
+<li>It would be easier to recap not just reference equations, update rules, and algorithms that have been covered a while back or in a previous course.</li>
+<li>Many They frequently reference old material which you may not have <em>fully digested</em> yet.</li>
+</ul></li>
+<li>I discovered that I had worked though all the videos, quizzes and programming assignments scoring 100% but I hadn’t really digested the material.
+<ul>
+<li>These notes are my attempt to do so.</li>
+<li>I try to make the material more accessible and to connect the dots.</li>
+</ul></li>
+<li>I don’t include the programming assignments in these notes.
+<ul>
+<li>I may add simple agents with from different environments and using libraries other than RL-Glue to avoid any issues raised by the Coursera honor code.</li>
+</ul></li>
+<li>I don’t include the quizzes either
+<ul>
+<li>I found that most can be aced by just reviewing the videos before taking them and then reviewing the answers.</li>
+<li>I’d like to build a question/answer bank</li>
+<li>But I think that coding is much better time investment.</li>
+</ul></li>
+<li>There are lots of good notes on the web on RL.
+<ul>
+<li>Summaries of the text book</li>
+<li>Slides for the courses offered by Richard S. Sutton and Andrew G. Barto</li>
+<li>Slides for the course offered by David Silver</li>
+<li>Notes from more advanced courses</li>
+<li>Books &amp; Notes from some of the Guest lectures in this course.</li>
+</ul></li>
+<li>So I was reluctant to add to the pile. I found out after completing the first two courses that I had not really digested the material.
+<ul>
+<li>I had to go back and review the material and then write these notes.</li>
+<li>I found that the act of writing the notes helped me to understand some of the trickier bits from the book.</li>
+<li>I also wanted to see how I could connect the dots between the different parts of the course.</li>
+<li>I hope that you find these notes helpful.</li>
+</ul></li>
+</ul>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Deceptively simple :bulb:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><mark>This course is <strong>deceptively simple</strong></mark> - the chart in the margin provides a great summary of the material for the whole specialization. Only a handful of concepts are needed to master RL.</p>
+<ul>
+<li>This specialization is all about connecting the dots.</li>
+<li>We revisit the same ideas over and over improving them in small but significant ways by relaxing the assumptions. e.g.&nbsp;from bandits with one state we move to MDP with many states and get the ability to formulate plans. From Dynamic programming with a fully specified model we move to model free settings where we might not be able to efficiently learn a model. From tabular methods where we treat each state as a separate entity we we move to function approximation and deep learning where we can generalize from one state to many others.</li>
+<li>In this course and the more connections you make the better you will understand and remember material.</li>
+<li>And the greater you facility to apply RL to new problems.</li>
+</ul>
+</div>
+</div>
+<p>The following are my tips for getting the most from this specialization</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Connecting The Dot to see the Forest For the Trees 🎄
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To connect the dots I :heart: recommend:</p>
+<ol type="1">
+<li><strong>Annotate</strong> 🖊️ you e-copy of the book 📖</li>
+<li><strong>Flash cards</strong> 🗂️ are your 🧑‍🤝‍🧑 friends.</li>
+</ol>
+<ul>
+<li>We don’t need too many but they can help you keep the essentials (algorithms, definitions, some formulas, a few diagrams) fresh in your mind.</li>
+<li>Keep reviewing these until you impress the folks at DeepMind in your interview. :wink:</li>
+</ul>
+<ol start="3" type="1">
+<li><strong>Review</strong> 👁️ the videos/quizzes until nothing seems surprising/confusing <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</li>
+<li><strong>Review</strong> 👁️ your notes every time you complete a part of the specialization. Also a great idea if have an RL interview 💼</li>
+<li><strong>Coding</strong>: If you have time do extra RL coding
+<ol type="1">
+<li>Start with developing more environments, simple and complex ⛩️</li>
+<li>Implement more algorithms - from the course, the books, papers.⛩️</li>
+<li>The notebooks also try to teach you experiments and analysis comparing algorithms performance. If you assimilate this part you are really going to shine. ⛩️</li>
+</ol></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Mathematical Mnemonics 😍
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>As a Mathematics major I can attest that Mathematics becomes 10x easier so long as you can recall 🧠 the basic definitions and their notation.</p>
+<p>I have extracted the essentials from the text book below. Best to memorize these or at least keep a copy handy and you are well on your way to grokking this course</p>
+<ul>
+<li><span class="math inline">\(G_t\)</span> <strong>return</strong> at time t, for a <span class="math inline">\((s_t, a_t, r_t...)\)</span> sequence discounted by <span class="math inline">\(\gamma\in(0,1)\)</span>.</li>
+<li><span class="math inline">\(r(s,a)\)</span> - <strong>expected immediate rewards</strong> for action <span class="math inline">\(a\)</span> in state <span class="math inline">\(s\)</span></li>
+<li><span class="math inline">\(\pi\)</span> <strong>policy</strong> - a decision making rule for every state.</li>
+<li><span class="math inline">\(\pi_*\)</span> <strong>optimal policy</strong> - which returns the maximum rewards.</li>
+<li><span class="math inline">\(p(s',r \vert s,a)\)</span> - <strong>transition probability</strong> to state <span class="math inline">\(s'\)</span> with reward <span class="math inline">\(r\)</span> from state <span class="math inline">\(s\)</span> via action <span class="math inline">\(a\)</span> AKA <strong>four valued dynamics</strong> function.</li>
+<li><span class="math inline">\(p(s' \vert s,a)\)</span> - <strong>transition probability</strong> to state <span class="math inline">\(s'\)</span> from state <span class="math inline">\(s\)</span> via action <span class="math inline">\(a\)</span> AKA <strong>Markov process transition matrix</strong></li>
+<li><span class="math inline">\(v_\pi(s)\)</span> - state’s <strong>value</strong> under policy <span class="math inline">\(\pi\)</span> which is its expected return.</li>
+<li><span class="math inline">\(q_\pi(s,a)\)</span> - the <strong>action value</strong> in state <span class="math inline">\(s\)</span> under policy <span class="math inline">\(\pi\)</span>.</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Guest Lectures
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>There are a number of guest lectures in this specialization - I think that about half are in the last course.</p>
+<ul>
+<li>These often provide a teaser into an area of research that extends the material in the course.</li>
+<li>Many are boring but
+<ul>
+<li>almost all present papers and results that are worth some review.</li>
+<li>a few present too many papers, which suggests a triage approach</li>
+<li>sooner of later you might have a real problem that is similar to the one they are addressing.</li>
+<li>so I suggest you try and spend some time</li>
+</ul></li>
+<li>RL was more or less invented 4 times in different fields - Control Theory, Operations Research, Machine Learning and Psychology.</li>
+<li>The guest lectures often present the material from one of these fields.</li>
+</ul>
+</div>
+</div>
+<section id="a-long-term-plan-to-learning-deep-rl" class="level2">
+<h2 class="anchored" data-anchor-id="a-long-term-plan-to-learning-deep-rl">A Long term plan to learning Deep RL</h2>
+<ol type="1">
+<li>do this specialization</li>
+<li>read the rest of the book - there are a number of important subjects and algorithms that are not covered in the course.</li>
+<li>solve more problems</li>
+<li>read more papers</li>
+</ol>
+<ul>
+<li>there are a zillion algorithms and a gazillion environments out there</li>
+<li>reading a few papers will get you up to speed on the state of the art.</li>
+</ul>
+<ol start="5" type="1">
+<li>implement more algorithms</li>
+</ol>
+<ul>
+<li>this is what people are going to pay you for</li>
+<li>start with gradient bandit algorithms</li>
+<li>then Thompson Sampling using different distributions</li>
+</ul>
+<ol start="6" type="1">
+<li>try and solve a real problem:</li>
+</ol>
+<ul>
+<li>I created a custom RL algorithm to solve the Lewis signaling game quickly and efficient - this allows agents to learn to communicate.</li>
+<li>I am now working on designing a multi-agent version of the game that should learn even faster.</li>
+</ul>
+<ol start="7" type="1">
+<li>do the deep rl course from Hugging Face</li>
+<li>find RL challenges on Kaggle</li>
+</ol>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>The annotated book and flashcards will help here. This material is really logical - if you are surprised/confused you never assimilated some part of the material. Once you do it should become almost intuitive to reason about from scratch.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+    <script type="text/javascript">
+    (function(d) {
+      d.querySelectorAll(".pseudocode-container").forEach(function(el) {
+        let pseudocodeOptions = {
+          indentSize: el.dataset.indentSize || "1.2em",
+          commentDelimiter: el.dataset.commentDelimiter || "//",
+          lineNumber: el.dataset.lineNumber === "true" ? true : false,
+          lineNumberPunc: el.dataset.lineNumberPunc || ":",
+          noEnd: el.dataset.noEnd === "true" ? true : false,
+          titlePrefix: el.dataset.captionPrefix || "Algorithm"
+        };
+        pseudocode.renderElement(el.querySelector(".pseudocode"), pseudocodeOptions);
+      });
+    })(document);
+    (function(d) {
+      d.querySelectorAll(".pseudocode-container").forEach(function(el) {
+        let captionSpan = el.querySelector(".ps-root > .ps-algorithm > .ps-line > .ps-keyword")
+        if (captionSpan !== null) {
+          let captionPrefix = el.dataset.captionPrefix + " ";
+          let captionNumber = "";
+          if (el.dataset.pseudocodeNumber) {
+            captionNumber = el.dataset.pseudocodeNumber + " ";
+            if (el.dataset.chapterLevel) {
+              captionNumber = el.dataset.chapterLevel + "." + captionNumber;
+            }
+          }
+          captionSpan.innerHTML = captionPrefix + captionNumber;
+        }
+      });
+    })(document);
+    </script>
+  
+
+
+
+
+</body></html>
