@@ -1,4 +1,5 @@
 ---
+date: 2024-11-10
 title: "Temporal Abstraction in Reinforcement Learning with the Successor Representation"
 subtitle: Paper Review
 description: "This paper review is an extended introduction to temporal abstraction using options. It covers lots of advanced concepts in reinforcement learning that were introduced in Doina's Precup's talk in the Coursera Specialization on Reinforcement Learning by Martha White and Adam White. The paper is a deep dive into the topic of options and the successor representation. It is a long paper with lots of advanced concepts and algorithms. The paper is a great resource for anyone interested in reinforcement learning and temporal abstraction."
@@ -17,7 +18,6 @@ keywords:
   - Representation-driven Option Discovery
   - Proto-value functions
 draft: false
-date: 2024-11-10
 bibliography: ./bibliography.bib
 image: cover.jpg
 ---
