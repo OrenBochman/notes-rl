@@ -1,0 +1,2281 @@
+{
+  "export_date": "2024-10-17T13:56:33.387Z",
+  "export_userid": "acct:bishdata@hypothes.is",
+  "client_version": "1.1527.0",
+  "annotations": [
+    {
+      "created": "2024-10-17T13:54:26.574148+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "group:__world__"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "this section discusses how we can inject communication errors into the game. The form used creates a tradeoff between more signals (expressivity) and accuracy (expected no of correct messages)",
+      "updated": "2024-10-17T13:54:26.574148+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/Up0h0oyPEe-xlhPY_aEW_A",
+        "incontext": "https://hyp.is/Up0h0oyPEe-xlhPY_aEW_A/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/Up0h0oyPEe-xlhPY_aEW_A"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 7079,
+              "end": 7104
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "A Linguistic Error Limit.",
+              "prefix": "s, can be evolutionarily stable.",
+              "suffix": " Below, we discuss two essential"
+            },
+            {
+              "type": "PageSelector",
+              "index": 1,
+              "label": "2"
+            }
+          ]
+        }
+      ],
+      "id": "Up0h0oyPEe-xlhPY_aEW_A",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:54:20.831125+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T13:54:20.831125+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/TzH8KoyPEe-_g7OSkwn2Tw",
+        "incontext": "https://hyp.is/TzH8KoyPEe-_g7OSkwn2Tw/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/TzH8KoyPEe-_g7OSkwn2Tw"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 20242,
+              "end": 20329
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "The maximum fitness for a grammatical languageis Fg 5 Ny{[1 1 (n 2 1)j][1 1 (h 2 1)j]}.",
+              "prefix": "words is Fng 5 Ny[11 (N 2 1)j]. ",
+              "suffix": " Here,j is the similaritybetween"
+            },
+            {
+              "type": "PageSelector",
+              "index": 3,
+              "label": "4"
+            }
+          ]
+        }
+      ],
+      "id": "TzH8KoyPEe-_g7OSkwn2Tw",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:54:04.500807+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T13:54:04.500807+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/RXVMUIyPEe-zBrOJUDmAhA",
+        "incontext": "https://hyp.is/RXVMUIyPEe-zBrOJUDmAhA/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/RXVMUIyPEe-zBrOJUDmAhA"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 20145,
+              "end": 20241
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "The maximum fitness ofa nongrammatical language with N different words is Fng 5 Ny[11 (N 2 1)j].",
+              "prefix": "ncorrect assignment of meaning. ",
+              "suffix": " The maximum fitness for a gramm"
+            },
+            {
+              "type": "PageSelector",
+              "index": 3,
+              "label": "4"
+            }
+          ]
+        }
+      ],
+      "id": "RXVMUIyPEe-zBrOJUDmAhA",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:53:07.942180+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T13:53:07.942180+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/I7_JKIyPEe-NdmMoWzJ9FQ",
+        "incontext": "https://hyp.is/I7_JKIyPEe-NdmMoWzJ9FQ/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/I7_JKIyPEe-NdmMoWzJ9FQ"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 18143,
+              "end": 18186
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "Word formation can overcome the error limit",
+              "prefix": "rds for actions (i.e.,F IG . 3. ",
+              "suffix": ". Supposethere are n 5 100 objec"
+            },
+            {
+              "type": "PageSelector",
+              "index": 2,
+              "label": "3"
+            }
+          ]
+        }
+      ],
+      "id": "I7_JKIyPEe-NdmMoWzJ9FQ",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:52:39.417675+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T13:52:39.417675+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/Er1buIyPEe-boM9eS7iJzA",
+        "incontext": "https://hyp.is/Er1buIyPEe-boM9eS7iJzA/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/Er1buIyPEe-boM9eS7iJzA"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 17560,
+              "end": 17672
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "A leopard can be stalking,in which case it is a serious risk, or merely sleeping and therebyposing a lesser risk",
+              "prefix": " it and describing its action. (",
+              "suffix": ".) There is an obvious advantage"
+            },
+            {
+              "type": "PageSelector",
+              "index": 2,
+              "label": "3"
+            }
+          ]
+        }
+      ],
+      "id": "Er1buIyPEe-boM9eS7iJzA",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:51:48.405873+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T13:51:48.405873+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/9FbydIyOEe-NJQfAsE9jEA",
+        "incontext": "https://hyp.is/9FbydIyOEe-NJQfAsE9jEA/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/9FbydIyOEe-NJQfAsE9jEA"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 17364,
+              "end": 17470
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "Grammar emerges in the attempt to conveymore information by combining these words into phrases orsentences",
+              "prefix": "ge number ofobjects or actions. ",
+              "suffix": ". Simply naming an object will b"
+            },
+            {
+              "type": "PageSelector",
+              "index": 2,
+              "label": "3"
+            }
+          ]
+        }
+      ],
+      "id": "9FbydIyOEe-NJQfAsE9jEA",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:51:04.818839+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T13:51:04.818839+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/2l01aIyOEe-CGEt9bU8_Mg",
+        "incontext": "https://hyp.is/2l01aIyOEe-CGEt9bU8_Mg/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/2l01aIyOEe-CGEt9bU8_Mg"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 17053,
+              "end": 17175
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "The Evolution of Basic Grammatical Rules. The next step inlanguage evolution is the emergence of a basic syntax orgrammar.",
+              "prefix": " list of all possible sentences.",
+              "suffix": " Recall that by combining sounds"
+            },
+            {
+              "type": "PageSelector",
+              "index": 2,
+              "label": "3"
+            }
+          ]
+        }
+      ],
+      "id": "2l01aIyOEe-CGEt9bU8_Mg",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:50:53.497395+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "group:__world__"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "if stems have a hierarchy via phonemic similarity\nand there is a rich morphology, learning words may be greatly simplified by a learning a few systematic rules. Idealy we need to learn a lexicon with just one base form and apply a group action to get all the forms. In this case we only need to memorize a small lexicon.",
+      "updated": "2024-10-17T13:50:53.497395+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/050rooyOEe-G-Zd_TDpTPw",
+        "incontext": "https://hyp.is/050rooyOEe-G-Zd_TDpTPw/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/050rooyOEe-G-Zd_TDpTPw"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 16808,
+              "end": 17000
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "hecrucial difference between word and sentence formation is thatthe first consists essentially of memorizing all (relevant) wordsof a language, whereas the second is based on grammaticalrules.",
+              "prefix": "unlimited number of sentences. T",
+              "suffix": " We do not memorize a list of al"
+            },
+            {
+              "type": "PageSelector",
+              "index": 2,
+              "label": "3"
+            }
+          ]
+        }
+      ],
+      "id": "050rooyOEe-G-Zd_TDpTPw",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:24:39.827337+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "group:__world__"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "Here we may be considering a form of compositionality, where semantics are established by preferential selection of languages with related patterns of phonemes. What is missing is that these patterns are not grounded in the structural features if the state being expressed..",
+      "updated": "2024-10-17T13:44:30.247230+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/KaGp8IyLEe-PhMPUa0Xd8w",
+        "incontext": "https://hyp.is/KaGp8IyLEe-PhMPUa0Xd8w/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/KaGp8IyLEe-PhMPUa0Xd8w"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 14317,
+              "end": 14489
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "More realistically, we may assume that correct understand-ing of a word is based (to some extent) on matching theperceived string of phonemes to known words of the language",
+              "prefix": "anding of each individual sound.",
+              "suffix": ".Consider a language with N word"
+            },
+            {
+              "type": "PageSelector",
+              "index": 2,
+              "label": "3"
+            }
+          ]
+        }
+      ],
+      "id": "KaGp8IyLEe-PhMPUa0Xd8w",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:32:00.863990+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T13:32:00.863990+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/MIFProyMEe-n1ru5FNbPkA",
+        "incontext": "https://hyp.is/MIFProyMEe-n1ru5FNbPkA/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/MIFProyMEe-n1ru5FNbPkA"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 16586,
+              "end": 16733
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "In all existing human languages, only a small subsetof the sounds producible by the vocal apparatus are employedto generate a large number of words",
+              "prefix": "stinguishable soundsinto words. ",
+              "suffix": ". These words are thenused to co"
+            },
+            {
+              "type": "PageSelector",
+              "index": 2,
+              "label": "3"
+            }
+          ]
+        }
+      ],
+      "id": "MIFProyMEe-n1ru5FNbPkA",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:31:50.458409+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T13:31:50.458409+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/KkzPMoyMEe-5U5drDRuBFQ",
+        "incontext": "https://hyp.is/KkzPMoyMEe-5U5drDRuBFQ/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/KkzPMoyMEe-5U5drDRuBFQ"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 16275,
+              "end": 16585
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "Combining sounds into words leads to an essentially unlim-ited potential for different words. This step in languageevolution can be seen as a transition from an analogue to adigital system. The repertoire is not increased by adding moresounds, but by combining a set of easily distinguishable soundsinto words.",
+              "prefix": " givenby F 5 Si51N P i (Fig. 3).",
+              "suffix": " In all existing human languages"
+            },
+            {
+              "type": "PageSelector",
+              "index": 2,
+              "label": "3"
+            }
+          ]
+        }
+      ],
+      "id": "KkzPMoyMEe-5U5drDRuBFQ",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:27:25.333295+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "group:__world__"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "decoding the state  is mandated on decoding the each signal in the sequence",
+      "updated": "2024-10-17T13:27:25.333295+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/jEflnIyLEe-n1AeMH9nW7A",
+        "incontext": "https://hyp.is/jEflnIyLEe-n1AeMH9nW7A/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/jEflnIyLEe-n1AeMH9nW7A"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 14204,
+              "end": 14317
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "This equation assumes that understanding of a word isbased on the correct understanding of each individual sound.",
+              "prefix": "r potential for communica-tion. ",
+              "suffix": "More realistically, we may assum"
+            },
+            {
+              "type": "PageSelector",
+              "index": 2,
+              "label": "3"
+            }
+          ]
+        }
+      ],
+      "id": "jEflnIyLEe-n1AeMH9nW7A",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:12:59.896416+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T13:12:59.896416+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/iHBO1IyJEe-haqO8EDKchQ",
+        "incontext": "https://hyp.is/iHBO1IyJEe-haqO8EDKchQ/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/iHBO1IyJEe-haqO8EDKchQ"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 9929,
+              "end": 10015
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "Children learn the language of their parents bysampling their responses to each object",
+              "prefix": " propor-tional to their payoff. ",
+              "suffix": ". The figure shows the popu-lati"
+            },
+            {
+              "type": "PageSelector",
+              "index": 1,
+              "label": "2"
+            }
+          ]
+        }
+      ],
+      "id": "iHBO1IyJEe-haqO8EDKchQ",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:11:11.229882+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T13:11:11.229882+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/R6xOZoyJEe-2TX9zHnw5pw",
+        "incontext": "https://hyp.is/R6xOZoyJEe-2TX9zHnw5pw/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/R6xOZoyJEe-2TX9zHnw5pw"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 13977,
+              "end": 14143
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "For a language with m sounds (phonemes)and a word-length l, the maximum payoff is given by F(m,l) 5m l[1 1 (m 2 1) ́]2l, which converges to 1y ́l for large valuesof m",
+              "prefix": "orrect under-standing of words. ",
+              "suffix": ", thus allowing a much greater p"
+            },
+            {
+              "type": "PageSelector",
+              "index": 2,
+              "label": "3"
+            }
+          ]
+        }
+      ],
+      "id": "R6xOZoyJEe-2TX9zHnw5pw",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:09:16.704455+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T13:09:16.704455+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/A2jzdoyJEe-kdt9J4zJ9fA",
+        "incontext": "https://hyp.is/A2jzdoyJEe-kdt9J4zJ9fA/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/A2jzdoyJEe-kdt9J4zJ9fA"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 13775,
+              "end": 13976
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "Asbefore, we define the fitness of a language as the total amountof successful information transfer. The maximum fitness isobtained by summing over all probabilities of correct under-standing of words.",
+              "prefix": "s. Words are strings of sounds. ",
+              "suffix": " For a language with m sounds (p"
+            },
+            {
+              "type": "PageSelector",
+              "index": 2,
+              "label": "3"
+            }
+          ]
+        }
+      ],
+      "id": "A2jzdoyJEe-kdt9J4zJ9fA",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T13:08:50.361635+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T13:08:50.361635+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/87TqcIyIEe-Gyw_PWre-KQ",
+        "incontext": "https://hyp.is/87TqcIyIEe-Gyw_PWre-KQ/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/87TqcIyIEe-Gyw_PWre-KQ"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 13660,
+              "end": 13744
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "Word Formation. The way to overcome the error limit is bycombining sounds into words",
+              "prefix": "ed semantic representation (41).",
+              "suffix": ". Words are strings of sounds. A"
+            },
+            {
+              "type": "PageSelector",
+              "index": 2,
+              "label": "3"
+            }
+          ]
+        }
+      ],
+      "id": "87TqcIyIEe-Gyw_PWre-KQ",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T12:38:17.592035+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T12:38:17.592035+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/r0iMxIyEEe-_BzeqChPpHQ",
+        "incontext": "https://hyp.is/r0iMxIyEEe-_BzeqChPpHQ/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/r0iMxIyEEe-_BzeqChPpHQ"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 13136,
+              "end": 13268
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "Adding new sounds increases the numberof objects that can be described but at the cost of an increasedprobability of making mistakes",
+              "prefix": "1999) 8029language, is limited. ",
+              "suffix": "; the overall ability to transfe"
+            },
+            {
+              "type": "PageSelector",
+              "index": 2,
+              "label": "3"
+            }
+          ]
+        }
+      ],
+      "id": "r0iMxIyEEe-_BzeqChPpHQ",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T12:37:53.142759+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T12:37:53.142759+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/oLiVCoyEEe-LV5uVxAeeNw",
+        "incontext": "https://hyp.is/oLiVCoyEEe-LV5uVxAeeNw/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/oLiVCoyEEe-LV5uVxAeeNw"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 7167,
+              "end": 7223
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "First, we include the possibilityof errors in perception",
+              "prefix": "lextensions of the basic model. ",
+              "suffix": ": early in the evolution of comm"
+            },
+            {
+              "type": "PageSelector",
+              "index": 1,
+              "label": "2"
+            }
+          ]
+        }
+      ],
+      "id": "oLiVCoyEEe-LV5uVxAeeNw",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T09:19:34.895317+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "group:__world__"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "this q is a re-normalised transposed of p  \nthis is what receivers learn in lewis games.\n\nhaving this transpose solution means that for each agent there is randomly chosen a lewis equilibrium in place at the start of equilibrium and selection is acting the fitness function which is highest for a signaling system. As n increases the number of partial pooling equilibria grows much faster then the number of separating equilibria",
+      "updated": "2024-10-17T09:24:16.123385+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/7M8XqoxoEe-FmH-pPCN-qA",
+        "incontext": "https://hyp.is/7M8XqoxoEe-FmH-pPCN-qA/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/7M8XqoxoEe-FmH-pPCN-qA"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 11560,
+              "end": 11634
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "The passive matrixQ is derived from the active matrix: q ji 5 pijySi p ij.",
+              "prefix": "hat all rows have a sum of one. ",
+              "suffix": " Then a mutantlanguage L9 is pro"
+            },
+            {
+              "type": "PageSelector",
+              "index": 1,
+              "label": "2"
+            }
+          ]
+        }
+      ],
+      "id": "7M8XqoxoEe-FmH-pPCN-qA",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T08:57:51.446407+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T08:57:51.446407+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/4-LrfoxlEe-kS28Kih4Ezg",
+        "incontext": "https://hyp.is/4-LrfoxlEe-kS28Kih4Ezg/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/4-LrfoxlEe-kS28Kih4Ezg"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 11230,
+              "end": 11373
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "we do not modelindividual players but simply evaluate whether or not a mutantlanguage will be able to invade and replace the existing language.",
+              "prefix": "n by Eq. 2. In this simulation, ",
+              "suffix": " Thesimulation is started with a"
+            },
+            {
+              "type": "PageSelector",
+              "index": 1,
+              "label": "2"
+            }
+          ]
+        }
+      ],
+      "id": "4-LrfoxlEe-kS28Kih4Ezg",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T08:56:37.438929+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T08:56:37.438929+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/t8gbcoxlEe-HjYcJsamBHA",
+        "incontext": "https://hyp.is/t8gbcoxlEe-HjYcJsamBHA/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/t8gbcoxlEe-HjYcJsamBHA"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 10647,
+              "end": 10827
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "Evolution of protolanguage in the context of misunder-standing. There are 20 objects and 40 sounds, but evolution leads toa language that uses only 9 sounds to describe 11 objects.",
+              "prefix": "K., unpublished work).F IG . 2. ",
+              "suffix": " Sounds arerepresented on a line"
+            },
+            {
+              "type": "PageSelector",
+              "index": 1,
+              "label": "2"
+            }
+          ]
+        }
+      ],
+      "id": "t8gbcoxlEe-HjYcJsamBHA",
+      "flagged": false
+    },
+    {
+      "created": "2024-10-17T08:55:54.546827+00:00",
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "tags": [],
+      "text": "",
+      "updated": "2024-10-17T08:55:54.546827+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "user_info": {
+        "display_name": null
+      },
+      "hidden": false,
+      "links": {
+        "html": "https://hypothes.is/a/njcKEIxlEe-_4Avm-_NWRA",
+        "incontext": "https://hyp.is/njcKEIxlEe-_4Avm-_NWRA/pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/njcKEIxlEe-_4Avm-_NWRA"
+      },
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "uri": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+      "target": [
+        {
+          "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "type": "TextPositionSelector",
+              "start": 7554,
+              "end": 7723
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "The probabilities, u ij, can be expressed in terms of similaritiesbetween sounds. We denote the similarity between sounds iand j by s ij. We obtain u ij 5 s ijySkm51s ik",
+              "prefix": "iD 1 p9ij S Ok51mu jk q kiDG.[2]",
+              "suffix": ". As a simple example,we assume "
+            },
+            {
+              "type": "PageSelector",
+              "index": 1,
+              "label": "2"
+            }
+          ]
+        }
+      ],
+      "id": "njcKEIxlEe-_4Avm-_NWRA",
+      "flagged": false
+    },
+    {
+      "id": "M0h9you_Ee-R8seg8byLhQ",
+      "created": "2024-10-16T13:04:38.679857+00:00",
+      "updated": "2024-10-16T13:04:38.679857+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 95,
+              "type": "TextPositionSelector",
+              "start": 70
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "The evolution of language",
+              "prefix": " 8028 – 8033, July 1999Evolution",
+              "suffix": "MARTINA. NOWAK*ANDDAVIDC. KRAKAU"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/M0h9you_Ee-R8seg8byLhQ",
+        "incontext": "https://hyp.is/M0h9you_Ee-R8seg8byLhQ/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/M0h9you_Ee-R8seg8byLhQ"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    },
+    {
+      "id": "SlYkGIu_Ee-4XmfpBkV8LA",
+      "created": "2024-10-16T13:05:17.371611+00:00",
+      "updated": "2024-10-16T13:05:17.371611+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 736,
+              "type": "TextPositionSelector",
+              "start": 576
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "We  explore  the  ways  inwhich protolanguages can evolve in a nonlinguistic society andhow  specific  signals  can  become  associated  with  specificobjects. ",
+              "prefix": "n  evolutionary  game  theory.  ",
+              "suffix": " We  assume  that  early  in  th"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/SlYkGIu_Ee-4XmfpBkV8LA",
+        "incontext": "https://hyp.is/SlYkGIu_Ee-4XmfpBkV8LA/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/SlYkGIu_Ee-4XmfpBkV8LA"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    },
+    {
+      "id": "ibW_uou_Ee-ckHvx0lCH_w",
+      "created": "2024-10-16T13:07:03.700647+00:00",
+      "updated": "2024-10-16T13:08:46.767832+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "This notion of errors driving language evolution is central to this paper. And is also one that has gone under appreciated in later research.",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "group:__world__"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 852,
+              "type": "TextPositionSelector",
+              "start": 755
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "early  in  the  evolution  of  language,errors  in  signaling  and  perception  would  be  common",
+              "prefix": "ificobjects.  We  assume  that  ",
+              "suffix": ".  Wemodel the probability of mi"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/ibW_uou_Ee-ckHvx0lCH_w",
+        "incontext": "https://hyp.is/ibW_uou_Ee-ckHvx0lCH_w/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/ibW_uou_Ee-ckHvx0lCH_w"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    },
+    {
+      "id": "bLuDMIvAEe-4YWfgvH5ILQ",
+      "created": "2024-10-16T13:13:24.577292+00:00",
+      "updated": "2024-10-16T13:13:24.577292+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 1545,
+              "type": "TextPositionSelector",
+              "start": 1407
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "We  argue  thatgrammar originated as a simplified rule system that evolvedby  natural  selection  to  reduce  mistakes  in  communication.",
+              "prefix": "y  simple  grammatical  rules.  ",
+              "suffix": "Our theory provides a systematic"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/bLuDMIvAEe-4YWfgvH5ILQ",
+        "incontext": "https://hyp.is/bLuDMIvAEe-4YWfgvH5ILQ/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/bLuDMIvAEe-4YWfgvH5ILQ"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    },
+    {
+      "id": "CC-zuIvQEe-eUkOTLBYm3Q",
+      "created": "2024-10-16T15:05:07.833451+00:00",
+      "updated": "2024-10-16T15:05:07.833451+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 3212,
+              "type": "TextPositionSelector",
+              "start": 2906
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "One problem in the study of languageevolution has been the tendency to identify contemporaryfeatures of human language and suggest scenarios in whichthese would be selectively advantageous. This approach ig-nores the fact that if language has evolved, it must have doneso from a relatively simple precursor",
+              "prefix": "g itscultural history (16, 27). ",
+              "suffix": " (28, 29). We are thereforerequi"
+            },
+            {
+              "type": "PageSelector",
+              "index": 0,
+              "label": "1"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/CC-zuIvQEe-eUkOTLBYm3Q",
+        "incontext": "https://hyp.is/CC-zuIvQEe-eUkOTLBYm3Q/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/CC-zuIvQEe-eUkOTLBYm3Q"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    },
+    {
+      "id": "EcHwiovQEe-tFC800TGzBA",
+      "created": "2024-10-16T15:05:23.884680+00:00",
+      "updated": "2024-10-16T15:05:23.884680+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 2482,
+              "type": "TextPositionSelector",
+              "start": 2403
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "This limitlessness has been described as ‘‘makinginfinite use of finite means’’",
+              "prefix": "mation for communi-cation (25). ",
+              "suffix": " (45). The lack of obvious forma"
+            },
+            {
+              "type": "PageSelector",
+              "index": 0,
+              "label": "1"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/EcHwiovQEe-tFC800TGzBA",
+        "incontext": "https://hyp.is/EcHwiovQEe-tFC800TGzBA/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/EcHwiovQEe-tFC800TGzBA"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    },
+    {
+      "id": "IhjpXIvQEe-vukcRI0KHag",
+      "created": "2024-10-16T15:05:51.300504+00:00",
+      "updated": "2024-10-16T15:05:51.300504+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 3554,
+              "type": "TextPositionSelector",
+              "start": 3511
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "The Evolution of Signal–Object Associations",
+              "prefix": "dcomputational modeling (33–37).",
+              "suffix": ". We assumethat language evolved"
+            },
+            {
+              "type": "PageSelector",
+              "index": 0,
+              "label": "1"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/IhjpXIvQEe-vukcRI0KHag",
+        "incontext": "https://hyp.is/IhjpXIvQEe-vukcRI0KHag/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/IhjpXIvQEe-vukcRI0KHag"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    },
+    {
+      "id": "WtBCaIvQEe-T64vxwPXBsw",
+      "created": "2024-10-16T15:07:26.463506+00:00",
+      "updated": "2024-10-16T15:07:26.463506+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 4129,
+              "type": "TextPositionSelector",
+              "start": 4007
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "he matrix Q contains the entries q ji, whichdenote the probability that for a listener sound j is associatedwith object i.",
+              "prefix": "t i is associatedwith sound j. T",
+              "suffix": " P is called ‘‘active matrix,’’ "
+            },
+            {
+              "type": "PageSelector",
+              "index": 0,
+              "label": "1"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/WtBCaIvQEe-T64vxwPXBsw",
+        "incontext": "https://hyp.is/WtBCaIvQEe-T64vxwPXBsw/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/WtBCaIvQEe-T64vxwPXBsw"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    },
+    {
+      "id": "d97frovVEe-Yg7MfwAB_IA",
+      "created": "2024-10-16T15:44:02.691437+00:00",
+      "updated": "2024-10-16T15:44:02.691437+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "When agents get the same rewards they are in a cooperative game. This is not expressed clearly. \n\nAnd again in line with the Lewis Signaling Game",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "group:__world__"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 5520,
+              "type": "TextPositionSelector",
+              "start": 5328
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "Hence, we assume that both speaker and listener receive areward for mutual understanding. If for example only thelistener receives a benefit, then the evolution of languagerequires cooperation",
+              "prefix": "s F(L,L) 5 Sin51Sjm51 p ij q ji.",
+              "suffix": ".In each round of the game, ever"
+            },
+            {
+              "type": "PageSelector",
+              "index": 0,
+              "label": "1"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/d97frovVEe-Yg7MfwAB_IA",
+        "incontext": "https://hyp.is/d97frovVEe-Yg7MfwAB_IA/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/d97frovVEe-Yg7MfwAB_IA"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    },
+    {
+      "id": "eTdh-ovVEe-Uh6tvwfSoJA",
+      "created": "2024-10-16T15:44:04.934849+00:00",
+      "updated": "2024-10-16T15:44:04.934849+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "This is basically a probabilistic belief of the signaling system by the speaker and listener in a lewis signaling game.",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "group:__world__"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 4004,
+              "type": "TextPositionSelector",
+              "start": 3887
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "The matrix P contains the entries p ij,denoting the probability that for a speaker object i is associatedwith sound j",
+              "prefix": "here are msounds and n objects. ",
+              "suffix": ". The matrix Q contains the entr"
+            },
+            {
+              "type": "PageSelector",
+              "index": 0,
+              "label": "1"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/eTdh-ovVEe-Uh6tvwfSoJA",
+        "incontext": "https://hyp.is/eTdh-ovVEe-Uh6tvwfSoJA/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/eTdh-ovVEe-Uh6tvwfSoJA"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    },
+    {
+      "id": "cUtu6ovbEe-GpvsB-3nMKg",
+      "created": "2024-10-16T16:26:48.636763+00:00",
+      "updated": "2024-10-16T16:26:48.636763+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 9498,
+              "type": "TextPositionSelector",
+              "start": 9433
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "Emergence of a protolanguage in an initially prelinguisticsociety",
+              "prefix": "tely described by thisF IG . 1. ",
+              "suffix": ". The population consists of 100"
+            },
+            {
+              "type": "PageSelector",
+              "index": 1,
+              "label": "2"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/cUtu6ovbEe-GpvsB-3nMKg",
+        "incontext": "https://hyp.is/cUtu6ovbEe-GpvsB-3nMKg/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/cUtu6ovbEe-GpvsB-3nMKg"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    },
+    {
+      "id": "hE_lIIvbEe-YsE8bXdwQtg",
+      "created": "2024-10-16T16:27:20.554556+00:00",
+      "updated": "2024-10-16T16:29:18.263061+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "P,Q are randomised and i guess their rows are normalised.\n",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 9600,
+              "type": "TextPositionSelector",
+              "start": 9544
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "Each of them startswith a randomly chosen P and Q matrix",
+              "prefix": "on consists of 100 individuals. ",
+              "suffix": ". There are five objects and fiv"
+            },
+            {
+              "type": "PageSelector",
+              "index": 1,
+              "label": "2"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/hE_lIIvbEe-YsE8bXdwQtg",
+        "incontext": "https://hyp.is/hE_lIIvbEe-YsE8bXdwQtg/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/hE_lIIvbEe-YsE8bXdwQtg"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    },
+    {
+      "id": "z0jbkIvbEe-TgDt-Tp4nGQ",
+      "created": "2024-10-16T16:29:26.320056+00:00",
+      "updated": "2024-10-16T16:29:38.194765+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "They are learning a 5 by 5 signaling system",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 9649,
+              "type": "TextPositionSelector",
+              "start": 9602
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "There are five objects and fivesignals (sounds)",
+              "prefix": "randomly chosen P and Q matrix. ",
+              "suffix": ". In one round of the game, ever"
+            },
+            {
+              "type": "PageSelector",
+              "index": 1,
+              "label": "2"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/z0jbkIvbEe-TgDt-Tp4nGQ",
+        "incontext": "https://hyp.is/z0jbkIvbEe-TgDt-Tp4nGQ/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/z0jbkIvbEe-TgDt-Tp4nGQ"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    },
+    {
+      "id": "JkIyjovcEe-lS9eXYUMxOA",
+      "created": "2024-10-16T16:31:52.251234+00:00",
+      "updated": "2024-10-16T16:31:52.251234+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "the payoffs per interaction are symmetric but the aggregations are not!!!\n\nthis is a combination of a cooperative step and a competitive step",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "group:__world__"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 9928,
+              "type": "TextPositionSelector",
+              "start": 9848
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "For the next round, individuals produce offspring propor-tional to their payoff.",
+              "prefix": "f all individuals iscalculated. ",
+              "suffix": " Children learn the language of "
+            },
+            {
+              "type": "PageSelector",
+              "index": 1,
+              "label": "2"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/JkIyjovcEe-lS9eXYUMxOA",
+        "incontext": "https://hyp.is/JkIyjovcEe-lS9eXYUMxOA/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/JkIyjovcEe-lS9eXYUMxOA"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    },
+    {
+      "id": "Owb_BovcEe-oWVtZs0lT9w",
+      "created": "2024-10-16T16:32:27.097529+00:00",
+      "updated": "2024-10-16T16:32:27.097529+00:00",
+      "user": "acct:bishdata@hypothes.is",
+      "uri": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+      "text": "",
+      "tags": [],
+      "group": "__world__",
+      "permissions": {
+        "read": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "admin": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "update": [
+          "acct:bishdata@hypothes.is"
+        ],
+        "delete": [
+          "acct:bishdata@hypothes.is"
+        ]
+      },
+      "target": [
+        {
+          "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+          "selector": [
+            {
+              "end": 7078,
+              "type": "TextPositionSelector",
+              "start": 6902
+            },
+            {
+              "type": "TextQuoteSelector",
+              "exact": "Evolution does not always lead to the optimum solution, butcertain suboptimum solutions, in which the same signal is usedfor two (or more) objects, can be evolutionarily stable",
+              "prefix": "e specific sound and vice versa.",
+              "suffix": ".A Linguistic Error Limit. Below"
+            },
+            {
+              "type": "PageSelector",
+              "index": 1,
+              "label": "2"
+            }
+          ]
+        }
+      ],
+      "document": {
+        "title": [
+          "pq149908028p"
+        ]
+      },
+      "links": {
+        "html": "https://hypothes.is/a/Owb_BovcEe-oWVtZs0lT9w",
+        "incontext": "https://hyp.is/Owb_BovcEe-oWVtZs0lT9w/www.ncbi.nlm.nih.gov/pmc/articles/PMC22182/pdf/pq008028.pdf",
+        "json": "https://hypothes.is/api/annotations/Owb_BovcEe-oWVtZs0lT9w"
+      },
+      "user_info": {
+        "display_name": null
+      },
+      "flagged": false,
+      "hidden": false
+    }
+  ]
+}

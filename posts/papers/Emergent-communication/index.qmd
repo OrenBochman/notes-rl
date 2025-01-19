@@ -1,0 +1,59 @@
+---
+title: "Emergent Communication of Generalizations"
+subtitle: "paper review"
+date: 2024-10-09
+bibliography: ./bibliography.bib
+categories: [signaling games, stub]
+keywords: []
+image: cover.jpg
+reference-location: margin
+citation-location: margin
+---
+
+## TL;DR
+
+I think this is an amazing paper. I read it critically and made copious notes to see what I could learn from it. The paper point out some limitations of Lewis referential games\^\[In this game the sender sees images, it needs to classify them into some representation and sends a message. The reciever gets the same or similar images + distractors, it needs to run a classifier and needs to select the correct one. Learning an image classifier per agent is expensive and requires access to both an an image classification is likely shared. This however presents a problem.... It allows the agents? \] and suggest a couple of extentions that can over come these limitations. There is
+
+[@mu2022emergentcomms]
+
+## Abstract
+
+To build agents that can collaborate effectively with others, recent research has trained artificial agents to communicate with each other in Lewis-style referential games. However, this often leads to successful but uninterpretable communication. We argue that this is due to the game objective: communicating about a single object in a shared visual context is prone to overfitting and does not encourage language useful beyond concrete reference. In contrast, human language conveys a rich variety of abstract ideas. To promote such skills, we propose games that require communicating generalizations over sets of objects representing abstract visual concepts, optionally with separate contexts for each agent. We find that these games greatly improve systematicity and interpretability of the learned languages, according to several metrics in the literature. Finally, we propose a method for identifying logical operations embedded in the emergent languages by learning an approximate compositional reconstruction of the language.
+
+## The Video
+
+{{< video https://youtu.be/LVW_t7p42X0 >}}
+
+## The Paper
+
+Here is the paper with my annotation and highlights.
+
+## Annotations
+
+::: column-margin
+> To promote such skills, propose games that require communicating generalizations over sets of objects representing abstract visual concepts, optionally with separate contexts for each agent. [^1]
+
+> We argue that the reference games typically used in these studies are ill-suited to drive linguistic *systematicity* for two reasons [^2]
+
+> These tasks are more difficult [^3]
+
+> In the **set reference** (setref) game, a teacher must communicate to a student not just a single object, but rather a group of objects belonging to a concept [^4]
+
+> These tasks are more difficult than traditional reference games [^5]
+:::
+
+[^1]: Significant modification the game: tweak payoffs, assign categories to symbols and allow sending of categories.
+
+[^2]: The best the original Lewis signaling game can do is establish a one to one convention between a sender's siganal of states and reciever action per states. This is just a coordination part of communication.
+
+[^3]: adding categories can result in a combinatorial increase the total messages. So that the agents need to coordinate on one of many more equilibria. Also you now want the agents to learn a much narrower subset of those possible equilibrium i.e. those that are are faithfull to certain structures in of the states. This is essentially a new problem which could be embodies as a second step after the Lewis game. There is no guarantee in general that such a structure exists. And as the authors suggest other structures are not considered
+
+[^4]: this is an interesting game - and also similar to [add reference]{.cn} one modifies the game to refer to set of states by adding and, or and not operators giving an agent an basic reasoning ability. The new signaling systems allows specifying many more states. This can be useful in many applications. Of course learning to send additional operators becomes trivial conceptually if not in the practical sense
+
+[^5]: a "concept" like a red triangle is a specific type of a set. so this should be a easier task than the set reference. The difficulty seems to be not in the language or the categories but in the added classification of varied visual representation of seagulls
+
+![paper](./paper.pdf#page=1){.col-page width="800px" height="1000px"}
+
+<hr>
+
+![paper](./paper.pdf#page=2){.col-page width="800px" height="1000px"}

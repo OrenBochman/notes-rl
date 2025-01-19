@@ -491,7 +491,7 @@ Note&nbsp;1: MC prediction any visit for estimating <span class="math inline">V 
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-prediction-any-visit" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="1" data-no-end="false">
+<div id="alg-mc-prediction-any-visit" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="1" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{MCFirstVisitValuePrediction($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R}$, arbitrarily, $\forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -508,7 +508,7 @@ Note&nbsp;2: MC prediction fist visit for estimating <span class="math inline">V
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-prediction-first-visit" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="2" data-no-end="false">
+<div id="alg-mc-prediction-first-visit" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="2" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{MCAnyVisitValuePrediction($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State Initialize: \State $\qquad V(s) \in \mathbb{R}$, arbitrarily, $\forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \If{$S_t \not \in S_0, S_1,\ldots,S_{t-1}$} \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \EndIf \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -745,7 +745,7 @@ Monte Carlo Exploring Start
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-es-control" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="3" data-no-end="false">
+<div id="alg-mc-es-control" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="3" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{MonteCarloExploringStartsGPI()}\begin{algorithmic} \State Initialize: \State $\qquad \pi(s) \in A(s) \quad \forall s\in \mathcal{S}$ \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \quad \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$ \State $\qquad Returns(s,a) \leftarrow \text {an empty list} \quad \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$ \For {each episode:} \State Choose $S_0 \in \mathcal{S} and A_0 \in \mathcal{A}(S_0) \text{randomly :} p(s,a)&gt;0 \forall s,a$ \comment{$\textcolor{blue}{Exploring Starts}$} \State Generate an episode e from $S_0, A_0$ by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of $e, t \in T-1, T-2,..., 0:} \comment{$\textcolor{blue}{Backward\ pass}$} \State $G \leftarrow \gamma G + R_{t+1}$ \IF {$S_t , A_t \not \in S_0 , A_0 , S_1 , A_1 \ldots , S_{t-1} , A_{t-1}$} \State Append $G$ to $Returns(S_t,A_t)$ \State $Q(S_t,A_t) \leftarrow average(Returns(S_t,A_t))\quad$ \comment{$\textcolor{blue}{\text{MC action-value estimate}}$} \State $\pi(S_t) \leftarrow \arg\max_a Q(S_t,a)\quad$ \comment{$\textcolor{blue}{\text{greedy policy improvement}}$} \EndIf \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -797,7 +797,7 @@ MC control with ϵ-soft policies
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-ϵ-soft-control" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="4" data-no-end="false">
+<div id="alg-mc-ϵ-soft-control" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="4" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{MonteCarloϵ-SoftControl()}\begin{algorithmic} \State Initialize \State $\qquad \epsilon \in (0,1)$ \Comment{ $\textcolor{blue}{\ algorithm\ parameter}$} \State $\qquad \pi \leftarrow \epsilon$-soft policy \Comment{ $\textcolor{blue}{\ Initialize: policy}$} \State $\qquad Q(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t \in T-1, T-2,..., 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \State Append $G$ to $Returns(S_t,A_t)$ \State $Q(S_t,A_t) \leftarrow average(Returns(S_t,A_t))$ \State $A^* \leftarrow \arg\max_a Q(S_t,a) \qquad \textcolor{blue}{\text{(ties broken arbitrarily)}}$ \For {each $a \in \mathcal{A}$} \If{$a = A^*$} \State $\pi(a \mid S_t) \leftarrow 1 - \epsilon + \frac{\epsilon}{|A(S_t)|}$ \Else \State $\pi(a \mid S_t) \leftarrow \frac{\epsilon}{|A(S_T)|}$ \EndIf \EndFor \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -913,7 +913,7 @@ Off-policy every visit MC prediction
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-off-policy-prediction" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="5" data-no-end="false">
+<div id="alg-mc-off-policy-prediction" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="5" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{OffPolicyMonteCarloPrediction()}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s) \text{ an empty list,} \quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0, W \leftarrow 1$ \For {each step of episode, $t \in T-1, T-2,..., 0$:} \State $G \leftarrow \gamma WG + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \State $W \leftarrow W \frac{\pi(A_t|S_t)}{b(A_t|S_t)}$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -930,7 +930,7 @@ Off-policy every visit MC control
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-off-control-prediction" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="6" data-no-end="false">
+<div id="alg-mc-off-control-prediction" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="6" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{OffPolicyMonteCarloPrediction()}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s) \text{ an empty list,} \quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $b: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0, W \leftarrow 1$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma WG + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \State $W \leftarrow W \frac{\pi(A_t \mid S_t)}{b(A_t \mid S_t)}$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>

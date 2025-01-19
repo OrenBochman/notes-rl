@@ -1,8 +1,8 @@
 ---
+date: 2025-01-18
 title: Dynamic collaborative filtering Thompson Sampling for cross-domain advertisements recommendation
 subtitle: Paper Review
 description: Introducing (DCTS) The Dynamic Collaborative Filtering Thompson Sampling algorithm for cross-domain advertisements recommendation.
-date: 2025-01-18
 categories:
     - Paper 
     - Review
@@ -13,7 +13,7 @@ keywords:
     - Thompson Sampling
     - Recomender System
     - Collaborative Filtering
-bibliography: bibliography.bib
+bibliography: ./bibliography.bib
 image: cover.jpg
 ---
 

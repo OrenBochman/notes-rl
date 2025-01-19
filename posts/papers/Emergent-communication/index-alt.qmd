@@ -1,0 +1,77 @@
+---
+title: "PDF with Highlights and Annotations"
+format: html
+draft: true
+---
+
+- Is it possible to highlight a pdf using data in the web page
+- Is it possible to place annotations in the margin in line with the annotations
+
+<!-- 
+this is an attempt to place annotations onto pdf externaly via js and 
+-->
+<style>
+#pdf-container {
+    width: 70%;
+    float: left;
+    position: relative;
+}
+#annotations {
+    width: 28%;
+    float: right;
+    margin-left: 2%;
+    border-left: 2px solid #ccc;
+    padding-left: 10px;
+}
+#text-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;  /* Make text layer transparent to clicks */
+    z-index: 2;
+    color: transparent;  /* Hidden text but selectable */
+    width: 100%;
+}
+.highlighted {
+    background-color: yellow;
+}
+</style>
+
+# Embedded PDF with Highlights and Annotations
+
+::: {.container}
+
+:::: {#pdf-container}
+
+<canvas id="pdf-canvas"></canvas>
+<div id="text-layer"></div>  <!-- Text layer for selecting and annotating -->
+
+::::
+
+::: {#annotations}
+
+### Annotations
+
+<ul id="annotation-list"></ul>
+
+::::
+
+:::
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+<script>
+    const url = './paper.pdf';  // Path to your PDF file
+    const canvas = document.getElementById('pdf-canvas');
+    const ctx = canvas.getContext('2d');
+    const textLayer = document.getElementById('text-layer');
+    let annotations = [];
+
+    // Load PDF
+    const loadingTask = pdfjsLib.getDocument(url);
+    loadingTask.promise.then(function(pdf) {
+        return pdf.getPage(1);  // Load page 1, adjust for other pages
+    }).then(function(page) {
+        const scale = 1.5;
+        const viewport = page.getViewport({scale: scale});
+
+       

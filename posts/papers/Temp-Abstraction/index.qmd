@@ -22,7 +22,7 @@ bibliography: ./bibliography.bib
 image: cover.jpg
 ---
 
-This paper review is an extended introduction to temporal abstraction using options. It covers lots of advanced concepts in reinforcement learning that were introduced in Doina's Precup's talk in the Coursera Specialization on Reinforcement Learning by Martha White and Adam White. The paper is a deep dive into the topic of options and the successor representation. It is a long paper with lots of advanced concepts and algorithms. The paper is a great resource for anyone interested in reinforcement learning and temporal abstraction.
+This paper review is an extended introduction to temporal abstraction using options. It covers lots of advanced concepts in reinforcement learning that were introduced by Guest Speaker Doina Precup from Coursera Specialization on Reinforcement Learning by Martha White and Adam White. The paper is a deep dive into the topic of options and the successor representation. It is a long paper with lots of advanced concepts and algorithms. The paper is a great resource for anyone interested in reinforcement learning and temporal abstraction.
 
 ## Introduction
 
@@ -34,7 +34,6 @@ Ever since I saw [@Martha2022SubTasks] the video lecture on [subtasks](#fig-subt
 
 Talk at Waterloo.AI by Martha White on Developing Reinforcement Learning Agents that Learn Many Subtasks. She makes the case for the life long problem setting and discusses recent research on learning multiple tasks (options and GVFs) in parallel.
 :::
-
 
 
 ::: {.column-margin #fig-option-discovery}
@@ -68,10 +67,9 @@ Options are a powerful form of temporal abstraction that allows agents to make p
 This paper is a quite challangeing. You might listen to this lighthearted deep dive courtesy by notebooklm to ease you into the topics.
 
 <audio controls="1">
-  <source src="deepdive.wav" data-external="1" type="audio/mpeg">
+  <source src="deepdive.mp3" data-external="1" type="audio/mpeg">
   </source>
 </audio>
-
 :::
 
 ::: {.callout-note collapse=true}

@@ -365,7 +365,7 @@ The TD(0) algorithm for estimating <span class="math inline">v_\pi</span>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-td-zero" class="pseudocode-container quarto-float" data-comment-delimiter="#" data-caption-prefix="Algorithm" data-line-number-punc=":" data-indent-size="1.2em" data-no-end="false" data-line-number="true" data-pseudocode-number="1">
+<div id="alg-td-zero" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-no-end="false" data-line-number-punc=":" data-pseudocode-number="1" data-indent-size="1.2em" data-comment-delimiter="#">
 <div class="pseudocode">
 \begin{algorithm} \caption{TD(0) for estimating $v_\pi$}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R} \quad \forall s \in \mathcal{S}$ \FORALL {episode $e$:} \State $S \leftarrow \text{initial state of episode}$ \State $\text{Choose } A \sim \pi(\cdot \mid S)$ \FORALL {step $S \in e$:} \State Take action $A$, observe $R, S'$ \State $V(S) \leftarrow V(S) + \alpha [R + \gamma V(S') - V(S)]$ \State $S \leftarrow S'$ \State $\text{Choose} A' \sim \pi(\cdot \mid S)$ \State $S$ is terminal \ENDFOR \ENDFOR \end{algorithmic} \end{algorithm}
 </div>

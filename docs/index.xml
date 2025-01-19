@@ -365,6 +365,217 @@ Ishikawa, Shion, Young-joo Chung, and Yu Hirate. 2022. <span>“Dynamic Collabor
   <media:content url="https://orenbochman.github.io/notes-rl/posts/papers/DCTS/cover.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
+  <title>On Learning To Become a Successful Loser: A Comparison of Alternative Abstractions of Learning Processes in the Loss Domain</title>
+  <link>https://orenbochman.github.io/notes-rl/posts/papers/Becoming-a-successful-loser/</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>I tracked this paper due to it being highlighted in <span class="citation" data-cites="Skyrms2010signals">(Skyrms 2010)</span> as the source of a model that learns a signaling systems faster. I got me started with the loss domain. I was eventually able to find how to speed up learning by in the Lewis signaling game by considering the much more likely mistakes. Once I got on this algorithm I was thinking that using this idea for Bayesian updating of beliefs. This eventually led me to a second algorithm that was able to rapidly adjust a belief regarding the the state of the world in lewis signaling game with changing distributions.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+TL;DR
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://orenbochman.github.io/notes-rl/posts/papers/img/in_a_nutshell.jpg" class="img-fluid figure-img"></p>
+<figcaption>On Learning to become a successful loser in a nutshell</figcaption>
+</figure>
+</div>
+<p>Besides having this amazing title this research paper compares five mathematical models that predict student behavior in repeated decision-making tasks involving gains and losses. <mark>The core issue is how to accurately represent the effect of losses on learning, as observed deviations from expected utility theory exist</mark> They conducted an experiment and find that learning in the loss domain can be faster than in the gain domain. <mark>The main results suggest that adding a constant to the payoff matrix can accelerate the learning process</mark>, supporting the adjustable reference point (ARP) abstraction of the effect of losses proposed by <span class="citation" data-cites="Roth1995Learning">(Roth and Erev 1995)</span>.</p>
+<audio controls="1">
+<source src="podcast.mp3" data-external="1" type="audio/mpeg">
+
+</audio>
+</div>
+</div>
+<p>I’ts worth noteing that although this paper is about reinforment learning methods, the approach taken is more in line with how this is considered in the field of economics and pholosophy and less from machine learning or continous control. This is a good example of how the same problem can be approached from different fields. I would hazzard to say that the approches also align with the bandit settings.</p>
+<section id="abstract" class="level2">
+<h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
+<blockquote class="blockquote">
+<p>One of the main difficulties in the development of descriptive models of learning in repeated choice tasks involves the abstraction of the effect of losses. The present paper explains this difficulty, summarizes its common solutions, and presents an experiment that was designed to compare the descriptive power of the specific quantifications of these solutions proposed in recent research. The experiment utilized a probability learning task. In each of the experiment’s 500 trials participants were asked to predict the appearance of one of two colors. The probabilities of appearance of the colors were different but fixed during the entire experiment. The experimental manipulation involved an addition of a constant to the payoffs. The results demonstrate that learning in the loss domain can be faster than learning in the gain domain; adding a constant to the payoff matrix can affect the learning process. These results are consistent with by <span class="citation" data-cites="Roth1995Learning">(Roth and Erev 1995)</span> adjustable reference point abstraction of the effect of losses, and violate all other models</p>
+<p>— <span class="citation" data-cites="bereby1998learning">(Bereby-Meyer and Erev 1998)</span></p>
+</blockquote>
+</section>
+<section id="outline" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="outline">Outline:</h2>
+<section id="introduction" class="level3">
+<h3 class="anchored" data-anchor-id="introduction">Introduction</h3>
+<ul>
+<li>Highlights the difficulty in developing descriptive models of learning in repeated choice tasks that involve potential losses.</li>
+<li>Presents the main goal of the paper: to compare the descriptive power of five distinct solutions to this difficulty and to identify a robust approximation of learning in simple decision tasks.</li>
+</ul>
+</section>
+<section id="the-challenge-and-alternative-solutions" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="the-challenge-and-alternative-solutions">The Challenge and Alternative Solutions</h3>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://orenbochman.github.io/notes-rl/posts/papers/Becoming-a-successful-loser/table-01.png" class="img-fluid figure-img"></p>
+<figcaption>Models and Solutions</figcaption>
+</figure>
+</div></div><ul>
+<li>Discusses the difficulty in abstracting the effect of losses given the approximately linear relationship between choice probabilities and the ratio of accumulated payoffs observed in the gain domain.</li>
+<li>Introduces probability learning tasks used to derive and compare the predictions of different models.</li>
+<li>Presents five alternative solutions to the problem:
+<ul>
+<li>Low Reference Point (LRP):
+<ul>
+<li>Transforms objective payoffs into non-negative rewards by subtracting the worst possible outcome</li>
+</ul></li>
+<li>Adjustable Reference Point and Truncation (ARP)
+<ul>
+<li>Uses an evolving reference point to distinguish gains and losses and truncates negative values to ensure positive propensities</li>
+</ul></li>
+<li>Exponential Response Rule (EDS, EFP, EWA)
+<ul>
+<li>Applies an exponential function to propensities, eliminating the need for handling negative values directly. Examples include Exponential Discounted Sum (EDS), Exponential Fictitious Play (EFP), and Experience Weighted Attractions (EWA) models</li>
+</ul></li>
+<li>Cumulative Normal Response Rule (CNFP)
+<ul>
+<li>Uses a cumulative normal distribution to model the relationship between payoffs and propensities- Employs the cumulative normal distribution function to map propensities (which can be negative) to choice probabilities (which are always between 0 and 1). The CNFP model exemplifies this.</li>
+</ul></li>
+<li>Relative Reinforcement solutions (CLO)
+<ul>
+<li>Uses outcome-specific parameters to determine the impact of different outcomes on choice probabilities. The Cardinal Linear Operator (CLO) model demonstrates this.</li>
+</ul></li>
+</ul></li>
+<li>Describes the specific implementations of these solutions through different models, including their assumptions and parameterizations.</li>
+</ul>
+</section>
+<section id="experiment" class="level3">
+<h3 class="anchored" data-anchor-id="experiment">Experiment</h3>
+<ul>
+<li>Describes the experimental method, including the participants, the procedure, and the payoff structure of the probability learning task across three conditions.</li>
+</ul>
+</section>
+<section id="results" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="results">Results</h3>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://orenbochman.github.io/notes-rl/posts/papers/Becoming-a-successful-loser/table-01.png" class="img-fluid figure-img"></p>
+<figcaption>Models and Solutions</figcaption>
+</figure>
+</div></div><ul>
+<li>Presents the aggregated experimental results, showing a significant effect of the reward condition on the proportion of optimal choices.</li>
+<li>Compares the quantitative predictive and descriptive power of the models using correlation and mean squared deviation (MSD) measures.</li>
+<li>Discusses the between-subject variability observed in the data and the limitations of the models in capturing this variability.</li>
+<li>Conducts a model-based analysis to evaluate the robustness of the condition effect.</li>
+<li>Performs a sensitivity analysis to assess the robustness of the ARP model’s predictions to changes in parameter values.</li>
+</ul>
+</section>
+<section id="discussion" class="level3">
+<h3 class="anchored" data-anchor-id="discussion">Discussion</h3>
+<ul>
+<li>Discusses the main finding that the addition of constants to payoffs affects the speed of learning, highlighting the role of the distinction between gains and losses.</li>
+<li>Notes the advantage of the ARP model in capturing the observed results and acknowledges the potential validity of other solutions under specific assumptions or parameterizations.</li>
+<li>Addresses the generality of the findings by discussing:
+<ul>
+<li>Settings where the ARP model’s predictions are consistent with previous research (probability learning, signal detection).</li>
+<li>Settings where the model might fail (learning among only positive outcomes, influence of other players’ payoffs).</li>
+</ul></li>
+</ul>
+</section>
+<section id="conclusions" class="level3">
+<h3 class="anchored" data-anchor-id="conclusions">Conclusions</h3>
+<ul>
+<li>Concludes that human learning is affected by the distinction between gains and losses.</li>
+<li>Emphasizes that modeling this distinction, particularly through the adjustable reference point approach, improves the descriptive power of adaptive learning models.</li>
+<li>Acknowledges the need for further research to refine the quantification of the reference point for a more accurate and generalizable model.</li>
+</ul>
+</section>
+</section>
+<section id="key-takeaways" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li>In most RL settings rewards are sparse. One way to speed up learning is to try and increase our reward signal.</li>
+<li>This is the basis for seeling out to decompose the reward signal into an internal motivation for the agent and an external motivation for the problem designer.</li>
+<li>Another approach though is to consider the loss domain. If we can get signals out of losses we can speed up learning and RL agents are slow learners - especially deep RL agents.</li>
+<li>A third approach that I was able to make use of is to use both the loss domain and the gain domain to update beliefs about the possible states of the world. This was allowed me to speed up Bayesian learning algorithm for a coordination task.</li>
+</ul>
+<p>Besides this the paper has a lot of possible options for potential update rules to get this potential speed up.</p>
+<ol type="1">
+<li>How does adding a constant to all payoffs in a decision task affect learning, and which model best explains this effect?</li>
+</ol>
+<p>One of the results I learned is that adding a constant to the payoff matrix doesn’t change it. In fact linear transformations of the payoff matrix don’t change the outcomes. In policy gradient methods this we call this trick learning with baselines. What we see is that it doesn’t bias the estimator but can drastically reduce the variance of the estimator. And this variance is the noise that slows down learning by the agent. So adding a constant can surprisingly impact learning speed. The ARP model uniquely predicts this: subtracting a constant to introduce losses speeds learning compared to a purely gain-based scenario. This highlights the psychological impact of the gain-loss framing.</p>
+<p>Another insight I had about this is while trying to abstract the RL algorithms. Was that under some conditions we can convert the reward function into a distance metric. Having a metric makes navigation states space much simpler. I really can’t think of a better feature.</p>
+<ol start="2" type="1">
+<li>What are the limitations of the ARP model?</li>
+</ol>
+<ul>
+<li>The ARP model, with its current parameters, assumes an initial reference point of zero and a slow adjustment process. This might not hold when:
+<ul>
+<li>All options are positive: The model would predict slow learning even when clear differences exist.</li>
+<li>Social comparison exists: People may adjust their reference point based on other players’ payoffs, a factor not currently incorporated in the model.</li>
+</ul></li>
+</ul>
+<ol start="3" type="1">
+<li>How would you define the loss domain and the gain domain ?</li>
+</ol>
+<ul>
+<li><p>The gain domain is when choice probabilities are approximately linearly related to the ratio of accumulated reinforcement.</p></li>
+<li><p>The loss domain is when negative payoffs are possible.</p></li>
+<li><p>In the gain domain, the probabilities of choosing an alternative match the ratio of accumulated reinforcement, meaning that individuals are more likely to choose options that have yielded higher rewards in the past.</p></li>
+<li><p>Descriptive models have to assume that choice probabilities are determined by a function of the accumulated reinforcements, which must have strictly positive values. However, this presents a problem when losses are possible because negative payoffs can result in negative values for the function.</p></li>
+</ul>
+<ol start="4" type="1">
+<li>In the paper the autors mention the value function from prospect theory c.f. <span class="citation" data-cites="kahneman1979econ">(Kahneman 1979)</span>. How does this relate to the ARP model?</li>
+</ol>
+<p>The authors state that models that use solutions other than the adjustable reference point can account for the results of the study under the assumption that the model’s parameters can be affected by the payoffs. One way to account for this is to use reinforcement functions with the characteristics of Prospect Theory’s value function. Prospect theory, developed by Kahneman and Tversky, suggests that individuals make decisions based on the potential value of losses and gains rather than the final outcome, and that losses have a greater impact on individuals than gains do. This relates to the ARP model because it also assumes that reinforcements are evaluated relative to a reference point, meaning outcomes above the reference point are perceived as gains (reinforcements) and outcomes below the reference point are perceived as losses (punishments).</p>
+<ol start="5" type="1">
+<li>Is there a formal definition of this prospect theoretic value function?</li>
+</ol>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://orenbochman.github.io/notes-rl/posts/papers/Becoming-a-successful-loser/value-function.png" class="img-fluid figure-img"></p>
+<figcaption>a value function</figcaption>
+</figure>
+</div></div><p>A key element of this theory is the value function, which exhibits these characteristics: - It’s defined on deviations from a reference point. - It’s generally concave for gains and convex for losses. - It’s steeper for losses than for gains, meaning an equivalent loss has a greater psychological impact than the corresponding gain.</p>
+</section>
+<section id="the-paper" class="level2">
+<h2 class="anchored" data-anchor-id="the-paper">The Paper</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="./paper.pdf" class="col-page" width="800" height="1000"></p>
+<figcaption>paper</figcaption>
+</figure>
+</div>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="ref-bereby1998learning" class="csl-entry">
+Bereby-Meyer, Yoella, and Ido Erev. 1998. <span>“On Learning to Become a Successful Loser: A Comparison of Alternative Abstractions of Learning Processes in the Loss Domain.”</span> <em>Journal of Mathematical Psychology</em> 42 (2-3): 266–86.
+</div>
+<div id="ref-kahneman1979econ" class="csl-entry">
+Kahneman, Daniel. 1979. <span>“Econ Ometrica i Ci.”</span> <em>Econometrica</em> 47 (2): 263–91.
+</div>
+<div id="ref-Roth1995Learning" class="csl-entry">
+Roth, Alvin, and Ido Erev. 1995. <span>“Learning in Extensive-Form Games: Experimental Data and Simple Dynamic Models in the Intermediate Term.”</span> <em>Games and Economic Behavior</em> 8 (1): 164–212. <a href="https://EconPapers.repec.org/RePEc:eee:gamebe:v:8:y:1995:i:1:p:164-212">https://EconPapers.repec.org/RePEc:eee:gamebe:v:8:y:1995:i:1:p:164-212</a>.
+</div>
+<div id="ref-Skyrms2010signals" class="csl-entry">
+Skyrms, Brian. 2010. <span>“<span class="nocase">Signals: Evolution, Learning, and Information</span>.”</span> In. Oxford University Press. <a href="https://doi.org/10.1093/acprof:oso/9780199580828.003.0013">https://doi.org/10.1093/acprof:oso/9780199580828.003.0013</a>.
+</div>
+</div></section></div> ]]></description>
+  <category>Reinforcement Learning</category>
+  <category>Paper</category>
+  <category>Review</category>
+  <guid>https://orenbochman.github.io/notes-rl/posts/papers/Becoming-a-successful-loser/</guid>
+  <pubDate>Wed, 01 Jan 2025 22:00:00 GMT</pubDate>
+  <media:content url="https://orenbochman.github.io/notes-rl/posts/papers/Becoming-a-successful-loser/cover.jpg" medium="image" type="image/jpeg"/>
+</item>
+<item>
   <title>Temporal Abstraction in Reinforcement Learning with the Successor Representation</title>
   <link>https://orenbochman.github.io/notes-rl/posts/papers/Temp-Abstraction/</link>
   <description><![CDATA[ 
@@ -372,7 +583,7 @@ Ishikawa, Shion, Young-joo Chung, and Yu Hirate. 2022. <span>“Dynamic Collabor
 
 
 
-<p>This paper review is an extended introduction to temporal abstraction using options. It covers lots of advanced concepts in reinforcement learning that were introduced in Doina’s Precup’s talk in the Coursera Specialization on Reinforcement Learning by Martha White and Adam White. The paper is a deep dive into the topic of options and the successor representation. It is a long paper with lots of advanced concepts and algorithms. The paper is a great resource for anyone interested in reinforcement learning and temporal abstraction.</p>
+<p>This paper review is an extended introduction to temporal abstraction using options. It covers lots of advanced concepts in reinforcement learning that were introduced by Guest Speaker Doina Precup from Coursera Specialization on Reinforcement Learning by Martha White and Adam White. The paper is a deep dive into the topic of options and the successor representation. It is a long paper with lots of advanced concepts and algorithms. The paper is a great resource for anyone interested in reinforcement learning and temporal abstraction.</p>
 <section id="introduction" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>Ever since I saw <span class="citation" data-cites="Martha2022SubTasks">(White 2022)</span> the video lecture on subtasks by Martha White about learning tasks in parallel. However the video does not address the elephant in the room - how to discover the options.</p>
@@ -421,7 +632,7 @@ TL;DR - Option Discovery with Successor Representations
 <p>Options are a powerful form of temporal abstraction that allows agents to make predictions and to operate at different levels of abstraction within an environment in ways idiosyncratic of human approach to tackle many problems. One of the key questions has been how to discover good options. The paper presents a rather simple yet powerful answer to this.</p>
 <p>This paper is a quite challangeing. You might listen to this lighthearted deep dive courtesy by notebooklm to ease you into the topics.</p>
 <audio controls="1">
-<source src="deepdive.wav" data-external="1" type="audio/mpeg">
+<source src="deepdive.mp3" data-external="1" type="audio/mpeg">
 
 </audio>
 </div>
@@ -484,7 +695,7 @@ Figure&nbsp;3: Doina Precup’s Talk at DeepHack.RL on Temporal abstraction in r
 <section id="a-framework-for-option-discovery-from-representation-learning" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="a-framework-for-option-discovery-from-representation-learning">A Framework for Option Discovery from Representation Learning</h2>
 
-<div class="no-row-height column-margin column-container"><div id="fig-1" class="quarto-float quarto-figure quarto-figure-center anchored" width="250px" data-group="figures">
+<div class="no-row-height column-margin column-container"><div id="fig-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures" width="250px">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="https://orenbochman.github.io/notes-rl/posts/papers/Temp-Abstraction/fig_1.png" class="img-fluid figure-img">
@@ -508,7 +719,7 @@ Figure&nbsp;4: Representation-driven Option Discovery (ROD) cycle <span class="c
 <section id="the-successor-representation" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="the-successor-representation">The Successor Representation</h2>
 
-<div class="no-row-height column-margin column-container"><div id="fig-3" class="quarto-float quarto-figure quarto-figure-center anchored" width="250px" data-group="figures">
+<div class="no-row-height column-margin column-container"><div id="fig-3" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures" width="250px">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="https://orenbochman.github.io/notes-rl/posts/papers/Temp-Abstraction/fig_3.png" class="img-fluid figure-img">
@@ -523,7 +734,7 @@ Figure&nbsp;5: Example similar to Dayans 1993 of the SR, w.r.t. the uniform rand
 </ul>
 <p><span id="eq-7"><img src="https://latex.codecogs.com/png.latex?%0A%5CPsi_%7B%5Cpi%7D(s,s')%20=%20%5Cmathbb%7BE%7D_%7B%5Cpi,p%7D%20%5Csum_%7Bt=0%7D%5E%5Cinfty%20%20%CE%B3%5Et%20%5Cmathbb%7B1%7D_%7B%5C%7BS_t=s'%7D%5C%7D%20%7C%20%7BS_0%20=%20s%20%7D%20%5Cqquad%0A%5Ctag%7B2%7D"></span></p>
 
-<div class="no-row-height column-margin column-container"><div id="fig-4" class="quarto-float quarto-figure quarto-figure-center anchored" width="250px" data-group="figures">
+<div class="no-row-height column-margin column-container"><div id="fig-4" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures" width="250px">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="https://orenbochman.github.io/notes-rl/posts/papers/Temp-Abstraction/fig_4.png" class="img-fluid figure-img">
@@ -835,6 +1046,348 @@ White, Martha. 2022. <span>“Developing Reinforcement Learning Agents That Lear
   <guid>https://orenbochman.github.io/notes-rl/posts/papers/Temp-Abstraction/</guid>
   <pubDate>Sat, 09 Nov 2024 22:00:00 GMT</pubDate>
   <media:content url="https://orenbochman.github.io/notes-rl/posts/papers/Temp-Abstraction/cover.jpg" medium="image" type="image/jpeg"/>
+</item>
+<item>
+  <title>Emergent Communication of Generalizations</title>
+  <link>https://orenbochman.github.io/notes-rl/posts/papers/Emergent-communication/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="tldr" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="tldr">TL;DR</h2>
+<p>I think this is an amazing paper. I read it critically and made copious notes to see what I could learn from it. The paper point out some limitations of Lewis referential games^[In this game the sender sees images, it needs to classify them into some representation and sends a message. The reciever gets the same or similar images + distractors, it needs to run a classifier and needs to select the correct one. Learning an image classifier per agent is expensive and requires access to both an an image classification is likely shared. This however presents a problem…. It allows the agents? ] and suggest a couple of extentions that can over come these limitations. There is</p>
+<p><span class="citation" data-cites="mu2022emergentcomms">(Mu and Goodman 2021)</span></p>
+<div class="no-row-height column-margin column-container"><div id="ref-mu2022emergentcomms" class="csl-entry">
+Mu, Jesse, and Noah D. Goodman. 2021. <span>“Emergent Communication of Generalizations.”</span> <em>CoRR</em> abs/2106.02668. <a href="https://arxiv.org/abs/2106.02668">https://arxiv.org/abs/2106.02668</a>.
+</div></div></section>
+<section id="abstract" class="level2">
+<h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
+<p>To build agents that can collaborate effectively with others, recent research has trained artificial agents to communicate with each other in Lewis-style referential games. However, this often leads to successful but uninterpretable communication. We argue that this is due to the game objective: communicating about a single object in a shared visual context is prone to overfitting and does not encourage language useful beyond concrete reference. In contrast, human language conveys a rich variety of abstract ideas. To promote such skills, we propose games that require communicating generalizations over sets of objects representing abstract visual concepts, optionally with separate contexts for each agent. We find that these games greatly improve systematicity and interpretability of the learned languages, according to several metrics in the literature. Finally, we propose a method for identifying logical operations embedded in the emergent languages by learning an approximate compositional reconstruction of the language.</p>
+</section>
+<section id="the-video" class="level2">
+<h2 class="anchored" data-anchor-id="the-video">The Video</h2>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/LVW_t7p42X0" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</section>
+<section id="the-paper" class="level2">
+<h2 class="anchored" data-anchor-id="the-paper">The Paper</h2>
+<p>Here is the paper with my annotation and highlights.</p>
+</section>
+<section id="annotations" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="annotations">Annotations</h2>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<blockquote class="blockquote">
+<p>To promote such skills, propose games that require communicating generalizations over sets of objects representing abstract visual concepts, optionally with separate contexts for each agent. <sup>1</sup></p>
+<div id="fn1"><p><sup>1</sup>&nbsp;Significant modification the game: tweak payoffs, assign categories to symbols and allow sending of categories.</p></div></blockquote>
+<blockquote class="blockquote">
+<p>We argue that the reference games typically used in these studies are ill-suited to drive linguistic <em>systematicity</em> for two reasons <sup>2</sup></p>
+<div id="fn2"><p><sup>2</sup>&nbsp;The best the original Lewis signaling game can do is establish a one to one convention between a sender’s siganal of states and reciever action per states. This is just a coordination part of communication.</p></div></blockquote>
+<blockquote class="blockquote">
+<p>These tasks are more difficult <sup>3</sup></p>
+<div id="fn3"><p><sup>3</sup>&nbsp;adding categories can result in a combinatorial increase the total messages. So that the agents need to coordinate on one of many more equilibria. Also you now want the agents to learn a much narrower subset of those possible equilibrium i.e.&nbsp;those that are are faithfull to certain structures in of the states. This is essentially a new problem which could be embodies as a second step after the Lewis game. There is no guarantee in general that such a structure exists. And as the authors suggest other structures are not considered</p></div></blockquote>
+<blockquote class="blockquote">
+<p>In the <strong>set reference</strong> (setref) game, a teacher must communicate to a student not just a single object, but rather a group of objects belonging to a concept <sup>4</sup></p>
+<div id="fn4"><p><sup>4</sup>&nbsp;this is an interesting game - and also similar to <span class="cn">add reference</span> one modifies the game to refer to set of states by adding and, or and not operators giving an agent an basic reasoning ability. The new signaling systems allows specifying many more states. This can be useful in many applications. Of course learning to send additional operators becomes trivial conceptually if not in the practical sense</p></div></blockquote>
+<blockquote class="blockquote">
+<p>These tasks are more difficult than traditional reference games <sup>5</sup></p>
+<div id="fn5"><p><sup>5</sup>&nbsp;a “concept” like a red triangle is a specific type of a set. so this should be a easier task than the set reference. The difficulty seems to be not in the language or the categories but in the added classification of varied visual representation of seagulls</p></div></blockquote>
+</div></div><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="./paper.pdf#page=1" class="col-page" width="800" height="1000"></p>
+<figcaption>paper</figcaption>
+</figure>
+</div>
+<hr>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="./paper.pdf#page=2" class="col-page" width="800" height="1000"></p>
+<figcaption>paper</figcaption>
+</figure>
+</div>
+
+
+
+</section>
+
+
+ ]]></description>
+  <category>signaling games</category>
+  <category>stub</category>
+  <guid>https://orenbochman.github.io/notes-rl/posts/papers/Emergent-communication/</guid>
+  <pubDate>Tue, 08 Oct 2024 21:00:00 GMT</pubDate>
+  <media:content url="https://orenbochman.github.io/notes-rl/posts/papers/Emergent-communication/cover.jpg" medium="image" type="image/jpeg"/>
+</item>
+<item>
+  <title>The Evolution of Language</title>
+  <link>https://orenbochman.github.io/notes-rl/posts/papers/Evolution-of-language/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://orenbochman.github.io/notes-rl/posts/papers/Evolution-of-language/cover.jpg" class="img-fluid figure-img"></p>
+<figcaption>litrature review</figcaption>
+</figure>
+</div></div><p>I came accross this paper after reading <span class="citation" data-cites="Skyrms2010signals">(Skyrms 2010)</span> and <span class="citation" data-cites="lewis1969convention">(Lewis 1969)</span> and I was looking at models that give some ideas on how languages might evolve but in particular how parctical constraints might shape the evolution of languages. This paper is one such stepping stone towards a more principled approach to engineering language for RL agents.</p>
+<p>This is an early paper on emergence of languages. It quite a bit of a challenge to read. The authors are experts on evolutionary game theory and this is another aspect which is less familiar to me. However there is lots of clever thinking here and the more I ponder this paper the more I get to develop my own ideas and intuitions.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+TL;DR - The Evolution of Language
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://orenbochman.github.io/notes-rl/posts/papers/img/in_a_nutshell.jpg" class="img-fluid figure-img"></p>
+<figcaption>Evolution of Language in a nutshell</figcaption>
+</figure>
+</div>
+<p>This paper examines at emergence of languages evolution through the lens of <strong>resilience to errors</strong>. The game introduced by the authors is very similar to the Lewis signaling game, but on close inspection it may lead to much richer outcomes and if my intuition is correct, this formulation may have advantages for Deep learning and RL. While the results on the role of error is central to the paper, e.g.&nbsp;showing how limited sets of phonemes (30) are better then the full inventory (300+). My main take away is that we should add an error parameters to signaling games. They errors can lead to more than just robust equilibria, they seem to have self organizing effects. I also think that the learning of self organizing mappings is the key to development of more generalization and compositionality in signaling systems. So the big take aways are dont be afraid of errors in communication, they are a natural part of the process of language evolution. And that <span class="citation" data-cites="nowak1999evolution">(Nowak and Krakauer 1999)</span> has a formulation that is potentially more general then the Lewis signaling game and friendly to RL, Gradient Descent, Probabilistic methods as well as Information theory. Also at a glance the three matrix product in the formulas below looks like it can be used in a transformer network which can evaluate them in parallel with or without positional encodings.</p>
+<p>Going over the paper kept generating many more insights then the material in the actual paper. I’ll try and keep my own ideas in callouts.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Some challenges in reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>The paper is not an easy read.</li>
+<li>Many details are omitted, but later intimated in the endless captions of the figures. If you read it over a number of times it becomes possible to piece together more of the details. And some follow up papers also fill in additional details.</li>
+<li>The mathematical approach seems cryptic. It is not aligned to RL or or Lewis Games in Game theory. It is based on papers and text on Evolutionary game theory which I am less familiar with.</li>
+</ol>
+</div>
+</div>
+<section id="abstract" class="level3">
+<h3 class="anchored" data-anchor-id="abstract">Abstract</h3>
+<blockquote class="blockquote">
+<p>The emergence of language was a defining moment in the evolution of modern humans. It was an innovation that changed radically the character of human society. Here, we provide an approach to language evolution based on evolutionary game theory. We explore the ways in which proto-languages can evolve in a nonlinguistic society and how specific signals can become associated with specific objects. <mark>We assume that early in the evolution of language,errors in signaling and perception would be common. We model the probability of misunderstanding a signal and show that this limits the number of objects that can be described bya protolanguage. This “error limit” is not overcome by employing more sounds but by combining a small set of more easily distinguishable sounds into words</mark>. The process of “word formation” enables a language to encode an essentially unlimited number of objects. Next, we analyze how words can be combined into sentences and specify the conditions for the evolution of very simple grammatical rules. We argue that grammar originated as a simplified rule system that evolved by natural selection to reduce mistakes in communication.Our theory provides a systematic approach for thinking about the origin and evolution of human language.</p>
+<p>— <span class="citation" data-cites="nowak1999evolution">(Nowak and Krakauer 1999)</span></p>
+</blockquote>
+</section>
+<section id="the-review" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="the-review">The Review</h2>
+<section id="the-evolution-of-signalobject-associations." class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="the-evolution-of-signalobject-associations.">The Evolution of Signal–Object Associations.</h3>
+<p>This authors describes a setup that is very similar to Lewis signaling game. Each agent is both a sender and a receiver. They payoffs are also made symmetric as they get the averaged expected payoffs for each individual. I.e. each might have a different expected payoffs (one might be a poor sender but a good reciever) The other might be great at both. But since the payoffs are averaged, the game becomes symmetric and therefore cooperative!</p>
+<ol type="1">
+<li><p>Each agents <img src="https://latex.codecogs.com/png.latex?A_i"> is initially assigned a randomized language <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D_i=%3CP,Q%3E"> . There are two agents per interaction but many agents in the population. Payoffs are symmetric but with can communicate better get a higher payoffs. So this game also combines cooperation and competition.</p></li>
+<li><p>I think that instead of working with binary permutations matrices the agents use probability matrices. These are continuous and may be easier to optimize using gradient descent.</p></li>
+<li><p>For RL - we can have a richer reward signal. (Though we could also get it for the lewis signaling) It is the mean of each agent’s expected communication success with the other agents.</p></li>
+<li><p>In terms of modeling it demonstrates that we can combine</p>
+<ul>
+<li>a cooperative communication paradigm with (symmetric payoff)</li>
+<li>a competitive evolutionary paradigm (zero sum game)</li>
+</ul></li>
+<li><p>The formulation is probabilistic.</p>
+<ul>
+<li>The output matrix can be interpreted as a probabilistic mapping and analyzed by by expanding the terms as nested sums of the products of the input matrices.<br>
+</li>
+<li>The notion of using a phonemic uncertainty matrix is very interesting. It is a simple way to model the uncertainty in the mapping between signals and states. And is mapped back to the similarity of the phonemes.</li>
+<li>It could be extended to add salience, signaling risk levels, if they are formulated in terms of probabilities. By multiplying additional matrices.</li>
+<li>We could also use a diagonal block matrix to model normal subgroup to model subspace of the state space. Which would maker the</li>
+<li>We might be able to add Welch-Hadamard blocks in the diagonal to create entangled error correcting subspace. This would allow us to model bound states in the state space. These are embedding subspace.</li>
+<li>Finally I think that we might also use Self-Organizing maps to learn the subspace structure of the state space and use it to find a matching compositional communication structures.</li>
+</ul></li>
+</ol>
+<p>What remains to be seen is if it leads to more desireable set of equilibria that are easier to learn, more robust to perturbation and other desiderata that enhance a signaling system into a language.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Some challenges in the approach
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The agents are not learning through communications but rather being selected in proportion to their fitness (Expected communication ability). Which means the agent with the best ability to communicate with most other agents will dominate the population, rather than the agent with the best signaling system.</p>
+<p>If we dig a bit deeper. If there are two types of agents - SS_i agents which a maximally incompatible signaling system<sup>1</sup> - CP_i which uses a completely pooling system (one that ignores the input and randomizes the output)</p>
+<p>then we have:</p>
+<p><img src="https://latex.codecogs.com/png.latex?0=F(SS_i,SS_j)%20%3C%20F(CP,SS_i)%20=%201/n%20%5Cqquad%20%5Cforall%20i">.</p>
+<p>i.e.&nbsp;guessing is better then perfect miss-coordination.</p>
+<p>Of course this kind of assignment is unlikely to come up in a random assignment. But it indicates that perfect signaling systems are less likely to evolve if they must compete with many more imperfect ones with mutual that can partially coordinate with more agents.</p>
+<p>I.e. agents with poor multilingual capabilities will have a comparative advantage over agents with monolingual abilities if the monolingual ones are sufficiently sparse.</p>
+<p>if we swap out the CP agent with a PP agent (partial pooling) the</p>
+<p>I guess this issue could be mitigated by having very many more agents then equilibria. But as signaling systems are grow as <img src="https://latex.codecogs.com/png.latex?N!"> and they are the sparse in the possible equilibria, this is not feasible for large signaling systems.</p>
+<p>To explore these notions we need an efficient learning algorithm that can learn the equilibria that are also robust to errors. My Bayesian Adaptive RL algorithm can handle errors, so it might be a good start. However I have yet to consider it complexity in the number of agents and signals.</p>
+<p>A new algorithm in the works that is also aware of actions of normal subgroups to structure state into subspaces is likely to be more efficient to learn and to scale better.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+basic Evolutionary language game vs Lewis signaling game
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The paper makes no mention of the Lewis signaling game and only cites sources on evolutionary game theory, population dynamics and biological signaling. But the basic evolutionary language game is very similar to the Lewis signaling game. I have not analysed it but from the text in figure 1, I think it has the same types of equilibria.</p>
+<p>I also simulated some algorithms in which agents had (P,Q) and (P’,Q’) belief or urn matracies when learning the Lewis signaling game. But my algorithms were RL and Bayesian RL.</p>
+<p>What seems differrnt from the lewis is that the agents have different Languages L=(P,Q) and L’=(P’,Q’) and they evolve through population dynamics. But the agent’s intial linguistic endowment is not necessarily optimal. I.e. we are not told <img src="https://latex.codecogs.com/png.latex?P*Q%20=%201"> rather that <img src="https://latex.codecogs.com/png.latex?%5Csum_i%20p_%7Bij%7D%20=1"> they have random values. In such a setup it unclear if evolution will lead to a separating equilibrium or just reinforce the initial bias.</p>
+</div>
+</div>
+<p>In the basic <strong>evolutionary language game</strong> with</p>
+<ul>
+<li>m sounds (signals)</li>
+<li>n objects</li>
+<li>The <strong>active matrix</strong> P with entries <img src="https://latex.codecogs.com/png.latex?p_%7Bij%7D">, denoting the probability that for a speaker that an object <img src="https://latex.codecogs.com/png.latex?i"> is associated with sound <img src="https://latex.codecogs.com/png.latex?j">.</li>
+<li>A <strong>passive matrix</strong> Q contains the entries <img src="https://latex.codecogs.com/png.latex?q_%7Bji%7D">, that denote the probability that for a listener that a sound <img src="https://latex.codecogs.com/png.latex?j"> is associated with object <img src="https://latex.codecogs.com/png.latex?i">.</li>
+</ul>
+<p>It is not clear how an agent uses the active matrix to produce a signal given a some object j.</p>
+<ul>
+<li>Do they pick a signal i with probability <img src="https://latex.codecogs.com/png.latex?p_%7Bij%7D"> - this is a Bayesian interpretation of the active matrix witch each agent having a subjective Language <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D">.</li>
+<li>Do they use a MAP estimate, i.e.&nbsp;pick the most likely signal, - this approach is closest to the Lewis signaling game. This is a deterministic interpretation of the active matrix.</li>
+<li>Do they they send all signals at once weighted by the <img src="https://latex.codecogs.com/png.latex?p_%7Bij%7D">?</li>
+</ul>
+<p>I prefer 1 as it is how I tend to simulate it.</p>
+<blockquote class="blockquote">
+<p>Suppose <em>A</em> sees object <em>i</em> and signals, then <em>B</em> will infer object <em>i</em> with probability <img src="https://latex.codecogs.com/png.latex?%5Csum_%7Bj=1%7D%5Em%20p_%7Bij%7D%20q_%7Bji%7D"></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>The overall payoff is symmetric for communication between A and B is taken as the average of A’s ability to convey information to B, and B’s ability to convey information to A.</p>
+</blockquote>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Cmathbb%7BE%7D%5B%5Ctext%7BPayoffs%7D%5Cmid%20L,L'%5D%20&amp;=%20%5Cfrac%7B1%7D%7B2%7D%20%20%5Coverbrace%7B%5Csum_%7Bi=1%7D%5En%20%5Csum_%7Bj=1%7D%5Em%20p_%7Bij%7D%20q'_%7Bij%7D%7D%5E%7B%5Ctext%7BA's%20ability%20to%20send%20interpretable%20messages%7D%7D%20%20+%20%5Cfrac%7B1%7D%7B2%7D%20%20%5Coverbrace%7B%5Csum_%7Bi=1%7D%5En%20%5Csum_%7Bj=1%7D%5Em%20p'_%7Bji%7D%20q_%7Bji%7D%7D%5E%7B%5Ctext%7BB's%20ability%20to%20interpret%20messages%7D%7D%20%5C%5C&amp;=%0A%5Cfrac%7B1%7D%7B2%7D%20%20%5Csum_%7Bi=1%7D%5En%20%5Csum_%7Bj=1%7D%5Em%20(%20p_%7Bij%7D%20q'_%7Bij%7D%20+p'_%7Bji%7D%20q_%7Bji%7D%20)%20=%0A%5Cend%7Balign*%7D%0A"></p>
+<p>The original formula is rather cryptic. So this version breaks it into parts and annotates it.</p>
+<ul>
+<li>where:
+<ul>
+<li><img src="https://latex.codecogs.com/png.latex?L%20=%20%3CP,Q%3E"> is the language of speaker and</li>
+<li><img src="https://latex.codecogs.com/png.latex?L'=%20%3CP',Q'%3E"> is the language of the listener.</li>
+</ul></li>
+</ul>
+<p>This seems like an expectation of the joint probability of the speaker and listener.</p>
+<p>so far this seems to be very much aligned with the Lewis signaling game.</p>
+
+<div class="no-row-height column-margin column-container"><div id="fig-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://orenbochman.github.io/notes-rl/posts/papers/Evolution-of-language/fig_1.png" class="img-fluid figure-img" data-group="figures" width="250">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: emergence of a language by population dynamics
+</figcaption>
+</figure>
+</div></div><p>Figure 1 shows how a signaling system emerges through population dynamics.</p>
+<p>Notes:</p>
+<ol type="1">
+<li>the agents don’t actually learn during the evolution, rather generate offsprings in proportion to their fitness. So with a bit of luck one agent will eventually dominate the population and all the other types will die out.</li>
+<li>Agents with lower fitness are replaced by agents with higher fitness. This means that we are just reinforcing the initial bias towards the most central agent in the cluster as it will have the highest fitness.</li>
+<li>Due to the layouts of the figures, I always think that the agents were on a grid talking with their neighbors, but I believe they are on a simplex and all talk to each other.</li>
+</ol>
+<p>The agents evolve a language that</p>
+<p>The paper again lacks some important details. Are the agents the details</p>
+</section>
+<section id="word-formation" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="word-formation">Word Formation</h3>
+
+<div class="no-row-height column-margin column-container"><div id="fig-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://orenbochman.github.io/notes-rl/posts/papers/Evolution-of-language/fig_2.png" class="img-fluid figure-img" data-group="figures" width="250">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: figure 2
+</figcaption>
+</figure>
+</div></div><p>If we increase our basic signals (think phonemes) we can handle more states. However phonemes exist in a restricted space and as more are added it becomes harder to distinguish between them. This is exacerbated by the fact that we add an explicit chance of communications error based on the phonemic similarity.</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%5Cmathbb%7BE%7D%5B%5Ctext%7BPayoffs%7D%5Cmid%20L,L'%5D%20&amp;=%20%5Cfrac%7B1%7D%7B2%7D%20%20%5Csum_%7Bi=1%7D%5En%20%5Csum_%7Bj=1%7D%5Em%20%5Cleft%20%5B%20%20p_%7Bij%7D%20%5Cleft(%20%5Csum_%7Bj=1%7D%5Em%20u'_%7Bjk%7Dq'_%7Bki%7D%20%5Cright)%20+%20p'_%7Bij%7D%20%5Cleft(%20%5Csum_%7Bj=1%7D%5Em%20u_%7Bjk%7Dq_%7Bki%7D%20%5Cright)%20%5Cright%5D%20=%0A%5Cend%7Balign*%7D%0A"></p>
+<p>where:</p>
+<ul>
+<li><img src="https://latex.codecogs.com/png.latex?U"> are matrices with <img src="https://latex.codecogs.com/png.latex?u_%7Bij%7D=s_%7Bij%7D%5Csum_%7Bk=1%7D%5Em%20s_%7Bik%7D"> and</li>
+<li><img src="https://latex.codecogs.com/png.latex?s_ij"> is the similarity between sounds (signals) <img src="https://latex.codecogs.com/png.latex?i"> and <img src="https://latex.codecogs.com/png.latex?j">.</li>
+</ul>
+</section>
+<section id="the-evolution-of-basic-grammatical-rules." class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="the-evolution-of-basic-grammatical-rules.">The Evolution of Basic Grammatical Rules.</h3>
+
+<div class="no-row-height column-margin column-container"><div id="fig-3" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://orenbochman.github.io/notes-rl/posts/papers/Evolution-of-language/fig_3.png" class="img-fluid figure-img" data-group="figures" width="250">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: figure 3
+</figcaption>
+</figure>
+</div><div id="fig-4" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://orenbochman.github.io/notes-rl/posts/papers/Evolution-of-language/fig_4.png" class="img-fluid figure-img" data-group="figures" width="250">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: figure 4
+</figcaption>
+</figure>
+</div></div>
+</section>
+</section>
+<section id="the-paper" class="level2">
+<h2 class="anchored" data-anchor-id="the-paper">The paper</h2>
+<p><a href="https://www.pnas.org/doi/full/10.1073/pnas.96.14.8028">the source</a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="./paper.pdf" class="col-page" width="800" height="1000"></p>
+<figcaption>embeded paper</figcaption>
+</figure>
+</div>
+</section>
+<section id="some-ideas" class="level2">
+<h2 class="anchored" data-anchor-id="some-ideas">Some ideas</h2>
+<p>I spent a large amount of time to see how the game is related to the Lewis signaling game.</p>
+<p>What I slowly came to realize is that the formulation in this paper is potentially more general then the Lewis signaling game.</p>
+<p>What I understood is that in the Lewis signaling agents are trying to learning invertible mapping from an to signal space.</p>
+<p>In this as far as I can tell, the agents are ‘modeling’ such mappings using mixtures (of states or signals). If the Lewis signaling uses binary matrices to model connections between signals and states, this formulation is uses continuous random variables to model the connections. We can go to a binary matrix by using the MAP estimate of the mixture.</p>
+<p>I found this formulation is rather annoying at first glance but I stated to see its potential in the second variant. In this extension agents also apply a mapping that corresponds to phonemic uncertainty. This can also be viewed as a noisy filter. Anyhow they end up with a game with more complex mappings in which similar signals are more likely to lead to the wrong state.</p>
+<p>It is a very simple way to model the uncertainty in the mapping between signals and states. One of the advantages of this approach is that it can be expanded to add saliency, risk levels that can allow us to understand how such constraints shape natural language.</p>
+<p>Based on the similarity of the phonemes, the agents can make errors in communication. This is a very interesting idea that I have not seen before. It is a very simple way to model the uncertainty in the mapping between signals and states.</p>
+<p>In this the agents compose a mapping corresponding to phonemic uncertainty. Based on the similarity of the phonemes, the agents can make errors in communication. This is a very interesting idea that I have not seen before. It is a very simple way to model the uncertainty in the mapping between signals and states. . This is a very interesting idea that I have not seen before. It is a very simple way to model the uncertainty in the mapping between signals and states.</p>
+
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="ref-lewis1969convention" class="csl-entry">
+Lewis, David Kellogg. 1969. <em>Convention: A Philosophical Study</em>. Harvard University Press. <a href="https://books.google.co.il/books?id=_dLWAAAAMAAJ">https://books.google.co.il/books?id=_dLWAAAAMAAJ</a>.
+</div>
+<div id="ref-nowak1999evolution" class="csl-entry">
+Nowak, Martin A, and David C Krakauer. 1999. <span>“The Evolution of Language.”</span> <em>Proceedings of the National Academy of Sciences</em> 96 (14): 8028–33.
+</div>
+<div id="ref-Skyrms2010signals" class="csl-entry">
+Skyrms, Brian. 2010. <em><span class="nocase">Signals: Evolution, Learning, and Information </span></em>. Oxford University Press. <a href="https://doi.org/10.1093/acprof:oso/9780199580828.003.0013">https://doi.org/10.1093/acprof:oso/9780199580828.003.0013</a>.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>this is a new idea. IF we look at the n! permutations matrices we will generally find a shared signal state mapping. But if we restrict to one permutation matrix say I and shit it down once we get no two mappings with a match. e.g.&nbsp;[1,2,3] and [2,3,1] and [3,2,1] are a maximally incompatible set for n = 3.↩︎</p></li>
+</ol>
+</section></div> ]]></description>
+  <category>Paper</category>
+  <category>Review</category>
+  <category>Signaling Games</category>
+  <category>Emergent Languages</category>
+  <category>Evolutionary game theory</category>
+  <guid>https://orenbochman.github.io/notes-rl/posts/papers/Evolution-of-language/</guid>
+  <pubDate>Wed, 17 Apr 2024 21:00:00 GMT</pubDate>
+  <media:content url="https://orenbochman.github.io/notes-rl/posts/papers/Evolution-of-language/cover.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Policy Gradient</title>
@@ -1750,7 +2303,7 @@ SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-sarsa" class="pseudocode-container quarto-float" data-pseudocode-number="1" data-no-end="false" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number="true" data-line-number-punc=":" data-indent-size="1.2em">
+<div id="alg-sarsa" class="pseudocode-container quarto-float" data-line-number="true" data-pseudocode-number="1" data-no-end="false" data-comment-delimiter="#" data-line-number-punc=":" data-indent-size="1.2em" data-caption-prefix="Algorithm">
 <div class="pseudocode">
 \begin{algorithm} \caption{SARSA($\alpha,\epsilon$)}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -1789,7 +2342,7 @@ Episodic Semi-gradient SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-td-sarsa" class="pseudocode-container quarto-float" data-pseudocode-number="2" data-no-end="false" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number="true" data-line-number-punc=":" data-indent-size="1.2em">
+<div id="alg-td-sarsa" class="pseudocode-container quarto-float" data-line-number="true" data-pseudocode-number="2" data-no-end="false" data-comment-delimiter="#" data-line-number-punc=":" data-indent-size="1.2em" data-caption-prefix="Algorithm">
 <div class="pseudocode">
 \begin{algorithm} \caption{Episodic Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)}\begin{algorithmic} \State $\textbf{Input:}$ \State $\qquad \text{a differentiable action-value fn parameterization } \hat{q}: \mathcal{S} \times A \times \mathbb{R}^d \to \mathbb{R}$ \State $\textbf{Initialize:}$ \State $\qquad$ value function weights $\mathbf{w} \in \mathbb{R}^d$ arbitrarily, (e.g., $\mathbf{w} = 0$) \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from $\color{red}\hat{q}(S'A,\mathbf{w})$ (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \If {$S'$ is terminal} \State $\color{red}\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ \State Go to next episode \EndIf \State Choose A' as a function of $\color{red}\hat{q}(S'A,\mathbf{w})$ (e.g., $\epsilon$-greedy) \State $\color{red}\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R + \gamma \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ \State $S \leftarrow S'$; \State $A \leftarrow A'$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -2141,7 +2694,7 @@ Episodic Semi-gradient SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-differential-sg-sarsa" class="pseudocode-container quarto-float" data-pseudocode-number="3" data-no-end="false" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number="true" data-line-number-punc=":" data-indent-size="1.2em">
+<div id="alg-differential-sg-sarsa" class="pseudocode-container quarto-float" data-line-number="true" data-pseudocode-number="3" data-no-end="false" data-comment-delimiter="#" data-line-number-punc=":" data-indent-size="1.2em" data-caption-prefix="Algorithm">
 <div class="pseudocode">
 \begin{algorithm} \caption{Differential Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)}\begin{algorithmic} \State $\textbf{Input:}$ \State $\qquad \text{a differentiable action-value fn parameterization } \hat{q}: \mathcal{S} \times A \times \mathbb{R}^d \to \mathbb{R}$ \State $\textbf{Algorithm parameters:}$ \State $\qquad \alpha, \beta &gt; 0$ \State $\textbf{Initialize:}$ \State $\qquad$ value function weights $\mathbf{w} \in \mathbb{R}^d$ arbitrarily, (e.g., $\mathbf{w} = 0$) \State $\bar{R} source \in \mathbb{R}$ avg reward estimate \State Initialize $S$ and action $A$ \For {each step} \State Take action A, observe R, S' \State Choose A' as a function of $\hat{q}(S',\cdot,\mathbf{w})$ (e.g., $\epsilon$-greedy) \State $\delta \leftarrow R - \bar{R} + \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) $ \State $ \bar{R}\leftarrow \bar{R} + \beta \delta$ \State $\mathbf{w} \leftarrow \mathbf{w} + \alpha \delta \nabla \hat{q}(S, A, \mathbf{w})$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -4216,7 +4769,7 @@ Note&nbsp;1: MC prediction fist visit for estimating <img src="https://latex.cod
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-gradient-mc" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number="true" data-pseudocode-number="1" data-indent-size="1.2em" data-no-end="false" data-line-number-punc=":">
+<div id="alg-gradient-mc" class="pseudocode-container quarto-float" data-comment-delimiter="#" data-no-end="false" data-indent-size="1.2em" data-pseudocode-number="1" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{GradientMC($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$ \State Algorithm parameters: \State $\qquad \alpha \in (0, 1]$ step size \State Initialize: \State $\qquad \mathbf{w} \leftarrow x \in \mathbb{R^d} \text{ arbiterly}$ (e.g. w=0) \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = 0, 1, \ldots, T-1$:} \State $\mathbf{w} \leftarrow w_t + \alpha [G_t - \hat{v}(S_t , \mathbf{w_1})] \nabla \hat{v}(S_t , \mathbf{w})$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -4352,7 +4905,7 @@ The Semi-gradient TD(0) algorithm for estimating <img src="https://latex.codecog
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-td-zero" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number="true" data-pseudocode-number="2" data-indent-size="1.2em" data-no-end="false" data-line-number-punc=":">
+<div id="alg-td-zero" class="pseudocode-container quarto-float" data-comment-delimiter="#" data-no-end="false" data-indent-size="1.2em" data-pseudocode-number="2" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{Semi-gradient TD(0) for estimating $v_\pi$}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$ \State Algorithm parameters: \State $\qquad \alpha \in (0, 1]$ step size \State $\qquad \gamma \in [0, 1]$ discount factor \State Initialize: \State $\qquad value function weights w \leftarrow x \in \mathbb{R}^d \quad \forall s \in \mathcal{S}$ (e.g. w=0) \FORALL {episode $e$:} \State $Initialize S$ \FORALL {step $S \in e$:} \State $\text{Choose } A \sim \pi(\cdot \mid S)$ \State Take action $A$, observe $R, S'$ \State $w \leftarrow w + \alpha [R + \gamma \hat{v}(S', \mathbf{w}) - \hat{v}(S, \mathbf{w})] \nabla \hat{v}(S, \mathbf{w})$ \State $S \leftarrow S'$ \State until $S$ is terminal \ENDFOR \ENDFOR \end{algorithmic} \end{algorithm}
 </div>
@@ -5265,7 +5818,7 @@ SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-sarsa" class="pseudocode-container quarto-float" data-no-end="false" data-line-number="true" data-comment-delimiter="#" data-caption-prefix="Algorithm" data-line-number-punc=":" data-pseudocode-number="1" data-indent-size="1.2em">
+<div id="alg-sarsa" class="pseudocode-container quarto-float" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em" data-comment-delimiter="#" data-line-number="true" data-caption-prefix="Algorithm" data-pseudocode-number="1">
 <div class="pseudocode">
 \begin{algorithm} \caption{SARSA($\alpha,\epsilon$)}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -5321,7 +5874,7 @@ Q-learning (off-policy TD control)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-q-learning" class="pseudocode-container quarto-float" data-no-end="false" data-line-number="true" data-comment-delimiter="#" data-caption-prefix="Algorithm" data-line-number-punc=":" data-pseudocode-number="2" data-indent-size="1.2em">
+<div id="alg-q-learning" class="pseudocode-container quarto-float" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em" data-comment-delimiter="#" data-line-number="true" data-caption-prefix="Algorithm" data-pseudocode-number="2">
 <div class="pseudocode">
 \begin{algorithm} \caption{Q-learning Off-policy TD control}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \For {each step of e} \State Choose A from $A_B(S)$ using any ergodic Behavioural policy $B$ - perhaps the $\epsilon$-greedy induced by Q. \State Take action A, observe R, S' \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \max_a Q(S',a) - Q(S, A)]$ \State $S \leftarrow S'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -5495,7 +6048,7 @@ Expected Sarsa
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-q-learning" class="pseudocode-container quarto-float" data-no-end="false" data-line-number="true" data-comment-delimiter="#" data-caption-prefix="Algorithm" data-line-number-punc=":" data-pseudocode-number="3" data-indent-size="1.2em">
+<div id="alg-q-learning" class="pseudocode-container quarto-float" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em" data-comment-delimiter="#" data-line-number="true" data-caption-prefix="Algorithm" data-pseudocode-number="3">
 <div class="pseudocode">
 \begin{algorithm} \caption{expected SARSA}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \sum_a \pi(a|S') Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \State $S$ is terminal \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -5665,7 +6218,7 @@ The TD(0) algorithm for estimating <img src="https://latex.codecogs.com/png.late
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-td-zero" class="pseudocode-container quarto-float" data-comment-delimiter="#" data-caption-prefix="Algorithm" data-line-number-punc=":" data-indent-size="1.2em" data-no-end="false" data-line-number="true" data-pseudocode-number="1">
+<div id="alg-td-zero" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-no-end="false" data-line-number-punc=":" data-pseudocode-number="1" data-indent-size="1.2em" data-comment-delimiter="#">
 <div class="pseudocode">
 \begin{algorithm} \caption{TD(0) for estimating $v_\pi$}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R} \quad \forall s \in \mathcal{S}$ \FORALL {episode $e$:} \State $S \leftarrow \text{initial state of episode}$ \State $\text{Choose } A \sim \pi(\cdot \mid S)$ \FORALL {step $S \in e$:} \State Take action $A$, observe $R, S'$ \State $V(S) \leftarrow V(S) + \alpha [R + \gamma V(S') - V(S)]$ \State $S \leftarrow S'$ \State $\text{Choose} A' \sim \pi(\cdot \mid S)$ \State $S$ is terminal \ENDFOR \ENDFOR \end{algorithmic} \end{algorithm}
 </div>
@@ -5958,7 +6511,7 @@ Note&nbsp;1: MC prediction any visit for estimating <img src="https://latex.code
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-prediction-any-visit" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="1" data-no-end="false">
+<div id="alg-mc-prediction-any-visit" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="1" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{MCFirstVisitValuePrediction($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R}$, arbitrarily, $\forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -5975,7 +6528,7 @@ Note&nbsp;2: MC prediction fist visit for estimating <img src="https://latex.cod
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-prediction-first-visit" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="2" data-no-end="false">
+<div id="alg-mc-prediction-first-visit" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="2" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{MCAnyVisitValuePrediction($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State Initialize: \State $\qquad V(s) \in \mathbb{R}$, arbitrarily, $\forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \If{$S_t \not \in S_0, S_1,\ldots,S_{t-1}$} \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \EndIf \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6210,7 +6763,7 @@ Monte Carlo Exploring Start
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-es-control" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="3" data-no-end="false">
+<div id="alg-mc-es-control" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="3" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{MonteCarloExploringStartsGPI()}\begin{algorithmic} \State Initialize: \State $\qquad \pi(s) \in A(s) \quad \forall s\in \mathcal{S}$ \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \quad \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$ \State $\qquad Returns(s,a) \leftarrow \text {an empty list} \quad \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$ \For {each episode:} \State Choose $S_0 \in \mathcal{S} and A_0 \in \mathcal{A}(S_0) \text{randomly :} p(s,a)&gt;0 \forall s,a$ \comment{$\textcolor{blue}{Exploring Starts}$} \State Generate an episode e from $S_0, A_0$ by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of $e, t \in T-1, T-2,..., 0:} \comment{$\textcolor{blue}{Backward\ pass}$} \State $G \leftarrow \gamma G + R_{t+1}$ \IF {$S_t , A_t \not \in S_0 , A_0 , S_1 , A_1 \ldots , S_{t-1} , A_{t-1}$} \State Append $G$ to $Returns(S_t,A_t)$ \State $Q(S_t,A_t) \leftarrow average(Returns(S_t,A_t))\quad$ \comment{$\textcolor{blue}{\text{MC action-value estimate}}$} \State $\pi(S_t) \leftarrow \arg\max_a Q(S_t,a)\quad$ \comment{$\textcolor{blue}{\text{greedy policy improvement}}$} \EndIf \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6262,7 +6815,7 @@ MC control with ϵ-soft policies
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-ϵ-soft-control" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="4" data-no-end="false">
+<div id="alg-mc-ϵ-soft-control" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="4" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{MonteCarloϵ-SoftControl()}\begin{algorithmic} \State Initialize \State $\qquad \epsilon \in (0,1)$ \Comment{ $\textcolor{blue}{\ algorithm\ parameter}$} \State $\qquad \pi \leftarrow \epsilon$-soft policy \Comment{ $\textcolor{blue}{\ Initialize: policy}$} \State $\qquad Q(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t \in T-1, T-2,..., 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \State Append $G$ to $Returns(S_t,A_t)$ \State $Q(S_t,A_t) \leftarrow average(Returns(S_t,A_t))$ \State $A^* \leftarrow \arg\max_a Q(S_t,a) \qquad \textcolor{blue}{\text{(ties broken arbitrarily)}}$ \For {each $a \in \mathcal{A}$} \If{$a = A^*$} \State $\pi(a \mid S_t) \leftarrow 1 - \epsilon + \frac{\epsilon}{|A(S_t)|}$ \Else \State $\pi(a \mid S_t) \leftarrow \frac{\epsilon}{|A(S_T)|}$ \EndIf \EndFor \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6361,7 +6914,7 @@ Off-policy every visit MC prediction
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-off-policy-prediction" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="5" data-no-end="false">
+<div id="alg-mc-off-policy-prediction" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="5" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{OffPolicyMonteCarloPrediction()}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s) \text{ an empty list,} \quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0, W \leftarrow 1$ \For {each step of episode, $t \in T-1, T-2,..., 0$:} \State $G \leftarrow \gamma WG + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \State $W \leftarrow W \frac{\pi(A_t|S_t)}{b(A_t|S_t)}$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6378,7 +6931,7 @@ Off-policy every visit MC control
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-off-control-prediction" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="6" data-no-end="false">
+<div id="alg-mc-off-control-prediction" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="6" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{OffPolicyMonteCarloPrediction()}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s) \text{ an empty list,} \quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $b: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0, W \leftarrow 1$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma WG + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \State $W \leftarrow W \frac{\pi(A_t \mid S_t)}{b(A_t \mid S_t)}$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6600,7 +7153,7 @@ is the task of finding the optimal policy <img src="https://latex.codecogs.com/p
 <p>The final part of the algorithm is the stopping condition. We stop when the change in the value function is less than a small threshold <img src="https://latex.codecogs.com/png.latex?%5Ctheta">.</p>
 <p>The algorithm is guaranteed to converge to the value function for the policy <img src="https://latex.codecogs.com/png.latex?%5Cpi">.</p>
 <p>Here is the concise statement of the algorithm with just one array in pseudo code:</p>
-<div id="alg-Iterative-Policy-Evaluation" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-pseudocode-number="1" data-line-number-punc=":" data-line-number="true" data-no-end="false" data-caption-prefix="Algorithm" data-comment-delimiter="#">
+<div id="alg-Iterative-Policy-Evaluation" class="pseudocode-container quarto-float" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number="true" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{Iterative Policy Evaluation, for estimating $V \approx v_{\pi}$}\begin{algorithmic} \State Input: $\pi$, the policy to be evaluated, default to uniform random policy \State Algorithm parameter: a small threshold $\theta &gt; 0$ determining accuracy of estimation \State $V(s) \leftarrow \leftarrow \vec 0 \forall s \in S$ \REPEAT \STATE $\Delta \leftarrow 0$ \FORALL { $s\in S$} \STATE $v \leftarrow V(s)$ \STATE $V(s) \leftarrow \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]\quad$ \comment{ Bellman equation} \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$ \ENDFOR \UNTIL{$\Delta &lt; \theta$} \State Output: $V \approx v_{\pi}$ \end{algorithmic} \end{algorithm}
 </div>
@@ -6673,7 +7226,7 @@ Learning Objectives
 <p>And, we can compute <img src="https://latex.codecogs.com/png.latex?q_%CF%80%20(s,a)"> from <img src="https://latex.codecogs.com/png.latex?v_%CF%80"> by:</p>
 <p><span id="eq-action-value-function"><img src="https://latex.codecogs.com/png.latex?%0Aq_%7B%5Cpi%7D(s,a)%20=%20%5Csum_%7Bs',r%7D%20p(s',r%7Cs,a)%5Br%20+%20%5Cgamma%20v_%7B%5Cpi%7D(s')%5D%0A%5Ctag%7B2%7D"></span></p>
 <p>this is the the key step the policy improvement step of the policy iteration algorithm.</p>
-<div id="alg-Policy-Iteration" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-pseudocode-number="2" data-line-number-punc=":" data-line-number="true" data-no-end="false" data-caption-prefix="Algorithm" data-comment-delimiter="#">
+<div id="alg-Policy-Iteration" class="pseudocode-container quarto-float" data-pseudocode-number="2" data-caption-prefix="Algorithm" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number="true" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{Policy Iteration, for estimating $\pi \approx \pi_{\star}$}\begin{algorithmic} \State Input: $\pi$, the policy to be evaluated \State Algorithm parameter: a small threshold $\theta &gt; 0$ determining accuracy of estimation \State Initialize $V(s) \in \mathbb{R}, \quad \pi(s) \in A(s)\ \forall s\in S,\quad V(terminal)= 0$ \State \State {Policy Evaluation} \REPEAT \STATE $\Delta \leftarrow 0$ \FORALL { $s\in S$} \STATE $v \leftarrow V(s)$ \STATE $V(s) \leftarrow \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$ \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$ \ENDFOR \UNTIL{$\Delta &lt; \theta$} \State \State {Policy Improvement} \ForAll { $s\in S$} \State old-action $\leftarrow \pi(s)$ \State $\pi(s) \leftarrow \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]\quad$ \comment{ greedyfication} \If {old-action $\neq \pi(s)$} \State policy-stable $\leftarrow$ false \EndIf \EndFor \If {policy-stable} \Return {$V \approx v_\star,\ \pi \approx \pi_\star$} \Else \State go to Policy Evaluation \EndIf \end{algorithmic} \end{algorithm}
 </div>
@@ -6684,7 +7237,7 @@ Learning Objectives
 <p>Value iteration is an important example of Generalized Policy Iteration. It is an iterative algorithm that computes the optimal value function and the optimal policy for a given MDP but it does not directly referrence a particular policy.</p>
 <p>In value iteration, the algorithm starts with an initial estimate of the value function and iteratively runs a single step of greedy polict evaluation per step, using the greedy value to update the state-value function.</p>
 <p>updates the value function until it converges to the optimal value function.</p>
-<div id="alg-Value-Iteration" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-pseudocode-number="3" data-line-number-punc=":" data-line-number="true" data-no-end="false" data-caption-prefix="Algorithm" data-comment-delimiter="#">
+<div id="alg-Value-Iteration" class="pseudocode-container quarto-float" data-pseudocode-number="3" data-caption-prefix="Algorithm" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number="true" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{Value Iteration, for estimating $\pi \approx \pi_{\star}$}\begin{algorithmic} \State Input: $\pi$, the policy to be evaluated \State Algorithm parameter: a small threshold $\theta &gt; 0$ determining accuracy of estimation \State Initialize $V(s) \leftarrow \vec{0} \forall s \in \mathbb{R}$ \REPEAT \STATE $\Delta \leftarrow 0$ \FORALL { $s\in S$} \STATE $v \leftarrow V(s)$ \STATE $V(s) \leftarrow max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$ \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$ \ENDFOR \UNTIL{$\Delta &lt; \theta$} \State Output: $V \approx v_{\pi}$ such that \State $\pi(s) = \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$ \end{algorithmic} \end{algorithm}
 </div>
@@ -8173,1518 +8726,6 @@ Learning Objectives
   <category>Reinforcement Learning</category>
   <guid>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w2.html</guid>
   <pubDate>Mon, 02 May 2022 21:00:00 GMT</pubDate>
-  <media:content url="https://orenbochman.github.io/notes-rl/posts/coursera/img/nlp-brain-wordcloud.jpg" medium="image" type="image/jpeg"/>
-</item>
-<item>
-  <title>The K-Armed Bandit Problem</title>
-  <dc:creator>Oren Bochman</dc:creator>
-  <link>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w1.html</link>
-  <description><![CDATA[ 
-
-
-
-
-
-
-<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/logo.png" class="img-fluid figure-img"></p>
-<figcaption>RL logo</figcaption>
-</figure>
-</div><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/alg_selector.png" class="img-fluid figure-img" data-group="slides"></p>
-<figcaption>RL algorithms</figcaption>
-</figure>
-</div></div>
-<section id="sec-lesson-k-armed-bandit" class="level1 page-columns page-full">
-<h1>Lesson 1: The K-Armed Bandit</h1>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Read
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<ul class="task-list">
-<li><label><input type="checkbox" checked=""><a href="http://incompleteideas.net/book/RLbook2020.pdf#page=47">@sutton2018reinforcement§2.1-7, pp.&nbsp;25-36</a></label></li>
-<li><label><input type="checkbox" checked=""><a href="http://incompleteideas.net/book/RLbook2020.pdf#page=47">@sutton2018reinforcement§2.8, pp.&nbsp;42-43</a></label></li>
-</ul>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Goals
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul class="task-list">
-<li><label><input type="checkbox" checked="">Understand the temporal nature of the bandit problem #</label></li>
-<li><label><input type="checkbox" checked="">Define k-armed bandit problem #</label></li>
-<li><label><input type="checkbox" checked="">Define action-values and the greedy action selection method #</label></li>
-<li><label><input type="checkbox" checked="">Define reward, time steps, and value functions #</label></li>
-</ul>
-</div>
-</div>
-<blockquote class="blockquote">
-<p>In reinforcement learning, the agent generates its own training data by interacting with the world. The agent must learn the consequences of his own actions through trial and error, rather than being told the correct action – <span class="citation" data-cites="white2020fundamental">[@white2020fundamental]</span></p>
-</blockquote>
-<section id="sec-k-armed-bandit" class="level2">
-<h2 class="anchored" data-anchor-id="sec-k-armed-bandit">K-armed bandits 🐙</h2>
-<p>In the <strong>k-armed bandit</strong> problem there is an <strong>agent</strong> who is assigned a <strong>state</strong> <img src="https://latex.codecogs.com/png.latex?s"> by the environment and must learn which action <img src="https://latex.codecogs.com/png.latex?a"> from the possible set of <strong>actions</strong> <img src="https://latex.codecogs.com/png.latex?A"> leads to the goal state through a signal based on the greatest <strong>expected reward</strong>.</p>
-<p>One way this can be achieved is using a Bayesian updating scheme starting from a uniform prior.</p>
-</section>
-<section id="sec-l1g1" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="sec-l1g1">Temporal nature of the bandit problem</h2>
-<p>The <strong>bandit problem</strong> cam be static problem with a fixed reward distribution. However, more generally it is a <strong>temporal</strong> problem when the rewards distribution changes over time and agent must learn to adapt to these changes.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Difference between bandits and RL
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>In the typical <strong>bandit setting</strong> there is only one state. So after we pull the arm nothing in the problem changes.</p>
-<p>Bandits problems where agents can discriminate between states are called <em>contextual bandits.</em></p>
-<p>However, bandits embody one of the main themes of RL - that of estimating an expected reward for different actions.</p>
-<p>In the more general <strong>RL setting</strong> we will be interested in more general problems where actions will lead the agent to new states and the goal is some specific state we need to reach.</p>
-</div>
-</div>
-
-<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><video src="img/multi_armed_bandit.webm" class="img-fluid" controls=""><a href="img/multi_armed_bandit.webm">Video</a></video></p>
-<figcaption>bandit</figcaption>
-</figure>
-</div></div><div id="exm-clinical-trials" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1 (Using Multi-armed bandit to randomize a medical trial)</strong></span> &nbsp;</p>
-<ul>
-<li>agent is the doctor</li>
-<li>actions {blue, yellow, red} treatment</li>
-<li>k = 3</li>
-<li>the rewards are the health of the patients’ blood pressure.</li>
-<li>a random trial in which a doctor need to pick one of three treatments.</li>
-<li>q(a) is the mean of the blood pressure for the patient.</li>
-</ul>
-</div>
-
-<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/rl-clinical-trial.png" class="img-fluid figure-img"></p>
-<figcaption>clinical trial</figcaption>
-</figure>
-</div></div><section id="sec-l1g3" class="level4">
-<h4 class="anchored" data-anchor-id="sec-l1g3">Action Values and Greedy Action Selection</h4>
-<p>The <strong>value</strong> of an action is its <strong>expected reward</strong> which can be expressed mathematically as:</p>
-<p><span id="eq-action-value"><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0Aq_%7B%5Cstar%7D(a)%20&amp;%20%5Cdoteq%20%5Cmathbb%7BE%7D%5BR_t%20%20%5Cvert%20%20A_t=a%5D%20%5Cspace%20%5Cforall%20a%20%5Cin%20%5C%7Ba_1%20...%20a_k%5C%7D%20%5Cnewline%0A%20%20%20%20%20%20%20%20%20%20%20%20%20&amp;%20=%20%5Csum_r%20p(r%7Ca)r%20%5Cqquad%20%5Ctext%7B(action%20value)%7D%0A%5Cend%7Balign%7D%0A%5Ctag%7B1%7D"></span></p>
-<p>where:</p>
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cdoteq"> means definition</li>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cmathbb%7BE%7D%5Br%20%5Cvert%20a%5D"> means expectation of a reward given some action a Since agents want to maximize rewards, recalling the definition of expectations we can write this as:</li>
-</ul>
-<p>The goal of the agent is to maximize the expected reward which we can express mathematically as:</p>
-<p><span id="eq-greedification"><img src="https://latex.codecogs.com/png.latex?%0A%5Carg%5Cmax_a%20q(a)=%5Csum_r%20p(r%20%5Cvert%20a)%20%5Ctimes%20r%20%5Cqquad%20%5Ctext%7B(Greedification)%7D%0A%5Ctag%7B2%7D"></span></p>
-<p>where:</p>
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?%5Carg%20%5Cmax_a"> means the argument <img src="https://latex.codecogs.com/png.latex?a"> maximizes - so the agent is looking for the action that maximizes the expected reward and the outcome is an action.</li>
-</ul>
-</section>
-<section id="l1g4" class="level4 page-columns page-full">
-<h4 class="anchored" data-anchor-id="l1g4">Reward, Return, and Value Functions</h4>
-<p>The <strong>reward</strong> <img src="https://latex.codecogs.com/png.latex?r"> is the immediate feedback from the environment after the agent takes an action.</p>
-<p>The <strong>return</strong> <img src="https://latex.codecogs.com/png.latex?G_t"> is the total discounted reward from time-step <img src="https://latex.codecogs.com/png.latex?t">.</p>
-<p>The <strong>value function</strong> <img src="https://latex.codecogs.com/png.latex?v(s)"> of an MRP is the expected return starting from state <img src="https://latex.codecogs.com/png.latex?s">.</p>
-
-<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/rl-descion-problems.png" class="img-fluid figure-img"></p>
-<figcaption>decisions</figcaption>
-</figure>
-</div></div><p>example of decisions under uncertainty:</p>
-<ul>
-<li>movie recommendation.</li>
-<li>clinical trials.</li>
-<li>music recommendation.</li>
-<li>food ordering at a restaurant.</li>
-</ul>
-
-<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/rl-why-bandits.png" class="img-fluid figure-img"></p>
-<figcaption>why discuss bandits</figcaption>
-</figure>
-</div></div><p>It best to consider issues and algorithms design choices in the simplest setting first. The bandit problem is the simplest setting for RL. More advanced algorithms will incorporate parts we use to solve this simple settings.</p>
-<ul>
-<li>maximizing rewards.</li>
-<li>balancing exploration and exploitation.</li>
-<li>estimating expected rewards for different actions.</li>
-</ul>
-<p>are all problems we will encounter in both the bandit and the more general RL setting.</p>
-</section>
-</section>
-</section>
-<section id="sec-lesson-action-values" class="level1 page-columns page-full">
-<h1>Lesson 2: What to learn: understanding Action Values</h1>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Goals
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ol type="1">
-<li><label><input type="checkbox" checked="">Define action-value estimation methods. #</label></li>
-<li><label><input type="checkbox" checked="">Define exploration and exploitation #</label></li>
-<li><label><input type="checkbox" checked="">Select actions greedily using an action-value function #</label></li>
-<li><label><input type="checkbox" checked="">Define online learning #</label></li>
-<li><label><input type="checkbox" checked="">Understand a simple online sample-average action-value estimation method #</label></li>
-<li><label><input type="checkbox" checked="">Define the general online update equation #</label></li>
-</ol>
-</div>
-</div>
-<section id="L2G1" class="level3 page-columns page-full">
-<h3 class="anchored" data-anchor-id="L2G1">What are action-value estimation methods?</h3>
-
-<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/rl-clinical-trial-q(a).png" class="img-fluid figure-img"></p>
-<figcaption>estimating action values</figcaption>
-</figure>
-</div></div><p>In Tabular RL settings The action value function <img src="https://latex.codecogs.com/png.latex?q"> is nothing more than a table with one {state, action} pair per row and its value. More generally, like when we will consider function approximation in course 3, it is a mapping from {state, action} pair to a expected reward.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>State s</th>
-<th>Action a</th>
-<th>Action value q(s,a)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>0</td>
-<td>red treatment</td>
-<td>0.25</td>
-</tr>
-<tr class="even">
-<td>0</td>
-<td>yellow treatment</td>
-<td>0.75</td>
-</tr>
-<tr class="odd">
-<td>0</td>
-<td>blue treatment</td>
-<td>0.5</td>
-</tr>
-</tbody>
-</table>
-<p>The higher the action value <img src="https://latex.codecogs.com/png.latex?q(a)"> of an action <strong>a</strong>, the more likely it is to lead us to a better state which is closer to the objective. We can choose for each state the best or one of the best choices giving us a <strong>plan</strong> for navigating the state space to the goal state.</p>
-<p><span id="eq-sample-average"><img src="https://latex.codecogs.com/png.latex?%0AQ_t(a)%20%5Cdoteq%20%5Cfrac%7B%5Ctext%7Bsum%20of%20rewards%20for%20action%20a%20taken%20time%20%7D%20t%7D%7B%5Ctext%7Bnumber%20of%20times%20action%20a%20was%20taken%20prior%20to%20%7D%20t%7D%20=%20%5Cfrac%7B%5Csum_%7Bi=1%7D%5E%7Bt-1%7D%20R_i%7D%7Bt-1%7D%20%5Cqquad%0A%5Ctag%7B3%7D"></span></p>
-<p>The main idea of RL is that we can propagate values from an one adjacent state to another. We can start with the uniform stochastic policy and use it to estimate/learn the action values. Action values will decrease for actions leads to a dead end. And it will increase in the direction of the goal but only once the influence of the goal has propagated. A continuing theme in RL is trying to increase the efficiency for propagation of rewards across the action values.</p>
-<p>Knowing the minimum number of action needed to reach a goal can be an approximate indicator of the action value.</p>
-<p>A second idea is that once we have let the influence of dead end and the goals spread enough we may have enough information to improve the initial action value to a point where each action is the one of the best choices. <mark>We call picking the one of the best action greedy selection and it leads to a deterministic policy.</mark> This is the optimal policy, it might not be unique since some actions might be tied in terms of their rewards. However for all of these we cannot do any better.</p>
-</section>
-<section id="L2G2" class="level3">
-<h3 class="anchored" data-anchor-id="L2G2">Exploration and Exploitation definition and dilemma</h3>
-<p>In the bandit setting we can define:</p>
-<dl>
-<dt>Exploration</dt>
-<dd>
-<p>Testing any action that might be better than our best.</p>
-</dd>
-<dt>Exploitation</dt>
-<dd>
-<p>Using the best action.</p>
-</dd>
-</dl>
-<p>Should the doctor explore new treatments that might harm his patients or exploit the current treatment. In real life bacteria gain immunity to antibiotics so there is merit to exploring new treatments. However, a new treatment can be harmful to some patients. Ideally we want to enjoy the benefits of the best treatment but to be open to new and better alternatives but we can only do one at a time.</p>
-<p><span class="marked">Since exploitation is by definition mutually exclusive with exploration we must choose one and give up the benefits of the other. This is the <strong>dilemma of Exploration and Exploitation</strong>.</span> How an agent resolves this dilemma in practice depends on the agent’s preferences and the type of state space it inhabits, if it has just started or encounters a <strong>changing landscape,</strong> it should make an effort to explore, on the other hand if it has explored enough to be certain of a global maximum it would prefer to exploit.</p>
-</section>
-<section id="L2G4" class="level3">
-<h3 class="anchored" data-anchor-id="L2G4">Defining Online learning ?</h3>
-<dl>
-<dt>Online learning</dt>
-<dd>
-<p>learning by updating the agent’s value function or the action value function step by step as an agent transverses the states seeking the goal. Online learning is important to handle MDP which can change.</p>
-</dd>
-</dl>
-<p>One simple way an agent can use online learning is to try actions by random and keep track of the subsequent states. Eventually we should reach the goal state. If we repeat this many times we can estimate the expected rewards for each action.</p>
-</section>
-<section id="L2G5" class="level3 page-columns page-full">
-<h3 class="anchored" data-anchor-id="L2G5">Sample Average Method for estimating Action Values Incrementally</h3>
-<p>Action values help us make decision. Let’s try and make estimate action values more formal using the following method:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0Aq_t(a)=%5Cfrac%7B%5Ctext%7Bsum%20or%20rewards%20when%20a%20taken%20prior%20to%20t%7D%7D%7B%5Ctext%7Bnumber%20of%20times%20a%20taken%20prior%20to%20t%7D%7D%0A%20%20%20%20%20%20%20=%5Cfrac%7B%5Csum_%7Bt=1%7D%5E%7Bt-1%7D%20R_i%20%5Cmathbb%7BI%7D_%7BA_i=a%7D%7D%7B%5Csum_%7Bt=1%7D%5E%7Bt-1%7D%5Cmathbb%7BI%7D_%7BA_i=a%7D%20%7D%20%5Cqquad%0A"></p>
-
-<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/rl-sample-avarage-method.png" class="img-fluid figure-img"></p>
-<figcaption>example</figcaption>
-</figure>
-</div></div><p><span id="eq-sample-average-incremental-update-rule"><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0AQ_%7Bn+1%7D%20&amp;=%20%5Cfrac%7B1%7D%7Bn%7D%20%5Csum_%7Bi=1%7D%5En%20R_i%20%5Cnewline%0A%20%20&amp;%20=%20%5Cfrac%7B1%7D%7Bn%7D%20%5CBigg(R_n%20+%20%5Csum_i%5E%7Bn-1%7D%20R_i%5CBigg)%20%5Cnewline%0A%20%20&amp;%20=%20%5Cfrac%7B1%7D%7Bn%7D%20%5CBigg(R_n%20+%20(n-1)%20%5Cfrac%7B1%7D%7B(n-1)%7D%5Csum_i%5E%7Bn-1%7D%20R_i%5CBigg)%20%5Cnewline%0A%20%20&amp;=%20%5Cfrac%7B1%7D%7Bn%7D%20%5CBig(R_n%20+%20(n-1)%20Q_%7Bn%7D%5CBig)%20%5Cnewline%0A%20%20&amp;=%20%5Cfrac%7B1%7D%7Bn%7D%20%5CBig(R_n%20+%20nQ_%7Bn%7D%20-Q_%7Bn%7D%20%5CBig)%20%5Cnewline%0A%20%20&amp;=%20Q_n%20+%20%5Cfrac%7B1%7D%7Bn%7D%20%5CBig%5BR_n%20-%20Q_%7Bn%7D%5CBig%5D%0A%5Cend%7Balign%7D%0A%5Ctag%7B4%7D"></span></p>
-</section>
-<section id="L2G6" class="level3">
-<h3 class="anchored" data-anchor-id="L2G6">What are action-value estimation methods?</h3>
-<p>We can now state this in English as:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BNew%20Estimate%7D%20%5Cleftarrow%20%5Ctext%7BOld%20Estimate%7D%20+%20%5Ctext%7BStep%20Size%20%7D%20%5Ctimes%20%5B%5Ctext%7BTarget%7D%20-%20%5Ctext%7BOld%20Estimate%7D%5D%20%5Cqquad%0A"></p>
-<p>here:</p>
-<ul>
-<li>step size can be adaptive - changing over time. but typically it is constant and in the range (0,1) to avoid divergence.</li>
-<li>for the sample average method the step size is <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7Bn%7D"> where n is the number of times the action has been taken.</li>
-<li>(Target - OldEstimate) is called the <em>error</em>.</li>
-</ul>
-<p>More generally we will use the update rule as:</p>
-<p><span id="eq-general-incremental-update-rule"><img src="https://latex.codecogs.com/png.latex?%0AQ_%7Bn+1%7D%20=%20Q_n%20+%20%5Calpha%20%5CBig%5BR_n%20-%20Q_%7Bn%7D%5CBig%5D%20%5Cqquad%20a%5Cin%20(0,1)%0A%5Ctag%7B5%7D"></span></p>
-<div id="simple-epsilon-greedy-bandit-algorithm" class="pseudocode-container quarto-float" data-pseudocode-number="1" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-line-number-punc=":" data-comment-delimiter="#" data-no-end="false">
-<div class="pseudocode">
-\begin{algorithm} \caption{Simple Bandit($\epsilon$)}\begin{algorithmic} \State $Q(a) \leftarrow 0\ \forall a\ $ \Comment{ $\textcolor{blue}{initialize\ action\ values}$} \State $N(a) \leftarrow 0\ \forall a\ $ \Comment{ $\textcolor{blue}{initialize\ counter\ for\ actions\ taken}$} \For{$t = 1, 2, \ldots \infty$} \State $A_t \leftarrow \begin{cases} \arg\max_a Q(a) &amp; \text{with probability } 1 - \epsilon \\ \text{a random action} &amp; \text{with probability } \epsilon \end{cases}$ \State $R_t \leftarrow \text{Bandit}(A_t)$ \State $N(A_t) \leftarrow N(A_t) + 1$ \State $Q(A_t) \leftarrow Q(A_t) + \frac{1}{N(A_t)}[R_t - Q(A_t)]$ \EndFor \end{algorithmic} \end{algorithm}
-</div>
-</div>
-</section>
-</section>
-<section id="sec-lesson-exploration-exploitation" class="level1 page-columns page-full">
-<h1>Lesson 3: Exploration vs Exploitation</h1>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Goals
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li>Define <img src="https://latex.codecogs.com/png.latex?%5Cepsilon">-greedy #</li>
-<li>Compare the short-term benefits of exploitation and the long-term benefits of exploration #</li>
-<li>Understand optimistic initial values #</li>
-<li>Describe the benefits of optimistic initial values for early exploration #</li>
-<li>Explain the criticisms of optimistic initial values #</li>
-<li>Describe the upper confidence bound action selection method #</li>
-<li>Define optimism in the face of uncertainty #</li>
-</ul>
-</div>
-</div>
-<p>the following is a Bernoulli greedy algorithm</p>
-<div id="alg-greedy-bandit" class="pseudocode-container quarto-float" data-pseudocode-number="2" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-line-number-punc=":" data-comment-delimiter="#" data-no-end="false">
-<div class="pseudocode">
-\begin{algorithm} \caption{BernGreedy(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \State \State \Comment{ estimate model} \For{$k = 1, . . . , K$} \State $\hat\theta_k \leftarrow a_k / (α_k + β_k)$ \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
-</div>
-</div>
-<section id="sec-epsilon-greedy-policies" class="level2">
-<h2 class="anchored" data-anchor-id="sec-epsilon-greedy-policies">Ɛ-Greedy Policies</h2>
-<p>The Ɛ-greedy policy uses a simple heuristic to balance exploration with exploitation. The idea is to choose the best action with probability <img src="https://latex.codecogs.com/png.latex?1-%5Cepsilon"> and to choose a random action with probability <img src="https://latex.codecogs.com/png.latex?%5Cepsilon">.</p>
-<div id="alg-epsilon-greedy" class="pseudocode-container quarto-float" data-pseudocode-number="3" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-line-number-punc=":" data-comment-delimiter="#" data-no-end="false">
-<div class="pseudocode">
-\begin{algorithm} \caption{EpsilonGreedy(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, \ldots $} \State p = random() \If {$p &lt; \epsilon$} \State select radom action $x_t \qquad$ \Comment{explore} \Else \State select $x_t = \arg\max_k \hat{\theta}_k \qquad$ \Comment{exploit} \EndIf \EndFor \end{algorithmic} \end{algorithm}
-</div>
-</div>
-<div class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-The problem with Ɛ-greedy policies
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li>A problem with Ɛ-greedy is that it is not optimal in the long run.</li>
-<li>Even after it has found the best course of action it will continue to explore with probability <img src="https://latex.codecogs.com/png.latex?%5Cepsilon">.</li>
-<li>This is because the policy is not adaptive.</li>
-<li>One method is too reduce <img src="https://latex.codecogs.com/png.latex?%5Cepsilon"> over time. However unless there is a feedback from the environment this will likely stop exploring too soon or too late thus providing sub-optimal returns.</li>
-</ul>
-</div>
-</div>
-<p>The following is a simple implementation of the Ɛ-greedy algorithm in Python from <a href="https://www.geeksforgeeks.org/epsilon-greedy-algorithm-in-reinforcement-learning/?ref=ml_lbp">geeksforgeeks.org</a></p>
-<div id="637b2d47" class="cell" data-execution_count="1">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Import required libraries </span></span>
-<span id="cb1-2"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> np </span>
-<span id="cb1-3"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> plt </span>
-<span id="cb1-4">  </span>
-<span id="cb1-5"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Define Action class </span></span>
-<span id="cb1-6"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">class</span> Actions: </span>
-<span id="cb1-7">  <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">__init__</span>(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>, m): </span>
-<span id="cb1-8">    <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.m <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> m </span>
-<span id="cb1-9">    <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.mean <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span></span>
-<span id="cb1-10">    <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.N <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span></span>
-<span id="cb1-11">  </span>
-<span id="cb1-12">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Choose a random action </span></span>
-<span id="cb1-13">  <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">def</span> choose(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>):  </span>
-<span id="cb1-14">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">return</span> np.random.randn() <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.m </span>
-<span id="cb1-15">  </span>
-<span id="cb1-16">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Update the action-value estimate </span></span>
-<span id="cb1-17">  <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">def</span> update(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>, x): </span>
-<span id="cb1-18">    <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.N <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span></span>
-<span id="cb1-19">    <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.mean <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> (<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.0</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.N)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.mean <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.0</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.N <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> x </span>
-<span id="cb1-20">  </span>
-<span id="cb1-21">  </span>
-<span id="cb1-22"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">def</span> run_experiment(m1, m2, m3, eps, N): </span>
-<span id="cb1-23">      </span>
-<span id="cb1-24">  actions <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [Actions(m1), Actions(m2), Actions(m3)] </span>
-<span id="cb1-25">  </span>
-<span id="cb1-26">  data <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.empty(N) </span>
-<span id="cb1-27">    </span>
-<span id="cb1-28">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">in</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">range</span>(N): </span>
-<span id="cb1-29">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># epsilon greedy </span></span>
-<span id="cb1-30">    p <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.random.random() </span>
-<span id="cb1-31">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> p <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> eps: </span>
-<span id="cb1-32">      j <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.random.choice(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>) </span>
-<span id="cb1-33">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">else</span>: </span>
-<span id="cb1-34">      j <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.argmax([a.mean <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">for</span> a <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">in</span> actions]) </span>
-<span id="cb1-35">    x <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> actions[j].choose() </span>
-<span id="cb1-36">    actions[j].update(x) </span>
-<span id="cb1-37">  </span>
-<span id="cb1-38">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># for the plot </span></span>
-<span id="cb1-39">    data[i] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> x </span>
-<span id="cb1-40">  cumulative_average <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.cumsum(data) <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> (np.arange(N) <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>) </span>
-<span id="cb1-41">  </span>
-<span id="cb1-42">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># plot moving average ctr </span></span>
-<span id="cb1-43">  plt.plot(cumulative_average) </span>
-<span id="cb1-44">  plt.plot(np.ones(N)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>m1) </span>
-<span id="cb1-45">  plt.plot(np.ones(N)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>m2) </span>
-<span id="cb1-46">  plt.plot(np.ones(N)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>m3) </span>
-<span id="cb1-47">  plt.xscale(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'log'</span>) </span>
-<span id="cb1-48">  plt.show() </span>
-<span id="cb1-49">  </span>
-<span id="cb1-50">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">for</span> a <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">in</span> actions: </span>
-<span id="cb1-51">    <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">print</span>(a.mean) </span>
-<span id="cb1-52">  </span>
-<span id="cb1-53">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">return</span> cumulative_average </span></code></pre></div>
-</details>
-</div>
-<div id="028bd09c" class="cell" data-execution_count="2">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1">c_1 <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> run_experiment(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2.0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3.0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.1</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100000</span>) </span>
-<span id="cb2-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#print(c_1)</span></span></code></pre></div>
-</details>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/c1-w1_files/figure-html/cell-3-output-1.png" width="579" height="412" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>1.0533891142612195
-2.02556827747505
-2.9967725891863877</code></pre>
-</div>
-</div>
-<div id="676270b4" class="cell" data-execution_count="3">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">c_05 <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> run_experiment(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2.0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3.0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.05</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100000</span>) </span>
-<span id="cb4-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#print(c_05)</span></span></code></pre></div>
-</details>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/c1-w1_files/figure-html/cell-4-output-1.png" width="571" height="412" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>1.0039926459413782
-2.00700337763791
-3.003536310561855</code></pre>
-</div>
-</div>
-<div id="fa15f71a" class="cell" data-execution_count="4">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1">c_01 <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> run_experiment(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2.0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3.0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.01</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100000</span>) </span>
-<span id="cb6-2"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#print(c_01)</span></span></code></pre></div>
-</details>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/c1-w1_files/figure-html/cell-5-output-1.png" width="571" height="412" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0.9611950383032279
-2.026899073102919
-2.9958268510720685</code></pre>
-</div>
-</div>
-<div id="ade451c8" class="cell" data-execution_count="5">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># log scale plot </span></span>
-<span id="cb8-2">plt.plot(c_1, label <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'eps = 0.1'</span>) </span>
-<span id="cb8-3">plt.plot(c_05, label <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'eps = 0.05'</span>) </span>
-<span id="cb8-4">plt.plot(c_01, label <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'eps = 0.01'</span>) </span>
-<span id="cb8-5">plt.legend() </span>
-<span id="cb8-6">plt.xscale(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'log'</span>) </span>
-<span id="cb8-7">plt.show() </span></code></pre></div>
-</details>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/c1-w1_files/figure-html/cell-6-output-1.png" width="571" height="412" class="figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="sec-benefits-of-exploitation-and-exploration" class="level2">
-<h2 class="anchored" data-anchor-id="sec-benefits-of-exploitation-and-exploration">Benefits of Exploitation &amp; Exploration</h2>
-<ul>
-<li>In the short term we may maximize rewards following the best known course of action. However this may represent a local maximum.</li>
-<li>In the long term agents that explore different options and keep uncovering better options until they find the best course of action corresponding to the global maximum.</li>
-</ul>
-<p>To get the best of both worlds we need to balance exploration and exploitation ideally using a policy that uses feedback to adapt to its environment.</p>
-</section>
-<section id="sec-optimistic-initial-values" class="level2">
-<h2 class="anchored" data-anchor-id="sec-optimistic-initial-values">Optimistic initial values</h2>
-<dl>
-<dt>Optimistic initial values</dt>
-<dd>
-<p>Setting all initially action values greater than the algorithmically available values in [0,1]</p>
-</dd>
-</dl>
-<p>The methods we have discussed are dependent on the initial action-value estimates, <img src="https://latex.codecogs.com/png.latex?Q_1(a)">. In the language of statistics, we call these methods biased by their initial estimates. For the sample-average methods, the bias disappears once all actions have been selected at least once. For methods with constant <img src="https://latex.codecogs.com/png.latex?%5Calpha">, the bias is permanent, though decreasing over time.</p>
-<div id="alg-optimitc-greedy-bandit" class="pseudocode-container quarto-float" data-pseudocode-number="4" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-line-number-punc=":" data-comment-delimiter="#" data-no-end="false">
-<div class="pseudocode">
-\begin{algorithm} \caption{OptimisticBernGreedy(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \State \State \Comment{ estimate model} \For{$k = 1, . . . , K$} \State $\hat\theta_k \leftarrow 1 \qquad$ \Comment{optimistic initial value} \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
-</div>
-</div>
-</section>
-<section id="sec-benefits-of-optimistic-initial-values-for-early-exploration" class="level2">
-<h2 class="anchored" data-anchor-id="sec-benefits-of-optimistic-initial-values-for-early-exploration">Benefits of optimistic initial values for early exploration</h2>
-<p>Setting the initial action values to be higher than the true values has the effect of causing various bandit algorithm to try to exploit them - only to find out that most values are not as rewarding as it was led to expect.</p>
-<p>What happens is that the algorithm will initially explore more than it would have otherwise. Possibly even trying all the actions at least once.</p>
-<p>In the short-term it will perform worse than Ɛ- greedy which tend to exploit. But as more of the state space is explored at least once the algorithm will beat an Ɛ-greedy policy which can take far longer to explore the space and find the optimal options.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/rl-optimistic-initial-conditions.png" class="img-fluid figure-img"></p>
-<figcaption>The effect of optimistic initial action-value estimates</figcaption>
-</figure>
-</div>
-<div class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Criticisms of optimistic initial values
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li>Optimistic initial values only drive early exploration. The agent will stop exploring once this is done.</li>
-<li>For a non-stationary problems - this is inadequate.</li>
-<li>In a real world problems the maximum reward is an unknown quantity.</li>
-</ul>
-</div>
-</div>
-</section>
-<section id="sec-the-ucb-action-selection-method" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="sec-the-ucb-action-selection-method">The UCB action selection method</h2>
-<p>UCB is an acronym for Upper Confidence Bound. The idea behind it is to select the action that has the highest upper confidence bound. This has the advantage over epsilon greedy that it will explore more in the beginning and then exploit more as the algorithm progresses.</p>
-<p>the upper confidence bound is defined as:</p>
-<p><span id="eq-ucb"><img src="https://latex.codecogs.com/png.latex?%0AA_t%20=%20%5Carg%5Cmax%5C_a%20%5CBigg%5B%0A%20%20%5Cunderbrace%7BQ_t(a)%7D_%7Bexploitation%7D%20+%0A%20%20%5Cunderbrace%7Bc%20%5Csqrt%7B%5Cfrac%7B%5Cln%20t%7D%7BN_t(a)%7D%20%7D%7D_%7Bexploration%7D%0A%5CBigg%5D%20%5Cqquad%0A%5Ctag%7B6%7D"></span></p>
-<p>where:</p>
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?Q_t(a)"> is the action value</li>
-<li><img src="https://latex.codecogs.com/png.latex?c"> is a constant that determines the degree of exploration</li>
-<li><img src="https://latex.codecogs.com/png.latex?N_t(a)"> is the number of times action <img src="https://latex.codecogs.com/png.latex?a"> has been selected prior to time <img src="https://latex.codecogs.com/png.latex?t"></li>
-</ul>
-
-<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/rl_wk1_ucb.png" class="img-fluid figure-img"></p>
-<figcaption>UCB intuition</figcaption>
-</figure>
-</div></div><p>The idea is we the action for which the action value plus the highest possible uncertainty give the highest sum. We are being optimistic in assuming this choice will give the highest reward. In reality any value in the confidence interval could be the true value. Each time we select an action we reduce the uncertainty in the exploration term and we also temper our optimism of the upper confidence bound by the number of times we have selected the action. This means that we will prefer to visit the actions that have not been visited as often.</p>
-<p>The main advantage of UCB is that it is more efficient than epsilon greedy in the long run. If we measure the cost of learning in terms of the regret - the difference between the expected reward of the optimal action and the expected reward of the action we choose. UCB has a lower regret than epsilon greedy. The downside is that it is more complex and requires more computation.</p>
-<div id="alg-brn-UCB" class="pseudocode-container quarto-float" data-pseudocode-number="5" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-line-number-punc=":" data-comment-delimiter="#" data-no-end="false">
-<div class="pseudocode">
-\begin{algorithm} \caption{UCB(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \For { $k = 1, . . . , K$ } \State \Comment{ $\textcolor{blue}{compute\ UCBs}$} \State $U_k = \hat\theta_k + c \sqrt{\frac{\ln t}{N_k}}$ \EndFor \State \Comment{ $\textcolor{blue}{select\ and\ apply\ action}$} \State $x_t \leftarrow \arg\max_k h(x,U_x)$ \State Apply xt and observe $y_t$ and $r_t$ \State \Comment{ $\textcolor{blue}{estimate\ model}$} \For{$k = 1, . . . , K$} \State $\hat\theta_k \leftarrow a_k / (α_k + β_k)$ \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
-</div>
-</div>
-<p>Note we can model UCB using an urn model.</p>
-</section>
-<section id="Sec-Thompson-Sampling" class="level2">
-<h2 class="anchored" data-anchor-id="Sec-Thompson-Sampling">Thompson Sampling</h2>
-<p>Thompson sampling is basically like UCB but taking the Bayesian approach to the bandit problem. We start with a prior distribution over the action values and then update this distribution as we take actions. The action we choose is then sampled from the posterior distribution. This has the advantage that it is more robust to non-stationary problems than UCB. The downside is that it is more computationally expensive.</p>
-<section id="Sec-Thompson-Sampling-Algorithm" class="level3">
-<h3 class="anchored" data-anchor-id="Sec-Thompson-Sampling-Algorithm">Thompson Sampling Algorithm</h3>
-<p>The algorithm is as follows:</p>
-<div id="alg-bernoulli-thompson-sampling" class="pseudocode-container quarto-float" data-pseudocode-number="6" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-line-number-punc=":" data-comment-delimiter="#" data-no-end="false">
-<div class="pseudocode">
-\begin{algorithm} \caption{BernTS(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \State \State \Comment{ sample model} \For{$k = 1, . . . , K$} \State Sample $\hat\theta_k \sim beta(α_k, β_k)$ \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
-</div>
-</div>
-<ul>
-<li><a href="https://web.stanford.edu/~bvr/pubs/TS_Tutorial.pdf">this is a tutorial on Thompson Sampling</a></li>
-</ul>
-</section>
-</section>
-<section id="L3G7" class="level2">
-<h2 class="anchored" data-anchor-id="L3G7">Optimism in the face of uncertainty</h2>
-<dl>
-<dt>Optimism in the face of uncertainty</dt>
-<dd>
-<p>This is a heuristic to ensure initial exploration of all actions by assuming that untried actions have a high expected reward. We then try to exploit them but end up successively downgrading their expected reward when they do not match our initial optimistic assessment.</p>
-</dd>
-</dl>
-<p>The downside to this approach is when the space of action is continuous so we can never get to the benefits of exploration.</p>
-</section>
-</section>
-<section id="awesome-rl-resources" class="level1">
-<h1>Awesome RL resources</h1>
-<p>Let’s list some useful RL resources.</p>
-<p><strong>Books</strong></p>
-<ul>
-<li>Richard S. Sutton &amp; Andrew G. Barto <a href="http://incompleteideas.net/book/RLbook2020.pdf">RL An Introduction</a></li>
-<li><a href="https://tor-lattimore.com/">Tor Latimore’s</a> <a href="https://tor-lattimore.com/downloads/book/book.pdf">Book</a> and <a href="https://banditalgs.com/">Blog</a> on Bandit Algorithms.</li>
-<li><a href="https://sites.ualberta.ca/~szepesva/">Csaba Szepesvari</a>’s <a href="https://www.ualberta.ca/~szepesva/papers/RLAlgsInMDPs.pdf">Book</a></li>
-</ul>
-<p><strong>Courses &amp; Tutorials</strong></p>
-<ul>
-<li><a href="http://www0.cs.ucl.ac.uk/staff/d.silver/web/Home.html">David Silver’s</a> 2015 <a href="https://www.davidsilver.uk/teaching/">UCL Course on RL</a> <a href="https://www.youtube.com/watch?v=2pWv7GOvuf0">Video</a> and Slides.</li>
-<li><a href="https://faculty.cc.gatech.edu/~isbell/pubs/">Charles Isbell</a> and <a href="https://www.littmania.com/">Michael Littman</a> A free Udacity course on RL, with some emphasis on game theory proofs, and some novel algorithms like <a href="http://proceedings.mlr.press/v28/sodomka13.pdf">Coco-Q: Learning in Stochastic Games with Side Payments</a>.</li>
-<li><strong>Contextual Bandits</strong> <a href="https://hunch.net/~rwil/">tutorial</a> <a href="https://vimeo.com/240429210">video</a> + papers from MS research videos on contextual bandit algorithms.</li>
-<li>Interesting papers:
-<ul>
-<li>We discussed how Dynamic Programming can’t handle games like chess. Here are some RL methods that can.
-<ul>
-<li><a href="https://www.nature.com/articles/s41586-020-03051-4.epdf?sharing_token=kTk-xTZpQOF8Ym8nTQK6EdRgN0jAjWel9jnR3ZoTv0PMSWGj38iNIyNOw_ooNp2BvzZ4nIcedo7GEXD7UmLqb0M_V_fop31mMY9VBBLNmGbm0K9jETKkZnJ9SgJ8Rwhp3ySvLuTcUr888puIYbngQ0fiMf45ZGDAQ7fUI66-u7Y%3D">Muzero</a></li>
-<li><a href="https://arxiv.org/abs/2202.06626">MuZero</a> and</li>
-<li><a href="https://arxiv.org/abs/2111.00210">EfficentZero</a> <a href="https://github.com/YeWR/EfficientZero">code</a></li>
-</ul></li>
-</ul></li>
-</ul>
-<section id="coding-bandits-with-mesa" class="level2">
-<h2 class="anchored" data-anchor-id="coding-bandits-with-mesa">Coding Bandits with MESA</h2>
-<div id="48d05ff2" class="cell" data-execution_count="6">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">from</span> tqdm <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> tqdm</span>
-<span id="cb9-2"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">from</span> mesa <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> Model, Agent</span>
-<span id="cb9-3"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">from</span> mesa.time <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> RandomActivation</span>
-<span id="cb9-4"><span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
-background-color: null;
-font-style: inherit;">as</span> np</span>
-<span id="cb9-5"></span>
-<span id="cb9-6"></span>
-<span id="cb9-7"></span>
-<span id="cb9-8"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">class</span> EpsilonGreedyAgent(Agent):</span>
-<span id="cb9-9">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">"""</span></span>
-<span id="cb9-10"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">    This agent implements the epsilon-greedy </span></span>
-<span id="cb9-11"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">    """</span></span>
-<span id="cb9-12"></span>
-<span id="cb9-13">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">__init__</span>(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>, unique_id, model, num_arms, epsilon<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.1</span>):</span>
-<span id="cb9-14">        <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">super</span>().<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">__init__</span>(unique_id,model)</span>
-<span id="cb9-15">        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.num_arms <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> num_arms</span>
-<span id="cb9-16">        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.epsilon <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> epsilon</span>
-<span id="cb9-17">        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.q_values <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.zeros(num_arms)  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Initialize Q-value estimates</span></span>
-<span id="cb9-18">        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.action_counts <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.zeros(num_arms)  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Track action counts</span></span>
-<span id="cb9-19"></span>
-<span id="cb9-20">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">def</span> choose_action(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>):</span>
-<span id="cb9-21">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> np.random.rand() <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.epsilon:</span>
-<span id="cb9-22">            <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Exploration: Choose random arm</span></span>
-<span id="cb9-23">            <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">return</span> np.random.randint(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.num_arms)</span>
-<span id="cb9-24">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">else</span>:</span>
-<span id="cb9-25">            <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Exploitation: Choose arm with highest Q-value</span></span>
-<span id="cb9-26">            <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">return</span> np.argmax(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.q_values)</span>
-<span id="cb9-27"></span>
-<span id="cb9-28">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">def</span> step(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>, model):</span>
-<span id="cb9-29">        chosen_arm <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.choose_action()</span>
-<span id="cb9-30">        reward <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> model.get_reward(chosen_arm)</span>
-<span id="cb9-31">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">assert</span> reward <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">is</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">not</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">None</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Reward is not provided by the model"</span></span>
-<span id="cb9-32">        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.action_counts[chosen_arm] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span></span>
-<span id="cb9-33">        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.q_values[chosen_arm] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> (<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.q_values[chosen_arm] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.action_counts[chosen_arm] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> reward) <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span> (<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.action_counts[chosen_arm] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)</span>
-<span id="cb9-34"></span>
-<span id="cb9-35"></span>
-<span id="cb9-36"><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">class</span> TestbedModel(Model):</span>
-<span id="cb9-37">    <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">"""</span></span>
-<span id="cb9-38"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">    This model represents the 10-armed bandit testbed environment.</span></span>
-<span id="cb9-39"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">    """</span></span>
-<span id="cb9-40"></span>
-<span id="cb9-41">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">__init__</span>(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>, num_arms, mean_reward, std_dev,num_agents<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>):</span>
-<span id="cb9-42">        <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">super</span>().<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">__init__</span>()</span>
-<span id="cb9-43">        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.num_agents <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> num_agents</span>
-<span id="cb9-44">        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.num_arms <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> num_arms</span>
-<span id="cb9-45">        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.mean_reward <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> mean_reward</span>
-<span id="cb9-46">        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.std_dev <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> std_dev</span>
-<span id="cb9-47">        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.env_init()</span>
-<span id="cb9-48">        <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">#self.arms = [None] * num_arms  # List to store arm rewards</span></span>
-<span id="cb9-49">        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.schedule <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> RandomActivation(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>)</span>
-<span id="cb9-50">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">in</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">range</span>(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.num_agents):</span>
-<span id="cb9-51">          <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.create_agent(EpsilonGreedyAgent, i, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.1</span>) </span>
-<span id="cb9-52"></span>
-<span id="cb9-53">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">def</span> env_init(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>,env_info<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>{}):</span>
-<span id="cb9-54">        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.arms <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.random.randn(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.num_arms)  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Initialize arm rewards</span></span>
-<span id="cb9-55"></span>
-<span id="cb9-56">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">def</span> create_agent(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>, agent_class, agent_id, epsilon):</span>
-<span id="cb9-57">        <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">"""</span></span>
-<span id="cb9-58"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">        Create an RL agent instance with the specified class and parameters.</span></span>
-<span id="cb9-59"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">        """</span></span>
-<span id="cb9-60">        agent <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> agent_class(agent_id, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.num_arms, epsilon)</span>
-<span id="cb9-61">        <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.schedule.add(agent)</span>
-<span id="cb9-62">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">return</span> agent</span>
-<span id="cb9-63"></span>
-<span id="cb9-64">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">def</span> step(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>):</span>
-<span id="cb9-65">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">for</span> agent <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">in</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.schedule.agents:</span>
-<span id="cb9-66">            chosen_arm <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> agent.choose_action()</span>
-<span id="cb9-67">            reward <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> np.random.normal(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.mean_reward, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.std_dev)</span>
-<span id="cb9-68">            <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.arms[chosen_arm] <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> reward  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Update arm reward in the model</span></span>
-<span id="cb9-69">            agent.step(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>)  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Pass the model instance to the agent for reward access</span></span>
-<span id="cb9-70"></span>
-<span id="cb9-71">    <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">def</span> get_reward(<span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>, arm_id):</span>
-<span id="cb9-72">        <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Access reward from the stored list</span></span>
-<span id="cb9-73">        <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">return</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">self</span>.arms[arm_id]</span>
-<span id="cb9-74"></span>
-<span id="cb9-75"></span>
-<span id="cb9-76"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Example usage</span></span>
-<span id="cb9-77">model <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> TestbedModel(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Create model with 10 arms</span></span>
-<span id="cb9-78">num_runs <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">200</span>                  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># The number of times we run the experiment</span></span>
-<span id="cb9-79">num_steps <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1000</span>                <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># The number of pulls of each arm the agent takes</span></span>
-<span id="cb9-80"></span>
-<span id="cb9-81"></span>
-<span id="cb9-82"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Run simulation for multiple steps</span></span>
-<span id="cb9-83"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">for</span> _ <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">in</span> tqdm(<span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">range</span>(num_runs)):</span>
-<span id="cb9-84">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">for</span> _ <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">in</span> <span class="bu" style="color: null;
-background-color: null;
-font-style: inherit;">range</span>(num_steps):</span>
-<span id="cb9-85">        model.step()</span>
-<span id="cb9-86">    model.step()</span></code></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>/home/oren/.local/lib/python3.10/site-packages/mesa/time.py:82: FutureWarning:
-
-The AgentSet is experimental. It may be changed or removed in any and all future releases, including patch releases.
-We would love to hear what you think about this new feature. If you have any thoughts, share them with us here: https://github.com/projectmesa/mesa/discussions/1919
-
-  0%|          | 0/200 [00:00&lt;?, ?it/s]  4%|▍         | 9/200 [00:00&lt;00:02, 81.16it/s]  9%|▉         | 18/200 [00:00&lt;00:02, 78.80it/s] 13%|█▎        | 26/200 [00:00&lt;00:02, 77.88it/s] 17%|█▋        | 34/200 [00:00&lt;00:02, 78.48it/s] 21%|██        | 42/200 [00:00&lt;00:02, 78.66it/s] 26%|██▌       | 51/200 [00:00&lt;00:01, 79.00it/s] 30%|██▉       | 59/200 [00:00&lt;00:01, 78.95it/s] 34%|███▎      | 67/200 [00:00&lt;00:01, 78.94it/s] 38%|███▊      | 75/200 [00:00&lt;00:01, 79.14it/s] 42%|████▏     | 83/200 [00:01&lt;00:01, 79.37it/s] 46%|████▌     | 91/200 [00:01&lt;00:01, 79.55it/s] 50%|████▉     | 99/200 [00:01&lt;00:01, 79.04it/s] 54%|█████▍    | 108/200 [00:01&lt;00:01, 79.46it/s] 58%|█████▊    | 116/200 [00:01&lt;00:01, 78.05it/s] 62%|██████▏   | 124/200 [00:01&lt;00:00, 77.45it/s] 66%|██████▌   | 132/200 [00:01&lt;00:00, 75.88it/s] 70%|███████   | 140/200 [00:01&lt;00:00, 74.49it/s] 74%|███████▍  | 148/200 [00:01&lt;00:00, 73.76it/s] 78%|███████▊  | 156/200 [00:02&lt;00:00, 73.19it/s] 82%|████████▏ | 164/200 [00:02&lt;00:00, 72.36it/s] 86%|████████▌ | 172/200 [00:02&lt;00:00, 72.04it/s] 90%|█████████ | 180/200 [00:02&lt;00:00, 72.29it/s] 94%|█████████▍| 188/200 [00:02&lt;00:00, 72.33it/s] 98%|█████████▊| 196/200 [00:02&lt;00:00, 72.68it/s]100%|██████████| 200/200 [00:02&lt;00:00, 75.97it/s]</code></pre>
-</div>
-</div>
-
-
-</section>
-</section>
-
- ]]></description>
-  <category>Coursera</category>
-  <category>Fundamentals</category>
-  <category>Reinforcement Learning</category>
-  <guid>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w1.html</guid>
-  <pubDate>Sun, 01 May 2022 21:00:00 GMT</pubDate>
-  <media:content url="https://orenbochman.github.io/notes-rl/posts/coursera/img/nlp-brain-wordcloud.jpg" medium="image" type="image/jpeg"/>
-</item>
-<item>
-  <title>Course Introduction</title>
-  <dc:creator>Oren Bochman</dc:creator>
-  <link>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w0.html</link>
-  <description><![CDATA[ 
-
-
-
-
-
-
-<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/logo.png" class="img-fluid figure-img"></p>
-<figcaption>RL logo</figcaption>
-</figure>
-</div><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/alg_selector.png" class="img-fluid figure-img" data-group="slides"></p>
-<figcaption>RL algorithms</figcaption>
-</figure>
-</div></div>
-<section id="introduction" class="level1">
-<h1>Introduction</h1>
-<ul>
-<li>The course instructors, Adam and Martha White, are world class researches researchers.</li>
-<li>The University of Alberta is by far the strongest university for RL.</li>
-<li>RL builds on the foundations of Markov Decision Processes, Dynamic Programming, and Monte Carlo methods as well as Machine Learning and Deep Neural Networks.
-<ul>
-<li>I found that learning these topics is better motivated and there fore easier to grasp when presented in the context of RL.</li>
-</ul></li>
-<li>I read reviews by a number of people have taken this specialization. A few have had some background in RL and breezed through the material. The rest suggested that the material can be challenging particularly the last two courses.</li>
-<li>Some of the assignments appear in RL textbooks, but instead of a few lines of code for the main assignment, in the capstone we get to implement both Parts of the environment, the RL algorithm, the replay buffer, the neural net and the optimizer from scratch. This is a blessing in disguise as it really gives one more opportunity to get to grips with these complex subjects.</li>
-<li>A big chunk of the programming assignments have to handle the environment rather than the RL algorithm - many students complain about this.
-<ul>
-<li>My insight has repeatedly been that in RL the algorithms are often very general and that the key to success for solving a particular problem with RL is all about thinking the environment through.</li>
-<li>Many environments have different challenges and can reveal the weaknesses of many time tested algorithms.</li>
-<li>Real world problems are much more challenging but the more environments you work with, the better you will be able to find good features that can make solving them with RL very different.</li>
-<li>Another aspect of RL is called reward shaping which is defining a reward structure that can provide the algorithm with good signal so as to support better credit assignment to actions in the correct state. This is an integral part of environment design.</li>
-<li>Finally I found that when you try to implement RL algorithms for real world problems you will want to modify the algorithms to take advantage of some structure in the environment.</li>
-<li>Luckily there are today more environments available then I could list, it is easy to create new ones. The bottom line is that the challenges and algorithms of RL only make sense when considered in the context of environments.</li>
-</ul></li>
-<li>In my opinion many of the assignments are not very interesting - the coding problems often border on the trivial.</li>
-<li>If you want to work with RL professionally you will need to do a lot more coding.
-<ul>
-<li>You should consider some of the extra coding assignments that ware included in the text book.</li>
-<li>You should also consider implementing additional algorithms on the environments from the assignments.</li>
-<li>There are tons of other more interesting environments to work with consider taking you implementation to the next level in these environments.
-<ul>
-<li>In reality even many of the environments we use in the assignments have surprising challenges.</li>
-<li>The moon lander in the capstone for example tends to learn to hover for a long time to avoid crashing
-<ul>
-<li>The solution comes from a paper which suggests adding a time limit to the episode. However the assignment uses the time limit without mentioning this.</li>
-<li>I thought that the time limit was there to speed up grading until I tried to dive deeper.</li>
-</ul></li>
-</ul></li>
-</ul></li>
-<li>We spend lots of time tinkering with RL-Glue a library that is no longer being maintained.</li>
-<li>Although my background is in Mathematics I found the videos rather terse.
-<ul>
-<li>They often list goals at the start and at the end again, so all in all the instructional part can be very brief.</li>
-<li>It would be easier to recap not just reference equations, update rules, and algorithms that have been covered a while back or in a previous course.</li>
-<li>Many They frequently reference old material which you may not have <em>fully digested</em> yet.</li>
-</ul></li>
-<li>I discovered that I had worked though all the videos, quizzes and programming assignments scoring 100% but I hadn’t really digested the material.
-<ul>
-<li>These notes are my attempt to do so.</li>
-<li>I try to make the material more accessible and to connect the dots.</li>
-</ul></li>
-<li>I don’t include the programming assignments in these notes.
-<ul>
-<li>I may add simple agents with from different environments and using libraries other than RL-Glue to avoid any issues raised by the Coursera honor code.</li>
-</ul></li>
-<li>I don’t include the quizzes either
-<ul>
-<li>I found that most can be aced by just reviewing the videos before taking them and then reviewing the answers.</li>
-<li>I’d like to build a question/answer bank</li>
-<li>But I think that coding is much better time investment.</li>
-</ul></li>
-<li>There are lots of good notes on the web on RL.
-<ul>
-<li>Summaries of the text book</li>
-<li>Slides for the courses offered by Richard S. Sutton and Andrew G. Barto</li>
-<li>Slides for the course offered by David Silver</li>
-<li>Notes from more advanced courses</li>
-<li>Books &amp; Notes from some of the Guest lectures in this course.</li>
-</ul></li>
-<li>So I was reluctant to add to the pile. I found out after completing the first two courses that I had not really digested the material.
-<ul>
-<li>I had to go back and review the material and then write these notes.</li>
-<li>I found that the act of writing the notes helped me to understand some of the trickier bits from the book.</li>
-<li>I also wanted to see how I could connect the dots between the different parts of the course.</li>
-<li>I hope that you find these notes helpful.</li>
-</ul></li>
-</ul>
-<div class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Deceptively simple <span class="emoji" data-emoji="bulb">💡</span>
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><mark>This course is <strong>deceptively simple</strong></mark> - the chart in the margin provides a great summary of the material for the whole specialization. Only a handful of concepts are needed to master RL.</p>
-<ul>
-<li>This specialization is all about connecting the dots.</li>
-<li>We revisit the same ideas over and over improving them in small but significant ways by relaxing the assumptions. e.g.&nbsp;from bandits with one state we move to MDP with many states and get the ability to formulate plans. From Dynamic programming with a fully specified model we move to model free settings where we might not be able to efficiently learn a model. From tabular methods where we treat each state as a separate entity we we move to function approximation and deep learning where we can generalize from one state to many others.</li>
-<li>In this course and the more connections you make the better you will understand and remember material.</li>
-<li>And the greater you facility to apply RL to new problems.</li>
-</ul>
-</div>
-</div>
-<p>The following are my tips for getting the most from this specialization</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Connecting The Dot to see the Forest For the Trees 🎄
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>To connect the dots I <span class="emoji" data-emoji="heart">❤️</span> recommend:</p>
-<ol type="1">
-<li><strong>Annotate</strong> 🖊️ you e-copy of the book 📖</li>
-<li><strong>Flash cards</strong> 🗂️ are your 🧑‍🤝‍🧑 friends.</li>
-</ol>
-<ul>
-<li>We don’t need too many but they can help you keep the essentials (algorithms, definitions, some formulas, a few diagrams) fresh in your mind.</li>
-<li>Keep reviewing these until you impress the folks at DeepMind in your interview. <span class="emoji" data-emoji="wink">😉</span></li>
-</ul>
-<ol start="3" type="1">
-<li><strong>Review</strong> 👁️ the videos/quizzes until nothing seems surprising/confusing <sup>1</sup>.</li>
-<li><strong>Review</strong> 👁️ your notes every time you complete a part of the specialization. Also a great idea if have an RL interview 💼</li>
-<li><strong>Coding</strong>: If you have time do extra RL coding
-<ol type="1">
-<li>Start with developing more environments, simple and complex ⛩️</li>
-<li>Implement more algorithms - from the course, the books, papers.⛩️</li>
-<li>The notebooks also try to teach you experiments and analysis comparing algorithms performance. If you assimilate this part you are really going to shine. ⛩️</li>
-</ol></li>
-</ol>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Mathematical Mnemonics 😍
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>As a Mathematics major I can attest that Mathematics becomes 10x easier so long as you can recall 🧠 the basic definitions and their notation.</p>
-<p>I have extracted the essentials from the text book below. Best to memorize these or at least keep a copy handy and you are well on your way to grokking this course</p>
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?G_t"> <strong>return</strong> at time t, for a <img src="https://latex.codecogs.com/png.latex?(s_t,%20a_t,%20r_t...)"> sequence discounted by <img src="https://latex.codecogs.com/png.latex?%5Cgamma%5Cin(0,1)">.</li>
-<li><img src="https://latex.codecogs.com/png.latex?r(s,a)"> - <strong>expected immediate rewards</strong> for action <img src="https://latex.codecogs.com/png.latex?a"> in state <img src="https://latex.codecogs.com/png.latex?s"></li>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cpi"> <strong>policy</strong> - a decision making rule for every state.</li>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cpi_*"> <strong>optimal policy</strong> - which returns the maximum rewards.</li>
-<li><img src="https://latex.codecogs.com/png.latex?p(s',r%20%5Cvert%20s,a)"> - <strong>transition probability</strong> to state <img src="https://latex.codecogs.com/png.latex?s'"> with reward <img src="https://latex.codecogs.com/png.latex?r"> from state <img src="https://latex.codecogs.com/png.latex?s"> via action <img src="https://latex.codecogs.com/png.latex?a"> AKA <strong>four valued dynamics</strong> function.</li>
-<li><img src="https://latex.codecogs.com/png.latex?p(s'%20%5Cvert%20s,a)"> - <strong>transition probability</strong> to state <img src="https://latex.codecogs.com/png.latex?s'"> from state <img src="https://latex.codecogs.com/png.latex?s"> via action <img src="https://latex.codecogs.com/png.latex?a"> AKA <strong>Markov process transition matrix</strong></li>
-<li><img src="https://latex.codecogs.com/png.latex?v_%5Cpi(s)"> - state’s <strong>value</strong> under policy <img src="https://latex.codecogs.com/png.latex?%5Cpi"> which is its expected return.</li>
-<li><img src="https://latex.codecogs.com/png.latex?q_%5Cpi(s,a)"> - the <strong>action value</strong> in state <img src="https://latex.codecogs.com/png.latex?s"> under policy <img src="https://latex.codecogs.com/png.latex?%5Cpi">.</li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Guest Lectures
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>There are a number of guest lectures in this specialization - I think that about half are in the last course.</p>
-<ul>
-<li>These often provide a teaser into an area of research that extends the material in the course.</li>
-<li>Many are boring but
-<ul>
-<li>almost all present papers and results that are worth some review.</li>
-<li>a few present too many papers, which suggests a triage approach</li>
-<li>sooner of later you might have a real problem that is similar to the one they are addressing.</li>
-<li>so I suggest you try and spend some time</li>
-</ul></li>
-<li>RL was more or less invented 4 times in different fields - Control Theory, Operations Research, Machine Learning and Psychology.</li>
-<li>The guest lectures often present the material from one of these fields.</li>
-</ul>
-</div>
-</div>
-<section id="a-long-term-plan-to-learning-deep-rl" class="level2">
-<h2 class="anchored" data-anchor-id="a-long-term-plan-to-learning-deep-rl">A Long term plan to learning Deep RL</h2>
-<ol type="1">
-<li>do this specialization</li>
-<li>read the rest of the book - there are a number of important subjects and algorithms that are not covered in the course.</li>
-<li>solve more problems</li>
-<li>read more papers</li>
-</ol>
-<ul>
-<li>there are a zillion algorithms and a gazillion environments out there</li>
-<li>reading a few papers will get you up to speed on the state of the art.</li>
-</ul>
-<ol start="5" type="1">
-<li>implement more algorithms</li>
-</ol>
-<ul>
-<li>this is what people are going to pay you for</li>
-<li>start with gradient bandit algorithms</li>
-<li>then Thompson Sampling using different distributions</li>
-</ul>
-<ol start="6" type="1">
-<li>try and solve a real problem:</li>
-</ol>
-<ul>
-<li>I created a custom RL algorithm to solve the Lewis signaling game quickly and efficient - this allows agents to learn to communicate.</li>
-<li>I am now working on designing a multi-agent version of the game that should learn even faster.</li>
-</ul>
-<ol start="7" type="1">
-<li>do the deep rl course from Hugging Face</li>
-<li>find RL challenges on Kaggle</li>
-</ol>
-
-
-</section>
-</section>
-
-
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>The annotated book and flashcards will help here. This material is really logical - if you are surprised/confused you never assimilated some part of the material. Once you do it should become almost intuitive to reason about from scratch.↩︎</p></li>
-</ol>
-</section></div> ]]></description>
-  <category>Coursera</category>
-  <category>Fundamentals</category>
-  <category>Reinforcement Learning</category>
-  <guid>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w0.html</guid>
-  <pubDate>Sat, 30 Apr 2022 21:00:00 GMT</pubDate>
   <media:content url="https://orenbochman.github.io/notes-rl/posts/coursera/img/nlp-brain-wordcloud.jpg" medium="image" type="image/jpeg"/>
 </item>
 </channel>

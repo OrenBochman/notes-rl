@@ -568,7 +568,7 @@ Q_{n+1} &amp;= \frac{1}{n} \sum_{i=1}^n R_i \newline
 <p><span id="eq-general-incremental-update-rule"><span class="math display">
 Q_{n+1} = Q_n + \alpha \Big[R_n - Q_{n}\Big] \qquad a\in (0,1)
 \tag{5}</span></span></p>
-<div id="simple-epsilon-greedy-bandit-algorithm" class="pseudocode-container quarto-float" data-pseudocode-number="1" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-line-number-punc=":" data-comment-delimiter="#" data-no-end="false">
+<div id="simple-epsilon-greedy-bandit-algorithm" class="pseudocode-container quarto-float" data-no-end="false" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="1" data-comment-delimiter="#" data-caption-prefix="Algorithm" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{Simple Bandit($\epsilon$)}\begin{algorithmic} \State $Q(a) \leftarrow 0\ \forall a\ $ \Comment{ $\textcolor{blue}{initialize\ action\ values}$} \State $N(a) \leftarrow 0\ \forall a\ $ \Comment{ $\textcolor{blue}{initialize\ counter\ for\ actions\ taken}$} \For{$t = 1, 2, \ldots \infty$} \State $A_t \leftarrow \begin{cases} \arg\max_a Q(a) &amp; \text{with probability } 1 - \epsilon \\ \text{a random action} &amp; \text{with probability } \epsilon \end{cases}$ \State $R_t \leftarrow \text{Bandit}(A_t)$ \State $N(A_t) \leftarrow N(A_t) + 1$ \State $Q(A_t) \leftarrow Q(A_t) + \frac{1}{N(A_t)}[R_t - Q(A_t)]$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -599,7 +599,7 @@ Goals
 </div>
 </div>
 <p>the following is a Bernoulli greedy algorithm</p>
-<div id="alg-greedy-bandit" class="pseudocode-container quarto-float" data-pseudocode-number="2" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-line-number-punc=":" data-comment-delimiter="#" data-no-end="false">
+<div id="alg-greedy-bandit" class="pseudocode-container quarto-float" data-no-end="false" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="2" data-comment-delimiter="#" data-caption-prefix="Algorithm" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{BernGreedy(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \State \State \Comment{ estimate model} \For{$k = 1, . . . , K$} \State $\hat\theta_k \leftarrow a_k / (α_k + β_k)$ \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -607,7 +607,7 @@ Goals
 <section id="sec-epsilon-greedy-policies" class="level2">
 <h2 class="anchored" data-anchor-id="sec-epsilon-greedy-policies">Ɛ-Greedy Policies</h2>
 <p>The Ɛ-greedy policy uses a simple heuristic to balance exploration with exploitation. The idea is to choose the best action with probability <span class="math inline">1-\epsilon</span> and to choose a random action with probability <span class="math inline">\epsilon</span>.</p>
-<div id="alg-epsilon-greedy" class="pseudocode-container quarto-float" data-pseudocode-number="3" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-line-number-punc=":" data-comment-delimiter="#" data-no-end="false">
+<div id="alg-epsilon-greedy" class="pseudocode-container quarto-float" data-no-end="false" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="3" data-comment-delimiter="#" data-caption-prefix="Algorithm" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{EpsilonGreedy(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, \ldots $} \State p = random() \If {$p &lt; \epsilon$} \State select radom action $x_t \qquad$ \Comment{explore} \Else \State select $x_t = \arg\max_k \hat{\theta}_k \qquad$ \Comment{exploit} \EndIf \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -783,7 +783,7 @@ The problem with Ɛ-greedy policies
 </dd>
 </dl>
 <p>The methods we have discussed are dependent on the initial action-value estimates, <span class="math inline">Q_1(a)</span>. In the language of statistics, we call these methods biased by their initial estimates. For the sample-average methods, the bias disappears once all actions have been selected at least once. For methods with constant <span class="math inline">\alpha</span>, the bias is permanent, though decreasing over time.</p>
-<div id="alg-optimitc-greedy-bandit" class="pseudocode-container quarto-float" data-pseudocode-number="4" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-line-number-punc=":" data-comment-delimiter="#" data-no-end="false">
+<div id="alg-optimitc-greedy-bandit" class="pseudocode-container quarto-float" data-no-end="false" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="4" data-comment-delimiter="#" data-caption-prefix="Algorithm" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{OptimisticBernGreedy(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \State \State \Comment{ estimate model} \For{$k = 1, . . . , K$} \State $\hat\theta_k \leftarrow 1 \qquad$ \Comment{optimistic initial value} \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -842,7 +842,7 @@ A_t = \arg\max\_a \Bigg[
 </figure>
 </div></div><p>The idea is we the action for which the action value plus the highest possible uncertainty give the highest sum. We are being optimistic in assuming this choice will give the highest reward. In reality any value in the confidence interval could be the true value. Each time we select an action we reduce the uncertainty in the exploration term and we also temper our optimism of the upper confidence bound by the number of times we have selected the action. This means that we will prefer to visit the actions that have not been visited as often.</p>
 <p>The main advantage of UCB is that it is more efficient than epsilon greedy in the long run. If we measure the cost of learning in terms of the regret - the difference between the expected reward of the optimal action and the expected reward of the action we choose. UCB has a lower regret than epsilon greedy. The downside is that it is more complex and requires more computation.</p>
-<div id="alg-brn-UCB" class="pseudocode-container quarto-float" data-pseudocode-number="5" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-line-number-punc=":" data-comment-delimiter="#" data-no-end="false">
+<div id="alg-brn-UCB" class="pseudocode-container quarto-float" data-no-end="false" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="5" data-comment-delimiter="#" data-caption-prefix="Algorithm" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{UCB(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \For { $k = 1, . . . , K$ } \State \Comment{ $\textcolor{blue}{compute\ UCBs}$} \State $U_k = \hat\theta_k + c \sqrt{\frac{\ln t}{N_k}}$ \EndFor \State \Comment{ $\textcolor{blue}{select\ and\ apply\ action}$} \State $x_t \leftarrow \arg\max_k h(x,U_x)$ \State Apply xt and observe $y_t$ and $r_t$ \State \Comment{ $\textcolor{blue}{estimate\ model}$} \For{$k = 1, . . . , K$} \State $\hat\theta_k \leftarrow a_k / (α_k + β_k)$ \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -855,7 +855,7 @@ A_t = \arg\max\_a \Bigg[
 <section id="Sec-Thompson-Sampling-Algorithm" class="level3">
 <h3 class="anchored" data-anchor-id="Sec-Thompson-Sampling-Algorithm">Thompson Sampling Algorithm</h3>
 <p>The algorithm is as follows:</p>
-<div id="alg-bernoulli-thompson-sampling" class="pseudocode-container quarto-float" data-pseudocode-number="6" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-line-number-punc=":" data-comment-delimiter="#" data-no-end="false">
+<div id="alg-bernoulli-thompson-sampling" class="pseudocode-container quarto-float" data-no-end="false" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="6" data-comment-delimiter="#" data-caption-prefix="Algorithm" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{BernTS(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \State \State \Comment{ sample model} \For{$k = 1, . . . , K$} \State Sample $\hat\theta_k \sim beta(α_k, β_k)$ \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
 </div>

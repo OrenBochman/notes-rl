@@ -252,7 +252,7 @@ window.Quarto = {
 </header>
 
 
-<p>This paper review is an extended introduction to temporal abstraction using options. It covers lots of advanced concepts in reinforcement learning that were introduced in Doina’s Precup’s talk in the Coursera Specialization on Reinforcement Learning by Martha White and Adam White. The paper is a deep dive into the topic of options and the successor representation. It is a long paper with lots of advanced concepts and algorithms. The paper is a great resource for anyone interested in reinforcement learning and temporal abstraction.</p>
+<p>This paper review is an extended introduction to temporal abstraction using options. It covers lots of advanced concepts in reinforcement learning that were introduced by Guest Speaker Doina Precup from Coursera Specialization on Reinforcement Learning by Martha White and Adam White. The paper is a deep dive into the topic of options and the successor representation. It is a long paper with lots of advanced concepts and algorithms. The paper is a great resource for anyone interested in reinforcement learning and temporal abstraction.</p>
 <section id="introduction" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>Ever since I saw <span class="citation" data-cites="Martha2022SubTasks">(<a href="#ref-Martha2022SubTasks" role="doc-biblioref">White 2022</a>)</span> the video lecture on <a href="#fig-subtasks">subtasks</a> by Martha White about learning tasks in parallel. However the video does not address the elephant in the room - how to discover the options.</p>
@@ -301,7 +301,7 @@ TL;DR - Option Discovery with Successor Representations
 <p>Options are a powerful form of temporal abstraction that allows agents to make predictions and to operate at different levels of abstraction within an environment in ways idiosyncratic of human approach to tackle many problems. One of the key questions has been how to discover good options. The paper presents a rather simple yet powerful answer to this.</p>
 <p>This paper is a quite challangeing. You might listen to this lighthearted deep dive courtesy by notebooklm to ease you into the topics.</p>
 <audio controls="1">
-<source src="deepdive.wav" data-external="1" type="audio/mpeg">
+<source src="deepdive.mp3" data-external="1" type="audio/mpeg">
 
 </audio>
 </div>
@@ -366,7 +366,7 @@ Figure&nbsp;3: Doina Precup’s Talk at DeepHack.RL on Temporal abstraction in r
 <section id="a-framework-for-option-discovery-from-representation-learning" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="a-framework-for-option-discovery-from-representation-learning">A Framework for Option Discovery from Representation Learning</h2>
 
-<div class="no-row-height column-margin column-container"><div id="fig-1" class="quarto-float quarto-figure quarto-figure-center anchored" width="250px" data-group="figures">
+<div class="no-row-height column-margin column-container"><div id="fig-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures" width="250px">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="./fig_1.png" class="img-fluid figure-img">
@@ -390,7 +390,7 @@ Figure&nbsp;4: Representation-driven Option Discovery (ROD) cycle <span class="c
 <section id="the-successor-representation" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="the-successor-representation">The Successor Representation</h2>
 
-<div class="no-row-height column-margin column-container"><div id="fig-3" class="quarto-float quarto-figure quarto-figure-center anchored" width="250px" data-group="figures">
+<div class="no-row-height column-margin column-container"><div id="fig-3" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures" width="250px">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="./fig_3.png" class="img-fluid figure-img">
@@ -407,7 +407,7 @@ Figure&nbsp;5: Example similar to Dayans 1993 of the SR, w.r.t. the uniform rand
 \Psi_{\pi}(s,s') = \mathbb{E}_{\pi,p} \sum_{t=0}^\infty  γ^t \mathbb{1}_{\{S_t=s'}\} | {S_0 = s } \qquad
 \tag{2}</span></span></p>
 
-<div class="no-row-height column-margin column-container"><div id="fig-4" class="quarto-float quarto-figure quarto-figure-center anchored" width="250px" data-group="figures">
+<div class="no-row-height column-margin column-container"><div id="fig-4" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures" width="250px">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="./fig_4.png" class="img-fluid figure-img">
