@@ -1,0 +1,148 @@
+
+# TD learning paper
+@article{sutton1988learning,
+  year={1988},
+  author={Sutton, Richard S},
+  title={Learning to predict by the methods of temporal differences},
+  journal={Machine learning},
+  volume={3},
+  pages={9--44},
+  publisher={Springer}
+}
+
+# Q learning paper
+@article{watkins1992qlearning,
+  year={1992},
+  title={Q-learning},
+  author={Watkins, Christopher JCH and Dayan, Peter},
+  journal={Machine learning},
+  volume={8},
+  pages={279--292},
+  publisher={Springer},
+  url = {http://incompleteideas.net/papers/watkins-dayan-92.pdf},
+
+}
+
+# The options framework 
+@article{Sutton1999BetweenMA,
+author = {Richard S. Sutton and Doina Precup and Satinder Singh},
+title = {Between MDPs and semi-MDPs: A framework for temporal abstraction in reinforcement learning},
+journal = {Artificial Intelligence},
+volume = {112},
+number = {1},
+pages = {181-211},
+year = {1999},
+issn = {0004-3702},
+doi = {https://doi.org/10.1016/S0004-3702(99)00052-1},
+url = {https://www.sciencedirect.com/science/article/pii/S0004370299000521},
+keywords = {Temporal abstraction, Reinforcement learning, Markov decision processes, Options, Macros, Macroactions, Subgoals, Intra-option learning, Hierarchical planning, Semi-Markov decision processes},
+abstract = {Learning, planning, and representing knowledge at multiple levels of temporal abstraction are key, longstanding challenges for AI. In this paper we consider how these challenges can be addressed within the mathematical framework of reinforcement learning and Markov decision processes (MDPs). We extend the usual notion of action in this framework to include options—closed-loop policies for taking action over a period of time. Examples of options include picking up an object, going to lunch, and traveling to a distant city, as well as primitive actions such as muscle twitches and joint torques. Overall, we show that options enable temporally abstract knowledge and action to be included in the reinforcement learning framework in a natural and general way. In particular, we show that options may be used interchangeably with primitive actions in planning methods such as dynamic programming and in learning methods such as Q-learning. Formally, a set of options defined over an MDP constitutes a semi-Markov decision process (SMDP), and the theory of SMDPs provides the foundation for the theory of options. However, the most interesting issues concern the interplay between the underlying MDP and the SMDP and are thus beyond SMDP theory. We present results for three such cases: (1) we show that the results of planning with options can be used during execution to interrupt options and thereby perform even better than planned, (2) we introduce new intra-option methods that are able to learn about an option from fragments of its execution, and (3) we propose a notion of subgoal that can be used to improve the options themselves. All of these results have precursors in the existing literature; the contribution of this paper is to establish them in a simpler and more general setting with fewer changes to the existing reinforcement learning framework. In particular, we show that these results can be obtained without committing to (or ruling out) any particular approach to state abstraction, hierarchy, function approximation, or the macro-utility problem.}
+}
+
+@phdthesis{precup2000temporal,
+author = {Precup, Doina and Sutton, Richard S.},
+title = {Temporal abstraction in reinforcement learning},
+year = {2000},
+isbn = {0599844884},
+publisher = {University of Massachusetts Amherst},
+abstract = {Decision making usually involves choosing among different courses of action over a broad range of time scales. For instance, a person planning a trip to a distant location makes high-level decisions regarding what means of transportation to use, but also chooses low-level actions, such as the movements for getting into a car. The problem of picking an appropriate time scale for reasoning and learning has been explored in artificial intelligence, control theory and robotics. In this dissertation we develop a framework that allows novel solutions to this problem, in the context of Markov Decision Processes (MDPs) and reinforcement learning. In this dissertation, we present a general framework for prediction, control and learning at multiple temporal scales. In this framework, temporally extended actions are represented by a way of behaving (a policy) together with a termination condition. An action represented in this way is called an  option.  Options can be easily incorporated in MDPs, allowing an agent to use existing controllers, heuristics for picking actions, or learned courses of action. The effects of behaving according to an option can be predicted using multi-time models, learned by interacting with the environment. In this dissertation we develop multi-time models, and we illustrate the way in which they can be used to produce plans of behavior very quickly, using classical dynamic programming or reinforcement learning techniques. The most interesting feature of our framework is that it allows an agent to work simultaneously with high-level and low-level temporal representations. The interplay of these levels can be exploited in order to learn and plan more efficiently and more accurately. We develop new algorithms that take advantage of this structure to improve the quality of plans, and to learn in parallel about the effects of many different options.},
+note = {AAI9978540}
+}
+
+@Article{Solway2014OptimalBH,
+ author = {Alec Solway and Carlos Diuk and N. Córdova and Debbie M. Yee and A. Barto and Y. Niv and M. Botvinick},
+ booktitle = {PLoS Comput. Biol.},
+ journal = {PLoS Computational Biology},
+ title = {Optimal Behavioral Hierarchy},
+ volume = {10},
+ year = {2014}
+}
+
+@misc{machado2016learningpurposefulbehaviourabsence,
+      author={Marlos C. Machado and Michael Bowling},
+      title={Learning Purposeful Behaviour in the Absence of Rewards}, 
+      year={2016},
+      eprint={1605.07700},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/1605.07700}, 
+}
+
+@InProceedings{pmlr-v70-machado17a,
+  author =   {Marlos C. Machado and Marc G. Bellemare and Michael Bowling},
+  title = 	 {A {L}aplacian Framework for Option Discovery in Reinforcement Learning},
+  booktitle = 	 {Proceedings of the 34th International Conference on Machine Learning},
+  pages = 	 {2295--2304},
+  year = 	 {2017},
+  editor = 	 {Precup, Doina and Teh, Yee Whye},
+  volume = 	 {70},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {06--11 Aug},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v70/machado17a/machado17a.pdf},
+  url = 	 {https://proceedings.mlr.press/v70/machado17a.html},
+  abstract = 	 {Representation learning and option discovery are two of the biggest challenges in reinforcement learning (RL). Proto-value functions (PVFs) are a well-known approach for representation learning in MDPs. In this paper we address the option discovery problem by showing how PVFs implicitly define options. We do it by introducing eigenpurposes, intrinsic reward functions derived from the learned representations. The options discovered from eigenpurposes traverse the principal directions of the state space. They are useful for multiple tasks because they are discovered without taking the environment’s rewards into consideration. Moreover, different options act at different time scales, making them helpful for exploration. We demonstrate features of eigenpurposes in traditional tabular domains as well as in Atari 2600 games.}
+}
+
+# Marlos C. Machado phd thesis - "option discovery process should be seen as a cycle"
+@phdthesis{Machado2019EfficientEI,
+ author = {Marlos C. Machado},
+ title = {Efficient Exploration in Reinforcement Learning through Time-Based Representations},
+ journal = {Revue De Geographie Alpine-journal of Alpine Research},
+ keywords = {Temporal abstraction, Reinforcement learning, Options, Atari 2600, Proto-Value Functions},
+ year = {2019}
+}
+
+# long paper on option discovery based on Successor Representation
+
+@article{machado2023temporal,
+  author  = {Marlos C. Machado and Andre Barreto and Doina Precup and Michael Bowling},
+  title   = {Temporal Abstraction in Reinforcement Learning with the Successor Representation},
+  journal = {Journal of Machine Learning Research},
+  year    = {2023},
+  volume  = {24},
+  number  = {80},
+  pages   = {1--69},
+  url     = {http://jmlr.org/papers/v24/21-1213.html}
+}
+
+# Deep Laplacian options for Temporal Abstractions
+
+@misc{klissarov2023deeplaplacianbasedoptionstemporallyextended,
+      author={Martin Klissarov and Marlos C. Machado},
+      title={Deep Laplacian-based Options for Temporally-Extended Exploration}, 
+      year={2023},
+      eprint={2301.11181},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2301.11181}, 
+}
+
+@misc{Machado2024Cohere, 
+title={Representation-driven Option Discovery in Reinforcement Learning}, 
+url={https://www.youtube.com/watch?v=m9gYmYEYuIs}, 
+journal={YouTube}, 
+author={Marlos C. Machado}, 
+year={2024}, 
+month={Nov} }
+
+@misc{Doina2017DeepHack, 
+title={DeepHack.RL: Temporal abstraction in reinforcement learning}, 
+url={https://www.youtube.com/watch?v=GntIVgNKkCI}, 
+journal={YouTube}, 
+author={Doina Precup}, 
+year={2017},
+ month={Feb} }
+
+‌@misc{Martha2022SubTasks,
+title={Developing Reinforcement Learning Agents that Learn Many Subtasks}, 
+url={https://www.youtube.com/watch?v=GmGL9cVfJG4&t=6s}, 
+journal={YouTube}, 
+author={Martha White}, 
+year={2022}, 
+month={Feb}
+}
+
+‌
+
+‌

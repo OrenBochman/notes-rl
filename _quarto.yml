@@ -2,7 +2,7 @@ project:
   type: website
   output-dir: docs
   preview:
-    port: 7777
+    port: 7778
 
 website:
   title: "Notes on Reinfocement Learning"
@@ -13,9 +13,9 @@ website:
         href: https://github.com/
       - icon: twitter
         href: https://twitter.com
-  site-url: https://orenbochman.github.io/
+  site-url: https://orenbochman.github.io/notes-rl/
   description: Personal website, portfolio and blog
-  repo-url: https://github.com/OrenBochman/blog
+  repo-url: https://github.com/OrenBochman/notes-rl
   favicon: favicon.ico
 
 date-format: full
@@ -75,7 +75,7 @@ crossref:
 execute:
   freeze: auto
   cache: true
-  
+
 filters:
   - pseudocode
 pseudocode:

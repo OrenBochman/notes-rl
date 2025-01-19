@@ -1,0 +1,71 @@
+---
+title: Dynamic collaborative filtering Thompson Sampling for cross-domain advertisements recommendation
+subtitle: Paper Review
+description: Introducing (DCTS) The Dynamic Collaborative Filtering Thompson Sampling algorithm for cross-domain advertisements recommendation.
+date: 2025-01-18
+categories:
+    - Paper 
+    - Review
+    - Bandit
+    - Advertising
+    - Collaborative Filtering
+keywords:
+    - Thompson Sampling
+    - Recomender System
+    - Collaborative Filtering
+bibliography: bibliography.bib
+image: cover.jpg
+---
+
+![litrature review](cover.jpg){.column-margin}
+
+
+{{< video https://youtu.be/DAL7cpE3K7E >}}
+
+
+So I don't have much time for this today so here is a quick note on:  [@ishikawa2022dynamiccollaborativefilteringthompson]
+
+::: {.callout-tip }
+
+## TL;DR - Dynamic collaborative filtering via Thompson Sampling {.unnumbered}
+
+![DCTS in a nutshell](../img/in_a_nutshell.jpg)
+
+1. The authors are using **Thompson Sampling**. This is a Bayesian method in RL.
+1. Thier problem is an advert recommendation system. So they are integrating Thompson sampling into making recommendations.
+1. The talk mentions a dataset the authors used for doing this work. Is this dataset available? I would like to try this out
+    
+:::
+
+One line on Thompson sampling,  one of the oldest technique in the RL playbook which uses the following rule: pick an action at random from the posterior distribution of the action values and then use the outcome to update the posterior distribution for the next step.
+
+
+::: {.callout-caution }
+## My ideas
+
+- Find what data set was used.
+    - [Rakuten Ichiba data]()
+    - [Rakuten Travel dataset]()
+- Is this dataset available?
+- Can we make a minimal version to quickly test this kind of agent?
+- Figure out a framework that extends tompson sampling to other RL problems.
+    - need to add P(action|state) i.e. add conditioning of the bernulli on the state.
+    - prehaps do simple counts of steps since starts or last reward.
+    - prehaps using a succeror representation can help
+
+
+- Marketing are the worst POMDPs. Testing real stuff is very hard so a good environment might help.
+- I want to make an petting zoo env to support single & multiagent:
+    1. auctions / non autions
+    2. advertising (rec sys) with costs
+    3. pricing with policies.
+    - It should also allow incorperating real data from a dataset. Diretly or via sampling
+    - It would be even neater to do this using a heirarchiacal model.
+    - It would be even better if we can also incorportate the product, user hierecies.
+    
+:::
+
+
+## The Paper
+
+![paper](paper.pdf){.col-page width="800px" height="1000px"}

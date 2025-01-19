@@ -1,0 +1,99 @@
+---
+title: Off-Policy Learning-to-Bid with AuctionGym
+subtitle: Paper Review
+description: Additional work with AuctionGym
+date: 2025-01-18
+categories:
+    - Paper 
+    - Review
+    - Advertising
+keywords: [Counterfactual inference, Off-policy learning,Doubly Robust Estimator]
+bibliography: bibliography.bib
+image: cover.jpg
+---
+
+![litrature review](cover.jpg){.column-margin}
+
+
+{{< video https://youtu.be/YK0SELxAWeo >}}
+
+
+
+So I don't have much time for this today so here is a quick note on:  [@jeunen2023offpolicy]
+
+::: {.callout-tip }
+
+## TL;DR - Learning to bid with AuctionGym
+
+![AuctionGym in a nutshell](../img/in_a_nutshell.jpg)
+
+1. The authors are using **Thompson Sampling**. This is a Bayesian method in RL.
+2. Thier problem is an advert recommendation system. So they are integrating Thompson sampling into making recommendations.
+3. They use a doubly robust estimation method. This is something I learned about from Emma Brunskill's guest lecture in the Alberta Coursera course. And ever since I've been looking on how to do this in RL. Unforetunatly all I could find was work that used it in offline RL settings. So I was stoked to see it used as a central part of this paper. Using a doubly robust estimator is a sound technique for reducing variance without introducing a bias. And variance is the gratest impediment to learning quickly in RL. Also unlike some other ideas I've come accross it seems to align very well with Causal Inference.
+4. The talk mentions a dataset the authors used for doing this work. Is this dataset available? I would like to try this out
+
+:::
+
+
+## Abstract
+
+> Online advertising opportunities are sold through auctions, billions
+of times every day across the web. Advertisers who participate in
+those auctions need to decide on a bidding strategy: how much
+they are willing to bid for a given impression opportunity. Deciding
+on such a strategy is not a straightforward task, because of the
+interactive and reactive nature of the repeated auction mechanism.
+Indeed, an advertiser does not observe counterfactual outcomes of
+bid amounts that were not submitted, and successful advertisers
+will adapt their own strategies based on bids placed by competitors.
+These characteristics complicate effective learning and evaluation
+of bidding strategies based on logged data alone.
+The interactive and reactive nature of the bidding problem lends
+itself to a bandit or reinforcement learning formulation, where a
+bidding strategy can be optimised to maximise cumulative rewards.
+Several design choices then need to be made regarding parameterisation, model-based or model-free approaches, and the formulation
+of the objective function. This work provides a unified framework
+for such “learning to bid” methods, showing how many existing
+approaches fall under the value-based paradigm. We then introduce novel policy-based and doubly robust formulations of the
+bidding problem. To allow for reliable and reproducible offline validation of such methods without relying on sensitive proprietary
+data, we introduce AuctionGym: a simulation environment that
+enables the use of bandit learning for bidding strategies in online
+advertising auctions. We present results from a suite of experiments
+under varying environmental conditions, unveiling insights that
+can guide practitioners who need to decide on a model class. Empirical observations highlight the effectiveness of our newly proposed
+methods. AuctionGym is released under an open-source license,
+and we expect the research community to benefit from this tool.
+
+
+
+::: {.callout-caution }
+## My ideas
+
+- Find what data set was used.
+- Is this dataset available?
+- Can we make a minimal version to quickly test this kind of agent?
+- Figure out a framework that extends tompson sampling to other RL problems.
+    - need to add P(action|state) i.e. add conditioning of the bernulli on the state.
+    - prehaps do simple counts of steps since starts or last reward.
+    - prehaps using a succeror representation can help
+
+
+- Marketing are the worst POMDPs. Testing real stuff is very hard so a good environment might help.
+- I want to make an petting zoo env to support single & multiagent:
+    1. auctions / non autions
+    2. advertising (rec sys) with costs
+    3. pricing with policies.
+    - It should also allow incorperating real data from a dataset. Diretly or via sampling
+    - It would be even neater to do this using a heirarchiacal model.
+    - It would be even better if we can also incorportate the product, user hierecies.
+
+
+:::
+
+## The Paper
+
+![paper](http://papers.adkdd.org/2022/papers/adkdd22-jeunen-learning.pdf){.col-page width="800px" height="1000px"}
+
+![slides](http://papers.adkdd.org/2022/paper-presentations/slides-adkdd22-jeunen-learning.pdf){.col-page width="800px" height="1000px"}
+
+![auctiongym code](https://github.com/amzn/auction-gym)

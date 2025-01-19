@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="keywords" content="Successor representation, Eigenoptions, Covering options, Option keyboard, Temporally-extended exploration, Representation-driven Option Discovery, Proto-value functions">
+<meta name="description" content="This paper review is an extended introduction to temporal abstraction using options. It covers lots of advanced concepts in reinforcement learning that were introduced in Doina’s Precup’s talk in the Coursera Specialization on Reinforcement Learning by Martha White and Adam White. The paper is a deep dive into the topic of options and the successor representation. It is a long paper with lots of advanced concepts and algorithms. The paper is a great resource for anyone interested in reinforcement learning and temporal abstraction.">
+
+<title>Temporal Abstraction in Reinforcement Learning with the Successor Representation – Notes on Reinfocement Learning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../favicon.ico" rel="icon">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-594d21605a7b9fb32547fedacd8fc358.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-d396125c57f3f0defba792e7b0e7a5dc.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
+<link href="../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+MathJax = {
+  loader: {
+    load: ['[tex]/boldsymbol']
+  },
+  tex: {
+    tags: "all",
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    packages: {
+      '[+]': ['boldsymbol']
+    }
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Notes on Reinfocement Learning</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Temporal Abstraction in Reinforcement Learning with the Successor Representation</h1>
+<p class="subtitle lead">Paper Review</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">Reinforcement Learning</div>
+    <div class="quarto-category">Paper</div>
+    <div class="quarto-category">Review</div>
+    <div class="quarto-category">Temporal Abstraction</div>
+    <div class="quarto-category">Options</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    This paper review is an extended introduction to temporal abstraction using options. It covers lots of advanced concepts in reinforcement learning that were introduced in Doina’s Precup’s talk in the Coursera Specialization on Reinforcement Learning by Martha White and Adam White. The paper is a deep dive into the topic of options and the successor representation. It is a long paper with lots of advanced concepts and algorithms. The paper is a great resource for anyone interested in reinforcement learning and temporal abstraction.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">Sunday, November 10, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+<div>
+  <div class="keywords">
+    <div class="block-title">Keywords</div>
+    <p>Successor representation, Eigenoptions, Covering options, Option keyboard, Temporally-extended exploration, Representation-driven Option Discovery, Proto-value functions</p>
+  </div>
+</div>
+
+</header>
+
+
+<p>This paper review is an extended introduction to temporal abstraction using options. It covers lots of advanced concepts in reinforcement learning that were introduced in Doina’s Precup’s talk in the Coursera Specialization on Reinforcement Learning by Martha White and Adam White. The paper is a deep dive into the topic of options and the successor representation. It is a long paper with lots of advanced concepts and algorithms. The paper is a great resource for anyone interested in reinforcement learning and temporal abstraction.</p>
+<section id="introduction" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Ever since I saw <span class="citation" data-cites="Martha2022SubTasks">(<a href="#ref-Martha2022SubTasks" role="doc-biblioref">White 2022</a>)</span> the video lecture on <a href="#fig-subtasks">subtasks</a> by Martha White about learning tasks in parallel. However the video does not address the elephant in the room - how to discover the options.</p>
+
+<div class="no-row-height column-margin column-container"><div id="fig-subtasks" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-subtasks-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/GmGL9cVfJG4" title="Martha White - Developing Reinforcement Learning Agents that Learn Many Subtasks?" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-subtasks-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Talk at Waterloo.AI by Martha White on Developing Reinforcement Learning Agents that Learn Many Subtasks. She makes the case for the life long problem setting and discusses recent research on learning multiple tasks (options and GVFs) in parallel.
+</figcaption>
+</figure>
+</div><div id="fig-option-discovery" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-option-discovery-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/m9gYmYEYuIs" title="Marlos C. Machado - Representation-driven Option Discovery in Reinforcement Learning?" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-option-discovery-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Talk at Cohere.AI by Marlos C. Machado on Representation-driven Option Discovery in Reinforcement Learning. He discusses the Representation-driven Option Discovery (ROD) cycle and how it can be used to discover options in reinforcement learning. The talk covers much of the material in the paper as well as some more recent follow up work.
+</figcaption>
+</figure>
+</div></div>
+<p>This is a hefty paper 70 pages with 8 algorithms many figures and citations from research spanning thirty years. It is filled to the brim with fascinating concepts that are developed by the authors but builds on lots of work by earlier researchers. It may seem to cover a niche topic but <span class="citation" data-cites="Machado2024Cohere">(c.f. <a href="#ref-Machado2024Cohere" role="doc-biblioref">Machado 2024</a>, time 773)</span> makes an eloquent argument that this paper deals with a fundamental question of where options come and if we put aside the jargon for a second we are trying to capture a form of intelingence that includes elements of generalization, planning, problem solving, learning at a level much closer what we are familiar with. And these familiar forms of mental abstractions much harder to consider in the context of Supervised or Unsupervised learning which lack the ineraction with the environment that is the hallmark of reinforcement learning.</p>
+<p>I came about this paper by accident. I a quick summary before I realized how long it was and I put out my first pass, and I hope to flesh it including perhaps a bit of code.</p>
+<p>I’ve been developing my own ideas regarding the creation and aggregation of options in reinforcement learning. My thinking to date has been different. I am exploring a Bayesian based tasks. I’ve considered creating shared semantics via emergent symbolic semantics and looking at a number of composability mechanisms for state, language and of options including using hierarchial bayesian models. While working on coding environments for this subjects a search led to this amazing paper!</p>
+<p>In <span class="citation" data-cites="Machado2024Cohere">(<a href="#ref-Machado2024Cohere" role="doc-biblioref">Machado 2024</a>)</span> Marlos C. Machado, has given a talk that explains many of the complex ideas within this paper. This talk is available on <a href="#fig-option-discovery">YouTube</a>.</p>
+<p>Marlos C. Machado is a good speaker and going over that paper and the video certainly helps to understand the challenges of temporal abstractions as well as the solutions that the paper proposes.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+TL;DR - Option Discovery with Successor Representations
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../img/in_a_nutshell.jpg" class="img-fluid figure-img"></p>
+<figcaption>Option Discovery in a nutshell</figcaption>
+</figure>
+</div>
+<p>This paper posits that <strong>successor representations</strong>, which encode states based on the pattern of state visitation that follows them, can be seen as a natural substrate for the discovery and use of temporal abstraction like options if these are not known.</p>
+<p>Options are a powerful form of temporal abstraction that allows agents to make predictions and to operate at different levels of abstraction within an environment in ways idiosyncratic of human approach to tackle many problems. One of the key questions has been how to discover good options. The paper presents a rather simple yet powerful answer to this.</p>
+<p>This paper is a quite challangeing. You might listen to this lighthearted deep dive courtesy by notebooklm to ease you into the topics.</p>
+<audio controls="1">
+<source src="deepdive.wav" data-external="1" type="audio/mpeg">
+
+</audio>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Abstract
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<blockquote class="blockquote">
+<p>Reasoning at multiple levels of temporal abstraction is one of the key attributes of intelligence. In reinforcement learning, this is often modeled through temporally extended courses of actions called options. Options allow agents to make predictions and to operate at different levels of abstraction within an environment. Nevertheless, approaches based on the options framework often start with the assumption that a reasonable set of options is known beforehand. When this is not the case, there are no definitive answers for which options one should consider. In this paper, we argue that the successor representation, which encodes states based on the pattern of state visitation that follows them, can be seen as a natural substrate for the discovery and use of temporal abstractions. To support our claim, we take a big picture view of recent results, showing how the successor representation can be used to discover options that facilitate either temporally-extended exploration or planning. We cast these results as instantiations of a general framework for option discovery in which the agent’s representation is used to identify useful options, which are then used to further improve its representation. This results in a virtuous, never-ending, cycle in which both the representation and the options are constantly refined based on each other. Beyond option discovery itself, we also discuss how the successor representation allows us to augment a set of options into a combinatorially large counterpart without additional learning. This is achieved through the combination of previously learned options. Our empirical evaluation focuses on options discovered for temporally-extended exploration and on the use of the successor representation to combine them. Our results shed light on important design decisions involved in the definition of options and demonstrate the synergy of different methods based on the successor representation, such as eigenoptions and the option keyboard.</p>
+<p>— <span class="citation" data-cites="machado2023temporal">(<a href="#ref-machado2023temporal" role="doc-biblioref">Machado et al. 2023</a>)</span></p>
+</blockquote>
+</div>
+</div>
+</div>
+</section>
+<section id="the-review" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="the-review">The Review</h2>
+<section id="introduction-1" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="introduction-1">Introduction</h3>
+
+<div class="no-row-height column-margin column-container"><div id="fig-option-framework" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-option-framework-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/GntIVgNKkCI" title="DeepHack.RL: Doina Precup - Temporal abstraction in reinforcement learning" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-option-framework-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Doina Precup’s Talk at DeepHack.RL on Temporal abstraction in reinforcement learning covers both the intro and the background material on options.
+</figcaption>
+</figure>
+</div></div><p>In this section, the authors introduce the reinforcement learning problem and the options framework. Next they discuss the benefits of using options and highlight the option discovery problem. Next they present the successor representation (SR) as a representation learning method that is conducive to option discovery, summarizing its use cases and connecting it to neuroscience They go on to describe the paper’s focus on temporally-extended exploration and the use of eigenoptions and covering options. The finnish the introduction by highlight the paper’s evaluation methodology and the use of toy domains and navigation tasks for clarity and intuition.</p>
+<p>In <span class="citation" data-cites="Doina2017DeepHack">(<a href="#ref-Doina2017DeepHack" role="doc-biblioref">Precup 2017</a>)</span> Doina precup gives a talk on temporal abstraction in reinforcement learning. This talk covers both the introduction and the background material on options and is on <a href="#fig-option-framework">YouTube</a>.</p>
+</section>
+</section>
+<section id="background" class="level2">
+<h2 class="anchored" data-anchor-id="background">Background</h2>
+<ul>
+<li><p>Defines the reinforcement learning problem, covering Markov Decision Processes, policies, value functions, and common algorithms such as Q-learning.</p></li>
+<li><p>Introduces the options framework <span class="citation" data-cites="Sutton1999BetweenMA">(<a href="#ref-Sutton1999BetweenMA" role="doc-biblioref">Richard S. Sutton, Precup, and Singh 1999</a>)</span>, <span class="citation" data-cites="precup2000temporal">(<a href="#ref-precup2000temporal" role="doc-biblioref">Precup and Sutton 2000</a>)</span>, defining its components (initiation set, policy, termination condition), execution models, and potential benefits.</p></li>
+</ul>
+<p>An option <span class="math inline">\omega \in \Omega</span> is a 3-tuple</p>
+<p><span id="eq-6"><span class="math display">
+\omega = &lt;I_\omega , \pi_\omega , \beta_\omega &gt; \qquad
+\tag{1}</span></span></p>
+<ul>
+<li>where
+<ul>
+<li><span class="math inline">I_\omega ⊆ S</span> the options’s initiation set,</li>
+<li><span class="math inline">\pi_\omega : \mathcal{S} \times \mathcal{A} \rightarrow [0, 1]</span> the option’s policy, such that <span class="math inline">\sum_a \pi_\omega (·, a) = 1</span>, and</li>
+<li><span class="math inline">\beta_\omega : \mathcal{S} \rightarrow [0, 1]</span> the option’s termination condition <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
+</ul></li>
+</ul>
+</section>
+<section id="a-framework-for-option-discovery-from-representation-learning" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="a-framework-for-option-discovery-from-representation-learning">A Framework for Option Discovery from Representation Learning</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-1" class="quarto-float quarto-figure quarto-figure-center anchored" width="250px" data-group="figures">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./fig_1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Representation-driven Option Discovery (ROD) cycle <span class="citation" data-cites="Machado2019EfficientEI">(<a href="#ref-Machado2019EfficientEI" role="doc-biblioref">Machado 2019</a>)</span>. The option discovery algorithms discussed in this paper can be seen as instantiating this cycle. The incoming arrow to Collect samples depicts the start of the process. The arrow from Define option to Option set highlights the output generated by the ROD cycle. Note that other generated artifacts can also be used by the agent outside the ROD cycle, such as the learned representation.
+</figcaption>
+</figure>
+</div></div><ul>
+<li><p>Introduces a general framework for option discovery driven by representation learning, named the <strong>Representation-driven Option Discovery</strong> (ROD) cycle.</p>
+<ul>
+<li>Collect samples</li>
+<li>Learn a representation</li>
+<li>Derive an intrinsic reward function from the representation</li>
+<li>Learn to maximize intrinsic reward</li>
+<li>Define option</li>
+</ul></li>
+<li><p>Presents a step-by-step explanation of the ROD cycle, outlining its iterative and constructivist nature, as depicted in <a href="#fig-1">the figure</a>.</p></li>
+</ul>
+</section>
+<section id="the-successor-representation" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="the-successor-representation">The Successor Representation</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-3" class="quarto-float quarto-figure quarto-figure-center anchored" width="250px" data-group="figures">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./fig_3.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Example similar to Dayans 1993 of the SR, w.r.t. the uniform random policy, of state A (left). Consider a navigation task where the agent has access to its (x, y) coordinates. It is tempting to use some distance metric such as the Euclidean distance to define distance between states. However, if one considers the gray tiles to be walls, an agent in point A can reach point B much quicker than point C. The SR captures this distinction, ensuring that, in this representation, point A is closer to point B than it is to point C. The plots of the SR were generated using a discretization of the grid, where each tile is a state. Red represents larger values while blue represents smaller values (states that are temporally further away). Recall the SR of a state, in the tabular case, is an |S|-dimensional representation, thus allowing us to depict it as a heatmap over the state space.
+</figcaption>
+</figure>
+</div></div><ul>
+<li><p>Presents the successor representation (SR) as a method to extract representations from observations.</p></li>
+<li><p>In <span class="citation" data-cites="machado2023temporal">(<a href="#ref-machado2023temporal" role="doc-biblioref">Machado et al. 2023, sec. 4.1</a>)</span> Defines the SR in the tabular setting, explaining its ability to capture environment dynamics by encoding expected future state visitation, as shown in Equation 7 and <a href="#fig-3">the figure</a>.</p></li>
+</ul>
+<p><span id="eq-7"><span class="math display">
+\Psi_{\pi}(s,s') = \mathbb{E}_{\pi,p} \sum_{t=0}^\infty  γ^t \mathbb{1}_{\{S_t=s'}\} | {S_0 = s } \qquad
+\tag{2}</span></span></p>
+
+<div class="no-row-height column-margin column-container"><div id="fig-4" class="quarto-float quarto-figure quarto-figure-center anchored" width="250px" data-group="figures">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./fig_4.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: First three PVFs in the (a) four-room domain. Gray squares represent walls and white squares represent accessible states. Four actions are available: up, down, right, and left. The transitions are deterministic and the agent is not allowed to move into a wall. (b-d) These plots depict the first, second, and third eigenvectors associated with each state. The axes are rotated for clarity. The bottom left corner of the four-room domain is the state closer to the reade
+</figcaption>
+</figure>
+</div></div><ul>
+<li>Discusses the estimation of the SR with temporal-difference learning, its connection to general value functions <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, and its relationship to the transition probability matrix <a href="#eq-9">Equation 9</a>.</li>
+</ul>
+<p><span id="eq-8"><span class="math display">
+\Psi(S_t,j) \leftarrow \hat{\Psi}(S_t, j) + \eta [\mathbb{1}_{\{S_t=j\}} + \gamma \hat{\Psi}(S_{t+1}, j) − \hat{\Psi}(S_t, j)]
+\tag{3}</span></span></p>
+<p><span id="eq-9"><span class="math display">
+\Psi_\pi =  \sum_{t=0}^\infty (\gamma P_\pi)^t = (I-\gamma P_\pi)^{-1}\qquad
+\tag{4}</span></span></p>
+<ul>
+<li><p>Introduces successor features (SFs) as a generalization of the SR to the function approximation setting, extending the definition of the SR to arbitrary features, as shown in <a href="#eq-11">Equation 11</a>.</p></li>
+<li><p>Highlights the relationship between the SR and PVFs.</p></li>
+</ul>
+</section>
+<section id="temporally-extended-exploration" class="level2">
+<h2 class="anchored" data-anchor-id="temporally-extended-exploration">Temporally-Extended Exploration</h2>
+<ul>
+<li><p><span class="citation" data-cites="machado2023temporal">(<a href="#ref-machado2023temporal" role="doc-biblioref">Machado et al. 2023, sec. 5</a>)</span> discusses temporally-extended exploration with options and its potential to enhance exploration in RL.</p></li>
+<li><p><span class="citation" data-cites="machado2023temporal">(<a href="#ref-machado2023temporal" role="doc-biblioref">Machado et al. 2023, sec. 5.1</a>)</span> introduces eigenoptions, which are options defined by the eigenvectors of the SR. &gt; “Eigenoptions are options defined by the eigenvectors of the SR.2 Each eigenvector assigns an intrinsic reward to every state in the environment.”</p>
+<ul>
+<li><p>Explains the concept of eigenoptions using the four-room domain as an example (Figure 5).</p></li>
+<li><p>Describes how to learn eigenoptions’ policies using an intrinsic reward function derived from the eigenvectors of the SR.</p></li>
+<li><p>Defines the initiation set and termination condition of eigenoptions, as shown in Equation 16.</p></li>
+<li><p>Presents Theorem 1, which guarantees the existence of at least one terminal state for each eigenoption.</p></li>
+</ul></li>
+<li><p>Introduces covering options, which are point options defined by the bottom eigenvector of the graph Laplacian and aim to minimize the environment’s cover time.</p>
+<ul>
+<li>Explains the concept of covering options using the four-room domain (Figure 7).</li>
+<li>Describes how to learn covering options’ policies using a simplified intrinsic reward function.</li>
+<li>Defines the initiation set and termination condition of covering options.</li>
+<li>Highlights the iterative nature of covering option discovery, where options are added one by one at each iteration.</li>
+</ul></li>
+</ul>
+</section>
+<section id="evaluation-of-temporally-extended-exploration-with-options" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="evaluation-of-temporally-extended-exploration-with-options">Evaluation of Temporally-Extended Exploration with Options</h2>
+<ul>
+<li><p><span class="citation" data-cites="machado2023temporal">(<a href="#ref-machado2023temporal" role="doc-biblioref">Machado et al. 2023, sec. 6</a>)</span>Evaluates eigenoptions and covering options in the context of temporally-extended exploration.</p></li>
+<li><p>Uses the diffusion time, a task-agnostic metric, to quantify exploration effectiveness by measuring the expected number of decisions required to navigate between states.</p></li>
+<li><p>Presents results comparing eigenoptions and covering options:</p>
+<ul>
+<li>Shows that both approaches can reduce diffusion time in the four-room domain when computed in closed form (Figure 8).</li>
+<li>Discusses the impact of different initiation set sizes, highlighting the trade-off between avoiding sink states and ensuring option availability.</li>
+</ul></li>
+<li><p>Investigates the effectiveness of eigenoptions and covering options in an online setting:</p>
+<ul>
+<li>Demonstrates the robustness of eigenoptions to online SR estimation (Figure 11).</li>
+<li>Reveals the challenges of using covering options online, particularly due to their restrictive initiation set and reliance on a single eigenvector (Figure 12).</li>
+</ul></li>
+<li><p>Explores the impact of using options on reward maximization in a fixed task:</p>
+<ul>
+<li>Shows that eigenoptions can accelerate reward accumulation when used for temporally-extended exploration in Q-learning (Figure 9).</li>
+<li>Observes that covering options do not consistently improve reward maximization in this setting, likely due to their sparse initiation set.</li>
+</ul></li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div id="fig-9" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-9-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./fig_9.png" class="img-fluid figure-img" data-group="figures" width="250">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-9-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: figure 9
+</figcaption>
+</figure>
+</div></div></section>
+<section id="iterative-option-discovery-with-the-rod-cycle" class="level2">
+<h2 class="anchored" data-anchor-id="iterative-option-discovery-with-the-rod-cycle">Iterative Option Discovery with the ROD Cycle</h2>
+<ul>
+<li><p><span class="citation" data-cites="machado2023temporal">(<a href="#ref-machado2023temporal" role="doc-biblioref">Machado et al. 2023, sec. 7</a>)</span> introduces Covering Eigenoptions (CEO), a new algorithm that performs multiple iterations of the ROD cycle for option discovery.</p></li>
+<li><p>Describes the steps of CEO, emphasizing its use of eigenoptions and online SR estimation, as outlined in Algorithm 2.</p></li>
+<li><p>Demonstrates the benefits of multiple ROD cycle iterations with CEO, showing a significant reduction in the number of steps needed to visit all states in the four-room domain (Figure 14).</p></li>
+<li><p>Illustrates the behavior of CEO over multiple iterations, highlighting its ability to progressively discover more complex options (Figure 14).</p></li>
+<li><p>Combining Options with the Option Keyboard</p></li>
+<li><p>Discusses the option keyboard as a way to combine existing options to create new options without additional learning, potentially expanding the agent’s behavioral repertoire.</p></li>
+<li><p>Introduces Generalized Policy Evaluation (GPE) and Generalized Policy Improvement (GPI), generalizations of standard policy evaluation and improvement.</p></li>
+<li><p>Explains how to use GPE and GPI to synthesize options from linear combinations of rewards induced by eigenvectors of the SR, as outlined in Algorithm 3.</p></li>
+<li><p>Combining Eigenoptions with the Option Keyboard</p></li>
+<li><p>Demonstrates the synergy of eigenoptions and the option keyboard.</p></li>
+<li><p>Presents a qualitative analysis of options generated by combining eigenoptions with the option keyboard (Figures 16 and 17).</p></li>
+<li><p>Shows that the option keyboard leads to a combinatorial explosion of new options, as evidenced by the number of unique options generated (Figure 18).</p></li>
+<li><p>Demonstrates the diversity of options generated by the option keyboard through heatmaps showing the frequency of termination in different states (Figures 19 and 20).</p></li>
+<li><p>Presents a quantitative analysis of the diffusion time induced by eigenoptions combined with the option keyboard, highlighting the improvement in exploration effectiveness (Figures 21 and 22).</p></li>
+</ul>
+</section>
+<section id="related-work" class="level2">
+<h2 class="anchored" data-anchor-id="related-work">Related Work</h2>
+<ul>
+<li>Discusses option discovery methods for planning and bottleneck options, including those based on spectral clustering and normalized cuts.</li>
+<li>Mentions other option discovery methods for temporally-extended exploration, such as diffusion options.</li>
+<li>Outlines extensions of the SR and option discovery methods to function approximation, including linear and non-linear function approximation techniques.</li>
+<li>Discusses the connection of the SR to other reinforcement learning concepts, such as proto-value functions, slow-feature analysis, and dual representations.</li>
+<li>Highlights the relationship of the SR to neuroscience, including its potential to model hippocampal place fields and grid cell activations.</li>
+<li>Mentions the SR’s application to explaining human behavior and decision-making.</li>
+</ul>
+</section>
+<section id="conclusion" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<ul>
+<li>Highlights the potential of using the SR as the main substrate for temporal abstraction, pointing out promising directions for future work.</li>
+<li>Emphasizes the importance of iterative option discovery and its role in building intelligent agents capable of continual learning and complex skill acquisition.</li>
+</ul>
+<p>Here are the successor representations algorithms from the paper:</p>
+
+<div class="no-row-height column-margin column-container"><div id="fig-11" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-11-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./alg_1.png" class="img-fluid figure-img" data-group="figures" width="250">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-11-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: successor representations algorithms
+</figcaption>
+</figure>
+</div></div><p>Next is the covering eigenoptions algorithm:</p>
+
+<div class="no-row-height column-margin column-container"><div id="fig-12" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./alg_2.png" class="img-fluid figure-img" data-group="figures" width="250">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Covering Eigenoptions algorithm
+</figcaption>
+</figure>
+</div></div></section>
+<section id="study-guide-for-the-paper" class="level2">
+<h2 class="anchored" data-anchor-id="study-guide-for-the-paper">Study guide for the paper</h2>
+<ol type="1">
+<li>What is an option in reinforcement learning?</li>
+</ol>
+<p>We actually took the definition from the paper. But here is another from the <a href="#fig-1">video</a>. This is perhaps a more elegant definition. It comes from []</p>
+<p>In reinforcement learning, an <strong>option</strong> is a temporally extended course of actions that allows an agent to operate at different levels of abstraction within an environment. Options are a form of temporal abstraction that enables agents to make predictions and execute actions over extended time horizons, providing a way to structure and organize the agent’s behavior. <span class="math display">
+v_{\pi,\beta}^{c,z}(s) = \mathbb{E}_{\pi,\beta} \left[ \sum_{j=1}^K c(S_j) + \gamma^{K-1} z(S_k) | S_0 = s \right] \qquad \text{for all } s \in S
+</span></p>
+<ul>
+<li>where
+<ul>
+<li><span class="math inline">v_{\pi,\beta}^{c,z}(s)</span> is the value function of the option,</li>
+<li><span class="math inline">\pi</span> is the policy,</li>
+<li><span class="math inline">\beta</span> is the termination condition,</li>
+<li><span class="math inline">c</span> is the extrinsic reward function, <span class="math inline">z</span> is the intrinsic reward function,</li>
+<li><span class="math inline">S_j</span> is the state at time <span class="math inline">j</span>,</li>
+<li><span class="math inline">K</span> is the duration of the option, and</li>
+<li><span class="math inline">\gamma</span> is the discount factor.</li>
+</ul></li>
+</ul>
+<ol type="1">
+<li>How can options be used ?</li>
+</ol>
+<ul>
+<li>For planning: you can use eigenvectors of the SR to identify bottleneck, states that are difficult to reach under a random walk, and then use options to guide the agent to those states. c.f. <span class="citation" data-cites="Solway2014OptimalBH">(<a href="#ref-Solway2014OptimalBH" role="doc-biblioref">Solway et al. 2014</a>)</span></li>
+<li>For exploration: you can use eigenoptions to encourage exploration by driving the agent toward states that are difficult to reach under a random walk.</li>
+</ul>
+<ol type="1">
+<li>Explain the successor representation</li>
+</ol>
+<p>The <strong>successor representation (SR)</strong> is a method in reinforcement learning that represents states based on their expected future visits under a given policy. It captures the environment’s dynamics by encoding how likely an agent is to visit each state in the future, starting from a particular state.</p>
+<ul>
+<li>The SR is denoted as <span class="math inline">Ψ_π</span>, where <span class="math inline">π</span> represents the agent’s policy.</li>
+<li>It can be estimated online using <strong>temporal difference learning</strong> and generalized to function approximation using <strong>successor features</strong>.</li>
+</ul>
+<p>The SR allows for <strong>Generalized Policy Evaluation (GPE)</strong>: once the SR is learned, an agent can immediately evaluate its performance under any reward function that can be expressed as a linear combination of the features used to define the SR.</p>
+<p>The SR offers a powerful tool for discovering and using temporal abstractions in reinforcement learning, enabling the development of more intelligent and efficient agents. It is used in option discovery methods like eigenoptions and covering options, providing a natural framework for identifying and leveraging temporally extended courses of actions.</p>
+<p>Here is a breakdown of the mathematical definition of the SR:</p>
+<p><span id="eq-SR"><span class="math display">
+Ψ_\pi (s, s') =  \mathbb{E}_{π,p} [\sum^\infty_{t=0} γ^t\mathbb{1}_{S_t = s'} | S_0 = s ] \qquad
+\tag{5}</span></span></p>
+<ul>
+<li>Where:
+<ul>
+<li><span class="math inline">s, s'</span> are states in the environment.</li>
+<li><span class="math inline">\gamma</span> is the discount factor, determining the weight of future rewards.</li>
+<li>The <strong>expectation (E)</strong> is taken over the policy <span class="math inline">\pi</span> and the transition probability kernel <span class="math inline">p</span>.</li>
+<li><span class="math inline">\mathbb{1}_{S_t = s'}</span> is an indicator function that equals 1 if the agent is in state s’ at time <span class="math inline">t</span>, and 0 otherwise.</li>
+</ul></li>
+</ul>
+<p>This equation calculates the expected discounted number of times the agent will visit state s’ in the future, given that it starts in state s and follows policy π. The SR matrix stores these expected visitations for all state pairs.</p>
+<ol start="2" type="1">
+<li>Explain what is an eigenoption a covering option and the difference</li>
+</ol>
+<p><strong>Eigenoptions</strong> and <strong>covering options</strong> are two methods for option discovery in RL that use the successor representation (SR). Options represent temporally extended courses of actions.</p>
+<p><strong>Eigenoptions</strong> are options defined by the eigenvectors of the SR.</p>
+<ul>
+<li>Each eigenvector of the SR assigns an intrinsic reward to every state in the environment.</li>
+<li>An eigenoption aims to reach the state with the highest (or lowest) value in the corresponding eigenvector.</li>
+<li>They encourage exploration by driving the agent toward states that are difficult to reach under a random walk.</li>
+<li>Eigenoptions have a broad initiation set, meaning they can be initiated from many states.</li>
+<li>They terminate when the agent reaches a state with a (locally) maximum value in the eigenvector, meaning the agent can’t accumulate more positive intrinsic reward.</li>
+<li>Eigenoptions tend to have different durations based on the eigenvalue they are derived from, allowing the agent to operate at different timescales.</li>
+</ul>
+<p><strong>Covering options</strong> are defined by the bottom eigenvector of the graph Laplacian, which is equivalent to the top eigenvector of the SR under certain conditions.</p>
+<ul>
+<li>They aim to minimize the environment’s expected cover time, which is the number of steps needed for a random walk to visit every state.</li>
+<li>Each covering option connects two specific states: one with the lowest value and one with the highest value in the corresponding eigenvector.</li>
+<li>They are discovered iteratively. After each option is discovered, the environment’s graph is updated, and the process repeats.</li>
+<li>Covering options have a restrictive initiation set, containing only the single state with the lowest value in the eigenvector.</li>
+<li>They terminate when they reach the state with the highest value in the eigenvector.</li>
+</ul>
+<p>Here’s a table summarizing the <strong>key differences</strong> between eigenoptions and covering options:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 37%">
+<col style="width: 53%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Eigenoption</th>
+<th style="text-align: left;">Covering Option</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Definition</strong></td>
+<td style="text-align: left;">Based on any eigenvector of the SR</td>
+<td style="text-align: left;">Based on the bottom eigenvector of the graph Laplacian (equivalent to the top eigenvector of the SR under certain conditions)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Goal</strong></td>
+<td style="text-align: left;">Reach states with high/low values in the corresponding eigenvector</td>
+<td style="text-align: left;">Minimize environment’s cover time</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Initiation Set</strong></td>
+<td style="text-align: left;">Broad (many states)</td>
+<td style="text-align: left;">Restrictive (single state)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Termination Condition</strong></td>
+<td style="text-align: left;">Reaching a (local) maximum in the eigenvector</td>
+<td style="text-align: left;">Reaching the state with the highest value in the eigenvector</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Discovery Process</strong></td>
+<td style="text-align: left;">Can be discovered in parallel, in a single iteration</td>
+<td style="text-align: left;">Discovered iteratively, one option at a time</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Timescale</strong></td>
+<td style="text-align: left;">Different eigenoptions can have different durations</td>
+<td style="text-align: left;">Generally have similar durations</td>
+</tr>
+</tbody>
+</table>
+<p>Both eigenoptions and covering options can be effective for exploration, but they have different strengths and weaknesses. Eigenoptions can learn more diverse behaviors and capture different timescales, while covering options may be simpler to implement and can guarantee improvement in the environment’s cover time.</p>
+</section>
+<section id="the-paper" class="level2">
+<h2 class="anchored" data-anchor-id="the-paper">The paper</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="./paper.pdf" class="col-page" width="800" height="1000"></p>
+<figcaption>paper</figcaption>
+</figure>
+</div>
+</section>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<p>There are a few blog posts that dive deeper into some of the concepts in the paper.</p>
+<ul>
+<li><a href="https://medium.com/@marlos.cholodovskis/the-representation-driven-option-discovery-cycle-e3f5877696c2">The Representation-driven Option Discovery</a></li>
+</ul>
+
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Machado2019EfficientEI" class="csl-entry" role="listitem">
+Machado, Marlos C. 2019. <span>“Efficient Exploration in Reinforcement Learning Through Time-Based Representations.”</span> <em>Revue De Geographie Alpine-Journal of Alpine Research</em>. PhD thesis.
+</div>
+<div id="ref-Machado2024Cohere" class="csl-entry" role="listitem">
+———. 2024. <span>“Representation-Driven Option Discovery in Reinforcement Learning.”</span> <em>YouTube</em>. <a href="https://www.youtube.com/watch?v=m9gYmYEYuIs">https://www.youtube.com/watch?v=m9gYmYEYuIs</a>.
+</div>
+<div id="ref-machado2023temporal" class="csl-entry" role="listitem">
+Machado, Marlos C., Andre Barreto, Doina Precup, and Michael Bowling. 2023. <span>“Temporal Abstraction in Reinforcement Learning with the Successor Representation.”</span> <em>Journal of Machine Learning Research</em> 24 (80): 1–69. <a href="http://jmlr.org/papers/v24/21-1213.html">http://jmlr.org/papers/v24/21-1213.html</a>.
+</div>
+<div id="ref-Doina2017DeepHack" class="csl-entry" role="listitem">
+Precup, Doina. 2017. <span>“DeepHack.RL: Temporal Abstraction in Reinforcement Learning.”</span> <em>YouTube</em>. <a href="https://www.youtube.com/watch?v=GntIVgNKkCI">https://www.youtube.com/watch?v=GntIVgNKkCI</a>.
+</div>
+<div id="ref-precup2000temporal" class="csl-entry" role="listitem">
+Precup, Doina, and Richard S. Sutton. 2000. <span>“Temporal Abstraction in Reinforcement Learning.”</span> PhD thesis, University of Massachusetts Amherst.
+</div>
+<div id="ref-Solway2014OptimalBH" class="csl-entry" role="listitem">
+Solway, Alec, Carlos Diuk, N. Córdova, Debbie M. Yee, A. Barto, Y. Niv, and M. Botvinick. 2014. <span>“Optimal Behavioral Hierarchy.”</span> <em>PLoS Computational Biology</em> 10.
+</div>
+<div id="ref-sutton1988learning" class="csl-entry" role="listitem">
+Sutton, Richard S. 1988. <span>“Learning to Predict by the Methods of Temporal Differences.”</span> <em>Machine Learning</em> 3: 9–44.
+</div>
+<div id="ref-Sutton1999BetweenMA" class="csl-entry" role="listitem">
+Sutton, Richard S., Doina Precup, and Satinder Singh. 1999. <span>“Between MDPs and Semi-MDPs: A Framework for Temporal Abstraction in Reinforcement Learning.”</span> <em>Artificial Intelligence</em> 112 (1): 181–211. https://doi.org/<a href="https://doi.org/10.1016/S0004-3702(99)00052-1">https://doi.org/10.1016/S0004-3702(99)00052-1</a>.
+</div>
+<div id="ref-Martha2022SubTasks" class="csl-entry" role="listitem">
+White, Martha. 2022. <span>“Developing Reinforcement Learning Agents That Learn Many Subtasks.”</span> <em>YouTube</em>. <a href="https://www.youtube.com/watch?v=GmGL9cVfJG4&amp;t=6s">https://www.youtube.com/watch?v=GmGL9cVfJG4&amp;t=6s</a>.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>the probability that option <span class="math inline">ω</span> will terminate at a given state.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>“the SR can be estimated from samples with temporal-difference learning methods <span class="citation" data-cites="sutton1988learning">(<a href="#ref-sutton1988learning" role="doc-biblioref">Richard S. Sutton 1988</a>)</span>, where the reward function is replaced by the state occupancy”<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/notes-rl\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+    <script type="text/javascript">
+    (function(d) {
+      d.querySelectorAll(".pseudocode-container").forEach(function(el) {
+        let pseudocodeOptions = {
+          indentSize: el.dataset.indentSize || "1.2em",
+          commentDelimiter: el.dataset.commentDelimiter || "//",
+          lineNumber: el.dataset.lineNumber === "true" ? true : false,
+          lineNumberPunc: el.dataset.lineNumberPunc || ":",
+          noEnd: el.dataset.noEnd === "true" ? true : false,
+          titlePrefix: el.dataset.captionPrefix || "Algorithm"
+        };
+        pseudocode.renderElement(el.querySelector(".pseudocode"), pseudocodeOptions);
+      });
+    })(document);
+    (function(d) {
+      d.querySelectorAll(".pseudocode-container").forEach(function(el) {
+        let captionSpan = el.querySelector(".ps-root > .ps-algorithm > .ps-line > .ps-keyword")
+        if (captionSpan !== null) {
+          let captionPrefix = el.dataset.captionPrefix + " ";
+          let captionNumber = "";
+          if (el.dataset.pseudocodeNumber) {
+            captionNumber = el.dataset.pseudocodeNumber + " ";
+            if (el.dataset.chapterLevel) {
+              captionNumber = el.dataset.chapterLevel + "." + captionNumber;
+            }
+          }
+          captionSpan.innerHTML = captionPrefix + captionNumber;
+        }
+      });
+    })(document);
+    </script>
+  
+
+
+
+
+</body></html>

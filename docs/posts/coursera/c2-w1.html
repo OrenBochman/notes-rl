@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="keywords" content="Exploring Starts, MC methods, Any visit MC prediction, First visit MC prediction, MC with exploring starts GPI, Monte-Carlo with Ɛ-soft GPI, Ɛ-soft policies, Off-policy learning, Importance sampling">
+<meta name="description" content="In this module we learn about Sample based MC methods that allow learning from sampled episodes. We revise our initial algorithm to better handle exploration. In off policy RL we see methods to learn a policy using samples from another policy, corrected using importance sampleing.">
+
+<title>Monte-Carlo Methods for Prediction &amp; Control – Notes on Reinfocement Learning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../favicon.ico" rel="icon">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-594d21605a7b9fb32547fedacd8fc358.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-d396125c57f3f0defba792e7b0e7a5dc.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
+<link href="../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+
+      .quarto-title-block .quarto-title-banner {
+        background: /images/banner_black_3.jpg;
+      }
+</style>
+<script>
+MathJax = {
+  loader: {
+    load: ['[tex]/boldsymbol']
+  },
+  tex: {
+    tags: "all",
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    packages: {
+      '[+]': ['boldsymbol']
+    }
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Notes on Reinfocement Learning</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Monte-Carlo Methods for Prediction &amp; Control</h1>
+            <p class="subtitle lead">Sample-based Learning Methods</p>
+                  <div>
+        <div class="description">
+          In this module we learn about Sample based MC methods that allow learning from sampled episodes. We revise our initial algorithm to better handle exploration. In off policy RL we see methods to learn a policy using samples from another policy, corrected using importance sampleing.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Coursera</div>
+                <div class="quarto-category">Sample-based Learning Methods</div>
+                <div class="quarto-category">Reinforcement Learning</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">Friday, March 1, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+
+  <div>
+    <div class="keywords">
+      <div class="block-title">Keywords</div>
+      <p>Exploring Starts, MC methods, Any visit MC prediction, First visit MC prediction, MC with exploring starts GPI, Monte-Carlo with Ɛ-soft GPI, Ɛ-soft policies, Off-policy learning, Importance sampling</p>
+    </div>
+  </div>
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+
+
+
+
+
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/logo.png" class="img-fluid figure-img"></p>
+<figcaption>RL logo</figcaption>
+</figure>
+</div><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/alg_selector.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>RL algorithms</figcaption>
+</figure>
+</div></div>
+<div class="tldr callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+TL;DR This lesson in a nutshell
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/in_a_nutshell.jpg" class="img-fluid figure-img"></p>
+<figcaption>in a nutshell</figcaption>
+</figure>
+</div>
+<ul>
+<li>In this module we will embrace the paradigm of “learning from experience”.</li>
+<li>This is called Sample based Reinforcement Learning and it we will let us relax some strong of the requirements of dynamic programming, namely knowing the table of MDP dynamics.</li>
+<li>We will first use efficient Monte-Carlo ⚅🃁 methods for 🔮 prediction problem of estimating <span class="math inline">v_\pi(S)</span> value functions and action–value functions <span class="math inline">q_\pi(a)</span> from sampled episodes.</li>
+<li>We will revise our algorithm to better handle exploration using exploring starts and <span class="math inline">\epsilon</span>–soft policies.</li>
+<li>We will adapt GPI algorithms for use with Mote-Carlo to solve the 🎮 control problem of policy improvement.</li>
+<li>With off policy learning learn a policy using samples from another policy, by corrected using importance sampling.</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Reading
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox" checked=""><a href="http://incompleteideas.net/book/RLbook2020.pdf#page=91">RL Book§5.0-5.5 (pp.91-104)</a></label></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definitions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Here are most of the definitions we need for this module. Let us review them before we start.</p>
+<div id="dfn-value">
+<dl>
+<dt>Value Function <span class="math inline">v_\pi(s)</span></dt>
+<dd>
+<p>a state’s value is its expected return</p>
+</dd>
+<dd>
+<p><span class="math inline">v_\pi(s) \doteq \mathbb{E}[G_t|S_t=s]</span></p>
+</dd>
+</dl>
+</div>
+<div id="dfn-action-value">
+<dl>
+<dt>Action Value Function</dt>
+<dd>
+<p>is the expected return for taking action <span class="math inline">a</span> in state <span class="math inline">s</span> if we follow policy <span class="math inline">\pi</span></p>
+</dd>
+<dd>
+<p><span class="math inline">q_\pi(a) \doteq \mathbb{E}[G_t \vert A_t=a] \space \forall a \in \{a_1 ... a_k\}</span></p>
+</dd>
+</dl>
+</div>
+<div id="dfn-bootstrap">
+<dl>
+<dt>Bootstrapping</dt>
+<dd>
+<p>“learning by guessing from a guess” or more formally</p>
+</dd>
+<dd>
+<p>the process of updating an estimate of the value or action-value function based on other estimated values. It involves using the current estimate of the value function to update and improve the estimate itself.</p>
+</dd>
+</dl>
+</div>
+<div id="dfn-control">
+<dl>
+<dt>Control</dt>
+<dd>
+<p>to approximate optimal policies using the DP approach of GPI</p>
+</dd>
+</dl>
+</div>
+<div id="dfn-epsilon-soft">
+<dl>
+<dt>ϵ-Soft Policy</dt>
+<dd>
+<p>A policy in which each possible action is assigned at least <span class="math inline">\epsilon / |A|</span> probability.</p>
+</dd>
+</dl>
+</div>
+<div id="dfn-exploring-starts">
+<dl>
+<dt>Exploring Starts</dt>
+<dd>
+<p>Learning the value or action values of a policy by trying each action starting in each state at least once and then following the policy.</p>
+</dd>
+<dd>
+<p>This can include taking actions that are not part of the policy.</p>
+</dd>
+</dl>
+</div>
+<div id="dfn-mc">
+<dl>
+<dt>Monte-Carlo Methods</dt>
+<dd>
+<p>Estimation methods which relies on repeated random sampling. Also see <a href="https://en.wikipedia.org/wiki/Monte_Carlo_method">Monte-Carlo methods <i class="bi bi-wikipedia"></i></a></p>
+</dd>
+</dl>
+</div>
+<div id="dfn-on-policy-learning">
+<dl>
+<dt>On-policy learning</dt>
+<dd>
+<p>learning a policy <span class="math inline">\pi</span> by sampling from <span class="math inline">\pi</span></p>
+</dd>
+</dl>
+</div>
+<div id="dfn-off-policy-learning">
+<dl>
+<dt>Off-policy learning</dt>
+<dd>
+<p>learning a policy <span class="math inline">\pi</span> by sampling from some other policy <span class="math inline">\pi'</span></p>
+</dd>
+</dl>
+</div>
+<div id="dfn-prediction">
+<dl>
+<dt>Prediction</dt>
+<dd>
+<p>Estimating <span class="math inline">v_\pi(s)</span> is called policy evaluation in the DP literature.</p>
+<p>We also refer to it as the Prediction problem <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+</dd>
+</dl>
+</div>
+<div id="dfn-return">
+<dl>
+<dt>Return (<span class="math inline">G_t</span>)</dt>
+<dd>
+<p><span class="math inline">G_0 \doteq R_1+ \gamma^1 R_2 + \cdots+ \gamma^n R_n</span></p>
+<p>i.e.&nbsp;the discounted sum of future rewards</p>
+</dd>
+</dl>
+</div>
+<div id="dfn-tqabular">
+<dl>
+<dt>Tabular methods</dt>
+<dd>
+<p>RL methods for which the action-values can be represented by a table</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<ul>
+<li>Sample based methods learning from experience, without having prior knowledge of the underlying MDP model.</li>
+<li>We will cover tabular methods in which the action-values can be represented by a table.</li>
+</ul>
+<section id="lesson-1-introduction-to-monte-carlo-methods" class="level1 page-columns page-full">
+<h1>Lesson 1: Introduction to Monte-Carlo Methods</h1>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lesson Learning Goals
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox" checked="">Understand how <a href="#dfn-mc">Monte-Carlo</a> can be used to estimate <span class="math inline">v(s)</span> value functions from sampled interaction <a href="#sec-l1g1">#</a></label></li>
+<li><label><input type="checkbox" checked="">Identify problems that can be solved using <a href="#dfn-mc">Monte-Carlo</a> methods <a href="#sec-l1g2">#</a></label></li>
+<li><label><input type="checkbox" checked="">Use <a href="#dfn-mc">Monte-Carlo</a> prediction to estimate the value function for a given policy. <a href="#sec-l1g3">#</a></label></li>
+</ul>
+</div>
+</div>
+<ul>
+<li>After completing the introduction we all think that MDPs and DP are the best?</li>
+<li>Alas, Martha burst this bubble, introducing some shortcomings of DP, namely they require us to know a model of the dynamics <span class="math inline">p(s,a|s',r)</span> and rewards <span class="math inline">r</span> of the MDP to estimate <span class="math inline">v(s)</span> or <span class="math inline">q(a)</span>.</li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/rl-mc-methods.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>MC methods for Policy evaluation</figcaption>
+</figure>
+</div></div><p>let us now try to understand how <a href="#dfn-mc">Monte-Carlo</a> can be used to estimate <span class="math inline">v(s)</span> value functions from sampled interaction.</p>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/rl-mc-12-dice.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>12 dice</figcaption>
+</figure>
+</div></div><div id="exm-dp-dice" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1 (Rolling 12 Dice)</strong></span> &nbsp;</p>
+<ul>
+<li>Say our MDP requires rolling 12 dice.
+<ul>
+<li>this is probably intractable to estimate theoretically using DP.</li>
+<li>this is likely to be error prone (particularly and constitutionally).</li>
+<li>this will be easy to estimate using MC methods</li>
+</ul></li>
+</ul>
+</div>
+<ul>
+<li>For most MDPs knowing the dynamics and rewards is an unreasonably strong requirement.</li>
+<li>If we can treat this like a bandit problem we can try to use the long term averages rewards to estimate value of a state</li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/rl-mc-bandit.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>MC bandits</figcaption>
+</figure>
+</div></div><p>more formally we can use the MC value prediction algorithm.</p>
+<hr>
+<p>Next we present an algorithm for estimating the value function of a policy <span class="math inline">\pi</span> using MC methods.</p>
+<div id="nte-mc-value-prediction-any-visit" class="alg callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note&nbsp;1: MC prediction any visit for estimating <span class="math inline">V \approx v_\pi</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div id="alg-mc-prediction-any-visit" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="1" data-no-end="false">
+<div class="pseudocode">
+\begin{algorithm} \caption{MCFirstVisitValuePrediction($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R}$, arbitrarily, $\forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
+</div>
+</div>
+</div>
+</div>
+<div id="nte-mc-value-prediction-first-visit" class="alg callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note&nbsp;2: MC prediction fist visit for estimating <span class="math inline">V \approx v_\pi</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div id="alg-mc-prediction-first-visit" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="2" data-no-end="false">
+<div class="pseudocode">
+\begin{algorithm} \caption{MCAnyVisitValuePrediction($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State Initialize: \State $\qquad V(s) \in \mathbb{R}$, arbitrarily, $\forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \If{$S_t \not \in S_0, S_1,\ldots,S_{t-1}$} \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \EndIf \EndFor \EndFor \end{algorithmic} \end{algorithm}
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Any visit / First-visit
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The book uses presents a small variation called the <em>first visit MC method</em>, We considered the any-visit case. This estimates <span class="math inline">v_\pi(s)</span> using the average of the returns following an episode’s first visit to <span class="math inline">s</span>, whereas this the every-visit MC algorithms averages the returns following all visits to <span class="math inline">s</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Intuition for the Algorithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>The main idea is to use the recursive nature of the returns which is embodied in the following formula:</p>
+<p><span id="eq-incremental-update-rule"><span class="math display">
+NewEstimate \leftarrow OldEstimate + StepSize[Target - OldEstimate] \qquad \text{(incremental update rule)}
+\tag{1}</span></span></p>
+<p>The key to understanding this algorithm is represented in the following diagram. At the top is a backup diagram for an discounted episode.</p>
+<p>Martha explain that the MC uses the recursive nature of the returns to efficiently compute the average returns for each state by starting at the end of the episode and working backwards.</p>
+<p>We can see that the returns from a series of equations that can be solved by substitution. Each return is the current reward and the discounted previous return that has been computed.</p>
+<p>Thus we can compute all the returns for a state in a single pass through the episode. by solving this series of the full “telescoping” equations.</p>
+</div>
+</div>
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center callout-margin-content">
+<figure class="figure">
+<p><img src="img/rl-mc-calc.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>Efficient returns calculations</figcaption>
+</figure>
+</div></div><p>this bring us to our second example:</p>
+<div id="exm-black-jack-mdp" class="theorem example page-columns page-full">
+<p><span class="theorem-title"><strong>Example 2 (Blackjack MDP)</strong></span> &nbsp;</p>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/rl-bj-example.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>Blackjack example</figcaption>
+</figure>
+</div></div><ul>
+<li><strong>Undiscounted</strong> MDP where each game of blackjack corresponds to an episode with
+<ul>
+<li>Rewards:
+<ul>
+<li>r= -1 for a loss</li>
+<li>r= 0 for a draw</li>
+<li>r= 1 for a win</li>
+</ul></li>
+<li>Actions : <span class="math inline">a\in \{\text{Hit}, \text{Stick}\}</span></li>
+<li>States S:
+<ul>
+<li>player has a usable ace (Yes/No) <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></li>
+<li>sum of cards (12-21)<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></li>
+<li>The card the dealer’s card shows (Ace-10)</li>
+</ul></li>
+<li>Cards are dealt with replacement<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></li>
+<li>Policy <span class="math inline">\pi</span>:
+<ul>
+<li>if sum &lt; 20, stick</li>
+<li>otherwise, hit</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<p>In the programming assignment we will produce the following graphs</p>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/rl-bj-outcomes.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>Blackjack outcomes</figcaption>
+</figure>
+</div></div><ul>
+<li>In real world settings we typical don’t know theoretical functions like values, action values or rewards. Out best option is to sample reality in trial and error experiment of testing different interventions.</li>
+<li>However under certain conditions such samples may be enough to perform the <a href="#dfn-prediction">prediction task</a> learn a <a href="#dfn-value">value function</a> or the <a href="#dfn-action-value">action value function</a> .</li>
+<li>We can these function to learn better policies from this experience.</li>
+<li>A second scenario involves historical samples collected from past interactions. We can use probabilistic methods like MCMC to estimate <span class="math inline">q(a)</span>.</li>
+</ul>
+<p>we can use the MC prediction alg to estimate the expected returns for a state given a policy <span class="math inline">\pi</span></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The key limitations of <em>MC value estimation algorithm</em> is its requirement for episodic tasks and for completing such an episode before it starts. In some games an episode can be very long.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="emoji" data-emoji="bulb">💡</span> Is this really so? <span class="emoji" data-emoji="thinking">🤔</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>If we work in the Bayesian paradigm with some prior and use Bayesian updating.</li>
+<li>At every step we should have well defined means.</li>
+<li>So it seems one can perhaps do sample based on non-episodic tasks</li>
+<li>One more idea is to treat n_steps as an episode.</li>
+<li>Without episodic we most likely lose the efficient updating. <span class="emoji" data-emoji="thinking">🤔</span></li>
+<li>Perhaps we can use the online update rule for the mean.</li>
+</ul>
+</div>
+</div>
+<ul>
+<li><p><label><input type="checkbox">TODO - try to implement this as an algorithm.</label></p></li>
+<li><p>To ensure well-defined average sample returns, we define Monte Carlo methods only on episodic tasks that all eventually terminate - only on termination are value estimates and policies updated.</p></li>
+</ul>
+<p>Implications of MC Learning</p>
+<ul>
+<li>We don’t need to keep a large mode of the environment.</li>
+<li>We estimate the values of each state independently of other states</li>
+<li>Computation for updating values or each state is independent of the size of the MDP<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></li>
+</ul>
+</section>
+<section id="sec-mc-control" class="level1 page-columns page-full">
+<h1>Lesson 2: Monte Carlo for Control</h1>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lesson Learning Goals
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox">Estimate action-value functions using <a href="#dfn-mc">Monte Carlo</a> <a href="#sec-l2g1">#</a></label></li>
+<li><label><input type="checkbox">Understand the importance of maintaining exploration in Monte Carlo algorithms <a href="#sec-l2g2">#</a></label></li>
+<li><label><input type="checkbox" checked="">Understand how to use <a href="#dfn-mc">Monte Carlo</a> methods to implement a GPI algorithm. <a href="#sec-l2g3">#</a></label></li>
+<li><label><input type="checkbox" checked="">Apply <a href="#dfn-mc">Monte Carlo</a> with exploring starts to solve an MDP <a href="#sec-l2g4">#</a></label></li>
+</ul>
+</div>
+</div>
+<section id="sec-l2g1" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="sec-l2g1">MC Action-Value Functions</h2>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/rl-mc-action-values.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>action values</figcaption>
+</figure>
+</div><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/rl-mc-backoff.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>back off</figcaption>
+</figure>
+</div></div>
+<p>This back off diagram indicates that the value of a state S depends on the values of its actions.</p>
+<ul>
+<li>Recall that <a href="#def-contol">control</a> is simply improving a policy using our action values estimate.</li>
+<li>Policy improvement is done by <strong>Greedyfying</strong> a policy <span class="math inline">\pi</span> at a state <span class="math inline">s</span> by selecting the action <span class="math inline">a</span> with the highest action value.</li>
+<li>If we are missing some action values we can make the policy worse!</li>
+<li>We need to ensure that our RL algorithm engages the different actions of a state. There are two strategies:
+<ul>
+<li>Exploring starts</li>
+<li><span class="math inline">\epsilon</span>-Soft strategies</li>
+</ul></li>
+</ul>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/rl-exploring-starts.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>exploring starts</figcaption>
+</figure>
+</div></div><p>The following is the MC alg with exploring start for estimation.</p>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/rl-monte-carlo-GPI-01.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>exploring starts pseudocode</figcaption>
+</figure>
+</div></div><p>Let’s recap how GPI looks:</p>
+<ul>
+<li>Keeping <span class="math inline">\pi_0</span> fixed we do evaluation of <span class="math inline">q_\pi</span> using MC–ES</li>
+<li>We improve <span class="math inline">\pi_0</span> by picking the actions with the highest values</li>
+<li>We stop when we don’t improve <span class="math inline">\pi</span></li>
+</ul>
+<p>Here, in the evaluation step, we estimate the action-values using MC prediction, with exploration driven by exploring Starts or an <span class="math inline">\epsilon</span>-soft policy</p>
+</section>
+</section>
+<section id="lesson-3-exploration-methods-for-monte-carlo" class="level1 page-columns page-full">
+<h1>Lesson 3: Exploration Methods for Monte Carlo</h1>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lesson Learning Goals
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox" checked="">Understand why Exploring Starts can be problematic in real problems <a href="#sec-l3g1">#</a></label></li>
+<li><label><input type="checkbox" checked="">Describe an alternative exploration method for Monte Carlo control <a href="#sec-l3g2">#</a></label></li>
+</ul>
+</div>
+</div>
+<p>Next we look into using exploring starts to learn action values using MC sampling.</p>
+<p>Recall that we like action values over state values since they allow us to find optimal policies by quickly picking the best action in a state.</p>
+<p>Mr White explains that we can’t use a deterministic policy to learn action values since we need to explore multiple actions in a state to pick the best one. To do this with a deterministic policy we use exploring starts - this means we start each simulation with a random state and action then follow the policy. This should eventually allow us to learn the action values for all actions in all states.</p>
+<p>So here is how can use exploring starts or some other exploration strategy to ensure that we can learn the action values for all actions in all states.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Monte Carlo Exploring Start
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div id="alg-mc-es-control" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="3" data-no-end="false">
+<div class="pseudocode">
+\begin{algorithm} \caption{MonteCarloExploringStartsGPI()}\begin{algorithmic} \State Initialize: \State $\qquad \pi(s) \in A(s) \quad \forall s\in \mathcal{S}$ \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \quad \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$ \State $\qquad Returns(s,a) \leftarrow \text {an empty list} \quad \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$ \For {each episode:} \State Choose $S_0 \in \mathcal{S} and A_0 \in \mathcal{A}(S_0) \text{randomly :} p(s,a)&gt;0 \forall s,a$ \comment{$\textcolor{blue}{Exploring Starts}$} \State Generate an episode e from $S_0, A_0$ by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of $e, t \in T-1, T-2,..., 0:} \comment{$\textcolor{blue}{Backward\ pass}$} \State $G \leftarrow \gamma G + R_{t+1}$ \IF {$S_t , A_t \not \in S_0 , A_0 , S_1 , A_1 \ldots , S_{t-1} , A_{t-1}$} \State Append $G$ to $Returns(S_t,A_t)$ \State $Q(S_t,A_t) \leftarrow average(Returns(S_t,A_t))\quad$ \comment{$\textcolor{blue}{\text{MC action-value estimate}}$} \State $\pi(S_t) \leftarrow \arg\max_a Q(S_t,a)\quad$ \comment{$\textcolor{blue}{\text{greedy policy improvement}}$} \EndIf \EndFor \EndFor \end{algorithmic} \end{algorithm}
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Connecting the dots: MC vs DP
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Adam White points out how this is so much simpler than the DP methods we learned earlier. We don’t need to solve a set of simultaneous equations. We can just use the MC method to estimate the action values and then use GPI to improve the policy. The only thing we need to do is to ensure that we explore all the actions in all the states.</p>
+</div>
+</div>
+<section id="sec-l3g1" class="level3">
+<h3 class="anchored" data-anchor-id="sec-l3g1">Challenges for exploring starts</h3>
+<p>Exploring start can be problematic as we may not able to say try all actions on all states.</p>
+<ul>
+<li>there may be too many states actions to try</li>
+<li>testing certain actions in certain states it could be unethical <a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> or risky <a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></li>
+<li>it could cost too much - we need too many experiments.</li>
+</ul>
+<p>Note: The Blackjack MDP can be improved using Exploring Starts since each initial state can be sampled. Recall there were 200 states.</p>
+</section>
+<section id="sec-l3g2" class="level3">
+<h3 class="anchored" data-anchor-id="sec-l3g2">ϵ-Soft Policies</h3>
+<p>AN ALTERNATIVE approach to policy improvement is an generalization of both the <span class="math inline">\epsilon</span>- greedy policy and the random uniform, which we first learned in the contexts of the multi-armed bandits problem in the fundamentals course.</p>
+<dl>
+<dt>ϵ-soft policy</dt>
+<dd>
+<p>An ϵ-soft policy is one for which in each state, all actions have a probability of at least <span class="math inline">\frac{\epsilon}{|A|}</span></p>
+</dd>
+</dl>
+<p>The advantages of using an <span class="math inline">\epsilon</span>-soft policy are: - we get a never ending exploration</p>
+<p>However this means we can never reach a deterministic optimal policy - but we can get to a stochastic policy where the best choice is <span class="math inline">1-\epsilon+\frac{\epsilon}{|A|}</span></p>
+<p>We can get to a deterministic policy if we use a decaying <span class="math inline">\epsilon</span>-greedy policy or if we greedify the policy breaking ties randomly.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+MC control with ϵ-soft policies
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div id="alg-mc-ϵ-soft-control" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="4" data-no-end="false">
+<div class="pseudocode">
+\begin{algorithm} \caption{MonteCarloϵ-SoftControl()}\begin{algorithmic} \State Initialize \State $\qquad \epsilon \in (0,1)$ \Comment{ $\textcolor{blue}{\ algorithm\ parameter}$} \State $\qquad \pi \leftarrow \epsilon$-soft policy \Comment{ $\textcolor{blue}{\ Initialize: policy}$} \State $\qquad Q(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t \in T-1, T-2,..., 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \State Append $G$ to $Returns(S_t,A_t)$ \State $Q(S_t,A_t) \leftarrow average(Returns(S_t,A_t))$ \State $A^* \leftarrow \arg\max_a Q(S_t,a) \qquad \textcolor{blue}{\text{(ties broken arbitrarily)}}$ \For {each $a \in \mathcal{A}$} \If{$a = A^*$} \State $\pi(a \mid S_t) \leftarrow 1 - \epsilon + \frac{\epsilon}{|A(S_t)|}$ \Else \State $\pi(a \mid S_t) \leftarrow \frac{\epsilon}{|A(S_T)|}$ \EndIf \EndFor \EndFor \EndFor \end{algorithmic} \end{algorithm}
+</div>
+</div>
+</div>
+</div>
+<p>The Highlights indicate modification of the Exploring Starts alg</p>
+<ol type="1">
+<li>We can start with Uniform-random as its epsilon-soft.</li>
+<li>Episode generation uses the current <span class="math inline">\pi</span> (<span class="math inline">\epsilon</span>-soft policy) <em>before</em> it is improved.</li>
+<li>We drop the first-visit check - this is an every-visit MC algorithm.</li>
+<li>The new policy generated in each iteration is <span class="math inline">\epsilon</span>-greedy w.r.t. the current action-value estimate, which is improved prior.</li>
+<li>The optimal <span class="math inline">\epsilon</span>-soft policy is an <span class="math inline">\epsilon</span>-soft policy.</li>
+</ol>
+</section>
+<section id="lesson-4-off-policy-learning-for-prediction" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="lesson-4-off-policy-learning-for-prediction">Lesson 4: Off-policy learning for prediction</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lesson Learning Goals
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox">Understand how off-policy learning can help deal with the exploration problem <a href="#sec-l4g1">#</a></label></li>
+<li><label><input type="checkbox">Produce examples of target policies and examples of behavior policies. <a href="#sec-l4g2">#</a></label></li>
+<li><label><input type="checkbox">Understand importance sampling <a href="#sec-l4g3">#</a></label></li>
+<li><label><input type="checkbox">Use importance sampling to estimate the expected value of a target distribution using samples from a different distribution. <a href="#sec-l4g4">#</a></label></li>
+<li><label><input type="checkbox">Understand how to use importance sampling to correct returns <a href="#sec-l4g5">#</a></label></li>
+<li><label><input type="checkbox">Understand how to modify the Monte Carlo prediction algorithm for off-policy learning. <a href="#sec-l4g6">#</a></label></li>
+</ul>
+</div>
+</div>
+<section id="sec-l4g1" class="level3">
+<h3 class="anchored" data-anchor-id="sec-l4g1">Off-policy learning</h3>
+<ul>
+<li>Off-policy learning is a way to learn a policy <span class="math inline">\pi</span> using samples from another policy <span class="math inline">\pi'</span>.</li>
+<li>This is useful when we have a policy that is easier to sample from than the policy we want to learn.</li>
+<li>A key idea is to correct the returns using importance sampling.</li>
+</ul>
+<p>For example suppose we can use a rule based model to generate samples of agent state, action and rewards - but we don’t really have an MDP, value function or policy. We could start with a uniform random policy and then use the samples to learn a better policy. However this would require us to interact with the environment and our agents may not be able to do this. In the case of Sugarscape model the agents are not really making decisions, they are following rules.</p>
+<p>If we wished to develop agent that learn using RL with different rules on or off and other settings and use those to learn a policy using many samples. One advantage of the Sugarscape model is that it is highly heterogeneous so we get a rich set of samples to work with. A second advantage is that the rule based model can be fast to sample from and we can generate many samples by running it using hyper-parameters optimized test-bed.</p>
+<p>So if we have lots of samples we may not need to explore as much initially, but rather learn to exploit the samples we have. Once we learn a near optimal policy for the samples we can use our agent to explore new vistas in our environment.</p>
+</section>
+<section id="sec-l4g2" class="level3">
+<h3 class="anchored" data-anchor-id="sec-l4g2">Target and behavior policies</h3>
+<ul>
+<li>The target policy is the policy we want to learn.</li>
+<li>The behavior policy is the policy we sample from.</li>
+</ul>
+</section>
+<section id="sec-l4g3" class="level3">
+<h3 class="anchored" data-anchor-id="sec-l4g3">Importance sampling</h3>
+<ul>
+<li>Importance sampling is a technique to estimate the expected value of a target distribution using samples from a different distribution.</li>
+<li>Why cant we just use the samples from the behavior policy to estimate the target policy?</li>
+<li>The answer is that the samples from the behavior policy are biased towards the behavior policy.</li>
+<li>In the target policy we may have states that are never visited by the behavior policy.</li>
+<li>For example we might want to learn a policy that focuses on trade rather than combat or Vica-versa. This extreme idea of introducing/eliminating some action would significantly change behavioral trajectories. Sample based methods could be able to handle these changes - if we can restrict them to each subset of actions but clearly the expected return of states will be diverge in the long run.</li>
+<li>So what we want is someway to correct the returns from the behavior policy to the target policy.</li>
+<li>It is used to correct returns from the behavior policy to the target policy.</li>
+</ul>
+<p>The probability of a trajectory under <span class="math inline">\pi</span> is:</p>
+<p><span id="eq-trajectory-probability"><span class="math display">
+\begin{align*}
+  P(A_t, S_{t+1}, &amp; A_{t+1}, ... ,S_T | S_t, A_{t:T-1} \sim \pi) \newline
+  &amp; = \pi(A_t|S_t)p(S_{t+1}|S_t, A_t)\pi(A_{t+1}, S_{t+1}) \cdot\cdot\cdot p(S_T|S_{T-1}, A_{T-1}) \newline
+  &amp; = \prod_{k=t}^{T-1} \pi(A_k|S_k)p(S_{k+1}|S_k, A_k)
+\end{align*}
+\tag{2}</span></span></p>
+</section>
+<section id="sec-l4g4" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="sec-l4g4">Importance sampling ratio</h3>
+<p><strong>Definition:</strong> The importance sampling ratio (rho, <span class="math inline">\rho</span>) is the relative probability of the trajectory under the target vs behavior policy:</p>
+<p><span id="eq-importance-sampling"><span class="math display">
+\begin{align}
+\rho_{t:T-1} &amp; \doteq \frac{\prod_{k=t}^{T-1} \pi(A_k \mid S_k) \cancel{ p(S_{k+1} \mid S_k, A_k)}}{\prod_{k=t}^{T-1} b(A_k \mid S_k) \cancel{ p(S_{k+1} \mid S_k, A_k)} } \newline
+             &amp; = \prod_{k=t}^{T-1} \frac{\pi(A_k \mid S_k)}{b(A_k \mid S_k)}
+\end{align}
+\tag{3}</span></span></p>
+<p><span id="eq-value1"><span class="math display">
+v_\pi(s) = \mathbb{E}_b[\rho_{t:T-1} \cdot G_t \mid S_t = s] \qquad
+\tag{4}</span></span></p>
+<p><span id="eq-weighted-importance-sampling"><span class="math display">
+V(s) \doteq \frac{\displaystyle \sum_{t\in \mathscr T(s)}\rho_{t:T(t) - 1} \cdot G_t}{|\mathscr T (s)|} \qquad
+\tag{5}</span></span></p>
+<p><span id="eq-weighted-importance-sampling2"><span class="math display">
+V(s) \doteq \frac{\displaystyle \sum_{t\in \mathscr T(s)} \Big(\rho_{t:T(t) - 1} \cdot G_t\Big)}{\displaystyle \sum_{t\in \mathscr T(s)}\rho_{t:T(t) - 1}} \qquad
+\tag{6}</span></span></p>
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/wk2-importance-sampling-example.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>importance sampling example</figcaption>
+</figure>
+</div><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/wk2-off-policy-trajectories.png" class="img-fluid figure-img" data-group="slides"></p>
+<figcaption>off policy trajectories</figcaption>
+</figure>
+</div></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Off-policy every visit MC prediction
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div id="alg-mc-off-policy-prediction" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="5" data-no-end="false">
+<div class="pseudocode">
+\begin{algorithm} \caption{OffPolicyMonteCarloPrediction()}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s) \text{ an empty list,} \quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0, W \leftarrow 1$ \For {each step of episode, $t \in T-1, T-2,..., 0$:} \State $G \leftarrow \gamma WG + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \State $W \leftarrow W \frac{\pi(A_t|S_t)}{b(A_t|S_t)}$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Off-policy every visit MC control
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div id="alg-mc-off-control-prediction" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number-punc=":" data-pseudocode-number="6" data-no-end="false">
+<div class="pseudocode">
+\begin{algorithm} \caption{OffPolicyMonteCarloPrediction()}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s) \text{ an empty list,} \quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $b: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0, W \leftarrow 1$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma WG + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \State $W \leftarrow W \frac{\pi(A_t \mid S_t)}{b(A_t \mid S_t)}$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="emma-brunskill-batch-reinforcement-learning" class="level3">
+<h3 class="anchored" data-anchor-id="emma-brunskill-batch-reinforcement-learning">Emma Brunskill: Batch Reinforcement Learning</h3>
+<p>These guest talks have a dual purpose:</p>
+<ol type="1">
+<li>to let the speakers share their passion for the field and introduce us to their research. this can be a good start for reading more about our own interests or for looking how to solve real problems that we are facing.</li>
+<li>to show us how the concepts we are learning are being used in the real world.</li>
+</ol>
+<ul>
+<li><a href="https://cs.stanford.edu/people/ebrun/">Emma Brunskill</a> is a professor at Stanford University.</li>
+<li>Burnskill motivated her approach with an edutainment app in which the goal is to maximize student engagement in game based on historical data.</li>
+<li>In batch RL we have a fixed dataset of samples and we want to learn a policy from this data.</li>
+<li>This is useful when we have a fixed dataset of samples and we want to learn a policy from this data.</li>
+<li>The key idea is to use importance sampling to correct the returns from the behavior policy to the target policy. We learned that the challenge this poses is primarily due to the bias of the behavior policy.</li>
+<li><span class="marked">Importance sampling provides us with an unbiased estimate of the value function yet can have high variance</span>. These may can be exponentially large in the number of steps. So these results in very poor estimates for the value function if there are many steps in the trajectory.</li>
+<li>Brunskill suggest that <span class="marked">the real challenge posed by batch RL is a sparsity of trajectories with actions leading to optimal next states under the target policy</span> in the historical data.<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a></li>
+<li>One point we learned about this is that we should seek algorithms that are more data efficient. However</li>
+<li>A send idea is to use parametric models which are biased by can learn the transition dynamics and the reward function more efficiently.</li>
+<li>Brunskill points out that since we have few samples we may need a better approach to get robust estimates of the value function.</li>
+<li>This approach which comes from statistic is called <a href="">doubly robust stimators</a> and has been used in bandits and RL</li>
+<li>She presents a chart from a 2019 paper with a comparison of different methods for RL in the cart-pole environment.
+<ul>
+<li>Off policy policy gradient with state Distribution Correction - dominates the other methods. And has a significantly narrower confidence interval for the value, if I understand the figure correctly.</li>
+</ul></li>
+<li>She also presents results from many papers on Generalization Guarantees for RL, which show that we can learn a policy that is close to the optimal policy with a small number of samples from another policy. However I cannot make much sense of the result in the slide.</li>
+<li>An example of this is the Sugarscape model where we have a fixed dataset of samples from the rule-based model.</li>
+<li>More generally, we can use batch RL to learn from historical data how to make better decisions in the future.</li>
+</ul>
+<dl>
+<dt>Counterfactual</dt>
+<dd>
+<p>You don’t know what your life would be like if you weren’t reading this right now.</p>
+</dd>
+</dl>
+<ul>
+<li>Causal reasoning based on counterfactuals is a key idea to tackling this problem.</li>
+</ul>
+<dl>
+<dt>Counterfactual or Batch Reinforcement Learning</dt>
+<dd>
+<p>In batch RL we have a fixed dataset of samples and we want to learn a new policy from this data.</p>
+</dd>
+</dl>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Doubly Robust Estimators
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://en.wikipedia.org/wiki/Inverse_probability_weighting#Interpretation_and_%22double_robustness%22">Doubly robust estimators</a> is a technique from statistics that and causal inference that allows us to combine to do importance sampling and model based learning and a propensity score to estimate the value function. combine the best of both worlds - they are robust to errors in the model and the policy.</p>
+<p><span class="math display">
+\hat V_{DR} =\frac{1}{N} \sum_{i=1}^N \left[ \rho_i (R_i + \gamma Q(s_{i+1}, \pi(s_{i+1}))) - \rho_i \hat Q_{\pi}(s_i, a_i) + \hat Q_{\pi}(s_i, a_i) \right]
+</span> where:</p>
+<ul>
+<li><span class="math inline">\rho_i</span> is the importance sampling ratio for the <span class="math inline">i</span>-th sample</li>
+<li><span class="math inline">R_i</span> is the reward - <span class="math inline">Q(s_{i+1}, \pi(s_{i+1}))</span> is the value of the next state under the target policy</li>
+<li><span class="math inline">\hat Q_{\pi}(s_i, a_i)</span> is the model based Q-function estimate</li>
+<li><span class="math inline">Q(s_{i+1}, \pi(s_{i+1}))</span> is the value of the next state under the target policy</li>
+</ul>
+</div>
+</div>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/ADD4B0bOZi4" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<p>and paper</p>
+<ul>
+<li><a href="https://arxiv.org/abs/2007.08202">Provably Good Batch Reinforcement Learning Without Great Exploration</a></li>
+<li><a href="https://arxiv.org/abs/1604.00923">Data-Efficient Off-Policy Policy Evaluation for Reinforcement Learning</a></li>
+</ul>
+
+
+</section>
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p><strong>Prediction</strong> in the sense that we want to predict for <span class="math inline">\pi</span> how well it will preforms i.e.&nbsp;its expected returns for a state<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>worth either 1 or 11<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>face card are worth 10<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>this is a big simplifying assumption<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>in DP we had to solve <span class="math inline">n\times n</span> - simultaneous equations<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>think of a medical trial<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>think of a self driving car<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><ul>
+<li>Can we learn form one or two examples by sampling ?</li>
+<li>what if the good actions are never sampled by our algorithm?</li>
+</ul>
+<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/notes-rl\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+    <script type="text/javascript">
+    (function(d) {
+      d.querySelectorAll(".pseudocode-container").forEach(function(el) {
+        let pseudocodeOptions = {
+          indentSize: el.dataset.indentSize || "1.2em",
+          commentDelimiter: el.dataset.commentDelimiter || "//",
+          lineNumber: el.dataset.lineNumber === "true" ? true : false,
+          lineNumberPunc: el.dataset.lineNumberPunc || ":",
+          noEnd: el.dataset.noEnd === "true" ? true : false,
+          titlePrefix: el.dataset.captionPrefix || "Algorithm"
+        };
+        pseudocode.renderElement(el.querySelector(".pseudocode"), pseudocodeOptions);
+      });
+    })(document);
+    (function(d) {
+      d.querySelectorAll(".pseudocode-container").forEach(function(el) {
+        let captionSpan = el.querySelector(".ps-root > .ps-algorithm > .ps-line > .ps-keyword")
+        if (captionSpan !== null) {
+          let captionPrefix = el.dataset.captionPrefix + " ";
+          let captionNumber = "";
+          if (el.dataset.pseudocodeNumber) {
+            captionNumber = el.dataset.pseudocodeNumber + " ";
+            if (el.dataset.chapterLevel) {
+              captionNumber = el.dataset.chapterLevel + "." + captionNumber;
+            }
+          }
+          captionSpan.innerHTML = captionPrefix + captionNumber;
+        }
+      });
+    })(document);
+    </script>
+  
+
+
+
+
+</body></html>

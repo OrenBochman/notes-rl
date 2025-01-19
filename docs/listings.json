@@ -2,22 +2,25 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/paper1/index.html",
-      "/posts/c3-w4.html",
-      "/posts/c3-w3.html",
-      "/posts/c3-w2.html",
-      "/posts/c3-w2.1.html",
-      "/posts/c3-w1.html",
-      "/posts/c3-w1.1.html",
-      "/posts/c2-w4.html",
-      "/posts/c2-w3.html",
-      "/posts/c2-w2.html",
-      "/posts/c2-w1.html",
-      "/posts/c1-w4.html",
-      "/posts/c1-w3.html",
-      "/posts/c1-w2.html",
-      "/posts/c1-w1.html",
-      "/posts/c1-w0.html"
+      "/posts/papers/Offpolicy-AuctionGym/index.html",
+      "/posts/papers/AuctionGym/index.html",
+      "/posts/papers/DCTS/index.html",
+      "/posts/papers/Temp-Abstraction/index.html",
+      "/posts/coursera/c3-w4.html",
+      "/posts/coursera/c3-w3.html",
+      "/posts/coursera/c3-w2.html",
+      "/posts/coursera/c3-w2.1.html",
+      "/posts/coursera/c3-w1.html",
+      "/posts/coursera/c3-w1.1.html",
+      "/posts/coursera/c2-w4.html",
+      "/posts/coursera/c2-w3.html",
+      "/posts/coursera/c2-w2.html",
+      "/posts/coursera/c2-w1.html",
+      "/posts/coursera/c1-w4.html",
+      "/posts/coursera/c1-w3.html",
+      "/posts/coursera/c1-w2.html",
+      "/posts/coursera/c1-w1.html",
+      "/posts/coursera/c1-w0.html"
     ]
   }
 ]
