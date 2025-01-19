@@ -695,7 +695,7 @@ Figure&nbsp;3: Doina Precup’s Talk at DeepHack.RL on Temporal abstraction in r
 <section id="a-framework-for-option-discovery-from-representation-learning" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="a-framework-for-option-discovery-from-representation-learning">A Framework for Option Discovery from Representation Learning</h2>
 
-<div class="no-row-height column-margin column-container"><div id="fig-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures" width="250px">
+<div class="no-row-height column-margin column-container"><div id="fig-1" class="quarto-float quarto-figure quarto-figure-center anchored" width="250px" data-group="figures">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="https://orenbochman.github.io/notes-rl/posts/papers/Temp-Abstraction/fig_1.png" class="img-fluid figure-img">
@@ -719,7 +719,7 @@ Figure&nbsp;4: Representation-driven Option Discovery (ROD) cycle <span class="c
 <section id="the-successor-representation" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="the-successor-representation">The Successor Representation</h2>
 
-<div class="no-row-height column-margin column-container"><div id="fig-3" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures" width="250px">
+<div class="no-row-height column-margin column-container"><div id="fig-3" class="quarto-float quarto-figure quarto-figure-center anchored" width="250px" data-group="figures">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="https://orenbochman.github.io/notes-rl/posts/papers/Temp-Abstraction/fig_3.png" class="img-fluid figure-img">
@@ -734,7 +734,7 @@ Figure&nbsp;5: Example similar to Dayans 1993 of the SR, w.r.t. the uniform rand
 </ul>
 <p><span id="eq-7"><img src="https://latex.codecogs.com/png.latex?%0A%5CPsi_%7B%5Cpi%7D(s,s')%20=%20%5Cmathbb%7BE%7D_%7B%5Cpi,p%7D%20%5Csum_%7Bt=0%7D%5E%5Cinfty%20%20%CE%B3%5Et%20%5Cmathbb%7B1%7D_%7B%5C%7BS_t=s'%7D%5C%7D%20%7C%20%7BS_0%20=%20s%20%7D%20%5Cqquad%0A%5Ctag%7B2%7D"></span></p>
 
-<div class="no-row-height column-margin column-container"><div id="fig-4" class="quarto-float quarto-figure quarto-figure-center anchored" data-group="figures" width="250px">
+<div class="no-row-height column-margin column-container"><div id="fig-4" class="quarto-float quarto-figure quarto-figure-center anchored" width="250px" data-group="figures">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="https://orenbochman.github.io/notes-rl/posts/papers/Temp-Abstraction/fig_4.png" class="img-fluid figure-img">
@@ -2303,7 +2303,7 @@ SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-sarsa" class="pseudocode-container quarto-float" data-line-number="true" data-pseudocode-number="1" data-no-end="false" data-comment-delimiter="#" data-line-number-punc=":" data-indent-size="1.2em" data-caption-prefix="Algorithm">
+<div id="alg-sarsa" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number="true" data-caption-prefix="Algorithm" data-no-end="false">
 <div class="pseudocode">
 \begin{algorithm} \caption{SARSA($\alpha,\epsilon$)}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -2342,7 +2342,7 @@ Episodic Semi-gradient SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-td-sarsa" class="pseudocode-container quarto-float" data-line-number="true" data-pseudocode-number="2" data-no-end="false" data-comment-delimiter="#" data-line-number-punc=":" data-indent-size="1.2em" data-caption-prefix="Algorithm">
+<div id="alg-td-sarsa" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="2" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number="true" data-caption-prefix="Algorithm" data-no-end="false">
 <div class="pseudocode">
 \begin{algorithm} \caption{Episodic Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)}\begin{algorithmic} \State $\textbf{Input:}$ \State $\qquad \text{a differentiable action-value fn parameterization } \hat{q}: \mathcal{S} \times A \times \mathbb{R}^d \to \mathbb{R}$ \State $\textbf{Initialize:}$ \State $\qquad$ value function weights $\mathbf{w} \in \mathbb{R}^d$ arbitrarily, (e.g., $\mathbf{w} = 0$) \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from $\color{red}\hat{q}(S'A,\mathbf{w})$ (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \If {$S'$ is terminal} \State $\color{red}\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ \State Go to next episode \EndIf \State Choose A' as a function of $\color{red}\hat{q}(S'A,\mathbf{w})$ (e.g., $\epsilon$-greedy) \State $\color{red}\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R + \gamma \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ \State $S \leftarrow S'$; \State $A \leftarrow A'$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -2694,7 +2694,7 @@ Episodic Semi-gradient SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-differential-sg-sarsa" class="pseudocode-container quarto-float" data-line-number="true" data-pseudocode-number="3" data-no-end="false" data-comment-delimiter="#" data-line-number-punc=":" data-indent-size="1.2em" data-caption-prefix="Algorithm">
+<div id="alg-differential-sg-sarsa" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="3" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number="true" data-caption-prefix="Algorithm" data-no-end="false">
 <div class="pseudocode">
 \begin{algorithm} \caption{Differential Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)}\begin{algorithmic} \State $\textbf{Input:}$ \State $\qquad \text{a differentiable action-value fn parameterization } \hat{q}: \mathcal{S} \times A \times \mathbb{R}^d \to \mathbb{R}$ \State $\textbf{Algorithm parameters:}$ \State $\qquad \alpha, \beta &gt; 0$ \State $\textbf{Initialize:}$ \State $\qquad$ value function weights $\mathbf{w} \in \mathbb{R}^d$ arbitrarily, (e.g., $\mathbf{w} = 0$) \State $\bar{R} source \in \mathbb{R}$ avg reward estimate \State Initialize $S$ and action $A$ \For {each step} \State Take action A, observe R, S' \State Choose A' as a function of $\hat{q}(S',\cdot,\mathbf{w})$ (e.g., $\epsilon$-greedy) \State $\delta \leftarrow R - \bar{R} + \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) $ \State $ \bar{R}\leftarrow \bar{R} + \beta \delta$ \State $\mathbf{w} \leftarrow \mathbf{w} + \alpha \delta \nabla \hat{q}(S, A, \mathbf{w})$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -4769,7 +4769,7 @@ Note&nbsp;1: MC prediction fist visit for estimating <img src="https://latex.cod
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-gradient-mc" class="pseudocode-container quarto-float" data-comment-delimiter="#" data-no-end="false" data-indent-size="1.2em" data-pseudocode-number="1" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true">
+<div id="alg-gradient-mc" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-pseudocode-number="1" data-indent-size="1.2em" data-no-end="false" data-line-number-punc=":" data-comment-delimiter="#" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{GradientMC($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$ \State Algorithm parameters: \State $\qquad \alpha \in (0, 1]$ step size \State Initialize: \State $\qquad \mathbf{w} \leftarrow x \in \mathbb{R^d} \text{ arbiterly}$ (e.g. w=0) \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = 0, 1, \ldots, T-1$:} \State $\mathbf{w} \leftarrow w_t + \alpha [G_t - \hat{v}(S_t , \mathbf{w_1})] \nabla \hat{v}(S_t , \mathbf{w})$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -4905,7 +4905,7 @@ The Semi-gradient TD(0) algorithm for estimating <img src="https://latex.codecog
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-td-zero" class="pseudocode-container quarto-float" data-comment-delimiter="#" data-no-end="false" data-indent-size="1.2em" data-pseudocode-number="2" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true">
+<div id="alg-td-zero" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-pseudocode-number="2" data-indent-size="1.2em" data-no-end="false" data-line-number-punc=":" data-comment-delimiter="#" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{Semi-gradient TD(0) for estimating $v_\pi$}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$ \State Algorithm parameters: \State $\qquad \alpha \in (0, 1]$ step size \State $\qquad \gamma \in [0, 1]$ discount factor \State Initialize: \State $\qquad value function weights w \leftarrow x \in \mathbb{R}^d \quad \forall s \in \mathcal{S}$ (e.g. w=0) \FORALL {episode $e$:} \State $Initialize S$ \FORALL {step $S \in e$:} \State $\text{Choose } A \sim \pi(\cdot \mid S)$ \State Take action $A$, observe $R, S'$ \State $w \leftarrow w + \alpha [R + \gamma \hat{v}(S', \mathbf{w}) - \hat{v}(S, \mathbf{w})] \nabla \hat{v}(S, \mathbf{w})$ \State $S \leftarrow S'$ \State until $S$ is terminal \ENDFOR \ENDFOR \end{algorithmic} \end{algorithm}
 </div>
@@ -5818,7 +5818,7 @@ SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-sarsa" class="pseudocode-container quarto-float" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em" data-comment-delimiter="#" data-line-number="true" data-caption-prefix="Algorithm" data-pseudocode-number="1">
+<div id="alg-sarsa" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-comment-delimiter="#" data-pseudocode-number="1" data-line-number-punc=":" data-no-end="false" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{SARSA($\alpha,\epsilon$)}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -5874,7 +5874,7 @@ Q-learning (off-policy TD control)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-q-learning" class="pseudocode-container quarto-float" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em" data-comment-delimiter="#" data-line-number="true" data-caption-prefix="Algorithm" data-pseudocode-number="2">
+<div id="alg-q-learning" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-comment-delimiter="#" data-pseudocode-number="2" data-line-number-punc=":" data-no-end="false" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{Q-learning Off-policy TD control}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \For {each step of e} \State Choose A from $A_B(S)$ using any ergodic Behavioural policy $B$ - perhaps the $\epsilon$-greedy induced by Q. \State Take action A, observe R, S' \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \max_a Q(S',a) - Q(S, A)]$ \State $S \leftarrow S'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6048,7 +6048,7 @@ Expected Sarsa
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-q-learning" class="pseudocode-container quarto-float" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em" data-comment-delimiter="#" data-line-number="true" data-caption-prefix="Algorithm" data-pseudocode-number="3">
+<div id="alg-q-learning" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-comment-delimiter="#" data-pseudocode-number="3" data-line-number-punc=":" data-no-end="false" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{expected SARSA}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \sum_a \pi(a|S') Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \State $S$ is terminal \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6218,7 +6218,7 @@ The TD(0) algorithm for estimating <img src="https://latex.codecogs.com/png.late
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-td-zero" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-no-end="false" data-line-number-punc=":" data-pseudocode-number="1" data-indent-size="1.2em" data-comment-delimiter="#">
+<div id="alg-td-zero" class="pseudocode-container quarto-float" data-pseudocode-number="1" data-indent-size="1.2em" data-line-number="true" data-no-end="false" data-caption-prefix="Algorithm" data-line-number-punc=":" data-comment-delimiter="#">
 <div class="pseudocode">
 \begin{algorithm} \caption{TD(0) for estimating $v_\pi$}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R} \quad \forall s \in \mathcal{S}$ \FORALL {episode $e$:} \State $S \leftarrow \text{initial state of episode}$ \State $\text{Choose } A \sim \pi(\cdot \mid S)$ \FORALL {step $S \in e$:} \State Take action $A$, observe $R, S'$ \State $V(S) \leftarrow V(S) + \alpha [R + \gamma V(S') - V(S)]$ \State $S \leftarrow S'$ \State $\text{Choose} A' \sim \pi(\cdot \mid S)$ \State $S$ is terminal \ENDFOR \ENDFOR \end{algorithmic} \end{algorithm}
 </div>
@@ -6511,7 +6511,7 @@ Note&nbsp;1: MC prediction any visit for estimating <img src="https://latex.code
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-prediction-any-visit" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="1" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
+<div id="alg-mc-prediction-any-visit" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em" data-comment-delimiter="#" data-no-end="false" data-pseudocode-number="1" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{MCFirstVisitValuePrediction($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R}$, arbitrarily, $\forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6528,7 +6528,7 @@ Note&nbsp;2: MC prediction fist visit for estimating <img src="https://latex.cod
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-prediction-first-visit" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="2" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
+<div id="alg-mc-prediction-first-visit" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em" data-comment-delimiter="#" data-no-end="false" data-pseudocode-number="2" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{MCAnyVisitValuePrediction($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State Initialize: \State $\qquad V(s) \in \mathbb{R}$, arbitrarily, $\forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \If{$S_t \not \in S_0, S_1,\ldots,S_{t-1}$} \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \EndIf \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6763,7 +6763,7 @@ Monte Carlo Exploring Start
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-es-control" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="3" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
+<div id="alg-mc-es-control" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em" data-comment-delimiter="#" data-no-end="false" data-pseudocode-number="3" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{MonteCarloExploringStartsGPI()}\begin{algorithmic} \State Initialize: \State $\qquad \pi(s) \in A(s) \quad \forall s\in \mathcal{S}$ \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \quad \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$ \State $\qquad Returns(s,a) \leftarrow \text {an empty list} \quad \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$ \For {each episode:} \State Choose $S_0 \in \mathcal{S} and A_0 \in \mathcal{A}(S_0) \text{randomly :} p(s,a)&gt;0 \forall s,a$ \comment{$\textcolor{blue}{Exploring Starts}$} \State Generate an episode e from $S_0, A_0$ by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of $e, t \in T-1, T-2,..., 0:} \comment{$\textcolor{blue}{Backward\ pass}$} \State $G \leftarrow \gamma G + R_{t+1}$ \IF {$S_t , A_t \not \in S_0 , A_0 , S_1 , A_1 \ldots , S_{t-1} , A_{t-1}$} \State Append $G$ to $Returns(S_t,A_t)$ \State $Q(S_t,A_t) \leftarrow average(Returns(S_t,A_t))\quad$ \comment{$\textcolor{blue}{\text{MC action-value estimate}}$} \State $\pi(S_t) \leftarrow \arg\max_a Q(S_t,a)\quad$ \comment{$\textcolor{blue}{\text{greedy policy improvement}}$} \EndIf \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6815,7 +6815,7 @@ MC control with ϵ-soft policies
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-ϵ-soft-control" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="4" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
+<div id="alg-mc-ϵ-soft-control" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em" data-comment-delimiter="#" data-no-end="false" data-pseudocode-number="4" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{MonteCarloϵ-SoftControl()}\begin{algorithmic} \State Initialize \State $\qquad \epsilon \in (0,1)$ \Comment{ $\textcolor{blue}{\ algorithm\ parameter}$} \State $\qquad \pi \leftarrow \epsilon$-soft policy \Comment{ $\textcolor{blue}{\ Initialize: policy}$} \State $\qquad Q(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t \in T-1, T-2,..., 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \State Append $G$ to $Returns(S_t,A_t)$ \State $Q(S_t,A_t) \leftarrow average(Returns(S_t,A_t))$ \State $A^* \leftarrow \arg\max_a Q(S_t,a) \qquad \textcolor{blue}{\text{(ties broken arbitrarily)}}$ \For {each $a \in \mathcal{A}$} \If{$a = A^*$} \State $\pi(a \mid S_t) \leftarrow 1 - \epsilon + \frac{\epsilon}{|A(S_t)|}$ \Else \State $\pi(a \mid S_t) \leftarrow \frac{\epsilon}{|A(S_T)|}$ \EndIf \EndFor \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6914,7 +6914,7 @@ Off-policy every visit MC prediction
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-off-policy-prediction" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="5" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
+<div id="alg-mc-off-policy-prediction" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em" data-comment-delimiter="#" data-no-end="false" data-pseudocode-number="5" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{OffPolicyMonteCarloPrediction()}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s) \text{ an empty list,} \quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0, W \leftarrow 1$ \For {each step of episode, $t \in T-1, T-2,..., 0$:} \State $G \leftarrow \gamma WG + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \State $W \leftarrow W \frac{\pi(A_t|S_t)}{b(A_t|S_t)}$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6931,7 +6931,7 @@ Off-policy every visit MC control
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-off-control-prediction" class="pseudocode-container quarto-float" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="6" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":">
+<div id="alg-mc-off-control-prediction" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em" data-comment-delimiter="#" data-no-end="false" data-pseudocode-number="6" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{OffPolicyMonteCarloPrediction()}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s) \text{ an empty list,} \quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $b: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0, W \leftarrow 1$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma WG + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \State $W \leftarrow W \frac{\pi(A_t \mid S_t)}{b(A_t \mid S_t)}$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -7153,7 +7153,7 @@ is the task of finding the optimal policy <img src="https://latex.codecogs.com/p
 <p>The final part of the algorithm is the stopping condition. We stop when the change in the value function is less than a small threshold <img src="https://latex.codecogs.com/png.latex?%5Ctheta">.</p>
 <p>The algorithm is guaranteed to converge to the value function for the policy <img src="https://latex.codecogs.com/png.latex?%5Cpi">.</p>
 <p>Here is the concise statement of the algorithm with just one array in pseudo code:</p>
-<div id="alg-Iterative-Policy-Evaluation" class="pseudocode-container quarto-float" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number="true" data-line-number-punc=":">
+<div id="alg-Iterative-Policy-Evaluation" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":" data-pseudocode-number="1">
 <div class="pseudocode">
 \begin{algorithm} \caption{Iterative Policy Evaluation, for estimating $V \approx v_{\pi}$}\begin{algorithmic} \State Input: $\pi$, the policy to be evaluated, default to uniform random policy \State Algorithm parameter: a small threshold $\theta &gt; 0$ determining accuracy of estimation \State $V(s) \leftarrow \leftarrow \vec 0 \forall s \in S$ \REPEAT \STATE $\Delta \leftarrow 0$ \FORALL { $s\in S$} \STATE $v \leftarrow V(s)$ \STATE $V(s) \leftarrow \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]\quad$ \comment{ Bellman equation} \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$ \ENDFOR \UNTIL{$\Delta &lt; \theta$} \State Output: $V \approx v_{\pi}$ \end{algorithmic} \end{algorithm}
 </div>
@@ -7226,7 +7226,7 @@ Learning Objectives
 <p>And, we can compute <img src="https://latex.codecogs.com/png.latex?q_%CF%80%20(s,a)"> from <img src="https://latex.codecogs.com/png.latex?v_%CF%80"> by:</p>
 <p><span id="eq-action-value-function"><img src="https://latex.codecogs.com/png.latex?%0Aq_%7B%5Cpi%7D(s,a)%20=%20%5Csum_%7Bs',r%7D%20p(s',r%7Cs,a)%5Br%20+%20%5Cgamma%20v_%7B%5Cpi%7D(s')%5D%0A%5Ctag%7B2%7D"></span></p>
 <p>this is the the key step the policy improvement step of the policy iteration algorithm.</p>
-<div id="alg-Policy-Iteration" class="pseudocode-container quarto-float" data-pseudocode-number="2" data-caption-prefix="Algorithm" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number="true" data-line-number-punc=":">
+<div id="alg-Policy-Iteration" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":" data-pseudocode-number="2">
 <div class="pseudocode">
 \begin{algorithm} \caption{Policy Iteration, for estimating $\pi \approx \pi_{\star}$}\begin{algorithmic} \State Input: $\pi$, the policy to be evaluated \State Algorithm parameter: a small threshold $\theta &gt; 0$ determining accuracy of estimation \State Initialize $V(s) \in \mathbb{R}, \quad \pi(s) \in A(s)\ \forall s\in S,\quad V(terminal)= 0$ \State \State {Policy Evaluation} \REPEAT \STATE $\Delta \leftarrow 0$ \FORALL { $s\in S$} \STATE $v \leftarrow V(s)$ \STATE $V(s) \leftarrow \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$ \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$ \ENDFOR \UNTIL{$\Delta &lt; \theta$} \State \State {Policy Improvement} \ForAll { $s\in S$} \State old-action $\leftarrow \pi(s)$ \State $\pi(s) \leftarrow \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]\quad$ \comment{ greedyfication} \If {old-action $\neq \pi(s)$} \State policy-stable $\leftarrow$ false \EndIf \EndFor \If {policy-stable} \Return {$V \approx v_\star,\ \pi \approx \pi_\star$} \Else \State go to Policy Evaluation \EndIf \end{algorithmic} \end{algorithm}
 </div>
@@ -7237,7 +7237,7 @@ Learning Objectives
 <p>Value iteration is an important example of Generalized Policy Iteration. It is an iterative algorithm that computes the optimal value function and the optimal policy for a given MDP but it does not directly referrence a particular policy.</p>
 <p>In value iteration, the algorithm starts with an initial estimate of the value function and iteratively runs a single step of greedy polict evaluation per step, using the greedy value to update the state-value function.</p>
 <p>updates the value function until it converges to the optimal value function.</p>
-<div id="alg-Value-Iteration" class="pseudocode-container quarto-float" data-pseudocode-number="3" data-caption-prefix="Algorithm" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number="true" data-line-number-punc=":">
+<div id="alg-Value-Iteration" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":" data-pseudocode-number="3">
 <div class="pseudocode">
 \begin{algorithm} \caption{Value Iteration, for estimating $\pi \approx \pi_{\star}$}\begin{algorithmic} \State Input: $\pi$, the policy to be evaluated \State Algorithm parameter: a small threshold $\theta &gt; 0$ determining accuracy of estimation \State Initialize $V(s) \leftarrow \vec{0} \forall s \in \mathbb{R}$ \REPEAT \STATE $\Delta \leftarrow 0$ \FORALL { $s\in S$} \STATE $v \leftarrow V(s)$ \STATE $V(s) \leftarrow max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$ \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$ \ENDFOR \UNTIL{$\Delta &lt; \theta$} \State Output: $V \approx v_{\pi}$ such that \State $\pi(s) = \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$ \end{algorithmic} \end{algorithm}
 </div>

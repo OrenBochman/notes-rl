@@ -330,7 +330,7 @@ SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-sarsa" class="pseudocode-container quarto-float" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em" data-comment-delimiter="#" data-line-number="true" data-caption-prefix="Algorithm" data-pseudocode-number="1">
+<div id="alg-sarsa" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-comment-delimiter="#" data-pseudocode-number="1" data-line-number-punc=":" data-no-end="false" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{SARSA($\alpha,\epsilon$)}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -392,7 +392,7 @@ Q-learning (off-policy TD control)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-q-learning" class="pseudocode-container quarto-float" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em" data-comment-delimiter="#" data-line-number="true" data-caption-prefix="Algorithm" data-pseudocode-number="2">
+<div id="alg-q-learning" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-comment-delimiter="#" data-pseudocode-number="2" data-line-number-punc=":" data-no-end="false" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{Q-learning Off-policy TD control}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \For {each step of e} \State Choose A from $A_B(S)$ using any ergodic Behavioural policy $B$ - perhaps the $\epsilon$-greedy induced by Q. \State Take action A, observe R, S' \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \max_a Q(S',a) - Q(S, A)]$ \State $S \leftarrow S'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -580,7 +580,7 @@ Expected Sarsa
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-q-learning" class="pseudocode-container quarto-float" data-line-number-punc=":" data-no-end="false" data-indent-size="1.2em" data-comment-delimiter="#" data-line-number="true" data-caption-prefix="Algorithm" data-pseudocode-number="3">
+<div id="alg-q-learning" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-comment-delimiter="#" data-pseudocode-number="3" data-line-number-punc=":" data-no-end="false" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{expected SARSA}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \sum_a \pi(a|S') Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \State $S$ is terminal \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
