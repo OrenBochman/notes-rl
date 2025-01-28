@@ -794,7 +794,7 @@ Note&nbsp;1: MC prediction fist visit for estimating <span class="math inline">V
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-gradient-mc" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-pseudocode-number="1" data-indent-size="1.2em" data-no-end="false" data-line-number-punc=":" data-comment-delimiter="#" data-line-number="true">
+<div id="alg-gradient-mc" class="pseudocode-container quarto-float" data-no-end="false" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-line-number="true" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{GradientMC($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$ \State Algorithm parameters: \State $\qquad \alpha \in (0, 1]$ step size \State Initialize: \State $\qquad \mathbf{w} \leftarrow x \in \mathbb{R^d} \text{ arbiterly}$ (e.g. w=0) \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = 0, 1, \ldots, T-1$:} \State $\mathbf{w} \leftarrow w_t + \alpha [G_t - \hat{v}(S_t , \mathbf{w_1})] \nabla \hat{v}(S_t , \mathbf{w})$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -950,7 +950,7 @@ The Semi-gradient TD(0) algorithm for estimating <span class="math inline">v_\pi
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-td-zero" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-pseudocode-number="2" data-indent-size="1.2em" data-no-end="false" data-line-number-punc=":" data-comment-delimiter="#" data-line-number="true">
+<div id="alg-td-zero" class="pseudocode-container quarto-float" data-no-end="false" data-pseudocode-number="2" data-caption-prefix="Algorithm" data-line-number="true" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{Semi-gradient TD(0) for estimating $v_\pi$}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$ \State Algorithm parameters: \State $\qquad \alpha \in (0, 1]$ step size \State $\qquad \gamma \in [0, 1]$ discount factor \State Initialize: \State $\qquad value function weights w \leftarrow x \in \mathbb{R}^d \quad \forall s \in \mathcal{S}$ (e.g. w=0) \FORALL {episode $e$:} \State $Initialize S$ \FORALL {step $S \in e$:} \State $\text{Choose } A \sim \pi(\cdot \mid S)$ \State Take action $A$, observe $R, S'$ \State $w \leftarrow w + \alpha [R + \gamma \hat{v}(S', \mathbf{w}) - \hat{v}(S, \mathbf{w})] \nabla \hat{v}(S, \mathbf{w})$ \State $S \leftarrow S'$ \State until $S$ is terminal \ENDFOR \ENDFOR \end{algorithmic} \end{algorithm}
 </div>

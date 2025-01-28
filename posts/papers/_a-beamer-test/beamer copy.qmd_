@@ -1,0 +1,292 @@
+---
+title: "Habits"
+author: "John Doe"
+format:
+  beamer:
+    slide-level: 2
+---
+
+
+## Slide
+
+### Alert block {.alert}
+
+Content
+
+### Example block {.example}
+
+Content
+
+\begin{frame}
+\frametitle{There Is No Largest Prime Number}
+\framesubtitle{The proof uses \textit{reductio ad absurdum}.}
+\begin{theorem}
+There is no largest prime number.
+\end{theorem}
+\begin{proof}
+\begin{enumerate}
+\item<1-| alert@1> Suppose $p$ were the largest prime number.
+\item<2-> Let $q$ be the product of the first $p$ numbers.
+\item<3-> Then $q+1$ is not divisible by any of them.
+\item<1-> Thus $q+1$ is also prime and greater than $p$.\qedhere
+\end{enumerate}
+\end{proof}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Training Deep Neural Networks}
+    \centering
+    \begin{tikzpicture}[remember picture, overlay]
+    \node[anchor=north west, inner sep=0] at ([xshift=20pt, yshift=-20pt]current page.north west) {\includegraphics[width=40pt]{logo.png}};
+        \node[anchor=north east, inner sep=0] at ([xshift=-20pt, yshift=-20pt]current page.north east) {\includegraphics[width=100pt]{youtube.png}};
+        \draw[accentcolor, line width=2pt] ([yshift=-20pt]current page.north west) -- ([yshift=-20pt]current page.north east);
+    \end{tikzpicture}
+
+    \vspace{10pt} % Add vertical spacing
+
+    \begin{flushleft}
+        \textbf{Maziar Raissi}
+
+        Assistant Professor \\
+        Department of Applied Mathematics \\
+        University of Colorado Boulder \\
+        \texttt{maziar.raissi@colorado.edu}
+    \end{flushleft}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Tabular Data}
+    \begin{tikzpicture}[remember picture, overlay]
+        \node[anchor=north west, inner sep=0] at ([xshift=20pt, yshift=-20pt]current page.north west) {\includegraphics[width=40pt]{logo.png}};
+        \node[anchor=north east, inner sep=0] at ([xshift=-20pt, yshift=-20pt]current page.north east) {\includegraphics[width=100pt]{youtube.png}};
+         \draw[accentcolor, line width=2pt] ([yshift=-20pt]current page.north west) -- ([yshift=-20pt]current page.north east);
+        \end{tikzpicture}
+
+
+    \vspace{10pt}
+
+    The goal of statistics is to come up with a "model" that "explains" the data.
+    The goal of machine (deep) learning is to come up with an "algorithm" that "performs" well on some "test" data.
+    \begin{itemize}
+        \item $x_i \in \mathbb{R}^d, y_i \in \{1,2,..., k\}, i = 1, ..., N \rightarrow$ training data
+        \item $x_i^\prime \in \mathbb{R}^d, y_i^\prime \in \{1,2,..., k\}, i = 1, ..., N' \rightarrow$ validation data
+        \item $x_i'' \in \mathbb{R}^d, y_i'' \in \{1,2,..., k\}, i = 1, ..., N'' \rightarrow$ test data
+    \end{itemize}
+    \textbf{Performance metric} (e.g., *accuracy*)
+     \begin{itemize}
+         \item $\hat{y} = f_{\alpha,\beta}(x) \rightarrow$ prediction of model $f_{\alpha,\beta}$ at input $x$
+        \item $\alpha \rightarrow$ hyper-parameters of the model
+        \item $\beta \rightarrow$ parameters of the model
+        \item $\hat{y} = f_{\alpha^\*, \beta^\*}(x_i) \rightarrow$ predictions of the "optimal" model on the test data
+     \end{itemize}
+    Accuracy = $\frac{\sum_{i=1}^{N''} \mathbb{I}(y_i'' = \hat{y_i})}{N''}$
+
+    \vspace{10pt}
+
+    \textbf{Model/Algorithm}
+
+    $f_{\alpha,\beta}(x) = \arg \max_{j=1,...,k} p_{\alpha,\beta}^{(j)}(x)$
+
+    $p_{\alpha,\beta}^{(j)}(x) \rightarrow$ j-th element of the probability vector $p_{\alpha,\beta}(x) \in \mathbb{R}^k$
+
+    $\sum_{j=1}^k p_{\alpha,\beta}^{(j)}(x) = 1 \text{ and } p_{\alpha,\beta}^{(j)}(x) \geq 0, \forall j = 1,...,k$
+
+    \textbf{Training}
+        \begin{align*}
+        L_{\alpha}(\beta) = -\sum_{i=1}^N log p_{\alpha,\beta}^{(y_i)}(x_i) \rightarrow \text{ loss function (negative log likelihood)}
+    \end{align*}
+
+    $\beta^\* = \arg \min_{\beta} L_{\alpha}(\beta)$ given $\alpha$ (i.e., $\beta^\*$ is a function of $\alpha$)
+     \vspace{10pt}
+
+    \textbf{Validation}
+        \begin{itemize}
+            \item $\hat{y_i} = f_{\alpha,\beta^\*(\alpha)}(x_i^\prime) \rightarrow$ predictions of the model on the validation data
+            \item $\alpha^\* = \arg \max_{\alpha} \frac{\sum_{i=1}^{N'}\mathbb{I}(\hat{y_i} = y_i^\prime)}{N'}$
+            \item Multi-Layer Perceptron (MLP)
+             \item $p_{\alpha,\beta}(x) = softmax(W ReLU(Vx + a) +b)$
+        \end{itemize}
+\end{frame}
+\begin{frame}
+    \frametitle{Tabular Data}
+    \begin{tikzpicture}[remember picture, overlay]
+        \node[anchor=north west, inner sep=0] at ([xshift=20pt, yshift=-20pt]current page.north west) {\includegraphics[width=40pt]{logo.png}};
+        \node[anchor=north east, inner sep=0] at ([xshift=-20pt, yshift=-20pt]current page.north east) {\includegraphics[width=100pt]{youtube.png}};
+          \draw[accentcolor, line width=2pt] ([yshift=-20pt]current page.north west) -- ([yshift=-20pt]current page.north east);
+        \end{tikzpicture}
+
+    \vspace{10pt}
+    \begin{tabular}{ccccc}
+        Sepal.Length & Sepal.Width & Petal.Length & Petal.Width & Species \\
+        \hline
+        5.5 & 2.5 & 4.0 & 1.3 & versicolor \\
+        5.0 & 2.0 & 3.5 & 1.0 & versicolor \\
+        6.7 & 2.5 & 5.8 & 1.8 & virginica  \\
+        5.6 & 3.0 & 4.5 & 1.5 & versicolor \\
+        5.2 & 2.7 & 3.9 & 1.4 & versicolor \\
+        5.0 & 3.5 & 1.3 & 0.3 & setosa     \\
+        6.4 & 2.7 & 5.3 & 1.9 & virginica  \\
+        6.4 & 2.8 & 5.6 & 2.2 & virginica  \\
+        5.1 & 3.8 & 1.6 & 0.2 & setosa     \\
+        5.1 & 3.7 & 1.5 & 0.4 & setosa     \\
+    \end{tabular}
+
+    \vspace{10pt}
+
+    Number of observations: 150 \hspace{10pt} Number of variables: 5
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{An overview of gradient descent optimization algorithms}
+     \begin{tikzpicture}[remember picture, overlay]
+        \node[anchor=north west, inner sep=0] at ([xshift=20pt, yshift=-20pt]current page.north west) {\includegraphics[width=40pt]{logo.png}};
+        \node[anchor=north east, inner sep=0] at ([xshift=-20pt, yshift=-20pt]current page.north east) {\includegraphics[width=100pt]{youtube.png}};
+         \draw[accentcolor, line width=2pt] ([yshift=-20pt]current page.north west) -- ([yshift=-20pt]current page.north east);
+    \end{tikzpicture}
+     \vspace{10pt}
+
+    \begin{minipage}{0.7\textwidth}
+    \begin{verbatim}
+#include <stdio.h>
+int main()
+{
+   printf("Hello");
+   return 0;
+}
+    \end{verbatim}
+\end{minipage}
+
+\begin{minipage}{0.3\textwidth}
+\centering
+\includegraphics[width=150pt]{compiller.png}
+\end{minipage}
+
+    Source code
+
+    \vspace{10pt}
+
+    \begin{flushleft}
+        \begin{verbatim}
+100010101010101
+000100101010111
+011111100110000
+001011001101010
+010111011100011
+011111001111000
+000110011110101
+010010010101000
+        \end{verbatim}
+    \end{flushleft}
+
+    Executable code
+    \vspace{10pt}
+
+    Deep Learning: An algorithm that writes an algorithm
+
+    \begin{itemize}
+        \item Source Code: Data (examples/experiences)
+        \item Compiler: Deep Learning
+        \item Executable Code: Deployable Model
+    \end{itemize}
+        \vspace{10pt}
+        \begin{itemize}
+        \item Deep: Function Compositions $f_L \circ f_{L-1} \circ ... f_2 \circ f_1$
+        \item Learning: Loss Function, Back-propagation, and Gradient Descent
+    \end{itemize}
+
+    \vspace{10pt}
+    min L($\theta$) \\
+    $\theta$
+    \begin{itemize}
+       \item  L($\theta$) \approx J($\theta$) $\rightarrow$ noisy estimate of the objective function (e.g., due to mini-batching)
+    \end{itemize}
+     \vspace{10pt}
+   \textbf{Stochastic Gradient Descent}
+   \begin{itemize}
+       \item $\theta_{t+1} = \theta_{t} - \gamma \nabla_\theta J(\theta)$
+       \item  $J: \mathbb{R}^d \rightarrow \mathbb{R} \qquad$ one back-propagation (fast)
+      \item $\nabla_\theta J : \mathbb{R}^d \rightarrow \mathbb{R}^d$
+   \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{An overview of gradient descent optimization algorithms}
+    \begin{tikzpicture}[remember picture, overlay]
+        \node[anchor=north west, inner sep=0] at ([xshift=20pt, yshift=-20pt]current page.north west) {\includegraphics[width=40pt]{logo.png}};
+        \node[anchor=north east, inner sep=0] at ([xshift=-20pt, yshift=-20pt]current page.north east) {\includegraphics[width=100pt]{youtube.png}};
+         \draw[accentcolor, line width=2pt] ([yshift=-20pt]current page.north west) -- ([yshift=-20pt]current page.north east);
+    \end{tikzpicture}
+
+    \vspace{10pt}
+   \begin{itemize}
+        \item $\nabla_\theta J: \mathbb{R}^d \rightarrow \mathbb{R}^d \qquad d$ back-propagations (slow)  \textbf{RMSprop}
+        \item $\nabla_\theta^2 J : \mathbb{R}^d \rightarrow \mathbb{R}^{dxd}$
+    \end{itemize}
+  \textbf{Momentum}
+    \begin{itemize}
+        \item $v_t = \gamma v_{t-1} + \eta \nabla_\theta J(\theta_t)$
+        \item $\theta_{t+1} = \theta_t - v_t$
+    \end{itemize}
+
+     \textbf{Nesterov Accelerated Gradient (NAG)}
+     \begin{itemize}
+        \item $v_t = \gamma v_{t-1} + \eta \nabla_\theta J(\theta_t - \gamma v_{t-1})$
+        \item $\theta_{t+1} = \theta_t - v_t$
+     \end{itemize}
+     \textbf{Adagrad}
+    \begin{itemize}
+        \item $g_t = \nabla_\theta J(\theta_t)$
+        \item $\theta_{t+1} = \theta_t - \frac{\eta}{\sqrt{G_t + \epsilon}} \odot g_t$
+        \item $G_t = \sum_{\tau=1}^t g_\tau \odot g_\tau$
+    \end{itemize}
+
+   \textbf{Adadelta}
+   \begin{itemize}
+        \item $E[g^2]_t = \gamma E[g^2]_{t-1} + (1 - \gamma) g_t^2$
+        \item $\Delta\theta_t = \theta_{t+1} - \theta_t$
+         \item $\Delta\theta_t = - \frac{\eta}{\sqrt{E[g^2]_t + \epsilon}} g_t$
+        \item units don't match
+        \item $\Delta\theta_t = \frac{RMS[\Delta\theta]_{t-1}}{RMS[g]_t} g_t$
+    \end{itemize}
+
+$E[g^2]_t = 0.9E[g^2]_{t-1} + 0.1g_t^2$
+$\theta_{t+1} = \theta_t - \frac{\eta}{\sqrt{E[g^2]_t + \epsilon}} g_t$
+\vspace{10pt}
+ \textbf{Adam}
+ \begin{itemize}
+     \item $m_t = \beta_1 m_{t-1} + (1-\beta_1)g_t$
+     \item $v_t = \beta_2 v_{t-1} + (1-\beta_2)g_t^2$
+     \item $\hat{m}_t = \frac{m_t}{1 - \beta_1^t}$
+     \item $\hat{v}_t = \frac{v_t}{1 - \beta_2^t}$   \textit{bias-corrected}
+     \item $\theta_{t+1} = \theta_t - \frac{\eta}{\sqrt{\hat{v}_t + \epsilon}}\hat{m}_t$
+ \end{itemize}
+
+\vspace{10pt}
+\textbf{AdaMax}
+\begin{itemize}
+    \item $u_t = \max(\beta_2 u_{t-1}, |g_t|)$
+    \item $\theta_{t+1} = \theta_t - \frac{\eta}{u_t} \hat{m}_t$
+\end{itemize}
+\vspace{10pt}
+
+\textbf{Nadam}
+\begin{itemize}
+    \item $\theta_{t+1} = \theta_t - \frac{\eta}{\sqrt{\hat{v}_t + \epsilon}} ((\beta_1 \hat{m}_{t-1} + (1-\beta_1) g_t))$ → Adam
+\end{itemize}
+
+\vspace{10pt}
+Ruder, Sebastian. "An overview of gradient descent optimization algorithms." arXiv preprint arXiv:1609.04747 (2016).
+\end{frame}
+\begin{frame}
+    \frametitle{Questions?}
+    \begin{tikzpicture}[remember picture, overlay]
+    \node[anchor=north west, inner sep=0] at ([xshift=20pt, yshift=-20pt]current page.north west) {\includegraphics[width=40pt]{logo.png}};
+        \node[anchor=north east, inner sep=0] at ([xshift=-20pt, yshift=-20pt]current page.north east) {\includegraphics[width=100pt]{youtube.png}};
+         \draw[accentcolor, line width=2pt] ([yshift=-20pt]current page.north west) -- ([yshift=-20pt]current page.north east);
+    \end{tikzpicture}
+        \vspace{10pt}
+\end{frame}
+\end{document}

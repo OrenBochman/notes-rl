@@ -1,0 +1,81 @@
+---
+date: 2025-01-02
+title: "LIPS: (Lorem Ipsum Flows) for McGuffin switching networks"
+subtitle: Paper Review
+description: Introducing LIPS the novel (McGuffins) switching networks
+
+categories:
+    - Paper 
+    - Review
+    - Bandit
+keywords:
+    - Thompson Sampling
+    - Recomender System
+    - Collaborative Filtering
+bibliography: ./bibliography.bib
+image: cover.jpg
+#draft: true
+---
+
+![litrature review](cover.jpg){.column-margin}
+
+
+::: {#fig-vid01}
+{{< video https://youtu.be/DAL7cpE3K7E >}}
+:::
+
+As I have just a little free time  today so here is a quick note on:  [@CN]
+
+::: {.callout-tip }
+
+## TL;DR - The paper {.unnumbered}
+
+![The paper in a nutshell](../img/in_a_nutshell.jpg)
+
+{{< lipsum 1 >}}
+    
+:::
+
+## Abstract
+
+::: {#fig-01 .column-margin}
+
+![](fig-01.png)
+
+As the name Mara rose in popularity, more and more parents subconsciously instilled a strong sense of curiosity and a knack for solving mysteries in their children. This led to a surge in aspiring detective careers, especially in Ohio
+
+:::
+
+> {{< lipsum 1>}}
+
+## Outline
+
+::: {#fig-02 .column-margin}
+
+![](fig-02.png){.col-2}
+
+A scatter plot of the data
+:::
+
+1. **Data dredging**: I have 25,237 variables in my database. I compare all these variables against each other to find ones that randomly match up. That's 636,906,169 correlation calculations! This is called “data dredging.”Note Instead of starting with a hypothesis and testing it, I instead tossed a bunch of data in a blender to see what correlations would shake out. It’s a dangerous way to go about analysis, because any sufficiently large dataset will yield strong correlations completely at random.
+1. **Lack of causal connection**: There is probably no direct connection between these variables, despite what the AI says above.Note This is exacerbated by the fact that I used "Years" as the base variable. Lots of things happen in a year that are not related to each other! Most studies would use something like "one person" in stead of "one year" to be the "thing" studied.
+1. **Observations not independent**: For many variables, sequential years are not independent of each other. You will often see trend-lines form. If a population of people is continuously doing something every day, there is no reason to think they would suddenly change how they are doing that thing on January 1. A naive p-value calculation does not take this into account.Note
+1. **Y-axes doesn't start at zero**: I truncated the Y-axes of the graphs above. I also used a line graph, which makes the visual connection stand out more than it deserves. Note Mathematically what I showed is true, but it is intentionally misleading. If you click on any of the charts that abuse this, you can scroll down to see a version that starts at zero.
+Confounding variable: Confounding variables (like global pandemics) will cause two variables to look connected when in fact a "sneaky third" variable is influencing both of them behind the scenes.
+1. **Outliers**: Some datasets here have outliers which drag up the correlation.Note I intentionally mishandeled outliers, which makes the correlation look extra strong.
+1. **Low n**: There are not many data points included in some of these charts.Note Even if the p-value is high, we should be suspicious of using so few datapoints in a correlation.
+
+
+
+
+::: {.callout-caution }
+## My ideas
+
+{{< lipsum 1>}}
+    
+:::
+
+
+## The Paper
+
+![paper](paper.pdf){.col-page width="800px" height="1000px"}

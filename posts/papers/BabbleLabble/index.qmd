@@ -1,0 +1,210 @@
+---
+date: 2025-01-28
+title: "Training Classifiers with Natural Language Explanations"
+subtitle: Paper Review
+description: "A review of the paper 'Training Classifiers with Natural Language Explanations' by Hancock et al."
+categories:
+    - Paper 
+    - Review
+    - NLP
+    - Classification
+    - Named Entity Recognition
+keywords:
+    - BabbleLabble
+    - Feature Engineering
+    - Function Learning
+    - Explanation-Based Learning
+    - Semantic Parsing
+    - Aggregation
+bibliography: ./bibliography.bib
+image: cover.jpg
+---
+
+![litrature review](cover.jpg){.column-margin}
+
+::: {#fig-vid01 .column-margin}
+{{< video https://youtu.be/YBeAX-deMDg >}}
+
+Babble Labble: Learning From Natural Language Explanations (NIPS 2017 Demo)
+:::
+
+::: {#fig-vid01 .column-margin}
+{{< video https://youtu.be/4cgvIh9DUrg >}}
+
+Braden Hancock - Training Classifiers with Natural Language Explanations
+:::
+
+In [@hancock2018trainingclassifiersnaturallanguage] the authors consider how to learn labeling functions from natural language explanations. Such explanations can come from a data labeler on Amazon mechnical Turk, a domain expert and perhaps from an LLM. Labeling function capture a heuristic for labeling data.
+The author ties it up with some work on **data programming** which lead to [snorkel](https://www.snorkel.org/) another data labeling tool. This paper isn't about RL at all. It is interesting for a number if reasons.
+
+The hook for me was its approach to aggregation. Since Scott E. Page pointed out the challenges of aggregation in his book [The Difference](https://www.amazon.com/Difference-Diversity-Creates-Complexity-Scott/dp/0691138540) I have been considering how it manifests in many forms - particularly in language emergence.
+
+ The chart I saw for the presentation was extremely similar to another chart I had seen in a paper on emergent languages. It looked like this paper was solving an aggregation problem I had been considering in emergent languages. It turned out to be a coincidence. These are different problems, and they aggregation is for different things. And yet there still seems to be an underlying similarity.
+
+1. Another aspect of the paper is the approach to aggregating weak noisy classifier into a more powerful one. This aspect seems to also have merits for agents that are learning to discriminate together with learning a language. It is interesting that both Yoav Golderg and the Authors of this paper think that parsing accuracy is not that important since the parsers are good enough and their system is built to be robust to errors.
+1. It uses **semantic parsers** to convert natural language explanations into labeling functions. Back in 2019  [Yoav Goldberg](https://youtu.be/e12danHhlic?t=853) i suggested in that too often NLP devs use RegEx instead of a more robust approach based on syntax trees that can be constructed thanks to Spacy. I think semantic parsers are perhaps one step further where we take the parse tree and convert it to a program.
+1. Seems similar to the approach of I saw in [Prodigy](https://explosion.ai/blog/prodigy-annotation-tool-active-learning) by spacey core developer [Ines Montani](https://ines.io/) and others.
+1. It implements [Explanation-Based Learning](https://orenbochman.github.io/blog/notes/cognitivie-ai-cs7637/17-explanation-based-learning/17-explanation-based-learning.html) from  Cognitive AI (CS7637) course.
+
+
+::: {.callout-tip }
+
+## TL;DR - The paper {.unnumbered}
+
+![The paper in a nutshell](../img/in_a_nutshell.jpg)
+
+BabbleLabble is a framework for training classifiers in which annotators provide natural language explanations for labeling decisions. These explanations are parsed into labeling functions that generate noisy labels for unlabeled data. The framework consists of a semantic parser, filter bank, and label aggregator. Experiments on relation extraction tasks show that users can train classifiers 5-100× faster by providing explanations instead of just labels. The filter bank effectively removes incorrect labeling functions, and the label aggregator combines labels into probabilistic labels for training a discriminative model. The noisy labels provide weak supervision that promotes generalization. 
+    
+:::
+
+::: {#fig-01 .column-margin}
+
+![BabbleLabble UI](fig-01.png){.column-margin}
+
+In BabbleLabble, the user provides a natural language explanation for each labeling decision. These explanations are parsed into labeling functions that convert unlabeled data into a large labeled dataset for training a classifier.
+:::
+
+## Abstract
+
+> Training accurate classifiers requires many labels, but each label provides only limited information (one bit for binary classification). In this work, we propose *BabbleLabble*, a framework for training classifiers in which an annotator provides a natural language explanation for each labeling decision. A semantic parser converts these explanations into programmatic *labeling functions* that generate noisy labels for an arbitrary amount of unlabeled data, which is used to train a classifier. On three relation extraction tasks, we find that users are able to train classifiers with comparable F1 scores from 5-100× faster by providing explanations instead of just labels. Furthermore, given the inherent imperfection of labeling functions, we find that a simple rule-based semantic parser suffices. --- [@hancock2018trainingclassifiersnaturallanguage]
+
+
+## Outline
+
+::: {#fig-02 .column-margin}
+![System Overview](fig-02.png){.column-margin}
+
+Natural language explanations are parsed into candidate labeling functions (LFs). Many incorrect LFs are filtered out automatically by the filter bank. The remaining functions provide heuristic labels over the unlabeled dataset, which are aggregated into one noisy label per example, yielding a large, noisily-labeled training set for a classifier.
+:::
+
+
+::: {#fig-03 .column-margin}
+![Seamntic Parse of An Explanation](fig-03.png){.column-margin}
+
+Valid parses are found by iterating over increasingly large sub-spans of the input looking for matches among the right hand sides of the rules in the grammar. Rules are either lexical (converting tokens into symbols), unary (converting one symbol into another symbol), or compositional (combining many symbols into a single higher-order symbol). A rule may optionally ignore unrecognized tokens in a span (denoted here with a dashed line).
+:::
+
+### Introduction
+- Describes the standard protocol for collecting labeled data for training classifiers.
+- Highlights limitations of labeling: each label only provides a single bit of information.
+- Mentions previous works' approaches to improve information gain from examples.
+- Presents `BabbleLabble`, a framework where annotators provide natural language explanations for each labeling decision.
+
+### The `BabbleLabble` Framework
+- Describes how `BabbleLabble` converts explanations and unlabeled data into a noisy training set.
+- Presents the three main components of `BabbleLabble`: semantic parser, filter bank, and label aggregator.
+- Mentions how explanations provide high-level information about patterns in the data.
+- Notes that the semantic parser converts explanations into a set of logical forms representing labeling functions.
+- Explains how the filter bank removes incorrect labeling functions based on semantic and pragmatic criteria.
+- Describes how the label aggregator combines labels from the labeling functions into probabilistic labels for each example.
+- Explains the benefits of training a discriminative model using the noisy labels instead of classifying directly with the label aggregator.
+
+### Explanations
+- Discusses the format and content of user-provided explanations.
+- Highlights that explanations should refer to specific aspects of the example.
+
+### Semantic Parser
+- Describes the goal of the semantic parser: generate a set of candidate labeling functions (LFs).
+- Presents the rule-based semantic parser used in `BabbleLabble` and its key features.
+- Discusses the parser's grammar and the included predicates.
+- Notes that the parser is domain-independent, allowing transferability to new tasks.
+
+### Filter Bank
+- Explains the role of the filter bank: remove incorrect labeling functions without requiring ground truth labels.
+- Discusses the two types of filters: semantic and pragmatic.
+- Describes the purpose and operation of semantic and pragmatic filters.
+- Highlights the effectiveness of the filter bank in removing incorrect labeling functions.
+
+### Label Aggregator
+- Explains the function of the label aggregator: combine potentially conflicting labels from multiple labeling functions into a single probabilistic label.
+- Discusses the limitations of a simple majority vote approach.
+- Presents the data programming approach used in `BabbleLabble`, which models the relationship between true labels and labeling function outputs as a factor graph.
+
+### Discriminative Model
+- Discusses the advantages of using a discriminative model trained with noisy labels.
+- Explains how a discriminative model can leverage features not explicitly mentioned in explanations.
+- Notes that the noisy labels provide a form of weak supervision that promotes generalization.
+
+### Experimental Setup
+- Describes the three relation extraction tasks used for evaluation: Spouse, Disease, and Protein.
+- Presents details about each dataset: source, task description, and size.
+- Discusses the experimental settings: text preprocessing, semantic parser implementation, label aggregator, and discriminative model.
+- Mentions hyperparameter tuning and evaluation metrics.
+
+### Experimental Results
+- Presents the F1 scores achieved by `BabbleLabble` compared to traditional supervision.
+- Highlights the rate of improvement in F1 score with the number of user inputs.
+- Discusses the effectiveness of the filter bank in removing incorrect labeling functions.
+- Presents an analysis of the utility of incorrectly parsed labeling functions.
+- Compares using labeling functions as functions versus features.
+- Discusses the impact of unlabeled data on performance.
+
+### Related Work and Discussion
+- Discusses previous work on learning from natural language explanations.
+- Mentions research on learning from weak supervision, particularly in the context of relation extraction.
+- Highlights the potential of natural language as a high-bandwidth communication channel for machine learning.
+- Discusses future research directions, including applying the framework to other tasks and exploring more interactive settings.
+
+
+::: {.callout-caution }
+
+## My Thoughts {.unnumbered}
+
+### Big ideas
+
+1. [Always be on the lookout for tricks on how to convert^[TODO: make a cheat-sheet on this topic!?] a supervised learning task into an unsupervised one]{.mark}. While this paper fails to do so, it does provide a step in the right direction and more so one that yields a 100x speed up in labeling tasks. In reality this claim is a marketing shtick for their paper, however the real point is that if you have a labeling function, its utility grows in proportion to the amount of unlabeled data you can bring to bear.
+1. Branden Hancock keeps reiterating that [the bulk of the time spent in Labeling is understanding the text/data not the annotation]{.mark}. The authors point that time to elicit explanation is only double the time of labeling. Highlighting evidence or even writing an explanation is thus a small burden in comparison to just annotating the most significant part of the text?  Perhaps not yet if we include the benefits of the labeling functions that result in 6-10x more labels the math works out.
+1. It is easy to miss the most significant aspect of the paper - [the importance of the Filter Bank in creating value]{.mark}. However there is an extensive literature on PBE (Program By Example) that they do not seem to be aware of which can convert such examples into programs. 
+1. Another point made by Branden in support of Explanation is that [you can't highlight when the evidence is negative]{.mark} - i.e. when the classification is grounded in some context not being in the text.
+1. A third reason to like explanations is that data-centric tasks are forever changing. There are new requirements (e.g. a new class) or drifts in the classifiers's distributions. If you have collected labels you need to rethink the project but if you collected explanations it is easier to retain on more data then relabel. If there is a better semantic parser, you can swap it and re-train.
+
+### Devils and Details
+
+1. The most interesting aspects of the paper for RL are how an agent interacting with people can elicit explanation that can then be used to create labeling functions.
+1. The idea of how the labeling function are aggregated is also instructive. That said, I can't say that this is a big idea - it looks very much like ranking, weighting and even less powerful than TD-IDF. So what I mean is that when we learn a language probably want to learn features from functions not labels as labels do not generalize. If we also have a framing game that is driving language learning then we may have further uses for a sensible form of aggregation in our classifier. More abstractly, the RL agent needs to pick an action - that is usually like a classification of a state into an action space. For Life long learning we could 
+1. Q & A are a good often considered in the Semantic Parsing literature.
+1. LLM may well be useful for [closing the weak supervision loop]{.mark}. I.e. one can use a general purpose query to elicit explanations from an LLM. With a range of prompts one should be able to get different explanations.
+
+### Action Items
+
+1. Try babble labble, snorkel, prodigy, and SippyCup.
+1. Make a MVP of the filter bank.
+1. make a cheat-sheet on how to convert a supervised learning tasks into an unsupervised ones. These are ideas that disrupted the field of ML.
+1. close the loop on weak supervision with LLM for a RL agent
+1. compare this approach to other PBE 
+:::
+
+The people behind BabbleLabble are also behind Snorkel. Snorkel is a framework for building weakly supervised models. It is a more general framework that can be used for a wide range of tasks. BabbleLabble is a specific application of Snorkel to the task of training classifiers with natural language explanations. The key difference is that BabbleLabble focuses on the use of natural language explanations to generate labeling functions, while Snorkel is a more general framework for building weakly supervised models. 
+
+A point made on the Snorkel Site is that the people who worked on the tool moved on to building a platform. 
+Is this just to monetize their work? My guess is not. In reality there are many other tools that do much the same thing. Labeling data is not very glamorous but building a tool is just a ui and a classifier. You can't lock clients in and it is likely that each project required expensive customization. At some point it becomes simpler to do this in a form that is more general and can be used by future clients. This is harder in open source as you need consensus and a community. On the other hand in a platform each time you do a project you have added value to the platform. 
+
+From other talks by Snorkel people it seems that many companies invest massively in labeling datasets (i.e. teams with sizes of hundreds). Thus every small improvement in the process can have a big impact. And as a business model it makes a lot of sense to try to bring as many of those improvements in house.
+
+::: {.callout-tip }
+## Aggregation your'e No good for me {.unnumbered}
+
+Aggregation can take simple underlying components and combine them into arbitrarily complex structures. This is a powerful idea that is used in many areas of science and engineering. Here are a few examples:
+
+1. The Statistics the Central limit theorem allow us to aggregate many random variables into a Normal distributed one under fairly broad conditions.
+
+    > "Aggregate statistics can sometimes mask important information". -- Ben Bernanke
+1. In Physics we can aggregate the behavior of many particles into that of an  ensemble. We have a number of examples, the most famous being the ideal gas, statistical mechanics, the Ising model and the Potts model. Though the idea of aggregation is very much endemic to many areas of physics.
+
+    > "Imagine how difficult physics would be if electrons could think." -- Murray Gell-Mann
+1. In the case of a classifier we can aggregate many weak classifiers into a strong one. This is the idea behind **boosting** and **bagging**. This idea is behind well known algorithms like **Random Forest** and **Gradient Boosting** and even **Stable Diffusion**
+1. In the case of a language we can aggregate the meaning or semantics of many smaller units of meaning into larger ones. This is the idea behind **semantics**. This idea is behind well known algorithms like **Word2Vec** and **BERT** and even **GPT-3**
+1. Preferences can be aggregated into utility functions. This is the idea behind **utility theory**. This idea is behind demand theory.
+1. Information aggregation is the notion that the wisdom of the crowd is better than the wisdom of the individual. **The Wisdom of the Crowds** points out that diverse opinions can play a big role here. There are other notions here like the **Delphi Method**.
+1. Sensor Fusion via Kalman Filters, SLAM, and Particle Filters are ways to aggregate information from sensors. **The Kalman Filter** is a way to aggregate information from a sensor. **SLAM** is a way to aggregate information from a sensor. **Particle Filters** is a way to aggregate information from a sensor.
+1. Social Networks have a number of ways to aggregate information. **PageRank** is a way to aggregate the importance of a node in a network. **The Small World Phenomenon** is a way to aggregate the number of hops between two nodes. **The Strength of Weak Ties** is a way to aggregate the number of connections between two nodes. **The Friendship Paradox** is a way to aggregate the number of friends a person has.
+1. elections and voting have the notion of aggregation. **Arrow's Impossibility Theorem** points out that there is no perfect way to aggregate preferences. **The Condorcet Paradox** points out that there is no perfect way to aggregate opinions. **The Gibbard-Satterthwaite Theorem** points out that there is no perfect way to aggregate votes.
+1. In chaos theory many chaotic systems can become synchronized.
+
+
+:::
+
+
+## The Paper Annotated
+
+![paper](paper.pdf){.col-page width="800px" height="1000px"}

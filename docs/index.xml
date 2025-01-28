@@ -10,7 +10,322 @@
 <atom:link href="https://orenbochman.github.io/notes-rl/index.xml" rel="self" type="application/rss+xml"/>
 <description>Personal website, portfolio and blog</description>
 <generator>quarto-1.6.39</generator>
-<lastBuildDate>Fri, 17 Jan 2025 22:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 27 Jan 2025 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>Training Classifiers with Natural Language Explanations</title>
+  <link>https://orenbochman.github.io/notes-rl/posts/papers/BabbleLabble/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://orenbochman.github.io/notes-rl/posts/papers/BabbleLabble/cover.jpg" class="img-fluid figure-img"></p>
+<figcaption>litrature review</figcaption>
+</figure>
+</div><div id="fig-vid01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-vid01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/YBeAX-deMDg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vid01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Babble Labble: Learning From Natural Language Explanations (NIPS 2017 Demo)
+</figcaption>
+</figure>
+</div><div id="fig-vid01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-vid01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/4cgvIh9DUrg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vid01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Braden Hancock - Training Classifiers with Natural Language Explanations
+</figcaption>
+</figure>
+</div></div>
+
+<p>In <span class="citation" data-cites="hancock2018trainingclassifiersnaturallanguage">(Hancock et al. 2018)</span> the authors consider how to learn labeling functions from natural language explanations. Such explanations can come from a data labeler on Amazon mechnical Turk, a domain expert and perhaps from an LLM. Labeling function capture a heuristic for labeling data. The author ties it up with some work on <strong>data programming</strong> which lead to <a href="https://www.snorkel.org/">snorkel</a> another data labeling tool. This paper isn’t about RL at all. It is interesting for a number if reasons.</p>
+<p>The hook for me was its approach to aggregation. Since Scott E. Page pointed out the challenges of aggregation in his book <a href="https://www.amazon.com/Difference-Diversity-Creates-Complexity-Scott/dp/0691138540">The Difference</a> I have been considering how it manifests in many forms - particularly in language emergence.</p>
+<p>The chart I saw for the presentation was extremely similar to another chart I had seen in a paper on emergent languages. It looked like this paper was solving an aggregation problem I had been considering in emergent languages. It turned out to be a coincidence. These are different problems, and they aggregation is for different things. And yet there still seems to be an underlying similarity.</p>
+<ol type="1">
+<li>Another aspect of the paper is the approach to aggregating weak noisy classifier into a more powerful one. This aspect seems to also have merits for agents that are learning to discriminate together with learning a language. It is interesting that both Yoav Golderg and the Authors of this paper think that parsing accuracy is not that important since the parsers are good enough and their system is built to be robust to errors.</li>
+<li>It uses <strong>semantic parsers</strong> to convert natural language explanations into labeling functions. Back in 2019 <a href="https://youtu.be/e12danHhlic?t=853">Yoav Goldberg</a> i suggested in that too often NLP devs use RegEx instead of a more robust approach based on syntax trees that can be constructed thanks to Spacy. I think semantic parsers are perhaps one step further where we take the parse tree and convert it to a program.</li>
+<li>Seems similar to the approach of I saw in <a href="https://explosion.ai/blog/prodigy-annotation-tool-active-learning">Prodigy</a> by spacey core developer <a href="https://ines.io/">Ines Montani</a> and others.</li>
+<li>It implements <a href="https://orenbochman.github.io/blog/notes/cognitivie-ai-cs7637/17-explanation-based-learning/17-explanation-based-learning.html">Explanation-Based Learning</a> from Cognitive AI (CS7637) course.</li>
+</ol>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+TL;DR - The paper
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://orenbochman.github.io/notes-rl/posts/papers/img/in_a_nutshell.jpg" class="img-fluid figure-img"></p>
+<figcaption>The paper in a nutshell</figcaption>
+</figure>
+</div>
+<p>BabbleLabble is a framework for training classifiers in which annotators provide natural language explanations for labeling decisions. These explanations are parsed into labeling functions that generate noisy labels for unlabeled data. The framework consists of a semantic parser, filter bank, and label aggregator. Experiments on relation extraction tasks show that users can train classifiers 5-100× faster by providing explanations instead of just labels. The filter bank effectively removes incorrect labeling functions, and the label aggregator combines labels into probabilistic labels for training a discriminative model. The noisy labels provide weak supervision that promotes generalization.</p>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div id="fig-01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://orenbochman.github.io/notes-rl/posts/papers/BabbleLabble/fig-01.png" class="img-fluid figure-img"></p>
+<figcaption>BabbleLabble UI</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: In BabbleLabble, the user provides a natural language explanation for each labeling decision. These explanations are parsed into labeling functions that convert unlabeled data into a large labeled dataset for training a classifier.
+</figcaption>
+</figure>
+</div></div><section id="abstract" class="level2">
+<h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
+<blockquote class="blockquote">
+<p>Training accurate classifiers requires many labels, but each label provides only limited information (one bit for binary classification). In this work, we propose <em>BabbleLabble</em>, a framework for training classifiers in which an annotator provides a natural language explanation for each labeling decision. A semantic parser converts these explanations into programmatic <em>labeling functions</em> that generate noisy labels for an arbitrary amount of unlabeled data, which is used to train a classifier. On three relation extraction tasks, we find that users are able to train classifiers with comparable F1 scores from 5-100× faster by providing explanations instead of just labels. Furthermore, given the inherent imperfection of labeling functions, we find that a simple rule-based semantic parser suffices. — <span class="citation" data-cites="hancock2018trainingclassifiersnaturallanguage">(Hancock et al. 2018)</span></p>
+</blockquote>
+</section>
+<section id="outline" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="outline">Outline</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-02" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://orenbochman.github.io/notes-rl/posts/papers/BabbleLabble/fig-02.png" class="img-fluid figure-img"></p>
+<figcaption>System Overview</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Natural language explanations are parsed into candidate labeling functions (LFs). Many incorrect LFs are filtered out automatically by the filter bank. The remaining functions provide heuristic labels over the unlabeled dataset, which are aggregated into one noisy label per example, yielding a large, noisily-labeled training set for a classifier.
+</figcaption>
+</figure>
+</div><div id="fig-03" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://orenbochman.github.io/notes-rl/posts/papers/BabbleLabble/fig-03.png" class="img-fluid figure-img"></p>
+<figcaption>Seamntic Parse of An Explanation</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Valid parses are found by iterating over increasingly large sub-spans of the input looking for matches among the right hand sides of the rules in the grammar. Rules are either lexical (converting tokens into symbols), unary (converting one symbol into another symbol), or compositional (combining many symbols into a single higher-order symbol). A rule may optionally ignore unrecognized tokens in a span (denoted here with a dashed line).
+</figcaption>
+</figure>
+</div></div>
+<section id="introduction" class="level3">
+<h3 class="anchored" data-anchor-id="introduction">Introduction</h3>
+<ul>
+<li>Describes the standard protocol for collecting labeled data for training classifiers.</li>
+<li>Highlights limitations of labeling: each label only provides a single bit of information.</li>
+<li>Mentions previous works’ approaches to improve information gain from examples.</li>
+<li>Presents <code>BabbleLabble</code>, a framework where annotators provide natural language explanations for each labeling decision.</li>
+</ul>
+</section>
+<section id="the-babblelabble-framework" class="level3">
+<h3 class="anchored" data-anchor-id="the-babblelabble-framework">The <code>BabbleLabble</code> Framework</h3>
+<ul>
+<li>Describes how <code>BabbleLabble</code> converts explanations and unlabeled data into a noisy training set.</li>
+<li>Presents the three main components of <code>BabbleLabble</code>: semantic parser, filter bank, and label aggregator.</li>
+<li>Mentions how explanations provide high-level information about patterns in the data.</li>
+<li>Notes that the semantic parser converts explanations into a set of logical forms representing labeling functions.</li>
+<li>Explains how the filter bank removes incorrect labeling functions based on semantic and pragmatic criteria.</li>
+<li>Describes how the label aggregator combines labels from the labeling functions into probabilistic labels for each example.</li>
+<li>Explains the benefits of training a discriminative model using the noisy labels instead of classifying directly with the label aggregator.</li>
+</ul>
+</section>
+<section id="explanations" class="level3">
+<h3 class="anchored" data-anchor-id="explanations">Explanations</h3>
+<ul>
+<li>Discusses the format and content of user-provided explanations.</li>
+<li>Highlights that explanations should refer to specific aspects of the example.</li>
+</ul>
+</section>
+<section id="semantic-parser" class="level3">
+<h3 class="anchored" data-anchor-id="semantic-parser">Semantic Parser</h3>
+<ul>
+<li>Describes the goal of the semantic parser: generate a set of candidate labeling functions (LFs).</li>
+<li>Presents the rule-based semantic parser used in <code>BabbleLabble</code> and its key features.</li>
+<li>Discusses the parser’s grammar and the included predicates.</li>
+<li>Notes that the parser is domain-independent, allowing transferability to new tasks.</li>
+</ul>
+</section>
+<section id="filter-bank" class="level3">
+<h3 class="anchored" data-anchor-id="filter-bank">Filter Bank</h3>
+<ul>
+<li>Explains the role of the filter bank: remove incorrect labeling functions without requiring ground truth labels.</li>
+<li>Discusses the two types of filters: semantic and pragmatic.</li>
+<li>Describes the purpose and operation of semantic and pragmatic filters.</li>
+<li>Highlights the effectiveness of the filter bank in removing incorrect labeling functions.</li>
+</ul>
+</section>
+<section id="label-aggregator" class="level3">
+<h3 class="anchored" data-anchor-id="label-aggregator">Label Aggregator</h3>
+<ul>
+<li>Explains the function of the label aggregator: combine potentially conflicting labels from multiple labeling functions into a single probabilistic label.</li>
+<li>Discusses the limitations of a simple majority vote approach.</li>
+<li>Presents the data programming approach used in <code>BabbleLabble</code>, which models the relationship between true labels and labeling function outputs as a factor graph.</li>
+</ul>
+</section>
+<section id="discriminative-model" class="level3">
+<h3 class="anchored" data-anchor-id="discriminative-model">Discriminative Model</h3>
+<ul>
+<li>Discusses the advantages of using a discriminative model trained with noisy labels.</li>
+<li>Explains how a discriminative model can leverage features not explicitly mentioned in explanations.</li>
+<li>Notes that the noisy labels provide a form of weak supervision that promotes generalization.</li>
+</ul>
+</section>
+<section id="experimental-setup" class="level3">
+<h3 class="anchored" data-anchor-id="experimental-setup">Experimental Setup</h3>
+<ul>
+<li>Describes the three relation extraction tasks used for evaluation: Spouse, Disease, and Protein.</li>
+<li>Presents details about each dataset: source, task description, and size.</li>
+<li>Discusses the experimental settings: text preprocessing, semantic parser implementation, label aggregator, and discriminative model.</li>
+<li>Mentions hyperparameter tuning and evaluation metrics.</li>
+</ul>
+</section>
+<section id="experimental-results" class="level3">
+<h3 class="anchored" data-anchor-id="experimental-results">Experimental Results</h3>
+<ul>
+<li>Presents the F1 scores achieved by <code>BabbleLabble</code> compared to traditional supervision.</li>
+<li>Highlights the rate of improvement in F1 score with the number of user inputs.</li>
+<li>Discusses the effectiveness of the filter bank in removing incorrect labeling functions.</li>
+<li>Presents an analysis of the utility of incorrectly parsed labeling functions.</li>
+<li>Compares using labeling functions as functions versus features.</li>
+<li>Discusses the impact of unlabeled data on performance.</li>
+</ul>
+</section>
+<section id="related-work-and-discussion" class="level3">
+<h3 class="anchored" data-anchor-id="related-work-and-discussion">Related Work and Discussion</h3>
+<ul>
+<li>Discusses previous work on learning from natural language explanations.</li>
+<li>Mentions research on learning from weak supervision, particularly in the context of relation extraction.</li>
+<li>Highlights the potential of natural language as a high-bandwidth communication channel for machine learning.</li>
+<li>Discusses future research directions, including applying the framework to other tasks and exploring more interactive settings.</li>
+</ul>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+My Thoughts
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<section id="big-ideas" class="level3">
+<h3 class="anchored" data-anchor-id="big-ideas">Big ideas</h3>
+<ol type="1">
+<li><mark>Always be on the lookout for tricks on how to convert<sup>1</sup> a supervised learning task into an unsupervised one</mark>. While this paper fails to do so, it does provide a step in the right direction and more so one that yields a 100x speed up in labeling tasks. In reality this claim is a marketing shtick for their paper, however the real point is that if you have a labeling function, its utility grows in proportion to the amount of unlabeled data you can bring to bear.</li>
+<li>Branden Hancock keeps reiterating that <mark>the bulk of the time spent in Labeling is understanding the text/data not the annotation</mark>. The authors point that time to elicit explanation is only double the time of labeling. Highlighting evidence or even writing an explanation is thus a small burden in comparison to just annotating the most significant part of the text? Perhaps not yet if we include the benefits of the labeling functions that result in 6-10x more labels the math works out.</li>
+<li>It is easy to miss the most significant aspect of the paper - <mark>the importance of the Filter Bank in creating value</mark>. However there is an extensive literature on PBE (Program By Example) that they do not seem to be aware of which can convert such examples into programs.</li>
+<li>Another point made by Branden in support of Explanation is that <mark>you can’t highlight when the evidence is negative</mark> - i.e.&nbsp;when the classification is grounded in some context not being in the text.</li>
+<li>A third reason to like explanations is that data-centric tasks are forever changing. There are new requirements (e.g.&nbsp;a new class) or drifts in the classifiers’s distributions. If you have collected labels you need to rethink the project but if you collected explanations it is easier to retain on more data then relabel. If there is a better semantic parser, you can swap it and re-train.</li>
+</ol>
+</section>
+<section id="devils-and-details" class="level3">
+<h3 class="anchored" data-anchor-id="devils-and-details">Devils and Details</h3>
+<ol type="1">
+<li>The most interesting aspects of the paper for RL are how an agent interacting with people can elicit explanation that can then be used to create labeling functions.</li>
+<li>The idea of how the labeling function are aggregated is also instructive. That said, I can’t say that this is a big idea - it looks very much like ranking, weighting and even less powerful than TD-IDF. So what I mean is that when we learn a language probably want to learn features from functions not labels as labels do not generalize. If we also have a framing game that is driving language learning then we may have further uses for a sensible form of aggregation in our classifier. More abstractly, the RL agent needs to pick an action - that is usually like a classification of a state into an action space. For Life long learning we could</li>
+<li>Q &amp; A are a good often considered in the Semantic Parsing literature.</li>
+<li>LLM may well be useful for <mark>closing the weak supervision loop</mark>. I.e. one can use a general purpose query to elicit explanations from an LLM. With a range of prompts one should be able to get different explanations.</li>
+</ol>
+</section>
+<section id="action-items" class="level3">
+<h3 class="anchored" data-anchor-id="action-items">Action Items</h3>
+<ol type="1">
+<li>Try babble labble, snorkel, prodigy, and SippyCup.</li>
+<li>Make a MVP of the filter bank.</li>
+<li>make a cheat-sheet on how to convert a supervised learning tasks into an unsupervised ones. These are ideas that disrupted the field of ML.</li>
+<li>close the loop on weak supervision with LLM for a RL agent</li>
+<li>compare this approach to other PBE</li>
+</ol>
+</section>
+</div>
+</div>
+<p>The people behind BabbleLabble are also behind Snorkel. Snorkel is a framework for building weakly supervised models. It is a more general framework that can be used for a wide range of tasks. BabbleLabble is a specific application of Snorkel to the task of training classifiers with natural language explanations. The key difference is that BabbleLabble focuses on the use of natural language explanations to generate labeling functions, while Snorkel is a more general framework for building weakly supervised models.</p>
+<p>A point made on the Snorkel Site is that the people who worked on the tool moved on to building a platform. Is this just to monetize their work? My guess is not. In reality there are many other tools that do much the same thing. Labeling data is not very glamorous but building a tool is just a ui and a classifier. You can’t lock clients in and it is likely that each project required expensive customization. At some point it becomes simpler to do this in a form that is more general and can be used by future clients. This is harder in open source as you need consensus and a community. On the other hand in a platform each time you do a project you have added value to the platform.</p>
+<p>From other talks by Snorkel people it seems that many companies invest massively in labeling datasets (i.e.&nbsp;teams with sizes of hundreds). Thus every small improvement in the process can have a big impact. And as a business model it makes a lot of sense to try to bring as many of those improvements in house.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Aggregation your’e No good for me
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Aggregation can take simple underlying components and combine them into arbitrarily complex structures. This is a powerful idea that is used in many areas of science and engineering. Here are a few examples:</p>
+<ol type="1">
+<li><p>The Statistics the Central limit theorem allow us to aggregate many random variables into a Normal distributed one under fairly broad conditions.</p>
+<blockquote class="blockquote">
+<p>“Aggregate statistics can sometimes mask important information”. – Ben Bernanke</p>
+</blockquote></li>
+<li><p>In Physics we can aggregate the behavior of many particles into that of an ensemble. We have a number of examples, the most famous being the ideal gas, statistical mechanics, the Ising model and the Potts model. Though the idea of aggregation is very much endemic to many areas of physics.</p>
+<blockquote class="blockquote">
+<p>“Imagine how difficult physics would be if electrons could think.” – Murray Gell-Mann</p>
+</blockquote></li>
+<li><p>In the case of a classifier we can aggregate many weak classifiers into a strong one. This is the idea behind <strong>boosting</strong> and <strong>bagging</strong>. This idea is behind well known algorithms like <strong>Random Forest</strong> and <strong>Gradient Boosting</strong> and even <strong>Stable Diffusion</strong></p></li>
+<li><p>In the case of a language we can aggregate the meaning or semantics of many smaller units of meaning into larger ones. This is the idea behind <strong>semantics</strong>. This idea is behind well known algorithms like <strong>Word2Vec</strong> and <strong>BERT</strong> and even <strong>GPT-3</strong></p></li>
+<li><p>Preferences can be aggregated into utility functions. This is the idea behind <strong>utility theory</strong>. This idea is behind demand theory.</p></li>
+<li><p>Information aggregation is the notion that the wisdom of the crowd is better than the wisdom of the individual. <strong>The Wisdom of the Crowds</strong> points out that diverse opinions can play a big role here. There are other notions here like the <strong>Delphi Method</strong>.</p></li>
+<li><p>Sensor Fusion via Kalman Filters, SLAM, and Particle Filters are ways to aggregate information from sensors. <strong>The Kalman Filter</strong> is a way to aggregate information from a sensor. <strong>SLAM</strong> is a way to aggregate information from a sensor. <strong>Particle Filters</strong> is a way to aggregate information from a sensor.</p></li>
+<li><p>Social Networks have a number of ways to aggregate information. <strong>PageRank</strong> is a way to aggregate the importance of a node in a network. <strong>The Small World Phenomenon</strong> is a way to aggregate the number of hops between two nodes. <strong>The Strength of Weak Ties</strong> is a way to aggregate the number of connections between two nodes. <strong>The Friendship Paradox</strong> is a way to aggregate the number of friends a person has.</p></li>
+<li><p>elections and voting have the notion of aggregation. <strong>Arrow’s Impossibility Theorem</strong> points out that there is no perfect way to aggregate preferences. <strong>The Condorcet Paradox</strong> points out that there is no perfect way to aggregate opinions. <strong>The Gibbard-Satterthwaite Theorem</strong> points out that there is no perfect way to aggregate votes.</p></li>
+<li><p>In chaos theory many chaotic systems can become synchronized.</p></li>
+</ol>
+</div>
+</div>
+</section>
+</section>
+<section id="the-paper-annotated" class="level2">
+<h2 class="anchored" data-anchor-id="the-paper-annotated">The Paper Annotated</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="paper.pdf" class="col-page" width="800" height="1000"></p>
+<figcaption>paper</figcaption>
+</figure>
+</div>
+
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="ref-hancock2018trainingclassifiersnaturallanguage" class="csl-entry">
+Hancock, Braden, Paroma Varma, Stephanie Wang, Martin Bringmann, Percy Liang, and Christopher Ré. 2018. <span>“Training Classifiers with Natural Language Explanations.”</span> <a href="https://arxiv.org/abs/1805.03818">https://arxiv.org/abs/1805.03818</a>.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>TODO: make a cheat-sheet on this topic!?↩︎</p></li>
+</ol>
+</section></div> ]]></description>
+  <category>Paper</category>
+  <category>Review</category>
+  <category>NLP</category>
+  <category>Classification</category>
+  <category>Named Entity Recognition</category>
+  <guid>https://orenbochman.github.io/notes-rl/posts/papers/BabbleLabble/</guid>
+  <pubDate>Mon, 27 Jan 2025 22:00:00 GMT</pubDate>
+  <media:content url="https://orenbochman.github.io/notes-rl/posts/papers/BabbleLabble/cover.jpg" medium="image" type="image/jpeg"/>
+</item>
 <item>
   <title>Off-Policy Learning-to-Bid with AuctionGym</title>
   <link>https://orenbochman.github.io/notes-rl/posts/papers/Offpolicy-AuctionGym/</link>
@@ -2303,7 +2618,7 @@ SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-sarsa" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number="true" data-caption-prefix="Algorithm" data-no-end="false">
+<div id="alg-sarsa" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-no-end="false" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{SARSA($\alpha,\epsilon$)}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -2342,7 +2657,7 @@ Episodic Semi-gradient SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-td-sarsa" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="2" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number="true" data-caption-prefix="Algorithm" data-no-end="false">
+<div id="alg-td-sarsa" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="2" data-no-end="false" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{Episodic Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)}\begin{algorithmic} \State $\textbf{Input:}$ \State $\qquad \text{a differentiable action-value fn parameterization } \hat{q}: \mathcal{S} \times A \times \mathbb{R}^d \to \mathbb{R}$ \State $\textbf{Initialize:}$ \State $\qquad$ value function weights $\mathbf{w} \in \mathbb{R}^d$ arbitrarily, (e.g., $\mathbf{w} = 0$) \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from $\color{red}\hat{q}(S'A,\mathbf{w})$ (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \If {$S'$ is terminal} \State $\color{red}\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ \State Go to next episode \EndIf \State Choose A' as a function of $\color{red}\hat{q}(S'A,\mathbf{w})$ (e.g., $\epsilon$-greedy) \State $\color{red}\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R + \gamma \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ \State $S \leftarrow S'$; \State $A \leftarrow A'$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -2694,7 +3009,7 @@ Episodic Semi-gradient SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-differential-sg-sarsa" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="3" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number="true" data-caption-prefix="Algorithm" data-no-end="false">
+<div id="alg-differential-sg-sarsa" class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="3" data-no-end="false" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{Differential Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)}\begin{algorithmic} \State $\textbf{Input:}$ \State $\qquad \text{a differentiable action-value fn parameterization } \hat{q}: \mathcal{S} \times A \times \mathbb{R}^d \to \mathbb{R}$ \State $\textbf{Algorithm parameters:}$ \State $\qquad \alpha, \beta &gt; 0$ \State $\textbf{Initialize:}$ \State $\qquad$ value function weights $\mathbf{w} \in \mathbb{R}^d$ arbitrarily, (e.g., $\mathbf{w} = 0$) \State $\bar{R} source \in \mathbb{R}$ avg reward estimate \State Initialize $S$ and action $A$ \For {each step} \State Take action A, observe R, S' \State Choose A' as a function of $\hat{q}(S',\cdot,\mathbf{w})$ (e.g., $\epsilon$-greedy) \State $\delta \leftarrow R - \bar{R} + \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) $ \State $ \bar{R}\leftarrow \bar{R} + \beta \delta$ \State $\mathbf{w} \leftarrow \mathbf{w} + \alpha \delta \nabla \hat{q}(S, A, \mathbf{w})$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -4769,7 +5084,7 @@ Note&nbsp;1: MC prediction fist visit for estimating <img src="https://latex.cod
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-gradient-mc" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-pseudocode-number="1" data-indent-size="1.2em" data-no-end="false" data-line-number-punc=":" data-comment-delimiter="#" data-line-number="true">
+<div id="alg-gradient-mc" class="pseudocode-container quarto-float" data-no-end="false" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-line-number="true" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{GradientMC($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$ \State Algorithm parameters: \State $\qquad \alpha \in (0, 1]$ step size \State Initialize: \State $\qquad \mathbf{w} \leftarrow x \in \mathbb{R^d} \text{ arbiterly}$ (e.g. w=0) \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = 0, 1, \ldots, T-1$:} \State $\mathbf{w} \leftarrow w_t + \alpha [G_t - \hat{v}(S_t , \mathbf{w_1})] \nabla \hat{v}(S_t , \mathbf{w})$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -4905,7 +5220,7 @@ The Semi-gradient TD(0) algorithm for estimating <img src="https://latex.codecog
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-td-zero" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-pseudocode-number="2" data-indent-size="1.2em" data-no-end="false" data-line-number-punc=":" data-comment-delimiter="#" data-line-number="true">
+<div id="alg-td-zero" class="pseudocode-container quarto-float" data-no-end="false" data-pseudocode-number="2" data-caption-prefix="Algorithm" data-line-number="true" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{Semi-gradient TD(0) for estimating $v_\pi$}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$ \State Algorithm parameters: \State $\qquad \alpha \in (0, 1]$ step size \State $\qquad \gamma \in [0, 1]$ discount factor \State Initialize: \State $\qquad value function weights w \leftarrow x \in \mathbb{R}^d \quad \forall s \in \mathcal{S}$ (e.g. w=0) \FORALL {episode $e$:} \State $Initialize S$ \FORALL {step $S \in e$:} \State $\text{Choose } A \sim \pi(\cdot \mid S)$ \State Take action $A$, observe $R, S'$ \State $w \leftarrow w + \alpha [R + \gamma \hat{v}(S', \mathbf{w}) - \hat{v}(S, \mathbf{w})] \nabla \hat{v}(S, \mathbf{w})$ \State $S \leftarrow S'$ \State until $S$ is terminal \ENDFOR \ENDFOR \end{algorithmic} \end{algorithm}
 </div>
@@ -5818,7 +6133,7 @@ SARSA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-sarsa" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-comment-delimiter="#" data-pseudocode-number="1" data-line-number-punc=":" data-no-end="false" data-line-number="true">
+<div id="alg-sarsa" class="pseudocode-container quarto-float" data-no-end="false" data-pseudocode-number="1" data-comment-delimiter="#" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{SARSA($\alpha,\epsilon$)}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -5874,7 +6189,7 @@ Q-learning (off-policy TD control)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-q-learning" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-comment-delimiter="#" data-pseudocode-number="2" data-line-number-punc=":" data-no-end="false" data-line-number="true">
+<div id="alg-q-learning" class="pseudocode-container quarto-float" data-no-end="false" data-pseudocode-number="2" data-comment-delimiter="#" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{Q-learning Off-policy TD control}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \For {each step of e} \State Choose A from $A_B(S)$ using any ergodic Behavioural policy $B$ - perhaps the $\epsilon$-greedy induced by Q. \State Take action A, observe R, S' \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \max_a Q(S',a) - Q(S, A)]$ \State $S \leftarrow S'$ \EndFor \State until $S$ is terminal \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6048,7 +6363,7 @@ Expected Sarsa
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-q-learning" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-comment-delimiter="#" data-pseudocode-number="3" data-line-number-punc=":" data-no-end="false" data-line-number="true">
+<div id="alg-q-learning" class="pseudocode-container quarto-float" data-no-end="false" data-pseudocode-number="3" data-comment-delimiter="#" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{expected SARSA}\begin{algorithmic} \State Initialize: \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$ \For {each episode e:} \State Initialize $S$ \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy) \For {each step of e} \State Take action A, observe R, S' \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy) \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \sum_a \pi(a|S') Q(S',A') - Q(S, A)]$ \State $S \leftarrow S'$; $A \leftarrow A'$ \State $S$ is terminal \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6218,7 +6533,7 @@ The TD(0) algorithm for estimating <img src="https://latex.codecogs.com/png.late
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-td-zero" class="pseudocode-container quarto-float" data-pseudocode-number="1" data-indent-size="1.2em" data-line-number="true" data-no-end="false" data-caption-prefix="Algorithm" data-line-number-punc=":" data-comment-delimiter="#">
+<div id="alg-td-zero" class="pseudocode-container quarto-float" data-comment-delimiter="#" data-line-number-punc=":" data-no-end="false" data-caption-prefix="Algorithm" data-pseudocode-number="1" data-line-number="true" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{TD(0) for estimating $v_\pi$}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R} \quad \forall s \in \mathcal{S}$ \FORALL {episode $e$:} \State $S \leftarrow \text{initial state of episode}$ \State $\text{Choose } A \sim \pi(\cdot \mid S)$ \FORALL {step $S \in e$:} \State Take action $A$, observe $R, S'$ \State $V(S) \leftarrow V(S) + \alpha [R + \gamma V(S') - V(S)]$ \State $S \leftarrow S'$ \State $\text{Choose} A' \sim \pi(\cdot \mid S)$ \State $S$ is terminal \ENDFOR \ENDFOR \end{algorithmic} \end{algorithm}
 </div>
@@ -6511,7 +6826,7 @@ Note&nbsp;1: MC prediction any visit for estimating <img src="https://latex.code
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-prediction-any-visit" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em" data-comment-delimiter="#" data-no-end="false" data-pseudocode-number="1" data-line-number-punc=":">
+<div id="alg-mc-prediction-any-visit" class="pseudocode-container quarto-float" data-line-number="true" data-line-number-punc=":" data-caption-prefix="Algorithm" data-pseudocode-number="1" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{MCFirstVisitValuePrediction($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R}$, arbitrarily, $\forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6528,7 +6843,7 @@ Note&nbsp;2: MC prediction fist visit for estimating <img src="https://latex.cod
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-prediction-first-visit" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em" data-comment-delimiter="#" data-no-end="false" data-pseudocode-number="2" data-line-number-punc=":">
+<div id="alg-mc-prediction-first-visit" class="pseudocode-container quarto-float" data-line-number="true" data-line-number-punc=":" data-caption-prefix="Algorithm" data-pseudocode-number="2" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{MCAnyVisitValuePrediction($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State Initialize: \State $\qquad V(s) \in \mathbb{R}$, arbitrarily, $\forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \If{$S_t \not \in S_0, S_1,\ldots,S_{t-1}$} \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \EndIf \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6763,7 +7078,7 @@ Monte Carlo Exploring Start
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-es-control" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em" data-comment-delimiter="#" data-no-end="false" data-pseudocode-number="3" data-line-number-punc=":">
+<div id="alg-mc-es-control" class="pseudocode-container quarto-float" data-line-number="true" data-line-number-punc=":" data-caption-prefix="Algorithm" data-pseudocode-number="3" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{MonteCarloExploringStartsGPI()}\begin{algorithmic} \State Initialize: \State $\qquad \pi(s) \in A(s) \quad \forall s\in \mathcal{S}$ \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \quad \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$ \State $\qquad Returns(s,a) \leftarrow \text {an empty list} \quad \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$ \For {each episode:} \State Choose $S_0 \in \mathcal{S} and A_0 \in \mathcal{A}(S_0) \text{randomly :} p(s,a)&gt;0 \forall s,a$ \comment{$\textcolor{blue}{Exploring Starts}$} \State Generate an episode e from $S_0, A_0$ by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of $e, t \in T-1, T-2,..., 0:} \comment{$\textcolor{blue}{Backward\ pass}$} \State $G \leftarrow \gamma G + R_{t+1}$ \IF {$S_t , A_t \not \in S_0 , A_0 , S_1 , A_1 \ldots , S_{t-1} , A_{t-1}$} \State Append $G$ to $Returns(S_t,A_t)$ \State $Q(S_t,A_t) \leftarrow average(Returns(S_t,A_t))\quad$ \comment{$\textcolor{blue}{\text{MC action-value estimate}}$} \State $\pi(S_t) \leftarrow \arg\max_a Q(S_t,a)\quad$ \comment{$\textcolor{blue}{\text{greedy policy improvement}}$} \EndIf \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6815,7 +7130,7 @@ MC control with ϵ-soft policies
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-ϵ-soft-control" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em" data-comment-delimiter="#" data-no-end="false" data-pseudocode-number="4" data-line-number-punc=":">
+<div id="alg-mc-ϵ-soft-control" class="pseudocode-container quarto-float" data-line-number="true" data-line-number-punc=":" data-caption-prefix="Algorithm" data-pseudocode-number="4" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{MonteCarloϵ-SoftControl()}\begin{algorithmic} \State Initialize \State $\qquad \epsilon \in (0,1)$ \Comment{ $\textcolor{blue}{\ algorithm\ parameter}$} \State $\qquad \pi \leftarrow \epsilon$-soft policy \Comment{ $\textcolor{blue}{\ Initialize: policy}$} \State $\qquad Q(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s)$ an empty list, $\quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t \in T-1, T-2,..., 0$:} \State $G \leftarrow \gamma G + R_{t+1}$ \State Append $G$ to $Returns(S_t,A_t)$ \State $Q(S_t,A_t) \leftarrow average(Returns(S_t,A_t))$ \State $A^* \leftarrow \arg\max_a Q(S_t,a) \qquad \textcolor{blue}{\text{(ties broken arbitrarily)}}$ \For {each $a \in \mathcal{A}$} \If{$a = A^*$} \State $\pi(a \mid S_t) \leftarrow 1 - \epsilon + \frac{\epsilon}{|A(S_t)|}$ \Else \State $\pi(a \mid S_t) \leftarrow \frac{\epsilon}{|A(S_T)|}$ \EndIf \EndFor \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6914,7 +7229,7 @@ Off-policy every visit MC prediction
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-off-policy-prediction" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em" data-comment-delimiter="#" data-no-end="false" data-pseudocode-number="5" data-line-number-punc=":">
+<div id="alg-mc-off-policy-prediction" class="pseudocode-container quarto-float" data-line-number="true" data-line-number-punc=":" data-caption-prefix="Algorithm" data-pseudocode-number="5" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{OffPolicyMonteCarloPrediction()}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s) \text{ an empty list,} \quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0, W \leftarrow 1$ \For {each step of episode, $t \in T-1, T-2,..., 0$:} \State $G \leftarrow \gamma WG + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \State $W \leftarrow W \frac{\pi(A_t|S_t)}{b(A_t|S_t)}$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -6931,7 +7246,7 @@ Off-policy every visit MC control
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="alg-mc-off-control-prediction" class="pseudocode-container quarto-float" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em" data-comment-delimiter="#" data-no-end="false" data-pseudocode-number="6" data-line-number-punc=":">
+<div id="alg-mc-off-control-prediction" class="pseudocode-container quarto-float" data-line-number="true" data-line-number-punc=":" data-caption-prefix="Algorithm" data-pseudocode-number="6" data-no-end="false" data-comment-delimiter="#" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{OffPolicyMonteCarloPrediction()}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State Initialize: \State $\qquad V(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$ \State $\qquad Returns(s) \text{ an empty list,} \quad \forall s \in \mathcal{S}$ \For {each episode:} \State Generate an episode by following $b: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0, W \leftarrow 1$ \For {each step of episode, $t = T-1, T-2,\ldots, 0$:} \State $G \leftarrow \gamma WG + R_{t+1}$ \State Append $G$ to $Returns(S_t)$ \State $V(S_t) \leftarrow average(Returns(S_t))$ \State $W \leftarrow W \frac{\pi(A_t \mid S_t)}{b(A_t \mid S_t)}$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
@@ -7153,7 +7468,7 @@ is the task of finding the optimal policy <img src="https://latex.codecogs.com/p
 <p>The final part of the algorithm is the stopping condition. We stop when the change in the value function is less than a small threshold <img src="https://latex.codecogs.com/png.latex?%5Ctheta">.</p>
 <p>The algorithm is guaranteed to converge to the value function for the policy <img src="https://latex.codecogs.com/png.latex?%5Cpi">.</p>
 <p>Here is the concise statement of the algorithm with just one array in pseudo code:</p>
-<div id="alg-Iterative-Policy-Evaluation" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":" data-pseudocode-number="1">
+<div id="alg-Iterative-Policy-Evaluation" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="1" data-comment-delimiter="#" data-no-end="false" data-caption-prefix="Algorithm" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{Iterative Policy Evaluation, for estimating $V \approx v_{\pi}$}\begin{algorithmic} \State Input: $\pi$, the policy to be evaluated, default to uniform random policy \State Algorithm parameter: a small threshold $\theta &gt; 0$ determining accuracy of estimation \State $V(s) \leftarrow \leftarrow \vec 0 \forall s \in S$ \REPEAT \STATE $\Delta \leftarrow 0$ \FORALL { $s\in S$} \STATE $v \leftarrow V(s)$ \STATE $V(s) \leftarrow \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]\quad$ \comment{ Bellman equation} \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$ \ENDFOR \UNTIL{$\Delta &lt; \theta$} \State Output: $V \approx v_{\pi}$ \end{algorithmic} \end{algorithm}
 </div>
@@ -7226,7 +7541,7 @@ Learning Objectives
 <p>And, we can compute <img src="https://latex.codecogs.com/png.latex?q_%CF%80%20(s,a)"> from <img src="https://latex.codecogs.com/png.latex?v_%CF%80"> by:</p>
 <p><span id="eq-action-value-function"><img src="https://latex.codecogs.com/png.latex?%0Aq_%7B%5Cpi%7D(s,a)%20=%20%5Csum_%7Bs',r%7D%20p(s',r%7Cs,a)%5Br%20+%20%5Cgamma%20v_%7B%5Cpi%7D(s')%5D%0A%5Ctag%7B2%7D"></span></p>
 <p>this is the the key step the policy improvement step of the policy iteration algorithm.</p>
-<div id="alg-Policy-Iteration" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":" data-pseudocode-number="2">
+<div id="alg-Policy-Iteration" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="2" data-comment-delimiter="#" data-no-end="false" data-caption-prefix="Algorithm" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{Policy Iteration, for estimating $\pi \approx \pi_{\star}$}\begin{algorithmic} \State Input: $\pi$, the policy to be evaluated \State Algorithm parameter: a small threshold $\theta &gt; 0$ determining accuracy of estimation \State Initialize $V(s) \in \mathbb{R}, \quad \pi(s) \in A(s)\ \forall s\in S,\quad V(terminal)= 0$ \State \State {Policy Evaluation} \REPEAT \STATE $\Delta \leftarrow 0$ \FORALL { $s\in S$} \STATE $v \leftarrow V(s)$ \STATE $V(s) \leftarrow \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$ \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$ \ENDFOR \UNTIL{$\Delta &lt; \theta$} \State \State {Policy Improvement} \ForAll { $s\in S$} \State old-action $\leftarrow \pi(s)$ \State $\pi(s) \leftarrow \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]\quad$ \comment{ greedyfication} \If {old-action $\neq \pi(s)$} \State policy-stable $\leftarrow$ false \EndIf \EndFor \If {policy-stable} \Return {$V \approx v_\star,\ \pi \approx \pi_\star$} \Else \State go to Policy Evaluation \EndIf \end{algorithmic} \end{algorithm}
 </div>
@@ -7237,7 +7552,7 @@ Learning Objectives
 <p>Value iteration is an important example of Generalized Policy Iteration. It is an iterative algorithm that computes the optimal value function and the optimal policy for a given MDP but it does not directly referrence a particular policy.</p>
 <p>In value iteration, the algorithm starts with an initial estimate of the value function and iteratively runs a single step of greedy polict evaluation per step, using the greedy value to update the state-value function.</p>
 <p>updates the value function until it converges to the optimal value function.</p>
-<div id="alg-Value-Iteration" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-comment-delimiter="#" data-no-end="false" data-line-number-punc=":" data-pseudocode-number="3">
+<div id="alg-Value-Iteration" class="pseudocode-container quarto-float" data-line-number="true" data-indent-size="1.2em" data-pseudocode-number="3" data-comment-delimiter="#" data-no-end="false" data-caption-prefix="Algorithm" data-line-number-punc=":">
 <div class="pseudocode">
 \begin{algorithm} \caption{Value Iteration, for estimating $\pi \approx \pi_{\star}$}\begin{algorithmic} \State Input: $\pi$, the policy to be evaluated \State Algorithm parameter: a small threshold $\theta &gt; 0$ determining accuracy of estimation \State Initialize $V(s) \leftarrow \vec{0} \forall s \in \mathbb{R}$ \REPEAT \STATE $\Delta \leftarrow 0$ \FORALL { $s\in S$} \STATE $v \leftarrow V(s)$ \STATE $V(s) \leftarrow max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$ \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$ \ENDFOR \UNTIL{$\Delta &lt; \theta$} \State Output: $V \approx v_{\pi}$ such that \State $\pi(s) = \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$ \end{algorithmic} \end{algorithm}
 </div>
@@ -8180,552 +8495,6 @@ Goals
   <category>Reinforcement Learning</category>
   <guid>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w3.html</guid>
   <pubDate>Tue, 03 May 2022 21:00:00 GMT</pubDate>
-  <media:content url="https://orenbochman.github.io/notes-rl/posts/coursera/img/nlp-brain-wordcloud.jpg" medium="image" type="image/jpeg"/>
-</item>
-<item>
-  <title>Markov Decision Processes</title>
-  <dc:creator>Oren Bochman</dc:creator>
-  <link>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w2.html</link>
-  <description><![CDATA[ 
-
-
-
-
-
-
-<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/logo.png" class="img-fluid figure-img"></p>
-<figcaption>RL logo</figcaption>
-</figure>
-</div><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/alg_selector.png" class="img-fluid figure-img" data-group="slides"></p>
-<figcaption>RL algorithms</figcaption>
-</figure>
-</div></div>
-<section id="lesson-1-introduction-to-markov-decision-processes" class="level1 page-columns page-full">
-<h1>Lesson 1: Introduction to Markov Decision Processes</h1>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Readings
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<ul class="task-list">
-<li><label><input type="checkbox" checked=""><span class="citation" data-cites="sutton2018reinforcement">[@sutton2018reinforcement§3.3, pp. 47-56]</span> <a href="http://incompleteideas.net/book/RLbook2020.pdf#page=47">book</a></label></li>
-</ul>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Learning Objectives
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul class="task-list">
-<li><label><input type="checkbox" checked="">Understand Markov Decision Processes (MDP). #</label></li>
-<li><label><input type="checkbox" checked="">Describe how the dynamics of an MDP are defined. #</label></li>
-<li><label><input type="checkbox" checked="">Understand the graphical representation of a Markov Decision Process. #</label></li>
-<li><label><input type="checkbox" checked="">Explain how many diverse processes can be written in terms of the MDP framework. #</label></li>
-</ul>
-</div>
-</div>
-<p>Before I started this course I viewed <span class="citation" data-cites="silver2015">[@silver2015]</span> online course by David Silver who in many ways is the face of RL. He is also the lead of the AlphaGo project, a principal researcher at DeepMind and a lecturer at University College London. Silver is also featured in one of the Lectures in this specialization. In his course he develops the MDP constructively starting with simpler structures as is often done in mathematics. I find this is a good way to learn how to think about how we generalize and specialize from more abstract to more concrete structures.</p>
-<p>Many students of probability theory will be familiar with Markov Chains. And Markov Decision Processes are a generalization of Markov Chains.</p>
-<p>In <span class="citation" data-cites="silver2015">[@silver2015]</span> he begins with a <strong>Markov Process</strong>, with states and transitions probabilities, by adding <strong>rewards</strong> he constructs a <em>Markov reward process</em>. Then by adding <strong>actions</strong> he constructs a <em>Markov decision process</em>. He explains these and in the notes covers three additional extensions. In the the notes he also add the following MDP extensions:</p>
-<ul>
-<li>Infinite and continuous MDPs - the case of optimal control</li>
-<li>Partially observable MDPs.</li>
-<li>Undiscounted, average reward MDPs.</li>
-<li>David Silver’s 2015 <a href="https://www.davidsilver.uk/teaching/">UCL Course</a> <a href="https://www.youtube.com/watch?v=2pWv7GOvuf0">Video</a> and Slides.</li>
-</ul>
-<section id="sec-Markov-Process" class="level2">
-<h2 class="anchored" data-anchor-id="sec-Markov-Process">Markov Process</h2>
-<p>Silver goes into some detail on what we mean by state in RL:</p>
-<ul>
-<li>In th abstract state can be any function of the history.</li>
-<li>The state should summarize the information on the previous actions, and rewards.</li>
-<li>He points out that the history in RL can be very long, for Atari games it can include actions plus all the pixels for every screen in many plays of the game. In contrast the state tries to capture the bare essentials of the history for decision making at each time step. For Atari games they used the last 4 screens as the state.</li>
-<li>A second point is that there is always a state. The full history is also a state, but not a very useful one. The internal representation of the ram in the Atari game is also a state, much smaller but this is the representation used by the environment and contains more information than is available to the agent. Ideally the agent would want to model this state, but again it contains lots more information than is available would need to male a decision.</li>
-<li>Another useful property of the state is that it should have the Markov Property for a state space which is when the future is independent of the past given the present.</li>
-</ul>
-<p>A state S<img src="https://latex.codecogs.com/png.latex?_t"> is Markov if and only if:</p>
-<p><span id="eq-markov-property"><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathbb%7BP%7D%5BS_%7Bt+1%7D%20%20%5Cvert%20%20S_%7Bt%7D%5D%20=%20%20%5Cmathbb%7BP%7D%5BS_%7Bt+1%7D%20%20%5Cvert%20%20S_1,...,S_t%5D%20%5Cqquad%20%5Ctext%7B(Markov%20Property)%7D%0A%5Ctag%7B1%7D"></span></p>
-<p><strong>The state captures all relevant information from the history</strong> Once the state is known, the history may be thrown away i.e.&nbsp;<mark>The state is a sufficient statistic of the future</mark></p>
-<p>Recall:</p>
-<blockquote class="blockquote">
-<p>a statistic satisfies the criterion for sufficency when no other statistic that can be calculated from the same <a href="https://en.wikipedia.org/wiki/Sample_(statistics)" title="Sample (statistics)">sample</a> provides any additional information as to the value of the parameter”. — <span class="citation" data-cites="doi:10.1098/rsta.1922.0009">[@doi:10.1098/rsta.1922.0009]</span></p>
-</blockquote>
-<p>For a Markov state <img src="https://latex.codecogs.com/png.latex?s"> and successor state <img src="https://latex.codecogs.com/png.latex?s'">, the state transition probability is defined by:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathbb%7BP%7D_%7Bss'%7D%20=%20%5Cmathbb%7BP%7D%5BS_%7Bt+1%7D=s'%20%20%5Cvert%20%20S_t=s%5D%0A"></p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Markov Process or Chain Definion
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<dl>
-<dt>A Markov Process is</dt>
-<dd>
-<p>a tuple <img src="https://latex.codecogs.com/png.latex?%E2%9F%A8S,P%E2%9F%A9"></p>
-</dd>
-</dl>
-<p>where:</p>
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?S"> is a (finite) set of states</li>
-<li><img src="https://latex.codecogs.com/png.latex?P"> is a state transition probability matrix, <img src="https://latex.codecogs.com/png.latex?P_%7Bss'%7D%20=%20P%5BS_%7Bt+1%7D%20=%20s'%20%20%5Cvert%20S_t=s%5D"> State transition matrix <img src="https://latex.codecogs.com/png.latex?P_%7Bss'%7D"> defines transition probabilities from all states <img src="https://latex.codecogs.com/png.latex?s"> to all successor states <img src="https://latex.codecogs.com/png.latex?s'">,</li>
-</ul>
-<p><span id="eq-transition-matrix"><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0A%20%20P=%5Cleft(%20%5Cbegin%7Barray%7D%7Bcc%7D%0A%20%20%20%20%20%20p_%7B11%7D%20&amp;%20%5Ccdots%20&amp;%20p_%7B1n%7D%20%5Cnewline%0A%20%20%20%20%20%20%5Cvdots%20&amp;%20%5Cddots%20&amp;%20%5Cvdots%20%5Cnewline%0A%20%20%20%20%20%20p_%7Bn1%7D%20&amp;%20%5Ccdots%20&amp;%20p_%7Bnn%7D%20%5Cend%7Barray%7D%20%5Cright)%0A%5Cend%7Balign*%7D%0A%5Ctag%7B2%7D"></span></p>
-</div>
-</div>
-</section>
-<section id="sec-MRP" class="level2">
-<h2 class="anchored" data-anchor-id="sec-MRP">Markov Reward Process</h2>
-<p>A Markov Reward Process <strong>(MRP)</strong> is a Markov chain with values.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Markov Reward Process Definition
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<dl>
-<dt>A Markov Reward Process is</dt>
-<dd>
-<p>a tuple <img src="https://latex.codecogs.com/png.latex?%E2%9F%A8S,%20P,%20R,%20%5Cgamma%E2%9F%A9"></p>
-</dd>
-</dl>
-<p>where:</p>
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?S"> is a finite set of states</li>
-<li><img src="https://latex.codecogs.com/png.latex?P"> is a state transition probability matrix, where <img src="https://latex.codecogs.com/png.latex?P_%7Bss'%7D%20=%20%20%5Cmathbb%7BP%7D%5BS_%7Bt+1%7D%20=%20s'%20%5Cvert%20%20S_t%20=%20s%5D"></li>
-<li><img src="https://latex.codecogs.com/png.latex?R"> is a reward function, <img src="https://latex.codecogs.com/png.latex?R_s%20=%20%5Cmathbb%7BE%7D%5BR_%7Bt+1%7D%20%5Cvert%20S_t%20=%20s%5D"></li>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cgamma"> is a discount factor, <img src="https://latex.codecogs.com/png.latex?%5Cgamma%20%5Cin%20%5B0,%201%5D"></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-the return definition
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<dl>
-<dt>The return <img src="https://latex.codecogs.com/png.latex?G_t"></dt>
-<dd>
-<p>is the total discounted reward from time-step t.</p>
-</dd>
-</dl>
-<p><span id="eq-return"><img src="https://latex.codecogs.com/png.latex?%0AG_t%20=R_%7Bt+1%7D+%5Cgamma%20R_%7Bt+2%7D+...=%5Csum_%7Bk=0%7D%5E%7B%5Cinfty%7D%20%5Cgamma%5Ek%20R_%7Bt+k+1%7D%0A%5Ctag%7B3%7D"></span></p>
-<p>where:</p>
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?R_t"> is the reward at time-step <img src="https://latex.codecogs.com/png.latex?t"></li>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cgamma"> the discount factor <img src="https://latex.codecogs.com/png.latex?%5Cgamma%20%5Cin%20%5B0,%201%5D"> is the present value of future rewards.</li>
-<li>The value of receiving reward <img src="https://latex.codecogs.com/png.latex?R"> after <img src="https://latex.codecogs.com/png.latex?k+1"> time-steps is <img src="https://latex.codecogs.com/png.latex?%5Cgamma%5Ek%20R"></li>
-<li>This values immediate reward above delayed reward.
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cgamma%20=%200"> makes the agent short-sighted.</li>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cgamma%20=%201"> makes the agent far-sighted.</li>
-</ul></li>
-</ul>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-The value function
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<dl>
-<dt>The value function:</dt>
-<dd>
-<p>The state value function <img src="https://latex.codecogs.com/png.latex?v(s)"> of an MRP is the expected return starting from state <img src="https://latex.codecogs.com/png.latex?s"></p>
-</dd>
-</dl>
-<p><img src="https://latex.codecogs.com/png.latex?%0Av(s)%20=%5Cmathbb%7BE%7D%20%5BG_t%20%20%5Cvert%20%20S_t%20=%20s%5D%0A"></p>
-</div>
-</div>
-<section id="sec-bellman-MRP" class="level3">
-<h3 class="anchored" data-anchor-id="sec-bellman-MRP">Bellman equations for MRP</h3>
-<p>The value function can be decomposed into two parts:</p>
-<ul>
-<li>an immediate reward <img src="https://latex.codecogs.com/png.latex?R_%7Bt+1%7D"> and</li>
-<li>a discounted value of successor state <img src="https://latex.codecogs.com/png.latex?%5Cgamma%20v(S_%7Bt+1%7D)"></li>
-</ul>
-<p>The Bellman equation for MRPs expresses this relationship:</p>
-<p><span id="eq-bellman-mrp"><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0Av(s)%20&amp;=%20%5Cmathbb%7BE%7D%5BG_t%20%20%5Cvert%20%20S_t=s%5D%20%5Cnewline%0A&amp;%20=%20%5Cmathbb%7BE%7D%5BR_%7Bt+1%7D%20+%20%5Cgamma%20R_%7Bt+2%7D+%5Cgamma%5E2%20R_%7Bt+3%7D%20+%20...%20%20%5Cvert%20S_t%20=%20s%5D%20%20%20%5Cnewline%0A&amp;%20=%20%5Cmathbb%7BE%7D%5BR_%7Bt+1%7D%20+%20%5Cgamma(%20R_%7Bt+2%7D+%5Cgamma%5E2%20R_%7Bt+3%7D%20+%20...%20)%20%20%5Cvert%20S_t%20=%20s%5D%20%20%20%5Cnewline%0A&amp;%20=%20%5Cmathbb%7BE%7D%5BR_%7Bt+1%7D%20+%20%5Cgamma%20G_%7Bt+1%7D%20%20%5Cvert%20%20S_t%20=%20s%5D%20%20%20%5Cnewline%0A&amp;%20=%20%5Cmathbb%7BE%7D%5BR_%7Bt+1%7D%20+%20%5Cgamma%20v(S_%7Bt+1%7D)%20%20%5Cvert%20S_t%20=%20s%5D%0A%5Cend%7Balign*%7D%20%5Cqquad%20%5Ctext%7B(Bellman%20Equation)%7D%0A%5Ctag%7B4%7D"></span></p>
-<p>The Bellman equation can also be expressed in terms of the dynamics matrix for state transitions:</p>
-<p><span id="eq-bellman-mrp-with-dynamics-matrix"><img src="https://latex.codecogs.com/png.latex?%0Av(s)%20=%20R_s%20+%20%CE%B3%20%5Csum_%7Bs'%5Cin%20S%7D%20P_%7Bss'%7Dv(s)%20%5Cqquad%20%5Ctext%7Bvalue%20with%20dynamics%7D%0A%5Ctag%7B5%7D"></span></p>
-<p>where we use the dynamics matrix <img src="https://latex.codecogs.com/png.latex?P"> to express the expected value of the successor state.</p>
-</section>
-</section>
-<section id="sec-MDP" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="sec-MDP">Markov Decision Processes</h2>
-<ul>
-<li>The k-Armed Bandit problem does not account for the fact that different situations call for different actions.</li>
-<li>Because it the problem is limited to a single state agents can only make decisions based on immediate reward so they fail to consider the long-term impact of their decisions - this is an inability to make plan.</li>
-</ul>
-
-<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/rl-agent-env.png" class="img-fluid figure-img"></p>
-<figcaption>The agent–environment interaction in a Markov decision process.</figcaption>
-</figure>
-</div></div><div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-MDP definition
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<dl>
-<dt>A Markov Decision Process is a Markov Reward Process with decisions.</dt>
-<dd>
-<p>a tuple <img src="https://latex.codecogs.com/png.latex?%E2%9F%A8S,%20A,%20P,%20R,%20%5Cgamma%E2%9F%A9"></p>
-</dd>
-</dl>
-<p>where:</p>
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?S"> is a finite set of states</li>
-<li><img src="https://latex.codecogs.com/png.latex?A"> is a finite set of actions</li>
-<li><img src="https://latex.codecogs.com/png.latex?P"> is a state transition probability matrix, <img src="https://latex.codecogs.com/png.latex?P_%7Bss'%7D%5Ea%20=%20%5Cmathbb%7BP%7D%5BS_%7Bt+1%7D%20=%20s'%20%5Cvert%20S_t%20=%20s,%20A_t%20=%20a%5D"></li>
-<li><img src="https://latex.codecogs.com/png.latex?R"> is a reward function, <img src="https://latex.codecogs.com/png.latex?R_s%5Ea%20=%20%5Cmathbb%7BE%7D%5BR_%7Bt+1%7D%20%5Cvert%20S_t%20=%20s,%20A_t%20=%20a%5D"></li>
-<li><img src="https://latex.codecogs.com/png.latex?%5Cgamma"> is a discount factor, <img src="https://latex.codecogs.com/png.latex?%5Cgamma%20%5Cin%20%5B0,%201%5D"></li>
-</ul>
-</div>
-</div>
-<section id="sec-MDP-dynamics" class="level3">
-<h3 class="anchored" data-anchor-id="sec-MDP-dynamics">The dynamics of an MDP</h3>
-<p>In a finite MDP, the sets of states, actions, and rewards (S, A and R) all have a finite number of elements. In this case, the random variables <img src="https://latex.codecogs.com/png.latex?S_t"> and <img src="https://latex.codecogs.com/png.latex?R_t"> have well defined discrete probability distributions dependent only on the preceding state and action.</p>
-<p>The dynamics of an MDP are defined by the four argument dynamics function:</p>
-<p><span id="eq-four-part-dynamics"><img src="https://latex.codecogs.com/png.latex?%0Ap(s',r%20%5Cvert%20s,a)%5C%20%5Cdot%20=%5C%20Pr%5C%7BS_t%20=%20s',%20R_t%20=%20r%20%5Cvert%20S_%7Bt-1%7D%20=%20s,%20A_%7Bt-1%7D%20=%20a%5C%7D%5Cqquad%20%20%5Cforall%20s',s%20%5Cin%20S%5C%20%5Cforall%20r%5Cin%20R%5C%20%5Cforall%20a%5Cin%20A%0A%5Ctag%7B6%7D"></span></p>
-<p>where the sum of the probabilities over fixed set of s,a is 1:</p>
-<p><span id="eq-dynamics-function-sum"><img src="https://latex.codecogs.com/png.latex?%0A%5Csum_%7Bs'%20%5Cin%20S%7D%20%5Csum_%7Br%20%5Cin%20R%7D%20p(s',r%20%5Cvert%20s,a)%20=%201%20%5Cqquad%20%5Cforall%20s%20%5Cin%20S,%20%5Cforall%20a%20%5Cin%20A%20%5Cqquad%20%5Ctext%7B(Dynamics%20function)%7D%0A%5Ctag%7B7%7D"></span></p>
-<p>This is just a regular function that takes a state and action and returns a probability distribution over the next state and reward.</p>
-<p>In a tabular setting, we can also express this function as a table. Here is my solution for ex 3.4, a table for the recycling robot</p>
-<div id="tbl-dynamics-function" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-dynamics-function-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: Dynamics function for a recycling robot MDP
-</figcaption>
-<div aria-describedby="tbl-dynamics-function-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th><img src="https://latex.codecogs.com/png.latex?s"></th>
-<th><img src="https://latex.codecogs.com/png.latex?a"></th>
-<th><img src="https://latex.codecogs.com/png.latex?s'"></th>
-<th><img src="https://latex.codecogs.com/png.latex?r"></th>
-<th><img src="https://latex.codecogs.com/png.latex?p(s',r%20%5Cmid%20s,a)"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>high</td>
-<td>search</td>
-<td>high</td>
-<td><img src="https://latex.codecogs.com/png.latex?r_%7Bsearch%7D"></td>
-<td><img src="https://latex.codecogs.com/png.latex?%5Calpha"></td>
-</tr>
-<tr class="even">
-<td>high</td>
-<td>search</td>
-<td>low</td>
-<td><img src="https://latex.codecogs.com/png.latex?r_%7Bsearch%7D"></td>
-<td><img src="https://latex.codecogs.com/png.latex?1-%5Calpha"></td>
-</tr>
-<tr class="odd">
-<td>low</td>
-<td>search</td>
-<td>high</td>
-<td>-3</td>
-<td><img src="https://latex.codecogs.com/png.latex?1-%5Cbeta"></td>
-</tr>
-<tr class="even">
-<td>low</td>
-<td>search</td>
-<td>low</td>
-<td><img src="https://latex.codecogs.com/png.latex?r_%7Bsearch%7D"></td>
-<td><img src="https://latex.codecogs.com/png.latex?%5Cbeta"></td>
-</tr>
-<tr class="odd">
-<td>high</td>
-<td>wait</td>
-<td>high</td>
-<td><img src="https://latex.codecogs.com/png.latex?r_%7Bwait%7D"></td>
-<td>1</td>
-</tr>
-<tr class="even">
-<td>low</td>
-<td>wait</td>
-<td>low</td>
-<td><img src="https://latex.codecogs.com/png.latex?r_%7Bwait%7D"></td>
-<td>1</td>
-</tr>
-<tr class="odd">
-<td>low</td>
-<td>recharge</td>
-<td>high</td>
-<td>0</td>
-<td>1</td>
-</tr>
-</tbody>
-</table>
-</div>
-</figure>
-</div>
-<p>a couple of takeaways from this exercise are:</p>
-<ol type="1">
-<li><p>rewards are uniquely assigned for action at s resulting in s’ so we don’t need to make r another factor (i.e.&nbsp;list all possible rewards for (s,a,s’) tuple.</p></li>
-<li><p>there are (s,a,s’,r) tuples for which we don’t have a non-zero probabilities - since there are no transition possible.</p>
-<p>e.g.&nbsp;the robot wont charge when high, so there isn’t a transition from that state, nor a reward, nor a probability.</p></li>
-</ol>
-</section>
-<section id="sec-MDP-graphical" class="level3 page-columns page-full">
-<h3 class="anchored" data-anchor-id="sec-MDP-graphical">Graphical representation of an MDP</h3>
-<p>The graphical representation of an MDP is a directed graph where the nodes represent states and the edges represent actions. The graph is labeled with the probabilities of transitioning from one state to another given an action.</p>
-
-<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://orenbochman.github.io/notes-rl/posts/coursera/img/rl-mdp-graph.png" class="img-fluid figure-img"></p>
-<figcaption>graphical MDP for cleaning robot</figcaption>
-</figure>
-</div></div><p>In an MDP, the probabilities given by four part dynamics function completely characterize the environment’s dynamics.</p>
-<p>That is, the probability of each possible value for <img src="https://latex.codecogs.com/png.latex?S_%7Bt+1%7D"> and <img src="https://latex.codecogs.com/png.latex?R_%7Bt+1%7D"> depends only on the immediately preceding state <img src="https://latex.codecogs.com/png.latex?S_t"> and action <img src="https://latex.codecogs.com/png.latex?A_t">.</p>
-<p>This is best viewed a restriction not on the decision process, but on the state.</p>
-<p>The state must include information about all aspects of the past agent–environment interaction that make a difference for the future.</p>
-<p>If it does, then the state is said to have the Markov property.</p>
-<p>We can use the four-part dynamics function to compute the <strong>state transition probabilities</strong> for a given state and action:</p>
-<p><span id="eq-transition-probabilities"><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0A%20%20p(s'%20%5Cvert%20s,a)%20&amp;=%20%5Cmathbb%7BP%7D%5BS_t%20=%20s'%5Cvert%20S_%7Bt-1%7D%20=%20s,%20A_%7Bt-1%7D%20=%20a%5D%20%5Cnewline%0A%20%20&amp;=%20%5Csum_%7Br%20%5Cin%20R%7D%20p(s',r%20%5Cvert%20s,a)%20%5Cqquad%20%5Ctext%7B(state%20transition%20p)%7D%0A%5Cend%7Balign%7D%0A%5Ctag%7B8%7D"></span></p>
-<p>where we summed over all possible rewards to get the state transition probability.</p>
-<p>We can use the four-part dynamics function to compute the <strong>expected rewards</strong> for a given state and action:</p>
-<p><span id="eq-expected-reward-for-state-action"><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0A%20%20r(s,a)%20&amp;=%20%5Cmathbb%7BE%7D%5BR_t%20%5Cvert%20S_%7Bt-1%7D%20=%20s,%20A_%7Bt-1%7D%20=%20a%5D%20%5Cnewline%0A%20%20&amp;=%20%5Csum_%7Br%20%5Cin%20R%7D%20r%20%20%5Ctimes%20%5Csum_%7Bs'%20%5Cin%20S%7D%20%20p(s',%20r,%20%5Cvert%20s,%20a)%0A%5Cend%7Balign%7D%0A%5Ctag%7B9%7D"></span></p>
-<p>where we summed over all possible rewards and all successor state to get the expected reward.</p>
-<p>We can also get the expected reward for a given state, action, and successor state using the four-part dynamics function:</p>
-<p><span id="eq-expected-reward-for-state-action-successor-state"><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0A%20%20r(s,a,s')%20&amp;=%20%5Cmathbb%7BE%7D%5BR_t%20%5Cvert%20S_%7Bt-1%7D%20=%20s,%20A_%7Bt-1%7D%20=%20a,%20S_t%20=%20s'%5D%20%5Cnewline%0A%20%20&amp;=%20%5Csum_%7Br%20%5Cin%20R%7D%20r%20%5Ctimes%0A%20%20%5Cfrac%20%7B%20%20p(s',%20r%20%5Cvert%20s,%20a)%20%7D%20%7B%20%20p(s'%20%5Cvert%20s,%20a)%20%7D%0A%5Cend%7Balign%7D%0A%5Ctag%7B10%7D"></span></p>
-<p>where we summed over all possible rewards to get the expected reward.</p>
-<p>Note: perhaps implementing these in python might be further clarify the math for a given state transition graph.</p>
-</section>
-</section>
-</section>
-<section id="lesson-2-goal-of-reinforcement-learning" class="level1">
-<h1>Lesson 2: Goal of Reinforcement Learning</h1>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Learning Objectives
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul class="task-list">
-<li><label><input type="checkbox" checked="">Describe how rewards relate to the goal of an agent. #</label></li>
-<li><label><input type="checkbox" checked="">Understand episodes and identify episodic tasks. #</label></li>
-</ul>
-</div>
-</div>
-<section id="l2g1" class="level2">
-<h2 class="anchored" data-anchor-id="l2g1">Rewards and the Goal of an Agent</h2>
-<p>The agent interacts with the environment by taking actions and receiving rewards.</p>
-<p>In the bandit setting, it is enough to maximize immediate rewards. In the MDP setting, the agent must consider the long-term consequences of its actions.</p>
-<p>return <img src="https://latex.codecogs.com/png.latex?G_t"> is the total future reward from time-step <img src="https://latex.codecogs.com/png.latex?t">.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0AG_t%20%5Cdot=%20R_%7Bt+1%7D%20+%20R_%7Bt+2%7D%20+%20%20R_%7Bt+3%7D%20+%20%5Cldots%0A"></p>
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?G_t"> is a random variable because both transition and the rewards can be stochastic.</li>
-</ul>
-<p>The goal of an agent is to maximize the expected cumulative reward.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-The reward hypothesis
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>That all of what we mean by goals and purposes can be well thought of as the maximization of the expected value of the cumulative sum of a received scalar signal (called reward).</p>
-<p>see <span class="citation" data-cites="SILVER2021103535">[@SILVER2021103535]</span></p>
-</div>
-</div>
-<p>some basic formulations of the goal of an agent:</p>
-<ol type="1">
-<li>Maze runner: -1 for each time step until the goal is reached, then 0.</li>
-<li>Recycling robot: +1 per can, 0 otherwise.</li>
-<li>Chess: 1 for a win, 0 for a draw, -1 for a loss.</li>
-</ol>
-<p>Note there is more material on this subject in the guest lecture by Michael Littman.</p>
-</section>
-<section id="l2g2" class="level2">
-<h2 class="anchored" data-anchor-id="l2g2">Episodes and Episodic Tasks</h2>
-<p>An episode is a sequence of states, actions, and rewards that ends in a terminal state. An episodic task is a task with a well-defined terminal state.</p>
-<p>An example of an episodic task is a game of chess, where the game ends when one player wins or the game is a draw. The opposite setting of an episodic task is a continuing task, where the agent interacts with the environment indefinitely.</p>
-</section>
-<section id="guest-lecture-with-michael-littman-on-the-reward-hypothesis" class="level2">
-<h2 class="anchored" data-anchor-id="guest-lecture-with-michael-littman-on-the-reward-hypothesis">Guest Lecture with Michael Littman on The Reward Hypothesis</h2>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Michael Littman
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li><a href="https://www.littmania.com/media#h.p_pIcJ-rzB3Cp6">His website</a></li>
-<li></li>
-</ul>
-<p>Littman is a professor at Brown University and a leading researcher in reinforcement learning. He is known for his work on the reward hypothesis and the exploration-exploitation trade-off. He motivates the reward hypothesis with a humorous take on the old adage:</p>
-<ul>
-<li>Give a man a fish and he’ll eat for a day - traditional programming</li>
-<li>Teach a man to fish and he’ll eat for a lifetime - supervised learning</li>
-<li>Give a man a need for fish and he’ll figure it out - reinforcement learning</li>
-</ul>
-<p>I felt that the guest lecture was a bit of a let down. I was expecting more from a leading researcher in the field. The reward hypothesis is a fundamental concept and the lecture seemed all over the place. It raised many questions but didn’t answer them.</p>
-<p>If we accept the hypothesis, then there are two areas need to be addressed:</p>
-<ol type="1">
-<li>What rewards should agents optimize?</li>
-<li>Designing algorithms to maximize them.</li>
-</ol>
-<p>Some rewards are easy to define, like winning a game, but others are more complex, like driving a car. His example was of air conditioning in a car, where the reward is not just the temperature but also the comfort of the passengers. Running the air conditioning has a cost in terms of fuel, but the comfort of the passengers is much harder to quantify, particularly since each passenger may have different preferences.</p>
-<p>Next he covered the two main approaches to setting up rewards in RL:</p>
-<ul>
-<li>Rewards can be expressed as a final goal, or no goal yet:
-<ul>
-<li>The goal based representation: Goal achieved = +1, and everything else is 0. This has a downside of not signaling, to the agent, the urgency of getting to the goal.</li>
-<li>The action-penalty representation: a -1 could be awarded every step that the goal is not yet achieved. This can cause problems if there is a small probability of getting stuck and never reaching the goal.</li>
-<li>It seems that there are many ways to set up rewards. If we take a lesson from game theory, we can see that the value of rewards might be important or the relative value or order of rewards might be important. In rl values are often more important than the ‘order’ of rewards. However it might be interesting to consider if we can encode preferences into the rewards and if this formulation would still make sense in the context of the reward hypothesis and the bellman equations.</li>
-</ul></li>
-</ul>
-<p>Littleman then asked “Where do rewards come from?” and answered that they can come from - Programming - Human feedback - Examples - Mimic the rewards a human would give - Inverse reinforcement learning - learn the reward function from examples - Optimization - Evolutionary optimization like population dynamics. - The reward is the objective function - The reward is the gradient of the objective function</p>
-<p>Next he discusses some challenges to the reward hypothesis:</p>
-<ul>
-<li>Target is something other than cumulative reward:
-<ul>
-<li>cannot capture risk averse behavior</li>
-<li>cannot capture diversity of behavior</li>
-</ul></li>
-<li>is it a good match for a high level human behavior?
-<ul>
-<li>single minded pursuit of a goal isn’t characteristic of good people.</li>
-<li>The goals we “should” be pursuing may not be immediately evident to us - we might need time to understand making good decisions.</li>
-</ul></li>
-</ul>
-<p>The big elephant in the room is that we can reject the reward hypothesis and have agents that peruse multiple goals. The main challenge is that it becomes harder to decide when there is a conflict between goals. However, the field of multi-objective optimization has been around for a long time and there are many ways to deal with this problem. Some are more similar to the reward hypothesis but others can lead to more complex behavior based on preferences and pareto optimality.</p>
-<section id="lesson-3-continuing-tasks" class="level1">
-<h1>Lesson 3: Continuing Tasks</h1>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Learning Objectives
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul class="task-list">
-<li><label><input type="checkbox" checked="">Formulate returns for continuing tasks using discounting. #</label></li>
-<li><label><input type="checkbox" checked="">Describe how returns at successive time steps are related to each other. #</label></li>
-<li><label><input type="checkbox" checked="">Understand when to formalize a task as episodic or continuing. #</label></li>
-</ul>
-</div>
-</div>
-<section id="l3g1" class="level2">
-<h2 class="anchored" data-anchor-id="l3g1">Returns for Continuing Tasks</h2>
-<ul>
-<li>In continuing tasks, the agent interacts with the environment indefinitely.</li>
-<li>The return at time <img src="https://latex.codecogs.com/png.latex?t"> is the sum of the rewards from time <img src="https://latex.codecogs.com/png.latex?t"> to the end of the episode.</li>
-<li>The return can be formulated using discounting, where the rewards are discounted by a factor <img src="https://latex.codecogs.com/png.latex?%5Cgamma">.</li>
-</ul>
-<p><span id="eq-discounted-return-continuing"><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0AG_t&amp;=R_%7Bt+1%7D%20+%20%5Cgamma%20R_%7Bt+2%7D%20+%20%5Cgamma%5E2%20R_%7Bt+3%7D%20+%20%5Cldots%20%5Cnewline%0A&amp;=%20%5Csum_%7Bk=0%7D%5E%7B%5Cinfty%7D%20%5Cgamma%5Ek%20R_%7Bt+k+1%7D%0A%5Cend%7Balign%7D%0A%5Ctag%7B11%7D"></span></p>
-<ul>
-<li>returns have a recursive structure, where the return at time <img src="https://latex.codecogs.com/png.latex?t"> is related to the return at time <img src="https://latex.codecogs.com/png.latex?t+1"> by the discount factor <img src="https://latex.codecogs.com/png.latex?%5Cgamma">.</li>
-</ul>
-<p><span id="eq-return-recursive"><img src="https://latex.codecogs.com/png.latex?%20%20%0A%5Cbegin%7Balign%7D%0AG_t%20&amp;=%20R_%7Bt+1%7D%20+%20%5Cgamma%20R_%7Bt+2%7D%20+%20%5Cgamma%5E2%20R_%7Bt+3%7D%20+%20%5Cldots%20%5Cnewline%0A&amp;=%20R_%7Bt+1%7D%20+%20%5Cgamma%20(%20R_%7Bt+2%7D%20+%20%5Cgamma%20R_%7Bt+3%7D%20+%20%5Cldots%20)%20%5Cnewline%0A&amp;=%20R_%7Bt+1%7D%20+%20%5Cgamma%20G_%7Bt+1%7D%0A%5Cend%7Balign%7D%0A%5Ctag%7B12%7D"></span></p>
-<p>this form of the return is called the recursive form of the return and is usefull in developing algorithms for reinforcement learning.</p>
-</section>
-<section id="l3g2" class="level2">
-<h2 class="anchored" data-anchor-id="l3g2">Returns at Successive Time Steps</h2>
-<ul>
-<li>The return at time <img src="https://latex.codecogs.com/png.latex?t"> is related to the return at time <img src="https://latex.codecogs.com/png.latex?t+1"> by the discount factor <img src="https://latex.codecogs.com/png.latex?%5Cgamma">.</li>
-<li>The return at time <img src="https://latex.codecogs.com/png.latex?t"> is the sum of the reward at time <img src="https://latex.codecogs.com/png.latex?t"> and the discounted return at time $t+1.</li>
-</ul>
-</section>
-<section id="l3g3" class="level2">
-<h2 class="anchored" data-anchor-id="l3g3">Episodic vs.&nbsp;Continuing Tasks</h2>
-<ul>
-<li>An episodic task has a well-defined terminal state, and the episode ends when the terminal state is reached.</li>
-<li>A continuing task does not have a terminal state, and the agent interacts with the environment indefinitely.</li>
-<li>To avoid infinite returns in continuing tasks, we use discounting to ensure that the return is finite.</li>
-<li>The discount factor <img src="https://latex.codecogs.com/png.latex?%5Cgamma%5Cin(0,1)"> is the present value of future rewards.</li>
-</ul>
-<p><span class="citation" data-cites="sutton2018reinforcement">@sutton2018reinforcement</span> emphasizes that we can use the discount factor of [0,1] to unify both episodic and continuing tasks Here = 0 corresponds to myopic view of optimizing immediate rewards like in the k-armed bandit problem. The discount factor = 1 corresponds to the long-term view of optimizing undiscounted expected cumulative reward. into a single framework. This is a powerful idea that allows us to use the same algorithms for both types of tasks.</p>
-<p>I think it is a good place to consider a couple of ideas raised by Littman in the guest lecture:</p>
-<p>The first is hyperbolic discounting and the second risk aversion.</p>
-<p>Behavioral economics has considered a notion of hyperbolic discounting where the discount factor is not constant but changes over time. This is a more realistic model of human behavior but is harder to work with mathematically. This idea is not covered in the course perhaps because it is a departure from the more rational exponential discounting model which we use.</p>
-<p>two forms of hyperbolic discounting are:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0AG(D)%20=%20%5Cfrac%7B1%7D%7B1%20+%20%5Cgamma%20D%7D%0A"></p>
-<p><span id="eq-hyperbolic-discounting"><img src="https://latex.codecogs.com/png.latex?%0A%CF%86h(%CF%84)%20=%20(1+%20%CE%B1%CF%84)%E2%88%92%CE%B3/%CE%B1%0A%5Ctag%7B13%7D"></span> where:</p>
-<ul>
-<li><img src="https://latex.codecogs.com/png.latex?%CF%86h(%CF%84)"> is the hyperbolic discount factor at time <img src="https://latex.codecogs.com/png.latex?%CF%84"></li>
-<li><img src="https://latex.codecogs.com/png.latex?%CE%B1"> is the rate of discounting</li>
-<li><img src="https://latex.codecogs.com/png.latex?%CE%B3"> is the delay parameter</li>
-</ul>
-<p>there is also quasi-hyperbolic discounting which is a combination of exponential and hyperbolic discounting.</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0AG(D)%20=%20%5Cbegin%7Bcases%7D%0A%20%201%20&amp;%20%5Ctext%7Bif%20%7D%20t%20=%200%20%20%5Cnewline%0A%20%20%5Cbeta%5Ek%20%5Cdelta%5E%7BD%7D%20&amp;%20%5Ctext%7Bif%20%7D%20t%20%3E%200%0A%20%20%5Cend%7Bcases%7D%0A"></p>
-<p>The notation for both terminal and non-terminal states is <img src="https://latex.codecogs.com/png.latex?S%5E+"></p>
-<p>Exercise 2.10 proof of Equation 3.10</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign*%7D%0AG_t%20&amp;=%20%5Csum_%7Bk=0%7D%5E%5Cinfty%20%5Cgamma%5Ek%20=%20lim_%7Bn%20%5Crightarrow%20%5Cinfty%7D%20(1%20+%20%5Cgamma%20+%20%5Cgamma%5E2%20+%20...%20+%20%5Cgamma%5En)%20%5Cnewline%0A&amp;=%20lim_%7Bn%20%5Crightarrow%20%5Cinfty%7D%20%5Cfrac%7B(1%20+%20%5Cgamma%20+%20%5Cgamma%5E2%20+%20...%20+%20%5Cgamma%5En)%20(1%20-%20%5Cgamma)%7D%7B(1%20-%20%5Cgamma)%7D%20%5Cnewline%0A&amp;=%20lim_%7Bn%20%5Crightarrow%20%5Cinfty%7D%20%5Cfrac%7B1%20-%20%5Cgamma%5E%7Bn+1%7D%7D%7B1%20-%20%5Cgamma%7D%20%5Cnewline%0A&amp;=%20%5Cfrac%7B1%7D%7B1%20-%20%5Cgamma%7D%0A%5Cend%7Balign*%7D%0A"></p>
-
-
-</section>
-</section>
-</div>
-</div>
-</section>
-</section>
-
- ]]></description>
-  <category>Coursera</category>
-  <category>Fundamentals</category>
-  <category>Reinforcement Learning</category>
-  <guid>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w2.html</guid>
-  <pubDate>Mon, 02 May 2022 21:00:00 GMT</pubDate>
   <media:content url="https://orenbochman.github.io/notes-rl/posts/coursera/img/nlp-brain-wordcloud.jpg" medium="image" type="image/jpeg"/>
 </item>
 </channel>

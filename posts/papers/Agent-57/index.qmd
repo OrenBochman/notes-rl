@@ -1,0 +1,97 @@
+---
+date: 2025-01-02
+title: "Agent57: Outperforming the Atari Human Benchmark"
+subtitle: Paper Review
+description: Introducing Agent57 a novel RL algorithm
+categories:
+    - Paper 
+    - Review
+    - Bandit
+keywords:
+    - Thompson Sampling
+    - Recomender System
+    - Collaborative Filtering
+bibliography: ./bibliography.bib
+image: cover.jpg
+draft: true
+---
+
+![litrature review](cover.jpg){.column-margin}
+
+
+::: {#fig-Charles-Blundell .column-margin}
+
+{{< video https://youtu.be/VQEg8aSpXcU >}}
+
+Charles Blundell on Agent57 Outperforming the Atari Human Benchmark
+:::
+
+
+::: {#fig-Yan-Kilcher .column-margin}
+
+{{< video https://youtu.be/U3zmekzQ8WQ >}}
+
+Yannik Kilcher's Review of this work get lots of adulation but are rarely free of mistakes. But they are a good way of getting started with complex papers, if you don't mind the inductive bias.
+:::
+
+
+::: {#fig-vid02 .column-margin}
+{{< video https://youtu.be/ohXPSJmI1Ds >}}
+
+Implementing an Open Source Agent57
+:::
+
+As I have just a little free time  today so here is a quick note on:  [@CN]
+
+::: {.callout-tip }
+
+## TL;DR - The paper {.unnumbered}
+
+
+![The paper in a nutshell](../img/in_a_nutshell.jpg)
+
+{{< lipsum 1 >}}
+    
+:::
+
+
+::: {#fig-01 .column-margin}
+
+![](fig-01.png)
+
+As the name Mara rose in popularity, more and more parents subconsciously instilled a strong sense of curiosity and a knack for solving mysteries in their children. This led to a surge in aspiring detective careers, especially in Ohio
+
+:::
+
+## Abstract
+
+
+
+> {{< lipsum 1>}}
+
+## Outline
+
+::: {#fig-02 .column-margin}
+
+![](fig-02.png){.col-2}
+
+A scatter plot of the data
+:::
+
+
+{{< lipsum 1>}}
+
+
+::: {.callout-caution }
+## My ideas
+
+{{< lipsum 1>}}
+    
+:::
+
+
+## The Paper
+
+![paper](paper.pdf){.col-page width="800px" height="1000px"}
+
+[Article at Deep Mind](https://deepmind.google/discover/blog/agent57-outperforming-the-human-atari-benchmark/)

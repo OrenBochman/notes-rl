@@ -1,0 +1,119 @@
+---
+title: "Habits"
+author: "John Doe"
+format:
+  beamer:
+    slide-level: 2
+    incremental: true   
+    theme: AnnArbor
+    colortheme: lily
+    aspectratio: 32
+    navigation: horizontal
+    #logo: logo.png
+    titlegraphic: cover.jpg
+draft: true
+---
+
+
+## Slide
+
+### Alert block {.alert}
+
+Content
+
+### Example block {.example}
+
+Content
+
+::: {.incremental}
+
+- Eat spaghetti
+- Drink wine
+
+:::
+
+---
+
+## Slide with a pause
+
+content before the pause
+
+. . .
+
+content after the pause
+
+
+## Multiple Columns
+
+:::: {.columns}
+
+::: {.column width="40%"}
+contents...
+:::
+
+::: {.column width="60%"}
+contents...
+:::
+
+::::
+
+
+
+### Example block {.example}
+
+Content
+
+
+## There Is No Largest Prime Number
+
+\framesubtitle{The proof uses \textit{reductio ad absurdum}.}
+\begin{theorem}
+There is no largest prime number.
+\end{theorem}
+\begin{proof}
+\begin{enumerate}
+\item<1-| alert@1> Suppose $p$ were the largest prime number.
+\item<2-> Let $q$ be the product of the first $p$ numbers.
+\item<3-> Then $q+1$ is not divisible by any of them.
+\item<1-> Thus $q+1$ is also prime and greater than $p$.\qedhere
+\end{enumerate}
+\end{proof}
+
+
+
+## There Is No Largest Prime Number
+
+\framesubtitle{The proof uses \textit{reductio ad absurdum}.}
+\begin{theorem}
+There is no largest prime number.
+\end{theorem}
+\begin{proof}
+
+1. Suppose $p$ were the largest prime number.
+2. Let $q$ be the product of the first $p$ numbers.
+3. Then $q+1$ is not divisible by any of them.
+4. Thus $q+1$ is also prime and greater than $p$.\qedhere
+
+\end{proof}
+
+
+
+
+## Training Deep Neural Networks
+
+\begin{tikzpicture}[remember picture, overlay]
+\node[anchor=north west, inner sep=0] at ([xshift=20pt, yshift=-20pt]current page.north west) {\includegraphics[width=40pt]{logo.png}};
+    \node[anchor=north east, inner sep=0] at ([xshift=-20pt, yshift=-20pt]current page.north east) {\includegraphics[width=100pt]{youtube.png}};
+    \draw[accentcolor, line width=2pt] ([yshift=-20pt]current page.north west) -- ([yshift=-20pt]current page.north east);
+\end{tikzpicture}
+
+\vspace{10pt} % Add vertical spacing
+
+\begin{flushleft}
+    \textbf{Maziar Raissi}
+
+    Assistant Professor \\
+    Department of Applied Mathematics \\
+    University of Colorado Boulder \\
+    \texttt{maziar.raissi@colorado.edu}
+\end{flushleft}

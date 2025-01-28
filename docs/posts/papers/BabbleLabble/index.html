@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="keywords" content="BabbleLabble, Feature Engineering, Function Learning, Explanation-Based Learning, Semantic Parsing, Aggregation">
+<meta name="description" content="A review of the paper ‘Training Classifiers with Natural Language Explanations’ by Hancock et al.">
+
+<title>Training Classifiers with Natural Language Explanations – Notes on Reinfocement Learning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../favicon.ico" rel="icon">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-594d21605a7b9fb32547fedacd8fc358.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-d396125c57f3f0defba792e7b0e7a5dc.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
+<link href="../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+MathJax = {
+  loader: {
+    load: ['[tex]/boldsymbol']
+  },
+  tex: {
+    tags: "all",
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    packages: {
+      '[+]': ['boldsymbol']
+    }
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+
+<link rel="stylesheet" href="../../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Notes on Reinfocement Learning</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Training Classifiers with Natural Language Explanations</h1>
+<p class="subtitle lead">Paper Review</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">Paper</div>
+    <div class="quarto-category">Review</div>
+    <div class="quarto-category">NLP</div>
+    <div class="quarto-category">Classification</div>
+    <div class="quarto-category">Named Entity Recognition</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    A review of the paper ‘Training Classifiers with Natural Language Explanations’ by Hancock et al.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">Tuesday, January 28, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+<div>
+  <div class="keywords">
+    <div class="block-title">Keywords</div>
+    <p>BabbleLabble, Feature Engineering, Function Learning, Explanation-Based Learning, Semantic Parsing, Aggregation</p>
+  </div>
+</div>
+
+</header>
+
+
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="cover.jpg" class="img-fluid figure-img"></p>
+<figcaption>litrature review</figcaption>
+</figure>
+</div><div id="fig-vid01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-vid01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/YBeAX-deMDg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vid01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Babble Labble: Learning From Natural Language Explanations (NIPS 2017 Demo)
+</figcaption>
+</figure>
+</div><div id="fig-vid01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-vid01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/4cgvIh9DUrg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vid01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Braden Hancock - Training Classifiers with Natural Language Explanations
+</figcaption>
+</figure>
+</div></div>
+
+<p>In <span class="citation" data-cites="hancock2018trainingclassifiersnaturallanguage">(<a href="#ref-hancock2018trainingclassifiersnaturallanguage" role="doc-biblioref">Hancock et al. 2018</a>)</span> the authors consider how to learn labeling functions from natural language explanations. Such explanations can come from a data labeler on Amazon mechnical Turk, a domain expert and perhaps from an LLM. Labeling function capture a heuristic for labeling data. The author ties it up with some work on <strong>data programming</strong> which lead to <a href="https://www.snorkel.org/">snorkel</a> another data labeling tool. This paper isn’t about RL at all. It is interesting for a number if reasons.</p>
+<p>The hook for me was its approach to aggregation. Since Scott E. Page pointed out the challenges of aggregation in his book <a href="https://www.amazon.com/Difference-Diversity-Creates-Complexity-Scott/dp/0691138540">The Difference</a> I have been considering how it manifests in many forms - particularly in language emergence.</p>
+<p>The chart I saw for the presentation was extremely similar to another chart I had seen in a paper on emergent languages. It looked like this paper was solving an aggregation problem I had been considering in emergent languages. It turned out to be a coincidence. These are different problems, and they aggregation is for different things. And yet there still seems to be an underlying similarity.</p>
+<ol type="1">
+<li>Another aspect of the paper is the approach to aggregating weak noisy classifier into a more powerful one. This aspect seems to also have merits for agents that are learning to discriminate together with learning a language. It is interesting that both Yoav Golderg and the Authors of this paper think that parsing accuracy is not that important since the parsers are good enough and their system is built to be robust to errors.</li>
+<li>It uses <strong>semantic parsers</strong> to convert natural language explanations into labeling functions. Back in 2019 <a href="https://youtu.be/e12danHhlic?t=853">Yoav Goldberg</a> i suggested in that too often NLP devs use RegEx instead of a more robust approach based on syntax trees that can be constructed thanks to Spacy. I think semantic parsers are perhaps one step further where we take the parse tree and convert it to a program.</li>
+<li>Seems similar to the approach of I saw in <a href="https://explosion.ai/blog/prodigy-annotation-tool-active-learning">Prodigy</a> by spacey core developer <a href="https://ines.io/">Ines Montani</a> and others.</li>
+<li>It implements <a href="https://orenbochman.github.io/blog/notes/cognitivie-ai-cs7637/17-explanation-based-learning/17-explanation-based-learning.html">Explanation-Based Learning</a> from Cognitive AI (CS7637) course.</li>
+</ol>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+TL;DR - The paper
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../img/in_a_nutshell.jpg" class="img-fluid figure-img"></p>
+<figcaption>The paper in a nutshell</figcaption>
+</figure>
+</div>
+<p>BabbleLabble is a framework for training classifiers in which annotators provide natural language explanations for labeling decisions. These explanations are parsed into labeling functions that generate noisy labels for unlabeled data. The framework consists of a semantic parser, filter bank, and label aggregator. Experiments on relation extraction tasks show that users can train classifiers 5-100× faster by providing explanations instead of just labels. The filter bank effectively removes incorrect labeling functions, and the label aggregator combines labels into probabilistic labels for training a discriminative model. The noisy labels provide weak supervision that promotes generalization.</p>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div id="fig-01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="fig-01.png" class="img-fluid figure-img"></p>
+<figcaption>BabbleLabble UI</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: In BabbleLabble, the user provides a natural language explanation for each labeling decision. These explanations are parsed into labeling functions that convert unlabeled data into a large labeled dataset for training a classifier.
+</figcaption>
+</figure>
+</div></div><section id="abstract" class="level2">
+<h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
+<blockquote class="blockquote">
+<p>Training accurate classifiers requires many labels, but each label provides only limited information (one bit for binary classification). In this work, we propose <em>BabbleLabble</em>, a framework for training classifiers in which an annotator provides a natural language explanation for each labeling decision. A semantic parser converts these explanations into programmatic <em>labeling functions</em> that generate noisy labels for an arbitrary amount of unlabeled data, which is used to train a classifier. On three relation extraction tasks, we find that users are able to train classifiers with comparable F1 scores from 5-100× faster by providing explanations instead of just labels. Furthermore, given the inherent imperfection of labeling functions, we find that a simple rule-based semantic parser suffices. — <span class="citation" data-cites="hancock2018trainingclassifiersnaturallanguage">(<a href="#ref-hancock2018trainingclassifiersnaturallanguage" role="doc-biblioref">Hancock et al. 2018</a>)</span></p>
+</blockquote>
+</section>
+<section id="outline" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="outline">Outline</h2>
+
+<div class="no-row-height column-margin column-container"><div id="fig-02" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="fig-02.png" class="img-fluid figure-img"></p>
+<figcaption>System Overview</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Natural language explanations are parsed into candidate labeling functions (LFs). Many incorrect LFs are filtered out automatically by the filter bank. The remaining functions provide heuristic labels over the unlabeled dataset, which are aggregated into one noisy label per example, yielding a large, noisily-labeled training set for a classifier.
+</figcaption>
+</figure>
+</div><div id="fig-03" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="fig-03.png" class="img-fluid figure-img"></p>
+<figcaption>Seamntic Parse of An Explanation</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Valid parses are found by iterating over increasingly large sub-spans of the input looking for matches among the right hand sides of the rules in the grammar. Rules are either lexical (converting tokens into symbols), unary (converting one symbol into another symbol), or compositional (combining many symbols into a single higher-order symbol). A rule may optionally ignore unrecognized tokens in a span (denoted here with a dashed line).
+</figcaption>
+</figure>
+</div></div>
+<section id="introduction" class="level3">
+<h3 class="anchored" data-anchor-id="introduction">Introduction</h3>
+<ul>
+<li>Describes the standard protocol for collecting labeled data for training classifiers.</li>
+<li>Highlights limitations of labeling: each label only provides a single bit of information.</li>
+<li>Mentions previous works’ approaches to improve information gain from examples.</li>
+<li>Presents <code>BabbleLabble</code>, a framework where annotators provide natural language explanations for each labeling decision.</li>
+</ul>
+</section>
+<section id="the-babblelabble-framework" class="level3">
+<h3 class="anchored" data-anchor-id="the-babblelabble-framework">The <code>BabbleLabble</code> Framework</h3>
+<ul>
+<li>Describes how <code>BabbleLabble</code> converts explanations and unlabeled data into a noisy training set.</li>
+<li>Presents the three main components of <code>BabbleLabble</code>: semantic parser, filter bank, and label aggregator.</li>
+<li>Mentions how explanations provide high-level information about patterns in the data.</li>
+<li>Notes that the semantic parser converts explanations into a set of logical forms representing labeling functions.</li>
+<li>Explains how the filter bank removes incorrect labeling functions based on semantic and pragmatic criteria.</li>
+<li>Describes how the label aggregator combines labels from the labeling functions into probabilistic labels for each example.</li>
+<li>Explains the benefits of training a discriminative model using the noisy labels instead of classifying directly with the label aggregator.</li>
+</ul>
+</section>
+<section id="explanations" class="level3">
+<h3 class="anchored" data-anchor-id="explanations">Explanations</h3>
+<ul>
+<li>Discusses the format and content of user-provided explanations.</li>
+<li>Highlights that explanations should refer to specific aspects of the example.</li>
+</ul>
+</section>
+<section id="semantic-parser" class="level3">
+<h3 class="anchored" data-anchor-id="semantic-parser">Semantic Parser</h3>
+<ul>
+<li>Describes the goal of the semantic parser: generate a set of candidate labeling functions (LFs).</li>
+<li>Presents the rule-based semantic parser used in <code>BabbleLabble</code> and its key features.</li>
+<li>Discusses the parser’s grammar and the included predicates.</li>
+<li>Notes that the parser is domain-independent, allowing transferability to new tasks.</li>
+</ul>
+</section>
+<section id="filter-bank" class="level3">
+<h3 class="anchored" data-anchor-id="filter-bank">Filter Bank</h3>
+<ul>
+<li>Explains the role of the filter bank: remove incorrect labeling functions without requiring ground truth labels.</li>
+<li>Discusses the two types of filters: semantic and pragmatic.</li>
+<li>Describes the purpose and operation of semantic and pragmatic filters.</li>
+<li>Highlights the effectiveness of the filter bank in removing incorrect labeling functions.</li>
+</ul>
+</section>
+<section id="label-aggregator" class="level3">
+<h3 class="anchored" data-anchor-id="label-aggregator">Label Aggregator</h3>
+<ul>
+<li>Explains the function of the label aggregator: combine potentially conflicting labels from multiple labeling functions into a single probabilistic label.</li>
+<li>Discusses the limitations of a simple majority vote approach.</li>
+<li>Presents the data programming approach used in <code>BabbleLabble</code>, which models the relationship between true labels and labeling function outputs as a factor graph.</li>
+</ul>
+</section>
+<section id="discriminative-model" class="level3">
+<h3 class="anchored" data-anchor-id="discriminative-model">Discriminative Model</h3>
+<ul>
+<li>Discusses the advantages of using a discriminative model trained with noisy labels.</li>
+<li>Explains how a discriminative model can leverage features not explicitly mentioned in explanations.</li>
+<li>Notes that the noisy labels provide a form of weak supervision that promotes generalization.</li>
+</ul>
+</section>
+<section id="experimental-setup" class="level3">
+<h3 class="anchored" data-anchor-id="experimental-setup">Experimental Setup</h3>
+<ul>
+<li>Describes the three relation extraction tasks used for evaluation: Spouse, Disease, and Protein.</li>
+<li>Presents details about each dataset: source, task description, and size.</li>
+<li>Discusses the experimental settings: text preprocessing, semantic parser implementation, label aggregator, and discriminative model.</li>
+<li>Mentions hyperparameter tuning and evaluation metrics.</li>
+</ul>
+</section>
+<section id="experimental-results" class="level3">
+<h3 class="anchored" data-anchor-id="experimental-results">Experimental Results</h3>
+<ul>
+<li>Presents the F1 scores achieved by <code>BabbleLabble</code> compared to traditional supervision.</li>
+<li>Highlights the rate of improvement in F1 score with the number of user inputs.</li>
+<li>Discusses the effectiveness of the filter bank in removing incorrect labeling functions.</li>
+<li>Presents an analysis of the utility of incorrectly parsed labeling functions.</li>
+<li>Compares using labeling functions as functions versus features.</li>
+<li>Discusses the impact of unlabeled data on performance.</li>
+</ul>
+</section>
+<section id="related-work-and-discussion" class="level3">
+<h3 class="anchored" data-anchor-id="related-work-and-discussion">Related Work and Discussion</h3>
+<ul>
+<li>Discusses previous work on learning from natural language explanations.</li>
+<li>Mentions research on learning from weak supervision, particularly in the context of relation extraction.</li>
+<li>Highlights the potential of natural language as a high-bandwidth communication channel for machine learning.</li>
+<li>Discusses future research directions, including applying the framework to other tasks and exploring more interactive settings.</li>
+</ul>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+My Thoughts
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<section id="big-ideas" class="level3">
+<h3 class="anchored" data-anchor-id="big-ideas">Big ideas</h3>
+<ol type="1">
+<li><mark>Always be on the lookout for tricks on how to convert<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> a supervised learning task into an unsupervised one</mark>. While this paper fails to do so, it does provide a step in the right direction and more so one that yields a 100x speed up in labeling tasks. In reality this claim is a marketing shtick for their paper, however the real point is that if you have a labeling function, its utility grows in proportion to the amount of unlabeled data you can bring to bear.</li>
+<li>Branden Hancock keeps reiterating that <mark>the bulk of the time spent in Labeling is understanding the text/data not the annotation</mark>. The authors point that time to elicit explanation is only double the time of labeling. Highlighting evidence or even writing an explanation is thus a small burden in comparison to just annotating the most significant part of the text? Perhaps not yet if we include the benefits of the labeling functions that result in 6-10x more labels the math works out.</li>
+<li>It is easy to miss the most significant aspect of the paper - <mark>the importance of the Filter Bank in creating value</mark>. However there is an extensive literature on PBE (Program By Example) that they do not seem to be aware of which can convert such examples into programs.</li>
+<li>Another point made by Branden in support of Explanation is that <mark>you can’t highlight when the evidence is negative</mark> - i.e.&nbsp;when the classification is grounded in some context not being in the text.</li>
+<li>A third reason to like explanations is that data-centric tasks are forever changing. There are new requirements (e.g.&nbsp;a new class) or drifts in the classifiers’s distributions. If you have collected labels you need to rethink the project but if you collected explanations it is easier to retain on more data then relabel. If there is a better semantic parser, you can swap it and re-train.</li>
+</ol>
+</section>
+<section id="devils-and-details" class="level3">
+<h3 class="anchored" data-anchor-id="devils-and-details">Devils and Details</h3>
+<ol type="1">
+<li>The most interesting aspects of the paper for RL are how an agent interacting with people can elicit explanation that can then be used to create labeling functions.</li>
+<li>The idea of how the labeling function are aggregated is also instructive. That said, I can’t say that this is a big idea - it looks very much like ranking, weighting and even less powerful than TD-IDF. So what I mean is that when we learn a language probably want to learn features from functions not labels as labels do not generalize. If we also have a framing game that is driving language learning then we may have further uses for a sensible form of aggregation in our classifier. More abstractly, the RL agent needs to pick an action - that is usually like a classification of a state into an action space. For Life long learning we could</li>
+<li>Q &amp; A are a good often considered in the Semantic Parsing literature.</li>
+<li>LLM may well be useful for <mark>closing the weak supervision loop</mark>. I.e. one can use a general purpose query to elicit explanations from an LLM. With a range of prompts one should be able to get different explanations.</li>
+</ol>
+</section>
+<section id="action-items" class="level3">
+<h3 class="anchored" data-anchor-id="action-items">Action Items</h3>
+<ol type="1">
+<li>Try babble labble, snorkel, prodigy, and SippyCup.</li>
+<li>Make a MVP of the filter bank.</li>
+<li>make a cheat-sheet on how to convert a supervised learning tasks into an unsupervised ones. These are ideas that disrupted the field of ML.</li>
+<li>close the loop on weak supervision with LLM for a RL agent</li>
+<li>compare this approach to other PBE</li>
+</ol>
+</section>
+</div>
+</div>
+<p>The people behind BabbleLabble are also behind Snorkel. Snorkel is a framework for building weakly supervised models. It is a more general framework that can be used for a wide range of tasks. BabbleLabble is a specific application of Snorkel to the task of training classifiers with natural language explanations. The key difference is that BabbleLabble focuses on the use of natural language explanations to generate labeling functions, while Snorkel is a more general framework for building weakly supervised models.</p>
+<p>A point made on the Snorkel Site is that the people who worked on the tool moved on to building a platform. Is this just to monetize their work? My guess is not. In reality there are many other tools that do much the same thing. Labeling data is not very glamorous but building a tool is just a ui and a classifier. You can’t lock clients in and it is likely that each project required expensive customization. At some point it becomes simpler to do this in a form that is more general and can be used by future clients. This is harder in open source as you need consensus and a community. On the other hand in a platform each time you do a project you have added value to the platform.</p>
+<p>From other talks by Snorkel people it seems that many companies invest massively in labeling datasets (i.e.&nbsp;teams with sizes of hundreds). Thus every small improvement in the process can have a big impact. And as a business model it makes a lot of sense to try to bring as many of those improvements in house.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Aggregation your’e No good for me
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Aggregation can take simple underlying components and combine them into arbitrarily complex structures. This is a powerful idea that is used in many areas of science and engineering. Here are a few examples:</p>
+<ol type="1">
+<li><p>The Statistics the Central limit theorem allow us to aggregate many random variables into a Normal distributed one under fairly broad conditions.</p>
+<blockquote class="blockquote">
+<p>“Aggregate statistics can sometimes mask important information”. – Ben Bernanke</p>
+</blockquote></li>
+<li><p>In Physics we can aggregate the behavior of many particles into that of an ensemble. We have a number of examples, the most famous being the ideal gas, statistical mechanics, the Ising model and the Potts model. Though the idea of aggregation is very much endemic to many areas of physics.</p>
+<blockquote class="blockquote">
+<p>“Imagine how difficult physics would be if electrons could think.” – Murray Gell-Mann</p>
+</blockquote></li>
+<li><p>In the case of a classifier we can aggregate many weak classifiers into a strong one. This is the idea behind <strong>boosting</strong> and <strong>bagging</strong>. This idea is behind well known algorithms like <strong>Random Forest</strong> and <strong>Gradient Boosting</strong> and even <strong>Stable Diffusion</strong></p></li>
+<li><p>In the case of a language we can aggregate the meaning or semantics of many smaller units of meaning into larger ones. This is the idea behind <strong>semantics</strong>. This idea is behind well known algorithms like <strong>Word2Vec</strong> and <strong>BERT</strong> and even <strong>GPT-3</strong></p></li>
+<li><p>Preferences can be aggregated into utility functions. This is the idea behind <strong>utility theory</strong>. This idea is behind demand theory.</p></li>
+<li><p>Information aggregation is the notion that the wisdom of the crowd is better than the wisdom of the individual. <strong>The Wisdom of the Crowds</strong> points out that diverse opinions can play a big role here. There are other notions here like the <strong>Delphi Method</strong>.</p></li>
+<li><p>Sensor Fusion via Kalman Filters, SLAM, and Particle Filters are ways to aggregate information from sensors. <strong>The Kalman Filter</strong> is a way to aggregate information from a sensor. <strong>SLAM</strong> is a way to aggregate information from a sensor. <strong>Particle Filters</strong> is a way to aggregate information from a sensor.</p></li>
+<li><p>Social Networks have a number of ways to aggregate information. <strong>PageRank</strong> is a way to aggregate the importance of a node in a network. <strong>The Small World Phenomenon</strong> is a way to aggregate the number of hops between two nodes. <strong>The Strength of Weak Ties</strong> is a way to aggregate the number of connections between two nodes. <strong>The Friendship Paradox</strong> is a way to aggregate the number of friends a person has.</p></li>
+<li><p>elections and voting have the notion of aggregation. <strong>Arrow’s Impossibility Theorem</strong> points out that there is no perfect way to aggregate preferences. <strong>The Condorcet Paradox</strong> points out that there is no perfect way to aggregate opinions. <strong>The Gibbard-Satterthwaite Theorem</strong> points out that there is no perfect way to aggregate votes.</p></li>
+<li><p>In chaos theory many chaotic systems can become synchronized.</p></li>
+</ol>
+</div>
+</div>
+</section>
+</section>
+<section id="the-paper-annotated" class="level2">
+<h2 class="anchored" data-anchor-id="the-paper-annotated">The Paper Annotated</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="paper.pdf" class="col-page" width="800" height="1000"></p>
+<figcaption>paper</figcaption>
+</figure>
+</div>
+
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-hancock2018trainingclassifiersnaturallanguage" class="csl-entry" role="listitem">
+Hancock, Braden, Paroma Varma, Stephanie Wang, Martin Bringmann, Percy Liang, and Christopher Ré. 2018. <span>“Training Classifiers with Natural Language Explanations.”</span> <a href="https://arxiv.org/abs/1805.03818">https://arxiv.org/abs/1805.03818</a>.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>TODO: make a cheat-sheet on this topic!?<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/notes-rl\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+    <script type="text/javascript">
+    (function(d) {
+      d.querySelectorAll(".pseudocode-container").forEach(function(el) {
+        let pseudocodeOptions = {
+          indentSize: el.dataset.indentSize || "1.2em",
+          commentDelimiter: el.dataset.commentDelimiter || "//",
+          lineNumber: el.dataset.lineNumber === "true" ? true : false,
+          lineNumberPunc: el.dataset.lineNumberPunc || ":",
+          noEnd: el.dataset.noEnd === "true" ? true : false,
+          titlePrefix: el.dataset.captionPrefix || "Algorithm"
+        };
+        pseudocode.renderElement(el.querySelector(".pseudocode"), pseudocodeOptions);
+      });
+    })(document);
+    (function(d) {
+      d.querySelectorAll(".pseudocode-container").forEach(function(el) {
+        let captionSpan = el.querySelector(".ps-root > .ps-algorithm > .ps-line > .ps-keyword")
+        if (captionSpan !== null) {
+          let captionPrefix = el.dataset.captionPrefix + " ";
+          let captionNumber = "";
+          if (el.dataset.pseudocodeNumber) {
+            captionNumber = el.dataset.pseudocodeNumber + " ";
+            if (el.dataset.chapterLevel) {
+              captionNumber = el.dataset.chapterLevel + "." + captionNumber;
+            }
+          }
+          captionSpan.innerHTML = captionPrefix + captionNumber;
+        }
+      });
+    })(document);
+    </script>
+  
+
+
+
+
+</body></html>

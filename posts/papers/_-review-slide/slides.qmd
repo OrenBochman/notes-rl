@@ -1,0 +1,175 @@
+---
+ title: "Training Deep Neural Networks"
+ author: "Oren Bochman"
+ draft: true
+ format:
+    revealjs:
+        theme: simple
+        css: style.css
+        slide-number: false
+        background-transition: none
+        transition: none
+        incremental: true
+        scrollable: true
+        center-title-slide: false
+        logo: logo.png
+        footer: "Footer text"
+        code-block-height: 650px
+---
+
+
+# In the morning
+
+## Getting up
+
+- Turn off alarm
+- Get out of bed
+
+::: {.notes}
+Speaker notes go here.
+:::
+
+## Breakfast
+
+- Eat eggs
+- Drink coffee
+
+# In the evening
+
+## Dinner
+
+::: {.incremental}
+- Eat spaghetti
+- Drink wine
+:::
+
+## Going to sleep
+
+
+:::: {.columns}
+
+::: {.column width="40%"}
+Left column
+
+- Get in bed
+- Count sheep
+
+:::
+
+::: {.column width="60%"}
+Right column
+
+- Wake up
+- Count backwards and meditate
+
+:::
+
+::: aside
+Some additional commentary of more peripheral interest.
+:::
+
+::::
+
+## Slide Title
+
+- Green ^[A footnote]
+- Brown
+- Purple
+
+::: aside
+Some additional commentary of more peripheral interest.
+:::
+
+## Secret Code
+
+```{.python code-line-numbers="|6|9"}
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+```
+
+
+# Tabular Data
+
+<div class="redline"></div>
+
+- The goal of statistics is to come up with a "model" that "explains" the data.
+- The goal of machine (deep) learning is to come up with an "algorithm" that "performs" well on some "test" data.
+
+- $x_i \in \mathbb{R}^d, y_i \in \{1,2,..., k\}, i = 1, ..., N \rightarrow$ training data
+- $x_i^\prime \in \mathbb{R}^d, y_i^\prime \in \{1,2,..., k\}, i = 1, ..., N' \rightarrow$ validation data
+- $x_i'' \in \mathbb{R}^d, y_i'' \in \{1,2,..., k\}, i = 1, ..., N'' \rightarrow$ test data
+
+## **Performance metric** (e.g., *accuracy*)
+
+- $\hat{y} = f_{\alpha,\beta}(x) \rightarrow$ prediction of model $f_{\alpha,\beta}$ at input $x$
+- $\alpha \rightarrow$ hyper-parameters of the model
+- $\beta \rightarrow$ parameters of the model
+- $\hat{y} = f_{\alpha^*, \beta^*}(x_i) \rightarrow$ predictions of the "optimal" model on the test data
+- Accuracy = $\frac{\sum_{i=1}^{N''} \mathbb{I}(y_i'' = \hat{y_i})}{N''}$
+
+## Model/Algorithm
+
+$f_{\alpha,\beta}(x) = arg max_{j=1,...,k} p_{\alpha,\beta}^{(j)}(x)$
+
+$p_{\alpha,\beta}^{(j)}(x) \rightarrow$ j-th element of the probability vector $p_{\alpha,\beta}(x) \in \mathbb{R}^k$
+
+$\sum_{j=1}^k p_{\alpha,\beta}^{(j)}(x) = 1 \text{ and } p_{\alpha,\beta}^{(j)}(x) \geq 0, \forall j = 1,...,k$
+
+## Training
+
+$L_{\alpha}(\beta) = -\sum_{i=1}^N log p_{\alpha,\beta}^{(y_i)}(x_i) \rightarrow$ loss function (negative log likelihood)
+
+$\beta^\* = argmin_{\beta} L_{\alpha}(\beta)$ given $\alpha$ (i.e., $\beta^\*$ is a function of $\alpha$)
+
+## Validation
+
+$\hat{y_i} = f_{\alpha,\beta^*(\alpha)}(x_i^\prime) \rightarrow$ predictions of the model on the validation data
+
+$\alpha^\* = arg max_{\alpha} \frac{\sum_{i=1}^{N'}\mathbb{I}(\hat{y_i} = y_i^\prime)}{N'}$
+
+Multi-Layer Perceptron (MLP)
+
+$p_{\alpha,\beta}(x) = softmax(W ReLU(Vx + a) +b)$
+
+---
+
+## Tabular Data
+
+<div class="redline"></div>
+
+| Sepal.Length | Sepal.Width | Petal.Length | Petal.Width | Species    |
+|--------------|-------------|--------------|-------------|------------|
+| 5.5          | 2.5         | 4.0          | 1.3         | versicolor |
+| 5.0          | 2.0         | 3.5          | 1.0         | versicolor |
+| 6.7          | 2.5         | 5.8          | 1.8         | virginica  |
+| 5.6          | 3.0         | 4.5          | 1.5         | versicolor |
+| 5.2          | 2.7         | 3.9          | 1.4         | versicolor |
+| 5.0          | 3.5         | 1.3          | 0.3         | setosa     |
+| 6.4          | 2.7         | 5.3          | 1.9         | virginica  |
+| 6.4          | 2.8         | 5.6          | 2.2         | virginica  |
+| 5.1          | 3.8         | 1.6          | 0.2         | setosa     |
+| 5.1          | 3.7         | 1.5          | 0.4         | setosa     |
+
+Number of observations: 150    Number of variables: 5
+---
+
+## An overview of gradient descent optimization algorithms
+
+<div class="redline"></div>
+
+```cpp
+#include <stdio.h>
+int main()
+{
+   printf("Hello");
+   return 0;
+}
+```

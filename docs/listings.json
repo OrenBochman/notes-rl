@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/papers/BabbleLabble/index.html",
       "/posts/papers/Offpolicy-AuctionGym/index.html",
       "/posts/papers/AuctionGym/index.html",
       "/posts/papers/DCTS/index.html",

@@ -1,0 +1,57 @@
+.reveal {
+    font-family: sans-serif;
+    color: black;
+    background-color: white;
+  }
+  
+  .reveal h1, .reveal h2, .reveal h3 {
+    color: black;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+  
+  .reveal .slide ul li, .reveal .slide ol li{
+    margin-bottom: 10px;
+  }
+  
+  .reveal section {
+      text-align: left;
+  }
+  
+  .reveal .sourceCode {
+      padding: 1em;
+      background-color: #eee;
+      margin: 1em;
+  }
+  
+  .reveal table {
+      margin: 1em;
+  }
+  
+  
+  .reveal .redline {
+    border-bottom: 2px solid #cc0000;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .reveal table td {
+      padding: 0.2em 0.5em;
+  }
+  
+  .logo {
+    width: 40px;
+    height: auto;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+  }
+  
+  .youtube {
+    width: 100px;
+    height: auto;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+  
