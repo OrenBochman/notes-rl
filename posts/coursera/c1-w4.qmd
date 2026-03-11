@@ -29,9 +29,12 @@ title-block-banner: /images/banner_black_3.jpg
 
 In this week, we learn how to compute value functions and optimal policies, assuming you have the MDP model. You will implement dynamic programming to compute value functions and optimal policies and understand the utility of dynamic programming.
 
-The 'programming' in dynamic programming really means solving an optimization problem. We have learned about using the Bellman equations as update rules. Now we look at some basic applications of this idea to solve MDP.
+The *programming* in dynamic programming really means solving an optimization problem. 
+We have learned about using the Bellman equations as update rules. Now we look at some basic applications of this idea to solve MDP.
 
-The intuition is pretty simple we have two tasks - one is to decide how good a policy $\pi$ is - think  [discounted summation of the rewards from the best actions over the $s_ta_tr_t$ tree]{.mark}. This policy evaluation step is named **prediction**, as we don't really know what the actual rewards of stochastic actions will be, only their expectation. But what we really want is to find near optimal policy which is called 'control'. We have a strong theoretical result on how to go about this by iteratively improving a policy by picking its the actions with highest value at each steps.
+The intuition is pretty simple we have two tasks 
+  - one is to decide how good a policy $\pi$ is -- think [discounted summation of the rewards from the best actions over the $s_ta_tr_t$ tree]{.mark}. 
+This policy evaluation step is named **Prediction**, as we don't really know what the actual rewards of stochastic actions will be, only their Expectation. But what we really want is to find near optimal policy which is called '**Control**'. We have a strong theoretical result on how to go about this by iteratively improving a policy by picking its the actions with highest value at each steps.
 
 What is surprising at first is that even starting with a uniform random policy we don't need to explore the tree too deeply in the prediction step to be able to pick better actions. Also we can see from the maze like grid world that we really need to update one or two states every iteration. Which suggest that there is great room for improvement with smarter algorithms.
 
@@ -54,15 +57,15 @@ What is surprising at first is that even starting with a uniform random policy w
 
 ## Policy Evaluation and Control {#sec-policy-evaluation-control}
 
-The distinction between policy evaluation and control:
+The distinction between **policy evaluation** and **control**:
 
-policy evaluation (prediction)
+Policy Evaluation (Prediction)
 : is the task of evaluating the future, i.e. the value function given some specific policy $\pi$.
 
-control
+Control
 : is the task of finding the optimal policy, given some specific value function $v$.
 
-planning
+Planning
 : is the task of finding the optimal policy $\pi_{\star}$ and value function $v$, given a model of the environment.
 this is typically done by dynamic programming methods.
 
@@ -94,12 +97,13 @@ This is the uniform random policy. Alternatively we can start with some other po
 These two assumptions are implemented in the initialization step of the algorithm.
 
 The crux of the algorithm is the update step which is based on the recursive
-bellman equation for the value function under a policy $\pi$:
+Bellman equation for the value function under a policy $\pi$:
 
 
 $$
 v_{\pi}(s) = \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')] \sum_{a} \pi(a|s)
-$$
+$$ {#eq-iterative-policy-evaluation-update}
+
 I rearranged the terms to make it clear that we are iterating over the states
 we use this equation to update the value of each state  using
 

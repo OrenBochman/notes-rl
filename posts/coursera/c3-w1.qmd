@@ -48,7 +48,9 @@ title-block-banner: /images/banner_black_3.jpg
 -   We will see some simple linear function approximation methods and later
 -   We will see modern nonlinear approximation methods using deep neural networks.
 
-I did not find the derivation of the SGD alg particularly enlightening and I have seen it several times. However the online setting is the best motivation for the use of SGD and makes perfect sense in the context of reinforcement learning. Minibatches are then a natural extension of this idea.
+I did not find the derivation of the SGD alg particularly enlightening and I have seen it several times. 
+However the online setting is the best motivation for the use of SGD and makes perfect sense in the context of reinforcement learning. 
+Minibatches are then a natural extension of this idea.
 
 ::: {.callout-tip collapse="true"}
 ### Readings {.unnumbered}
@@ -67,7 +69,6 @@ In this lesson we will cover some important notation that will remain with us ti
 -   [x] *Explain* the meaning of **linear value function approximation** [\#](#sec-l1g2)
 -   [x] *Recognize* that the tabular case is a special case of linear value function approximation [\#](#sec-l1g3)
 -   [x] *Understand* that there are many ways to parameterize an approximate value function [\#](#sec-l1g4)
-
 -   [x] *Understand* what is meant by **generalization** and **discrimination** [\#](#sec-l1g5)
 -   [x] *Understand* how generalization can be beneficial [\#](#sec-l1g6)
 -   [x] *Explain* why we want both generalization and discrimination from our function approximation [\#](#sec-l1g7)
@@ -81,27 +82,40 @@ In this lesson we will cover some important notation that will remain with us ti
 This video covers the first four learning objectives.
 
 This video covers parameterized policies and how they can be used to approximate value functions. 
-The idea is that using a table has some limitations/ The first is that the tables can be very large. For continuous states they can become infinite.
+The idea is that using a table has some limitations. 
+The first is that the tables can be very large. 
+For continuous states they can become infinite.
 
 The second is that the tables can be very sparse and in a table we don't generalize between states.
 
-We see that we don't really want functions that directly approximate the value function. We want functions that have some structure that we can learn.
+We see that we don't really want functions that directly approximate the value function. 
+We want functions that have some structure that we can learn.
 
-This is called a parameterized function. The ideas is to use a weighted sum of the features of the state. This allows us to learn the weights and use them to approximate the value function. This is called linear function approximation.
-The way to get around this which is two fold. We first represent the salient properties of a states into features. 
+This is called a **parameterized function**. 
+The idea is to use a weighted sum of the features of the state. 
+This allows us to learn the weights and use them to approximate the value function. 
+This is called **linear function approximation**.
+The way to get around this which is two fold. 
+We first represent the salient properties of a states into features. 
 
-Then we use weights to combine these features to approximate the value function. This is called linear function approximation. 
+Then we use weights to combine these features to approximate the value function. 
 
 More generally we can use non linear parameterized functions to approximate value functions.
 
-Adam shows that is the features are not picked wisely we may not be able to discriminate between states - out function for one state will be the same as for another dissimilar state. Learning about one will make us forget what we learned about the other. This is called bias. On the other hand if we have too many features we may not be able to generalize between states. This is called variance. The goal is to balance between bias and variance.
+Adam shows that is the features are not picked wisely we may not be able to discriminate between states - out function for one state will be the same as for another dissimilar state. 
+Learning about one will make us forget what we learned about the other. 
+This is called **bias**. 
+On the other hand if we have too many features we may not be able to generalize between states. 
+This is called **variance**. 
+
+The goal is to balance between **bias** and **variance**.
 
 
 ## Understanding parameterized functions {#sec-l1g1}
 
 -   In the previous courses we represented value functions as tables or arrays:
     -   For $V(s)$ we had an array of size $|S|$,
-    -   For $Q(s,a)$ we had an array of size $|S| \times |A|$. This becomes impractical as $|S| \rightarrow \infty$. We can use **parameterized functions** to approximate value functions. This is called **function approximation**.
+    -   For $Q(s,a)$ we had an array of size $|S| \times |A|$. This becomes impractical as $\mid S \mid \rightarrow \infty$. We can use **parameterized functions** to approximate value functions. This is called **function approximation**.
 -   **Linear value function approximation** is a simple and popular method.
     -   We represent the value function as a linear combination of features:
 
@@ -127,7 +141,7 @@ $$ {#eq-lin-fn-approx}
     -   $w_1$ and $w_2$ are the weights of the features
 -   now learning becomes finding better weights that parameterize the value function.
 
-finding the weights that minimize the error between the approximate value function and the true value function:
+Finding the weights that minimize the error between the approximate value function and the true value function:
 
 ## Tabular case is a special case of linear value function approximation {#sec-l1g3}
 
@@ -151,8 +165,6 @@ $$
     -   we can see from the figure that all we need is use one hot encoding for the features. Then the weighted vector will be the same as the value function in the table.
 
 ![Linear value function approximation failure](img/rl-linear-fn-fail.png){#fig-rl-failure .column-margin}
-
-
 
 
 ## There are many ways to parameterize an approximate value function {#sec-l1g4}
@@ -296,7 +308,7 @@ In TD learning the target depends on $w$ but in supervised learning the target i
 In this video Adam White covers the first two learning objectives of the unit.  
 The main subject about using the mean squared error as a loss for the approximate value function. 
 
-we get a sequence of $(S_1,v_{\pi}(S_1) ),(S_2,v_{\pi}(S_2) ),(S_3,v_{\pi}(S_3) ), \ldots$ and we want to approximate the value function . We can track how well we are approximating $v_{\pi}(s)$ by using $\hat{v}(s,\mathbb{w})$. The difference can be positive or negative so if we average it the sum will tend to cancel out. If we square the error we get a positive number we have a much better estimate of the error. And if normalize it by taking the mean we can get use it to compare runs of different lengths. This is called the mean squared  error.
+we get a sequence of $(S_1,v_{\pi}(S_1) ),(S_2,v_{\pi}(S_2) ), (S_3,v_{\pi}(S_3) ), \ldots$ and we want to approximate the value function . We can track how well we are approximating $v_{\pi}(s)$ by using $\hat{v}(s,\mathbf{w})$. The difference can be positive or negative so if we average it the sum will tend to cancel out. If we square the error we get a positive number we have a much better estimate of the error. And if normalize it by taking the mean we can get use it to compare runs of different lengths. This is called the mean squared  error.
 
 It turns out that this is not enough for RL and we need to take a weighted average using the state distribution $\mu(s)$. This is because we care more about some states than others. The state distribution is the long run probability of visiting the state $s$ under the policy $\pi$. This weighted average is called *the mean squared **value** error*.
 
@@ -353,7 +365,8 @@ $$ {#eq-msve}
 -   The gradient of the mean-squared value error with respect to the weights $\mathbf{w}$ is given by:
 
 $$
-    w \dot = \left [ \begin{matrix} w_1 \\ \vdots \\ w_d  \end{matrix} \right ] \qquad \nabla f = \left [ \begin{matrix} \frac{\partial f}{\partial w_1} \\ \vdots \\ \frac{\partial f}{\partial w_d}  \end{matrix} \right ] \qquad
+w \dot = \left [ \begin{matrix} w_1 \\ \vdots \\ w_d  \end{matrix} \right ] \qquad 
+\nabla f = \left [ \begin{matrix} \frac{\partial f}{\partial w_1} \\ \vdots \\ \frac{\partial f}{\partial w_d}  \end{matrix} \right ] \qquad
 $$
 
 -   for a linear function:
@@ -373,10 +386,10 @@ $$ {#eq-grad-descent}
 -   Stochastic gradient descent is a variant of gradient descent that uses a random sample of the data to estimate the gradient.
 -   Stochastic gradient descent uses mini-batches of data to estimate the gradient, which makes it computationally efficient and reduces the variance of the gradient estimate.
 -   In practice we will use variants like:
-    -   Adam - which adapts the learning rate based on the gradient.
-    -   RMSProp - which uses a moving average of the squared gradient.
-    -   Adagrad - which uses a different learning rate for each parameter.
-    -   SGD - which uses a fixed learning rate.
+    -   **Adam** - which adapts the learning rate based on the gradient.
+    -   **RMSProp** - which uses a moving average of the squared gradient.
+    -   **Adagrad** - which uses a different learning rate for each parameter.
+    -   **SGD** - which uses a fixed learning rate.
 
 ## Gradient descent converges to stationary points {#sec-l2g7}
 
@@ -392,9 +405,9 @@ $$ {#eq-grad-descent}
 
 $$
 \begin{align*}
-\nabla J(\mathbf{w}) & = \nabla \sum_{s\in S} \mu(s)[v_\pi(s) - \hat{v}(s, \mathbf{w})]^2 \qquad  \qquad  \hat{v}(s, \mathbf{w}) = <\mathbf{w},\mathbf{x}(s)>\newline
-                    & =  \sum_{s\in S}  \mu(s) \nabla [v_\pi(s) - \hat{v}(s, \mathbf{w})]^2 \qquad  \qquad \nabla   \hat{v}(s, \mathbf{w}) = \mathbf{x}(s)\newline
-                    & =  \sum_{s\in S} \mu(s) 2 [v_\pi(s) - \hat{v}(s, \mathbf{w})]\nabla \hat{v}(s, \mathbf{w})
+\nabla J(\mathbf{w}) &= \nabla \sum_{s\in S} \mu(s)[v_\pi(s) - \hat{v}(s, \mathbf{w})]^2 \qquad  \qquad  \hat{v}(s, \mathbf{w}) = <\mathbf{w},\mathbf{x}(s)> \\
+                     &=  \sum_{s\in S}  \mu(s) \nabla [v_\pi(s) - \hat{v}(s, \mathbf{w})]^2 \qquad  \qquad \nabla   \hat{v}(s, \mathbf{w}) = \mathbf{x}(s) \\
+                     &=  \sum_{s\in S} \mu(s) 2 [v_\pi(s) - \hat{v}(s, \mathbf{w})]\nabla \hat{v}(s, \mathbf{w})
 \end{align*} \qquad 
 $$
 
@@ -414,9 +427,9 @@ This allows us to decrease the error in the value function by making updates for
 
 we have here one issue - we don't know the true value of the policy $v_pi(s_1)$, how do we get around this?
 
-one option is to replace the true value with an estimate, one option is to use the return from the state $s_1$.
+One option is to replace the true value with an estimate, one option is to use the return from the state $s_1$.
 
-recall that
+Recall that:
 
 $$ 
 v_\pi(s) = \mathbb{E}[G_t \mid S_t = s] \qquad
@@ -434,6 +447,7 @@ $$ {#eq-gradient-mc-update}
 ## The gradient Monte Carlo algorithm for value estimation {#sec-l2g4}
 
 We now have a way to update the weights of the value function using the gradient of the mean-squared value error. Which allows us to present the gradient Monte Carlo algorithm for value estimation.
+
 
 ::: {#nte--gradient-mc .callout-note .alg}
 ### MC prediction fist visit for estimating $V \approx v_\pi$ {#alg-mc-prediction-first-visit}
@@ -581,7 +595,7 @@ $$ {#eq-td-grad-ut}
 
 -   The Semi-gradient TD(0) algorithm is a policy evaluation algorithm that uses the TD-update for function approximation.
 
-::: callout-note
+::: {.callout-note}
 ### The Semi-gradient TD(0) algorithm for estimating $v_\pi$ {#alg-td0}
 
 ``` pseudocode
@@ -641,8 +655,6 @@ $$ {#eq-td-grad-ut}
 
 ## Doina Precup's talk on Building Knowledge for AI Agents with Reinforcement Learning {#sec-l3g6}
 
-
-
 ![Dorina Precup](img/rl-dorina-precup.png){#fig-generelization .column-margin}
 
 ![Options are a temporal generalization](img/rl-dorina-options.png){#fig-options .column-margin}
@@ -688,9 +700,9 @@ In this talk, [Dorina Precup](https://rl.cs.mcgill.ca/people/doina-precup/) disc
 ::: callout-tip
 ### Options & CI {.unnumbered}
 
--   This type of formulation seems very similar to that used by [Judea Pearl](https://www.youtube.com/watch?v=JxzjdTc15A0) in his structureal graphical model of Causality. If we can express options as a graph of states we can use his algorithms to infer the best options to take in a given state.
+-   This type of formulation seems very similar to that used by [Judea Pearl](https://www.youtube.com/watch?v=JxzjdTc15A0) in his structural graphical model of Causality. If we can express options as a graph of states we can use his algorithms to infer the best options to take in a given state.
 -   options are like do operations (interventions)
--   choosing between options is like conterfactual reasoning.
+-   choosing between options is like counterfactual reasoning.
 :::
 
 
@@ -724,6 +736,7 @@ $$
 \delta \dot= R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w}) - \hat{v}(S_t, \mathbf{w}) \\
 w \leftarrow w + \alpha \delta_t \nabla \hat{v}(S_t, \mathbf{w})
 $$
+
 in the linear case we can write the value function as:
 
 $$
@@ -758,11 +771,13 @@ $$
 $$
 w_{t+1} \dot= w_t + \alpha [R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w}) - \hat{v}(S_t, \mathbf{w})] \nabla \hat{v}(S_t, \mathbf{w})
 $$
+
 recall that in the linear case we defined the approximate value function as:
 
 $$
 \hat{v}(S_{t+1}, \mathbf{w}) \cdot=  \mathbf{w}^T \mathbf{x}(S_{t+1})
 $$
+
 with :
 
 -  $\mathbf{w}$ the weights of the value function
@@ -786,6 +801,7 @@ but the noise term is dominated by the behaviour of the expected update.
 $$
 \mathbb{E}[\Delta w_{t}]  = \alpha(b-Aw_t)
 $$
+
 where:
 
 -  $b = \mathbb{E}[R_{t+1} \mathbf{x}_t]$ - expectation over the features and the rewards
@@ -801,6 +817,7 @@ $$
 \implies & w_{TD} = A^{-1}b
 \end{align*}
 $$ {#eq-fixed-point}
+
 more generally $w_{TD}$ is the solution to this equation and we could show that it minimises
 
 $$
