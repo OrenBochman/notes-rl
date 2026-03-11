@@ -5,7 +5,7 @@ project:
     port: 7778
 
 website:
-  title: "Notes on Reinfocement Learning"
+  title: "Notes on Reinforcement Learning"
   navbar:
     right:
       - about.qmd
@@ -20,6 +20,7 @@ website:
 
 date-format: full
 date: last-modified
+bibliography: references.bib 
 
 format:
   html:    
