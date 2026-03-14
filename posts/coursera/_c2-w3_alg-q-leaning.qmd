@@ -1,0 +1,36 @@
+
+:::  {#alg-q-learning}
+### Q-learning (off-policy TD control)
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{Q-learning Off-policy TD control}
+\begin{algorithmic}[1]
+\State Initialize:
+  \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$
+  
+\For {each episode e:}
+  \State Initialize $S$
+  \For {each step of e}
+    \State Choose A from $A_B(S)$ using any ergodic Behavioural policy $B$ - perhaps the $\epsilon$-greedy induced by Q.
+    \State Take action A, observe R, S'
+    \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \max_a Q(S',a) - Q(S, A)]$
+    \State $S \leftarrow S'$
+  \EndFor
+ \State until $S$ is terminal
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+
+Note: I made some cosmetic changes to the psuedo code in the book to 
+resolve the confusion I had about nature the behavioral policy.
+:::

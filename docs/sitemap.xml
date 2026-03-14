@@ -2,35 +2,55 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w2.html</loc>
-    <lastmod>2025-01-18T15:51:00.673Z</lastmod>
+    <lastmod>2026-03-14T21:37:45.369Z</lastmod>
   </url>
   <url>
     <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c2-w4.html</loc>
-    <lastmod>2025-01-18T15:53:31.726Z</lastmod>
+    <lastmod>2026-03-11T09:13:35.977Z</lastmod>
   </url>
   <url>
     <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w1.html</loc>
-    <lastmod>2025-01-18T15:50:41.606Z</lastmod>
+    <lastmod>2026-03-14T18:39:07.659Z</lastmod>
   </url>
   <url>
-    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c3-w2.1.html</loc>
-    <lastmod>2025-01-18T15:48:33.470Z</lastmod>
+    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/quicksort.html</loc>
+    <lastmod>2026-03-11T13:12:08.885Z</lastmod>
   </url>
   <url>
-    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c2-w3.html</loc>
-    <lastmod>2025-01-18T15:53:40.131Z</lastmod>
+    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w4.html</loc>
+    <lastmod>2026-03-14T09:46:49.061Z</lastmod>
   </url>
   <url>
-    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c3-w3.html</loc>
-    <lastmod>2025-01-18T15:48:45.054Z</lastmod>
+    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w3.html</loc>
+    <lastmod>2026-03-11T15:45:22.201Z</lastmod>
   </url>
   <url>
-    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c3-w1.html</loc>
-    <lastmod>2025-01-18T15:48:28.148Z</lastmod>
+    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c3-w4.html</loc>
+    <lastmod>2026-03-11T10:04:13.855Z</lastmod>
   </url>
   <url>
-    <loc>https://orenbochman.github.io/notes-rl/posts/papers/Evolution-of-language/index.html</loc>
-    <lastmod>2025-01-19T01:02:07.717Z</lastmod>
+    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c2-w2.html</loc>
+    <lastmod>2026-03-14T10:47:31.289Z</lastmod>
+  </url>
+  <url>
+    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c3-w2.html</loc>
+    <lastmod>2026-03-11T10:04:13.854Z</lastmod>
+  </url>
+  <url>
+    <loc>https://orenbochman.github.io/notes-rl/posts/papers/Temp-Abstraction/index.html</loc>
+    <lastmod>2025-01-19T00:18:43.417Z</lastmod>
+  </url>
+  <url>
+    <loc>https://orenbochman.github.io/notes-rl/posts/papers/Emergent-communication/index.html</loc>
+    <lastmod>2025-01-19T00:21:34.382Z</lastmod>
+  </url>
+  <url>
+    <loc>https://orenbochman.github.io/notes-rl/posts/papers/Offpolicy-AuctionGym/index.html</loc>
+    <lastmod>2025-01-18T19:05:43.374Z</lastmod>
+  </url>
+  <url>
+    <loc>https://orenbochman.github.io/notes-rl/posts/papers/AlphaTensor/index.html</loc>
+    <lastmod>2026-03-14T16:59:44.138Z</lastmod>
   </url>
   <url>
     <loc>https://orenbochman.github.io/notes-rl/posts/papers/BabbleLabble/index.html</loc>
@@ -42,7 +62,7 @@
   </url>
   <url>
     <loc>https://orenbochman.github.io/notes-rl/about.html</loc>
-    <lastmod>2025-01-18T16:37:37.894Z</lastmod>
+    <lastmod>2026-03-14T18:28:28.065Z</lastmod>
   </url>
   <url>
     <loc>https://orenbochman.github.io/notes-rl/index.html</loc>
@@ -57,47 +77,35 @@
     <lastmod>2025-01-18T23:47:21.621Z</lastmod>
   </url>
   <url>
-    <loc>https://orenbochman.github.io/notes-rl/posts/papers/Offpolicy-AuctionGym/index.html</loc>
-    <lastmod>2025-01-18T19:05:43.374Z</lastmod>
+    <loc>https://orenbochman.github.io/notes-rl/posts/papers/Evolution-of-language/index.html</loc>
+    <lastmod>2026-03-11T10:03:38.553Z</lastmod>
   </url>
   <url>
-    <loc>https://orenbochman.github.io/notes-rl/posts/papers/Emergent-communication/index.html</loc>
-    <lastmod>2025-01-19T00:21:34.382Z</lastmod>
+    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c3-w1.html</loc>
+    <lastmod>2026-03-13T08:48:06.596Z</lastmod>
   </url>
   <url>
-    <loc>https://orenbochman.github.io/notes-rl/posts/papers/Temp-Abstraction/index.html</loc>
-    <lastmod>2025-01-19T00:18:43.417Z</lastmod>
+    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c3-w3.html</loc>
+    <lastmod>2026-03-14T18:23:01.132Z</lastmod>
   </url>
   <url>
-    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c3-w2.html</loc>
-    <lastmod>2025-01-18T15:48:37.335Z</lastmod>
+    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c2-w3.html</loc>
+    <lastmod>2026-03-14T17:39:00.893Z</lastmod>
   </url>
   <url>
-    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c2-w2.html</loc>
-    <lastmod>2025-01-18T15:53:44.846Z</lastmod>
-  </url>
-  <url>
-    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c3-w4.html</loc>
-    <lastmod>2025-01-18T15:50:08.192Z</lastmod>
-  </url>
-  <url>
-    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w3.html</loc>
-    <lastmod>2025-01-18T15:51:33.305Z</lastmod>
-  </url>
-  <url>
-    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w4.html</loc>
-    <lastmod>2025-01-18T15:51:16.179Z</lastmod>
+    <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c3-w2.1.html</loc>
+    <lastmod>2026-03-11T09:12:58.957Z</lastmod>
   </url>
   <url>
     <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c3-w1.1.html</loc>
-    <lastmod>2025-01-18T16:10:18.338Z</lastmod>
+    <lastmod>2026-03-11T16:41:22.981Z</lastmod>
   </url>
   <url>
     <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c2-w1.html</loc>
-    <lastmod>2025-01-18T15:54:32.579Z</lastmod>
+    <lastmod>2026-03-14T07:27:50.457Z</lastmod>
   </url>
   <url>
     <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w0.html</loc>
-    <lastmod>2025-01-18T15:52:33.392Z</lastmod>
+    <lastmod>2026-03-11T09:14:19.145Z</lastmod>
   </url>
 </urlset>

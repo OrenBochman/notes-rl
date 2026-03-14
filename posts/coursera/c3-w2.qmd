@@ -46,7 +46,7 @@ We discussed methods for representing large, an possibly continuous state spaces
 
 # Lesson 1: Feature Construction for Linear Methods 
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 -   [x] *Define* the difference between **coarse coding** and tabular representations [\#](#sec-l1g1)
@@ -250,7 +250,7 @@ I find this a bit disappointing as it seems like a nice intermediate step betwee
 
 # Lesson 2: Neural Networks 
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 -   [x] *Define* a neural network [\#](#sec-l2g1)
@@ -394,7 +394,7 @@ Depth can increase the learning capacity of the network by allowing the network 
 
 # Lesson 3: Training Neural Networks 
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 -   [x] *Compute* the gradient for a single hidden layer neural network [\#](#sec-l3g1)
@@ -406,7 +406,7 @@ Depth can increase the learning capacity of the network by allowing the network 
 :::
 
 
-::: callout-note
+::: {.callout-note}
 
 ### Discussion prompt {.unnumbered}
 
@@ -499,8 +499,8 @@ $$
 
 $$
 \begin{aligned}
-\frac{∂L(\hat{y}_k,y_k)}{∂A_{ij}} &= \delta_k^B \frac {∂\theta_k}{∂A_{ij}} \newline
- & = \delta_k^B B_{jk} \frac {∂x_j}{∂A_{ij}} \newline
+\frac{∂L(\hat{y}_k,y_k)}{∂A_{ij}} &= \delta_k^B \frac {∂\theta_k}{∂A_{ij}} \\ 
+ & = \delta_k^B B_{jk} \frac {∂x_j}{∂A_{ij}} \\ 
   & = \delta_k^B B_{jk} \frac {∂f_A(\Psi_j)}{∂\Psi_j} \frac {∂\Psi_j}{∂A_{ij}} 
 \end{aligned}
 $$

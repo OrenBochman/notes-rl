@@ -10,7 +10,6 @@ categories:
   - rl
 ---
 
-
 # RL learning an introduction
 
 ## Chapter 1: Introduction

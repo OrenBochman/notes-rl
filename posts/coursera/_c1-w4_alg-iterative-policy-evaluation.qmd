@@ -1,0 +1,31 @@
+
+::: {#alg-Iterative-Policy-Evaluation}
+## Iterative Policy Evaluation, for estimating $V \approx v_{\pi}$
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+\caption{Iterative Policy Evaluation, for estimating $V \approx v_{\pi}$}
+\begin{algorithmic}[1]
+\State Input: $\pi$, the policy to be evaluated, default to uniform random policy
+\State Algorithm parameter: a small threshold $\theta > 0$ determining accuracy of estimation
+\State $V(s) \leftarrow \vec 0 \forall s \in S$
+\REPEAT
+  \STATE $\Delta \leftarrow 0$
+  \FORALL { $s\in S$}
+    \STATE $v \leftarrow  V(s)$
+    \STATE $V(s) \leftarrow \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]\quad$ \comment{ Bellman equation}
+    \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$
+  \ENDFOR
+\UNTIL{$\Delta < \theta$}
+\State Output: $V \approx v_{\pi}$
+\end{algorithmic}
+\end{algorithm}
+```
+:::

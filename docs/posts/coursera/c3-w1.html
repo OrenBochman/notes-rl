@@ -2,15 +2,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.39">
+<meta name="generator" content="quarto-1.9.31">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Oren Bochman">
+<meta name="dcterms.date" content="2024-06-01">
 <meta name="keywords" content="neural networks, feature construction, coarse coding, feed-forward architecture, activation functions, deep networks, online setting, offline setting, representation, learning capacity">
+<meta name="description" content="Psuedocode for the semi-gradient TD(0) algorithm for estimating value functions with function approximation">
 
-<title>On-Policy Prediction with Approximation – Notes on Reinfocement Learning</title>
+<title>Semi-gradient TD(0) – Notes on Reinforcement Learning</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -22,7 +27,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -33,19 +57,25 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
 <link href="../../favicon.ico" rel="icon">
-<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7c69b197886ae2a34062761d21e44731.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-2a9a3f180cf500eef5b976fdc6f22fdf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7c69b197886ae2a34062761d21e44731.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-594d21605a7b9fb32547fedacd8fc358.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-d396125c57f3f0defba792e7b0e7a5dc.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-53e333c44ad91e7e6fb689e28a48ce26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-65daee0ea38b11146b100396567ce7dc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-53e333c44ad91e7e6fb689e28a48ce26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -79,26 +109,26 @@ ul.task-list li input[type="checkbox"] {
         background: /images/banner_black_3.jpg;
       }
 </style>
-<script>
-MathJax = {
-  loader: {
-    load: ['[tex]/boldsymbol']
-  },
-  tex: {
-    tags: "all",
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\\[','\\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    packages: {
-      '[+]': ['boldsymbol']
+<script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+<script>window.backupDefine = window.define; window.define = undefined;</script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+    <style type="text/css">
+    .ps-root .ps-algorithm {
+      border-top: 2px solid;
+      border-bottom: 2px solid;
     }
-  }
-};
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+    .pseudocode-container {
+      text-align: left;
+    }
+    </style>
+  
+      <style type="text/css">
+      .ps-algorithm > .ps-line {
+        text-align: left;
+      }
+      </style>
+    
 
-  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -113,7 +143,7 @@ MathJax = {
    });
 }}});
   </script>
-  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -126,7 +156,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -142,10 +172,172 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
@@ -153,7 +345,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">Notes on Reinfocement Learning</span>
+    <span class="navbar-title">Notes on Reinforcement Learning</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -188,9 +380,14 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">On-Policy Prediction with Approximation</h1>
+      <h1 class="title">Semi-gradient TD(0)</h1>
             <p class="subtitle lead">Prediction and Control with Function Approximation</p>
-                                <div class="quarto-categories">
+                  <div>
+        <div class="description">
+          Psuedocode for the semi-gradient TD(0) algorithm for estimating value functions with function approximation
+        </div>
+      </div>
+                          <div class="quarto-categories">
                 <div class="quarto-category">Coursera</div>
                 <div class="quarto-category">Prediction and Control with Function Approximation</div>
                 <div class="quarto-category">Reinforcement Learning</div>
@@ -211,7 +408,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">Monday, April 1, 2024</p>
+        <p class="date">2024-06-01</p>
       </div>
     </div>
     
@@ -239,17 +436,18 @@ window.Quarto = {
 
 
 
+
 <section id="introduction" class="level1 page-columns page-full">
 <h1>Introduction</h1>
 
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/logo.png" class="img-fluid figure-img"></p>
+<p><a href="img/logo.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="RL logo"><img src="img/logo.png" class="img-fluid figure-img" alt="RL logo"></a></p>
 <figcaption>RL logo</figcaption>
 </figure>
 </div><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/alg_selector.png" class="img-fluid figure-img" data-group="slides"></p>
+<p><a href="img/alg_selector.png" class="lightbox" data-gallery="slides" title="RL algorithms"><img src="img/alg_selector.png" class="img-fluid figure-img" alt="RL algorithms"></a></p>
 <figcaption>RL algorithms</figcaption>
 </figure>
 </div></div>
@@ -278,19 +476,19 @@ window.Quarto = {
 </ul>
 <p>I did not find the derivation of the SGD alg particularly enlightening and I have seen it several times. However the online setting is the best motivation for the use of SGD and makes perfect sense in the context of reinforcement learning. Minibatches are then a natural extension of this idea.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Readings
+<span class="screen-reader-only">Tip</span>Readings
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ul class="task-list">
-<li><label><input type="checkbox" checked=""><span class="citation" data-cites="sutton2018reinforcement">[@sutton2018reinforcement§9.1-9.4, pp. 194-209]</span> <a href="http://incompleteideas.net/book/RLbook2020.pdf#page=194">book</a></label></li>
+<li><label><input type="checkbox" checked=""><span class="citation" data-cites="sutton2018reinforcement">(<a href="#ref-sutton2018reinforcement" role="doc-biblioref">Sutton and Barto 2018, secs. 9.1–9.4</a>, pp.&nbsp;194-209)</span> <a href="http://incompleteideas.net/book/RLbook2020.pdf#page=194">book</a></label></li>
 </ul>
 </div>
 </div>
@@ -305,33 +503,34 @@ Readings
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Learning Objectives
+<span class="screen-reader-only">Note</span>Learning Objectives
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ul class="task-list">
-<li><p><label><input type="checkbox" checked=""><em>Understand</em> how we can use <strong>parameterized functions</strong> to approximate value functions <a href="#sec-l1g1">#</a></label></p></li>
-<li><p><label><input type="checkbox" checked=""><em>Explain</em> the meaning of <strong>linear value function approximation</strong> <a href="#sec-l1g2">#</a></label></p></li>
-<li><p><label><input type="checkbox" checked=""><em>Recognize</em> that the tabular case is a special case of linear value function approximation <a href="#sec-l1g3">#</a></label></p></li>
-<li><p><label><input type="checkbox" checked=""><em>Understand</em> that there are many ways to parameterize an approximate value function <a href="#sec-l1g4">#</a></label></p></li>
-<li><p><label><input type="checkbox" checked=""><em>Understand</em> what is meant by <strong>generalization</strong> and <strong>discrimination</strong> <a href="#sec-l1g5">#</a></label></p></li>
-<li><p><label><input type="checkbox" checked=""><em>Understand</em> how generalization can be beneficial <a href="#sec-l1g6">#</a></label></p></li>
-<li><p><label><input type="checkbox" checked=""><em>Explain</em> why we want both generalization and discrimination from our function approximation <a href="#sec-l1g7">#</a></label></p></li>
-<li><p><label><input type="checkbox" checked=""><em>Understand</em> how value estimation can be framed as a <strong>supervised learning</strong> problem <a href="#sec-l1g8">#</a></label></p></li>
-<li><p><label><input type="checkbox" checked=""><em>Recognize</em> not all function approximation methods are well suited for reinforcement learning <a href="#sec-l1g9">#</a></label></p></li>
+<li><label><input type="checkbox" checked=""><em>Understand</em> how we can use <strong>parameterized functions</strong> to approximate value functions <a href="#sec-l1g1">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Explain</em> the meaning of <strong>linear value function approximation</strong> <a href="#sec-l1g2">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Recognize</em> that the tabular case is a special case of linear value function approximation <a href="#sec-l1g3">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Understand</em> that there are many ways to parameterize an approximate value function <a href="#sec-l1g4">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Understand</em> what is meant by <strong>generalization</strong> and <strong>discrimination</strong> <a href="#sec-l1g5">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Understand</em> how generalization can be beneficial <a href="#sec-l1g6">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Explain</em> why we want both generalization and discrimination from our function approximation <a href="#sec-l1g7">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Understand</em> how value estimation can be framed as a <strong>supervised learning</strong> problem <a href="#sec-l1g8">#</a></label></li>
+<li><label><input type="checkbox" checked=""><em>Recognize</em> not all function approximation methods are well suited for reinforcement learning <a href="#sec-l1g9">#</a></label></li>
 </ul>
 </div>
 </div>
 <section id="moving-to-parameterized-policies-video" class="level2">
 <h2 class="anchored" data-anchor-id="moving-to-parameterized-policies-video">Moving to Parameterized Policies (video)</h2>
 <p>This video covers the first four learning objectives.</p>
-<p>This video covers parameterized policies and how they can be used to approximate value functions. The idea is that using a table has some limitations/ The first is that the tables can be very large. For continuous states they can become infinite.</p>
+<p>This video covers parameterized policies and how they can be used to approximate value functions. The idea is that using a table has some limitations. The first is that the tables can be very large. For continuous states they can become infinite.</p>
 <p>The second is that the tables can be very sparse and in a table we don’t generalize between states.</p>
 <p>We see that we don’t really want functions that directly approximate the value function. We want functions that have some structure that we can learn.</p>
-<p>This is called a parameterized function. The ideas is to use a weighted sum of the features of the state. This allows us to learn the weights and use them to approximate the value function. This is called linear function approximation. The way to get around this which is two fold. We first represent the salient properties of a states into features.</p>
-<p>Then we use weights to combine these features to approximate the value function. This is called linear function approximation.</p>
+<p>This is called a <strong>parameterized function</strong>. The idea is to use a weighted sum of the features of the state. This allows us to learn the weights and use them to approximate the value function. This is called <strong>linear function approximation</strong>. The way to get around this which is two fold. We first represent the salient properties of a states into features.</p>
+<p>Then we use weights to combine these features to approximate the value function.</p>
 <p>More generally we can use non linear parameterized functions to approximate value functions.</p>
-<p>Adam shows that is the features are not picked wisely we may not be able to discriminate between states - out function for one state will be the same as for another dissimilar state. Learning about one will make us forget what we learned about the other. This is called bias. On the other hand if we have too many features we may not be able to generalize between states. This is called variance. The goal is to balance between bias and variance.</p>
+<p>Adam shows that is the features are not picked wisely we may not be able to discriminate between states - out function for one state will be the same as for another dissimilar state. Learning about one will make us forget what we learned about the other. This is called <strong>bias</strong>. On the other hand if we have too many features we may not be able to generalize between states. This is called <strong>variance</strong>.</p>
+<p>The goal is to balance between <strong>bias</strong> and <strong>variance</strong>.</p>
 </section>
 <section id="sec-l1g1" class="level2">
 <h2 class="anchored" data-anchor-id="sec-l1g1">Understanding parameterized functions</h2>
@@ -339,7 +538,7 @@ Learning Objectives
 <li>In the previous courses we represented value functions as tables or arrays:
 <ul>
 <li>For <span class="math inline">V(s)</span> we had an array of size <span class="math inline">|S|</span>,</li>
-<li>For <span class="math inline">Q(s,a)</span> we had an array of size <span class="math inline">|S| \times |A|</span>. This becomes impractical as <span class="math inline">|S| \rightarrow \infty</span>. We can use <strong>parameterized functions</strong> to approximate value functions. This is called <strong>function approximation</strong>.</li>
+<li>For <span class="math inline">Q(s,a)</span> we had an array of size <span class="math inline">|S| \times |A|</span>. This becomes impractical as <span class="math inline">\mid S \mid \rightarrow \infty</span>. We can use <strong>parameterized functions</strong> to approximate value functions. This is called <strong>function approximation</strong>.</li>
 </ul></li>
 <li><strong>Linear value function approximation</strong> is a simple and popular method.
 <ul>
@@ -374,15 +573,15 @@ Learning Objectives
 </ul></li>
 <li>now learning becomes finding better weights that parameterize the value function.</li>
 </ul>
-<p>finding the weights that minimize the error between the approximate value function and the true value function:</p>
+<p>Finding the weights that minimize the error between the approximate value function and the true value function:</p>
 </section>
 <section id="sec-l1g3" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="sec-l1g3">Tabular case is a special case of linear value function approximation</h2>
 <div class="page-columns page-full"><p> <span class="math display">
-\begin{align*}
-\hat{v}(s, \mathbb{w}) &amp; \dot = \sum w_i x_i(s) \newline
+\begin{aligned}
+\hat{v}(s, \mathbb{w}) &amp; \dot = \sum w_i x_i(s) \\
                        &amp; = &lt;\mathbf{w}, \mathbf{x}(s)&gt; \qquad
-\end{align*}
+\end{aligned}
 </span></p><div class="no-row-height column-margin column-container"><img src="img/c3-w2-parametrized_functions.png" id="fig-rl-linear-approximation" class="img-fluid" alt="Linear value function generalize the tabular case"></div></div>
 <ul>
 <li>here:
@@ -406,7 +605,7 @@ Learning Objectives
 <div class="no-row-height column-margin column-container"><div id="fig-rl-failure" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-rl-failure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="img/rl-linear-fn-fail.png" class="img-fluid figure-img">
+<a href="img/rl-linear-fn-fail.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;1: Linear value function approximation failure"><img src="img/rl-linear-fn-fail.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rl-failure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Linear value function approximation failure
@@ -419,7 +618,7 @@ Figure&nbsp;1: Linear value function approximation failure
 <div class="no-row-height column-margin column-container"><div id="fig-neural-networks" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-neural-networks-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="img/rl-non-linear-fn-approximation.png" class="img-fluid figure-img">
+<a href="img/rl-non-linear-fn-approximation.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;2: neural networks are non-linear fn approximators"><img src="img/rl-non-linear-fn-approximation.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-neural-networks-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: neural networks are non-linear fn approximators
@@ -449,7 +648,7 @@ Figure&nbsp;2: neural networks are non-linear fn approximators
 <div class="no-row-height column-margin column-container"><div id="fig-generalization-discrimination-chart" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-generalization-discrimination-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="img/rl-generalization-discrimination-matrix.png" class="img-fluid figure-img">
+<a href="img/rl-generalization-discrimination-matrix.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;3: generalization and discrimination"><img src="img/rl-generalization-discrimination-matrix.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-generalization-discrimination-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;3: generalization and discrimination
@@ -495,7 +694,7 @@ Figure&nbsp;3: generalization and discrimination
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Bias-variance tradeoff
+<span class="screen-reader-only">Tip</span>Bias-variance tradeoff
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -597,7 +796,7 @@ Bias-variance tradeoff
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Learning Objectives
+<span class="screen-reader-only">Note</span>Learning Objectives
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -617,15 +816,15 @@ Learning Objectives
 <h2 class="anchored" data-anchor-id="the-value-error-objective-video">The Value Error Objective (Video)</h2>
 <p>In this video Adam White covers the first two learning objectives of the unit.<br>
 The main subject about using the mean squared error as a loss for the approximate value function.</p>
-<p>we get a sequence of <span class="math inline">(S_1,v_{\pi}(S_1) ),(S_2,v_{\pi}(S_2) ),(S_3,v_{\pi}(S_3) ), \ldots</span> and we want to approximate the value function . We can track how well we are approximating <span class="math inline">v_{\pi}(s)</span> by using <span class="math inline">\hat{v}(s,\mathbb{w})</span>. The difference can be positive or negative so if we average it the sum will tend to cancel out. If we square the error we get a positive number we have a much better estimate of the error. And if normalize it by taking the mean we can get use it to compare runs of different lengths. This is called the mean squared error.</p>
+<p>we get a sequence of <span class="math inline">(S_1,v_{\pi}(S_1) ),(S_2,v_{\pi}(S_2) ), (S_3,v_{\pi}(S_3) ), \ldots</span> and we want to approximate the value function . We can track how well we are approximating <span class="math inline">v_{\pi}(s)</span> by using <span class="math inline">\hat{v}(s,\mathbf{w})</span>. The difference can be positive or negative so if we average it the sum will tend to cancel out. If we square the error we get a positive number we have a much better estimate of the error. And if normalize it by taking the mean we can get use it to compare runs of different lengths. This is called the mean squared error.</p>
 <p>It turns out that this is not enough for RL and we need to take a weighted average using the state distribution <span class="math inline">\mu(s)</span>. This is because we care more about some states than others. The state distribution is the long run probability of visiting the state <span class="math inline">s</span> under the policy <span class="math inline">\pi</span>. This weighted average is called <em>the mean squared <strong>value</strong> error</em>.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Your Objective is My Loss
+<span class="screen-reader-only">Tip</span>Your Objective is My Loss
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -643,7 +842,7 @@ Your Objective is My Loss
 <div class="no-row-height column-margin column-container"><div id="fig-mse" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-mse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="img/rl-mean-squared-value-error.png" class="img-fluid figure-img">
+<a href="img/rl-mean-squared-value-error.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;4: mean-squared value error objective"><img src="img/rl-mean-squared-value-error.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4: mean-squared value error objective
@@ -698,9 +897,10 @@ Figure&nbsp;4: mean-squared value error objective
 <li>Hence the name gradient descent.</li>
 <li>The gradient of the mean-squared value error with respect to the weights <span class="math inline">\mathbf{w}</span> is given by:</li>
 </ul>
-<p><span class="math display">
-    w \dot = \left [ \begin{matrix} w_1 \\ \vdots \\ w_d  \end{matrix} \right ] \qquad \nabla f = \left [ \begin{matrix} \frac{\partial f}{\partial w_1} \\ \vdots \\ \frac{\partial f}{\partial w_d}  \end{matrix} \right ] \qquad
-</span></p>
+<p><span id="eq-gradient-def"><span class="math display">
+w \dot = \left [ \begin{matrix} w_1 \\ \vdots \\ w_d  \end{matrix} \right ] \qquad
+\nabla f = \left [ \begin{matrix} \frac{\partial f}{\partial w_1} \\ \vdots \\ \frac{\partial f}{\partial w_d}  \end{matrix} \right ] \qquad
+\tag{4}</span></span></p>
 <ul>
 <li>for a linear function:</li>
 </ul>
@@ -708,22 +908,22 @@ Figure&nbsp;4: mean-squared value error objective
 \hat{v}(s, \mathbf{w}) = \sum \mathbf{w}^T \mathbf{x}(s) \\
 \frac{\partial \hat{v}(s, \mathbf{w})}{\partial w_i} = \mathbf{x_i}(s) \\
 \nabla \hat{v}(s, \mathbf{w}) = \mathbf{x}(s) \qquad
-\tag{4}</span></span></p>
+\tag{5}</span></span></p>
 <ul>
 <li>we can write the update rule for the weights as:</li>
 </ul>
 <p><span id="eq-grad-descent"><span class="math display">
 w_{t+1} \dot= w_t - \alpha \nabla J(\mathbf{w_t}) \qquad
-\tag{5}</span></span></p>
+\tag{6}</span></span></p>
 <ul>
 <li>Stochastic gradient descent is a variant of gradient descent that uses a random sample of the data to estimate the gradient.</li>
 <li>Stochastic gradient descent uses mini-batches of data to estimate the gradient, which makes it computationally efficient and reduces the variance of the gradient estimate.</li>
 <li>In practice we will use variants like:
 <ul>
-<li>Adam - which adapts the learning rate based on the gradient.</li>
-<li>RMSProp - which uses a moving average of the squared gradient.</li>
-<li>Adagrad - which uses a different learning rate for each parameter.</li>
-<li>SGD - which uses a fixed learning rate.</li>
+<li><strong>Adam</strong> - which adapts the learning rate based on the gradient.</li>
+<li><strong>RMSProp</strong> - which uses a moving average of the squared gradient.</li>
+<li><strong>Adagrad</strong> - which uses a different learning rate for each parameter.</li>
+<li><strong>SGD</strong> - which uses a fixed learning rate.</li>
 </ul></li>
 </ul>
 </section>
@@ -733,7 +933,7 @@ w_{t+1} \dot= w_t - \alpha \nabla J(\mathbf{w_t}) \qquad
 <div class="no-row-height column-margin column-container"><div id="fig-gradient-descent" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-gradient-descent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="img/rl-sgd-convergence.png" class="img-fluid figure-img">
+<a href="img/rl-sgd-convergence.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;5: gradient descent"><img src="img/rl-sgd-convergence.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gradient-descent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5: gradient descent
@@ -749,11 +949,11 @@ Figure&nbsp;5: gradient descent
 <section id="sec-l2g8" class="level2">
 <h2 class="anchored" data-anchor-id="sec-l2g8">How to use Gradient descent and Stochastic gradient descent to minimize the value error</h2>
 <p><span class="math display">
-\begin{align*}
-\nabla J(\mathbf{w}) &amp; = \nabla \sum_{s\in S} \mu(s)[v_\pi(s) - \hat{v}(s, \mathbf{w})]^2 \qquad  \qquad  \hat{v}(s, \mathbf{w}) = &lt;\mathbf{w},\mathbf{x}(s)&gt;\newline
-                    &amp; =  \sum_{s\in S}  \mu(s) \nabla [v_\pi(s) - \hat{v}(s, \mathbf{w})]^2 \qquad  \qquad \nabla   \hat{v}(s, \mathbf{w}) = \mathbf{x}(s)\newline
-                    &amp; =  \sum_{s\in S} \mu(s) 2 [v_\pi(s) - \hat{v}(s, \mathbf{w})]\nabla \hat{v}(s, \mathbf{w})
-\end{align*} \qquad
+\begin{aligned}
+\nabla J(\mathbf{w}) &amp;= \nabla \sum_{s\in S} \mu(s)[v_\pi(s) - \hat{v}(s, \mathbf{w})]^2 \qquad  \qquad  \hat{v}(s, \mathbf{w}) = &lt;\mathbf{w},\mathbf{x}(s)&gt; \\
+                     &amp;=  \sum_{s\in S}  \mu(s) \nabla [v_\pi(s) - \hat{v}(s, \mathbf{w})]^2 \qquad  \qquad \nabla   \hat{v}(s, \mathbf{w}) = \mathbf{x}(s) \\
+                     &amp;=  \sum_{s\in S} \mu(s) 2 [v_\pi(s) - \hat{v}(s, \mathbf{w})]\nabla \hat{v}(s, \mathbf{w})
+\end{aligned} \qquad
 </span></p>
 <section id="stochastic-gradient-descent" class="level3">
 <h3 class="anchored" data-anchor-id="stochastic-gradient-descent">Stochastic Gradient Descent</h3>
@@ -761,43 +961,34 @@ Figure&nbsp;5: gradient descent
 we can write the update rule for a pair of weights as:</p>
 <p><span id="eq-sgd"><span class="math display">
 w_{t+1} \dot= w_t + \alpha [v_\pi(S_1) - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w}) \qquad
-\tag{6}</span></span></p>
+\tag{7}</span></span></p>
 <p>This allows us to decrease the error in the value function by making updates for one state at a time and moving the weights in the direction of the negative gradient. By making this type of update we might increase the error occasionally but in the long run we will decrease the error.</p>
 <blockquote class="blockquote">
 <p>This updating approach is called stochastic gradient descent, because it only uses a stochastic estimate of the gradient. In fact, the expectation of each stochastic gradient equals the gradient of the objective. You can think of this stochastic gradient as a noisy approximation to the gradient that is much cheaper to compute, but can nonetheless make steady progress to a minimum – Martha White</p>
 </blockquote>
 <p>we have here one issue - we don’t know the true value of the policy <span class="math inline">v_pi(s_1)</span>, how do we get around this?</p>
-<p>one option is to replace the true value with an estimate, one option is to use the return from the state <span class="math inline">s_1</span>.</p>
-<p>recall that</p>
+<p>One option is to replace the true value with an estimate, one option is to use the return from the state <span class="math inline">s_1</span>.</p>
+<p>Recall that:</p>
 <p><span class="math display">
 v_\pi(s) = \mathbb{E}[G_t \mid S_t = s] \qquad
 </span></p>
 <p>so we can substitute the true value with the return from the state <span class="math inline">s_1</span>.</p>
 <p><span id="eq-gradient-mc-update"><span class="math display">
-\begin{align*}
-w_{t+1} &amp; \dot= w_t + \alpha [v_\pi(S_1) - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w}) \qquad \\
-        &amp; \dot = w_t + \alpha [G_1 - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w}) \qquad
-\end{align*}
-\tag{7}</span></span></p>
+\begin{aligned}
+w_{t+1} &amp; \doteq w_t + \alpha [v_\pi(S_1) - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w}) \\
+        &amp; \doteq w_t + \alpha [G_1 - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w})
+\end{aligned}
+\tag{8}</span></span></p>
 </section>
 </section>
 <section id="sec-l2g4" class="level2">
 <h2 class="anchored" data-anchor-id="sec-l2g4">The gradient Monte Carlo algorithm for value estimation</h2>
 <p>We now have a way to update the weights of the value function using the gradient of the mean-squared value error. Which allows us to present the gradient Monte Carlo algorithm for value estimation.</p>
-<div id="nte--gradient-mc" class="alg callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note&nbsp;1: MC prediction fist visit for estimating <span class="math inline">V \approx v_\pi</span>
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<div id="alg-gradient-mc" class="pseudocode-container quarto-float" data-no-end="false" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-line-number="true" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number-punc=":">
+<div id="alg-first-time-visit-gradient-mc" class="theorem algorithm">
+<p><span class="theorem-title"><strong>Algorithm 1 (First-visit gradient Monte Carlo for estimating <span class="math inline">v_\pi</span>)</strong></span> &nbsp;</p>
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-pseudocode-number="1" data-no-end="false" data-comment-delimiter="#" data-line-number="true">
 <div class="pseudocode">
-\begin{algorithm} \caption{GradientMC($\pi$)}\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$ \State Algorithm parameters: \State $\qquad \alpha \in (0, 1]$ step size \State Initialize: \State $\qquad \mathbf{w} \leftarrow x \in \mathbb{R^d} \text{ arbiterly}$ (e.g. w=0) \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = 0, 1, \ldots, T-1$:} \State $\mathbf{w} \leftarrow w_t + \alpha [G_t - \hat{v}(S_t , \mathbf{w_1})] \nabla \hat{v}(S_t , \mathbf{w})$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
-</div>
+\begin{algorithm} \caption{MC prediction first visit for estimating $V \approx v_\pi$ }\begin{algorithmic} \State Input \State $\qquad \pi$ to be evaluated \State $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$ \State Algorithm parameters: \State $\qquad \alpha \in (0, 1]$ step size \State Initialize: \State $\qquad \mathbf{w} \leftarrow x \in \mathbb{R^d} \text{ arbiterly}$ (e.g. w=0) \For {each episode:} \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$ \State $G \leftarrow 0$ \For {each step of episode, $t = 0, 1, \ldots, T-1$:} \State $\mathbf{w} \leftarrow w_t + \alpha [G_t - \hat{v}(S_t , \mathbf{w_1})] \nabla \hat{v}(S_t , \mathbf{w})$ \EndFor \EndFor \end{algorithmic} \end{algorithm}
 </div>
 </div>
 </div>
@@ -811,7 +1002,7 @@ Note&nbsp;1: MC prediction fist visit for estimating <span class="math inline">V
 <div class="no-row-height column-margin column-container"><div id="fig-gradient-mc-state-agg" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-gradient-mc-state-agg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="img/rl-gradient-mc-with-state-agg.png" class="img-fluid figure-img">
+<a href="img/rl-gradient-mc-with-state-agg.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figure&nbsp;6: gradient mc with state aggregation"><img src="img/rl-gradient-mc-with-state-agg.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gradient-mc-state-agg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6: gradient mc with state aggregation
@@ -855,7 +1046,7 @@ w \leftarrow w + \alpha [G_t - \hat{v}(S_t, \mathbf{w})] \nabla \hat{v}(S_t, \ma
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Learning Objectives
+<span class="screen-reader-only">Note</span>Learning Objectives
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -884,7 +1075,7 @@ w \leftarrow w + \alpha [G_t - \hat{v}(S_t, \mathbf{w})] \nabla \hat{v}(S_t, \ma
 </ul>
 <p><span id="eq-td-target"><span class="math display">
 U_t \dot=R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})
-\tag{8}</span></span></p>
+\tag{9}</span></span></p>
 <ul>
 <li>but this is not unbiased because it essential approximating the expected return using the current value of the state.</li>
 <li>there is no guarantee that the the update will converge to a local minimum of the mean squared value error.</li>
@@ -902,22 +1093,22 @@ U_t \dot=R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})
 </ul></li>
 </ul>
 <p><span id="eq-td-grad"><span class="math display">
-\begin{align*}
-\nabla J(\mathbf{w}) &amp; = \nabla \frac{1}{2}[U_t - \hat{v}(S_t, \mathbf{w})]^2 \newline
+\begin{aligned}
+\nabla J(\mathbf{w}) &amp; = \nabla \frac{1}{2}[U_t - \hat{v}(S_t, \mathbf{w})]^2 \\
                      &amp; = (U_t - \hat{v}(S_t, \mathbf{w})) (\nabla U_t - \nabla \hat{v}(S_t, \mathbf{w})) \\
                      &amp; \ne - (U_t - \hat{v}(S_t, \mathbf{w})) \nabla \hat{v}(S_t, \mathbf{w}) \quad \text{unless} \quad \nabla  U_t = 0
-\end{align*}
-\tag{9}</span></span></p>
+\end{aligned}
+\tag{10}</span></span></p>
 <ul>
 <li>but for TD we have:</li>
 </ul>
 <p><span id="eq-td-grad-ut"><span class="math display">
-\begin{align*}
-\nabla U_t = &amp; = \nabla (R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})) \newline
-            &amp; = \gamma \nabla \hat{v}(S_{t+1}, \mathbf{w}) \newline
+\begin{aligned}
+\nabla U_t = &amp; = \nabla (R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})) \\
+            &amp; = \gamma \nabla \hat{v}(S_{t+1}, \mathbf{w}) \\
             &amp; \ne 0
-\end{align*}
-\tag{10}</span></span></p>
+\end{aligned}
+\tag{11}</span></span></p>
 <ul>
 <li>So the TD-update isn’t a true gradient update. However TD often converge in many cases we care updates.</li>
 </ul>
@@ -940,20 +1131,11 @@ U_t \dot=R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})
 <ul>
 <li>The Semi-gradient TD(0) algorithm is a policy evaluation algorithm that uses the TD-update for function approximation.</li>
 </ul>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-The Semi-gradient TD(0) algorithm for estimating <span class="math inline">v_\pi</span>
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<div id="alg-td-zero" class="pseudocode-container quarto-float" data-no-end="false" data-pseudocode-number="2" data-caption-prefix="Algorithm" data-line-number="true" data-comment-delimiter="#" data-indent-size="1.2em" data-line-number-punc=":">
+<div id="alg-semi-gradient-td-zero" class="theorem algorithm">
+<p><span class="theorem-title"><strong>Algorithm 2 (Semi-gradient TD(0) for estimating <span class="math inline">v_\pi</span>)</strong></span> &nbsp;</p>
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-pseudocode-number="1" data-no-end="false" data-comment-delimiter="#" data-line-number="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{Semi-gradient TD(0) for estimating $v_\pi$}\begin{algorithmic} \State Input: \State $\qquad \pi \leftarrow \text{policy to be evaluated}$ \State $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$ \State Algorithm parameters: \State $\qquad \alpha \in (0, 1]$ step size \State $\qquad \gamma \in [0, 1]$ discount factor \State Initialize: \State $\qquad value function weights w \leftarrow x \in \mathbb{R}^d \quad \forall s \in \mathcal{S}$ (e.g. w=0) \FORALL {episode $e$:} \State $Initialize S$ \FORALL {step $S \in e$:} \State $\text{Choose } A \sim \pi(\cdot \mid S)$ \State Take action $A$, observe $R, S'$ \State $w \leftarrow w + \alpha [R + \gamma \hat{v}(S', \mathbf{w}) - \hat{v}(S, \mathbf{w})] \nabla \hat{v}(S, \mathbf{w})$ \State $S \leftarrow S'$ \State until $S$ is terminal \ENDFOR \ENDFOR \end{algorithmic} \end{algorithm}
-</div>
 </div>
 </div>
 </div>
@@ -971,7 +1153,7 @@ The Semi-gradient TD(0) algorithm for estimating <span class="math inline">v_\pi
 <div class="no-row-height column-margin column-container"><div id="fig-early-learning-mc-vs-td" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-early-learning-mc-vs-td-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="img/rl-early-learning-mc-vs-td.png" class="img-fluid figure-img">
+<a href="img/rl-early-learning-mc-vs-td.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Figure&nbsp;7: early learning experiment"><img src="img/rl-early-learning-mc-vs-td.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-early-learning-mc-vs-td-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;7: early learning experiment
@@ -993,7 +1175,7 @@ Figure&nbsp;7: early learning experiment
 <div class="no-row-height column-margin column-container"><div id="fig-generelization" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-generelization-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="img/rl-dorina-precup.png" class="img-fluid figure-img">
+<a href="img/rl-dorina-precup.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Figure&nbsp;8: Dorina Precup"><img src="img/rl-dorina-precup.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-generelization-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;8: Dorina Precup
@@ -1002,7 +1184,7 @@ Figure&nbsp;8: Dorina Precup
 </div><div id="fig-options" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-options-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="img/rl-dorina-options.png" class="img-fluid figure-img">
+<a href="img/rl-dorina-options.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Figure&nbsp;9: Options are a temporal generalization"><img src="img/rl-dorina-options.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-options-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;9: Options are a temporal generalization
@@ -1026,12 +1208,12 @@ Figure&nbsp;9: Options are a temporal generalization
 <ul>
 <li>Action duration are one time step in an MDP, yet in reality some actions like traveling from one city to another require sticking to the action over an extended period of time.</li>
 </ul></li>
-<li>This might be happen through planning but idealy, agents should be able to learn skills which are sequences of actions that are executed over an extended period of time.</li>
+<li>This might be happen through planning but ideally, agents should be able to learn skills which are sequences of actions that are executed over an extended period of time.</li>
 <li>This has been formalized in the literature as options.</li>
 <li>She references two sources
 <ul>
-<li><span class="citation" data-cites="Sutton1999BetweenMA">[@Sutton1999BetweenMA]</span> a paper from 1999 on options in reinforcement learning.</li>
-<li><span class="citation" data-cites="precup2000temporal">[@precup2000temporal]</span> her doctoral thesis from 2000 on temporal abstraction in reinforcement learning.</li>
+<li><span class="citation" data-cites="Sutton1999BetweenMA">(<a href="#ref-Sutton1999BetweenMA" role="doc-biblioref">Sutton et al. 1999</a>)</span> a paper from 1999 on options in reinforcement learning.</li>
+<li><span class="citation" data-cites="precup2000temporal">(<a href="#ref-precup2000temporal" role="doc-biblioref">Precup 2000</a>)</span> her doctoral thesis from 2000 on temporal abstraction in reinforcement learning.</li>
 </ul></li>
 <li>Options consists of
 <ul>
@@ -1049,11 +1231,11 @@ Figure&nbsp;9: Options are a temporal generalization
 <li>She also points out that the model needs to learn the options and the value function at the same time.</li>
 <li>According to her profile Precup has a number of students working on this problem. Some additional references are:
 <ul>
-<li><span class="citation" data-cites="Bacon2016TheOA">[@Bacon2016TheOA]</span> a paper from 2016 on option-critic architecture which extends actor-critic algorithms to work with options.</li>
+<li><span class="citation" data-cites="Bacon2016TheOA">(<a href="#ref-Bacon2016TheOA" role="doc-biblioref">Bacon et al. 2016</a>)</span> a paper from 2016 on option-critic architecture which extends actor-critic algorithms to work with options.</li>
 </ul></li>
 <li>Earlier work uses the term macro-actions to refer to options.
 <ul>
-<li><span class="citation" data-cites="bradtke1994reinforcement">[@bradtke1994reinforcement]</span> a paper from 1994 on reinforcement learning with hierarchies of machines.</li>
+<li><span class="citation" data-cites="bradtke1994reinforcement">(<a href="#ref-bradtke1994reinforcement" role="doc-biblioref">Bradtke and Duff 1994</a>)</span> a paper from 1994 on reinforcement learning with hierarchies of machines.</li>
 </ul></li>
 </ul>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -1062,14 +1244,14 @@ Figure&nbsp;9: Options are a temporal generalization
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Options &amp; CI
+<span class="screen-reader-only">Tip</span>Options &amp; CI
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li>This type of formulation seems very similar to that used by <a href="https://www.youtube.com/watch?v=JxzjdTc15A0">Judea Pearl</a> in his structureal graphical model of Causality. If we can express options as a graph of states we can use his algorithms to infer the best options to take in a given state.</li>
+<li>This type of formulation seems very similar to that used by <a href="https://www.youtube.com/watch?v=JxzjdTc15A0">Judea Pearl</a> in his structural graphical model of Causality. If we can express options as a graph of states we can use his algorithms to infer the best options to take in a given state.</li>
 <li>options are like do operations (interventions)</li>
-<li>choosing between options is like conterfactual reasoning.</li>
+<li>choosing between options is like counterfactual reasoning.</li>
 </ul>
 </div>
 </div>
@@ -1083,7 +1265,7 @@ Options &amp; CI
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Learning Objectives
+<span class="screen-reader-only">Note</span>Learning Objectives
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1114,7 +1296,8 @@ Learning Objectives
 <p><span class="math display">
 \delta \dot= R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w}) - \hat{v}(S_t, \mathbf{w}) \\
 w \leftarrow w + \alpha \delta_t \nabla \hat{v}(S_t, \mathbf{w})
-</span> in the linear case we can write the value function as:</p>
+</span></p>
+<p>in the linear case we can write the value function as:</p>
 <p><span class="math display">
 \hat{v}(S_t, \mathbf{w}) \dot = \sum \mathbf{w}^T \mathbf{x}(S_t) \\
 \nabla \hat{v}(S_t, \mathbf{w}) = \mathbf{x}(S_t)
@@ -1150,26 +1333,29 @@ w \leftarrow w + \alpha \delta_t \mathbf{x}(S_t)
 <h2 class="anchored" data-anchor-id="sec-l4g5">The fixed point of linear TD learning</h2>
 <p><span class="math display">
 w_{t+1} \dot= w_t + \alpha [R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w}) - \hat{v}(S_t, \mathbf{w})] \nabla \hat{v}(S_t, \mathbf{w})
-</span> recall that in the linear case we defined the approximate value function as:</p>
+</span></p>
+<p>recall that in the linear case we defined the approximate value function as:</p>
 <p><span class="math display">
 \hat{v}(S_{t+1}, \mathbf{w}) \cdot=  \mathbf{w}^T \mathbf{x}(S_{t+1})
-</span> with :</p>
+</span></p>
+<p>with :</p>
 <ul>
 <li><span class="math inline">\mathbf{w}</span> the weights of the value function</li>
 <li><span class="math inline">\mathbf{x}(S_{t+1})</span> the features of the next state</li>
 </ul>
 <p>using this definition we can write the update rule as:</p>
 <p><span class="math display">
-\begin{align*}
-w_{t+1} &amp; = w_t + \alpha [R_{t+1} + \gamma \mathbf{w}^T \mathbf{x}_{t+1} - \mathbf{w}^T \mathbf{x}] \mathbf{x}_t \newline
-        &amp;=  w_t + \alpha [R_{t+1} \mathbf{x}_t -  \mathbf{x}_t( \mathbf{x}_t - \gamma \mathbf{x_{t+1}})^T \mathbf{w_t}] \newline
-\end{align*}
+\begin{aligned}
+w_{t+1} &amp; = w_t + \alpha [R_{t+1} + \gamma \mathbf{w}^T \mathbf{x}_{t+1} - \mathbf{w}^T \mathbf{x}] \mathbf{x}_t \\
+        &amp;=  w_t + \alpha [R_{t+1} \mathbf{x}_t -  \mathbf{x}_t( \mathbf{x}_t - \gamma \mathbf{x_{t+1}})^T \mathbf{w_t}] \\
+\end{aligned}
 </span></p>
 <p>let us now consider what this update looks like in expectation:</p>
 <p>we can think about it as an expected update plus a noise term but the noise term is dominated by the behaviour of the expected update.</p>
 <p><span class="math display">
 \mathbb{E}[\Delta w_{t}]  = \alpha(b-Aw_t)
-</span> where:</p>
+</span></p>
+<p>where:</p>
 <ul>
 <li><span class="math inline">b = \mathbb{E}[R_{t+1} \mathbf{x}_t]</span> - expectation over the features and the rewards</li>
 <li><span class="math inline">A = \mathbb{E}[\mathbf{x}_t( \mathbf{x}_t - \gamma \mathbf{x_{t+1}})^T]</span> - an expectation over the rewards</li>
@@ -1177,21 +1363,22 @@ w_{t+1} &amp; = w_t + \alpha [R_{t+1} + \gamma \mathbf{w}^T \mathbf{x}_{t+1} - \
 <p>note: this is a linear system of equations that looks like a <strong>linear regression problem</strong>.</p>
 <p>when the weights do not change we have a fixed point:</p>
 <p><span id="eq-fixed-point"><span class="math display">
-\begin{align*}
-\mathbb{E}[\Delta w_{TD}] &amp; = \alpha(b-Aw_{TD}) = 0 \newline
+\begin{aligned}
+\mathbb{E}[\Delta w_{TD}] &amp; = \alpha(b-Aw_{TD}) = 0 \\
 \implies &amp; w_{TD} = A^{-1}b
-\end{align*}
-\tag{11}</span></span> more generally <span class="math inline">w_{TD}</span> is the solution to this equation and we could show that it minimises</p>
+\end{aligned}
+\tag{12}</span></span></p>
+<p>more generally <span class="math inline">w_{TD}</span> is the solution to this equation and we could show that it minimises</p>
 <p><span id="eq-min-lin-td"><span class="math display">
 (b-Aw)^T(b-Aw)
-\tag{12}</span></span></p>
+\tag{13}</span></span></p>
 <p>this is related to Bellman equations via the projected Bellman error.</p>
 </section>
 <section id="sec-l4g6" class="level2">
 <h2 class="anchored" data-anchor-id="sec-l4g6">Theoretical guarantee on the mean squared value error at the TD fixed point</h2>
 <p><span id="eq-td-fixed-point-and-minimum-ve"><span class="math display">
 \overline{VE}(w_{TD}) \leq \frac{1}{1-\gamma} \min_{w} \overline{VE}(w)
-\tag{13}</span></span></p>
+\tag{14}</span></span></p>
 <ul>
 <li>if <span class="math inline">\gamma \approx 1</span> then the mean squared value error at the TD fixed point can be large</li>
 <li>if <span class="math inline">\gamma \approx 0</span> then the mean squared value error at the TD fixed point can be small</li>
@@ -1203,11 +1390,28 @@ w_{t+1} &amp; = w_t + \alpha [R_{t+1} + \gamma \mathbf{w}^T \mathbf{x}_{t+1} - \
 <p>In the assignment I implemented the Semi-gradient TD(0) algorithm for value estimation.</p>
 
 
+
 </section>
 </section>
 
 
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Bacon2016TheOA" class="csl-entry" role="listitem">
+Bacon, Pierre-Luc, J. Harb, and Doina Precup. 2016. <span>“The Option-Critic Architecture.”</span> <em>ArXiv</em> abs/1609.05140.
+</div>
+<div id="ref-bradtke1994reinforcement" class="csl-entry" role="listitem">
+Bradtke, Steven, and Michael Duff. 1994. <span>“Reinforcement Learning Methods for Continuous-Time Markov Decision Problems.”</span> <em>Advances in Neural Information Processing Systems</em> 7.
+</div>
+<div id="ref-precup2000temporal" class="csl-entry" role="listitem">
+Precup, Doina. 2000. <em>Temporal Abstraction in Reinforcement Learning</em>. University of Massachusetts Amherst.
+</div>
+<div id="ref-sutton2018reinforcement" class="csl-entry" role="listitem">
+Sutton, R. S., and A. G. Barto. 2018. <em>Reinforcement Learning, Second Edition: An Introduction</em>. Adaptive Computation and Machine Learning Series. MIT Press. <a href="http://incompleteideas.net/book/RLbook2020.pdf">http://incompleteideas.net/book/RLbook2020.pdf</a>.
+</div>
+<div id="ref-Sutton1999BetweenMA" class="csl-entry" role="listitem">
+Sutton, R., Doina Precup, and Satinder Singh. 1999. <span>“Between MDPs and Semi-MDPs: A Framework for Temporal Abstraction in Reinforcement Learning.”</span> <em>Artif. Intell.</em> 112: 181–211.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>why not?<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
@@ -1215,436 +1419,312 @@ w_{t+1} &amp; = w_t + \alpha [R_{t+1} + \gamma \mathbf{w}^T \mathbf{x}_{t+1} - \
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
     }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const disableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'prefetch';
-    }
-  }
-  const enableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'stylesheet';
-    }
-  }
-  const manageTransitions = (selector, allowTransitions) => {
-    const els = window.document.querySelectorAll(selector);
-    for (let i=0; i < els.length; i++) {
-      const el = els[i];
-      if (allowTransitions) {
-        el.classList.remove('notransition');
-      } else {
-        el.classList.add('notransition');
-      }
-    }
-  }
-  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
-    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
-    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
-    let newTheme = '';
-    if(darkModeDefault) {
-      newTheme = isAlternate ? baseTheme : alternateTheme;
-    } else {
-      newTheme = isAlternate ? alternateTheme : baseTheme;
-    }
-    const changeGiscusTheme = () => {
-      // From: https://github.com/giscus/giscus/issues/336
-      const sendMessage = (message) => {
-        const iframe = document.querySelector('iframe.giscus-frame');
-        if (!iframe) return;
-        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
-      }
-      sendMessage({
-        setConfig: {
-          theme: newTheme
-        }
-      });
-    }
-    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
-    if (isGiscussLoaded) {
-      changeGiscusTheme();
-    }
-  }
-  const toggleColorMode = (alternate) => {
-    // Switch the stylesheets
-    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-    manageTransitions('#quarto-margin-sidebar .nav-link', false);
-    if (alternate) {
-      enableStylesheet(alternateStylesheets);
-      for (const sheetNode of alternateStylesheets) {
-        if (sheetNode.id === "quarto-bootstrap") {
-          toggleBodyColorMode(sheetNode);
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
         }
       }
-    } else {
-      disableStylesheet(alternateStylesheets);
-      toggleBodyColorPrimary();
-    }
-    manageTransitions('#quarto-margin-sidebar .nav-link', true);
-    // Switch the toggles
-    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-    for (let i=0; i < toggles.length; i++) {
-      const toggle = toggles[i];
-      if (toggle) {
-        if (alternate) {
-          toggle.classList.add("alternate");     
-        } else {
-          toggle.classList.remove("alternate");
-        }
-      }
-    }
-    // Hack to workaround the fact that safari doesn't
-    // properly recolor the scrollbar when toggling (#1455)
-    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
-      manageTransitions("body", false);
-      window.scrollTo(0, 1);
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        manageTransitions("body", true);
-      }, 40);  
-    }
-  }
-  const isFileUrl = () => { 
-    return window.location.protocol === 'file:';
-  }
-  const hasAlternateSentinel = () => {  
-    let styleSentinel = getColorSchemeSentinel();
-    if (styleSentinel !== null) {
-      return styleSentinel === "alternate";
-    } else {
       return false;
     }
-  }
-  const setStyleSentinel = (alternate) => {
-    const value = alternate ? "alternate" : "default";
-    if (!isFileUrl()) {
-      window.localStorage.setItem("quarto-color-scheme", value);
-    } else {
-      localAlternateSentinel = value;
-    }
-  }
-  const getColorSchemeSentinel = () => {
-    if (!isFileUrl()) {
-      const storageValue = window.localStorage.getItem("quarto-color-scheme");
-      return storageValue != null ? storageValue : localAlternateSentinel;
-    } else {
-      return localAlternateSentinel;
-    }
-  }
-  const darkModeDefault = false;
-  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
-  // Dark / light mode switch
-  window.quartoToggleColorScheme = () => {
-    // Read the current dark / light value 
-    let toAlternate = !hasAlternateSentinel();
-    toggleColorMode(toAlternate);
-    setStyleSentinel(toAlternate);
-    toggleGiscusIfUsed(toAlternate, darkModeDefault);
-  };
-  // Ensure there is a toggle, if there isn't float one in the top right
-  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-    const a = window.document.createElement('a');
-    a.classList.add('top-right');
-    a.classList.add('quarto-color-scheme-toggle');
-    a.href = "";
-    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-    const i = window.document.createElement("i");
-    i.classList.add('bi');
-    a.appendChild(i);
-    window.document.body.appendChild(a);
-  }
-  // Switch to dark mode if need be
-  if (hasAlternateSentinel()) {
-    toggleColorMode(true);
-  } else {
-    toggleColorMode(false);
-  }
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
       }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
     }
-    return false;
-  }
-  const onCopySuccess = function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
-      }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
         }
       }
       return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
-  });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
     });
-    clipboardModal.on('success', onCopySuccess);
-  }
-  const viewSource = window.document.getElementById('quarto-view-source') ||
-                     window.document.getElementById('quarto-code-tools-source');
-  if (viewSource) {
-    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-    viewSource.addEventListener("click", function(e) {
-      if (sourceUrl) {
-        // rstudio viewer pane
-        if (/\bcapabilities=\b/.test(window.location)) {
-          window.open(sourceUrl);
-        } else {
-          window.location.href = sourceUrl;
-        }
-      } else {
-        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-        modal.show();
-      }
-      return false;
-    });
-  }
-  function toggleCodeHandler(show) {
-    return function(e) {
-      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-      for (let i=0; i<detailsSrc.length; i++) {
-        const details = detailsSrc[i].parentElement;
-        if (show) {
-          details.open = true;
-        } else {
-          details.removeAttribute("open");
-        }
-      }
-      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
-      const fromCls = show ? "hidden" : "unhidden";
-      const toCls = show ? "unhidden" : "hidden";
-      for (let i=0; i<cellCodeDivs.length; i++) {
-        const codeDiv = cellCodeDivs[i];
-        if (codeDiv.classList.contains(fromCls)) {
-          codeDiv.classList.remove(fromCls);
-          codeDiv.classList.add(toCls);
-        } 
-      }
-      return false;
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
     }
-  }
-  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-  if (hideAllCode) {
-    hideAllCode.addEventListener("click", toggleCodeHandler(false));
-  }
-  const showAllCode = window.document.getElementById("quarto-show-all-code");
-  if (showAllCode) {
-    showAllCode.addEventListener("click", toggleCodeHandler(true));
-  }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/notes-rl\/");
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-        // undo the damage that might have been done by quarto-nav.js in the case of
-        // links that we want to consider external
-        if (link.dataset.originalHref !== undefined) {
-          link.href = link.dataset.originalHref;
-        }
-          // target, if specified
-          link.setAttribute("target", "_blank");
-          if (link.getAttribute("rel") === null) {
-            link.setAttribute("rel", "noopener");
-          }
-      }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start',
-    };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note) {
-        return note.innerHTML;
-      } else {
-        return "";
-      }
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
-        }
-      }
-    }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
           } else {
-            container.appendChild(child.cloneNode(true));
-            break;
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
           }
         }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
         }
-        return container.innerHTML
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/notes-rl\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
       } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
       }
     }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
           }
         } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
+            const note = htmlDoc.querySelector('main.content');
             if (note !== null) {
-              const html = processXRef(id, note);
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -1652,196 +1732,172 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             instance.show();
           });
         }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            div.style.left = 0;
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+      }, function(instance) {
       });
     }
-  }
-});
-</script>
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
 </div> <!-- /content -->
     <script type="text/javascript">
     (function(d) {
       d.querySelectorAll(".pseudocode-container").forEach(function(el) {
         let pseudocodeOptions = {
-          indentSize: el.dataset.indentSize || "1.2em",
-          commentDelimiter: el.dataset.commentDelimiter || "//",
-          lineNumber: el.dataset.lineNumber === "true" ? true : false,
-          lineNumberPunc: el.dataset.lineNumberPunc || ":",
-          noEnd: el.dataset.noEnd === "true" ? true : false,
-          titlePrefix: el.dataset.captionPrefix || "Algorithm"
+          indentSize: el.dataset.indentSize,
+          commentDelimiter: " " + el.dataset.commentDelimiter + " ",
+          lineNumber: el.dataset.lineNumber.toLowerCase() === "true",
+          lineNumberPunc: el.dataset.lineNumberPunc,
+          noEnd: el.dataset.noEnd.toLowerCase() === "true",
+          titlePrefix: el.dataset.captionPrefix,
         };
         pseudocode.renderElement(el.querySelector(".pseudocode"), pseudocodeOptions);
       });
@@ -1864,6 +1920,38 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     })(document);
     </script>
   
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

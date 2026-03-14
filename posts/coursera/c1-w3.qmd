@@ -46,11 +46,11 @@ We describe a MDP as a linear process in time. However, it is really a tree of p
 ::: {.callout-tip collapse="true"}
 ### Read {.unnumbered}
 
--   [x] [\@sutton2018reinforcement§3.5-7, pp. 58-67](http://incompleteideas.net/book/RLbook2020.pdf#page=58)
--   [x] [\@sutton2018reinforcement§3.8, pp. 68-69](http://incompleteideas.net/book/RLbook2020.pdf#page=68)
+-   [x] [@sutton2018reinforcement§3.5-7, pp. 58-67](http://incompleteideas.net/book/RLbook2020.pdf#page=58)
+-   [x] [@sutton2018reinforcement§3.8, pp. 68-69](http://incompleteideas.net/book/RLbook2020.pdf#page=68)
 :::
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 -   [x] Recognize that a policy is a distribution over actions for each possible state [\#](#sec-policy-definition)
@@ -221,7 +221,7 @@ The value functions are deterministic and can be computed from the MDP.
 
 ## Lesson 2: Bellman Equations
 
-::: callout-note
+::: {.callout-note}
 ### Goals
 
 -   [x] Derive the Bellman equation for state-value functions [\#](#sec-bellman-equation-state-value-functions)
@@ -234,7 +234,7 @@ The value functions are deterministic and can be computed from the MDP.
 
 ![backup diagram for $v_\pi$](img/rl-backup-v.png){#fig-backup-v .column-margin}
 
-::: callout-note
+::: {.callout-note}
 ### Bellman Equation intuition
 
 Richard Bellman was a uniquely gifted mathematician who worked on dynamic programming. The Bellman equations is a recursive equation that decomposes the value of a state into the immediate reward and the discounted value of the successor state. These equations form the basis of Dynamic Programming which is used in disparate problems including
@@ -266,10 +266,10 @@ The Bellman equation for state-value functions is a recursive equation that deco
 
 $$
 \begin{align}
-  v_\pi(s) &= \mathbb{E_\pi}[G_t|S_t=s] \newline 
-           &= \mathbb{E_\pi}[R_{t+1} + \gamma G_{t+1}|S_t=s] \newline 
-           &= \mathbb{E_\pi}[R_{t+1} + \gamma v_\pi(S_{t+1})|S_t=s] \newline 
-           &= \sum_a \pi(a|s) \sum_{s'} \sum_r p(s',r|s,a) (r + \gamma \mathbb{E_\pi}[G_{t+1}|S_{t+1}=s']) \newline
+  v_\pi(s) &= \mathbb{E_\pi}[G_t|S_t=s] \\  
+           &= \mathbb{E_\pi}[R_{t+1} + \gamma G_{t+1}|S_t=s] \\  
+           &= \mathbb{E_\pi}[R_{t+1} + \gamma v_\pi(S_{t+1})|S_t=s] \\  
+           &= \sum_a \pi(a|s) \sum_{s'} \sum_r p(s',r|s,a) (r + \gamma \mathbb{E_\pi}[G_{t+1}|S_{t+1}=s']) \\ 
            &= \sum_a \pi(a|s) \sum_{s'} \sum_r p(s',r|s,a) (r + \gamma v_\pi(s'))
 \end{align}
 $$ {#eq-bellman-state-value-function}
@@ -282,9 +282,9 @@ The Bellman equation for action-value functions is a recursive equation that dec
 
 $$
 \begin{align}
-  q_\pi(s,a) & \dot = \mathbb{E_\pi}[G_t|S_t=s, A_t=a] \newline 
-             &= \sum_{s'} \sum_r p(s',r|s,a) (r + \gamma \mathbb{E_\pi}[G_{t+1}|S_{t+1}=s']) \newline
-             & = \sum_{s'} \sum_r p(s',r|s,a) (r + \gamma \sum_{a'} \pi(a'|s') \mathbb{E_\pi}[G_{t+1}|S_{t+1}=s', A_{t+1}=a']) \newline
+  q_\pi(s,a) & \dot = \mathbb{E_\pi}[G_t|S_t=s, A_t=a] \\  
+             &= \sum_{s'} \sum_r p(s',r|s,a) (r + \gamma \mathbb{E_\pi}[G_{t+1}|S_{t+1}=s']) \\ 
+             & = \sum_{s'} \sum_r p(s',r|s,a) (r + \gamma \sum_{a'} \pi(a'|s') \mathbb{E_\pi}[G_{t+1}|S_{t+1}=s', A_{t+1}=a']) \\ 
              &= \sum_{s'} \sum_r p(s',r|s,a) (r + \gamma \sum_{a'} \pi(a'|s') q_\pi(s',a'))
 \end{align}
 $$ {#eq-bellman-action-value-function}
@@ -310,11 +310,11 @@ lets calculate the value of each state using the Bellman equation.
 
 $$
 \begin{align}
-v_\pi(A) &= \sum_a \pi(a|A) \sum_{s'} \sum_r p(s',r|A,a) (r + \gamma v(s')) \newline
-     &= \sum_a \pi(a|A) (r + 0.7 v_\pi(s')) \newline
-     &= 0.25 \times 0.7 \times v(A) + 0.25 \times (5 + 0.7 \times v(B)) + 0.25 \times 0.7 \times v(C) + 0.25 \times 0.7 \times v(A) \newline
-v_\pi(B) &= 0.25 \times 0.7 \times v(A) + 0.5 \times (5 + 0.7 \times v(B)) + 0.25 \times 0.7 \times v(D) \newline
-v_\pi(C) &= 0.25 \times 0.7 \times v(A) + 0.5 \times (0.7 \times v(B)) + 0.25 \times 0.7 \times v(C) \newline
+v_\pi(A) &= \sum_a \pi(a|A) \sum_{s'} \sum_r p(s',r|A,a) (r + \gamma v(s')) \\ 
+     &= \sum_a \pi(a|A) (r + 0.7 v_\pi(s')) \\ 
+     &= 0.25 \times 0.7 \times v(A) + 0.25 \times (5 + 0.7 \times v(B)) + 0.25 \times 0.7 \times v(C) + 0.25 \times 0.7 \times v(A) \\ 
+v_\pi(B) &= 0.25 \times 0.7 \times v(A) + 0.5 \times (5 + 0.7 \times v(B)) + 0.25 \times 0.7 \times v(D) \\ 
+v_\pi(C) &= 0.25 \times 0.7 \times v(A) + 0.5 \times (0.7 \times v(B)) + 0.25 \times 0.7 \times v(C) \\ 
 v_\pi(D) &= 0.25 \times 0.7 \times v(B) + 0.5 \times 0.7 \times v(C) + 0.25 \times 0.7 \times v(D)
 \end{align}
 $$ we can solve these equations to get the value of each state.
@@ -322,12 +322,12 @@ $$ we can solve these equations to get the value of each state.
 theses are
 
 $$
-\begin{align*}
-v_\pi(A) &= 4.2 \newline
-v_\pi(B) &= 6.1 \newline
-v_\pi(C) &= 2.2 \newline
-v_\pi(D) &= 4.2 \newline
-\end{align*}
+\begin{aligned}
+v_\pi(A) &= 4.2 \\ 
+v_\pi(B) &= 6.1 \\ 
+v_\pi(C) &= 2.2 \\ 
+v_\pi(D) &= 4.2 \\ 
+\end{aligned}
 $$
 
 We can use the Bellman equation to calculate the value of each state in the Gridworld. The value of each state is the expected return when starting in that state and following the policy $\pi$ thereafter. The value of each state is calculated by summing the immediate reward and the discounted value of the successor states.
@@ -336,7 +336,7 @@ For larger MDP the Bellman equations are not practical method to calculate the v
 
 ### Lesson 3: Optimality (Optimal Policies & Value Functions)
 
-::: callout-note
+::: {.callout-note}
 ### Goals
 
 -   [x] Define an optimal policy [\#](#sec-optimal-policy)
@@ -371,8 +371,8 @@ The Bellman optimality equation for state-value functions is a recursive equatio
 
 $$
 \begin{align}
-v_*(s) & \dot = \max_{\pi} v_{\pi}(s) \quad \forall s \in S\newline
-       & = \max_a \mathbb{E}[R_{t+1} + \gamma v_*(S_{t+1})|S_t=s, A_t=a] \newline
+v_*(s) & \dot = \max_{\pi} v_{\pi}(s) \quad \forall s \in S\\ 
+       & = \max_a \mathbb{E}[R_{t+1} + \gamma v_*(S_{t+1})|S_t=s, A_t=a] \\ 
        & = \max_a \sum_{s'} \sum_r p(s',r|s,a) (r + \gamma v_*(s'))
 \end{align}
 $$ {#eq-bellman-optimality-state-value-function}
@@ -385,8 +385,8 @@ The Bellman optimality equation for action-value functions is a recursive equati
 
 $$
 \begin{align}
-q_*(s,a) & \dot = \max_{\pi} q_{\pi}(s,a) \quad \forall s \in S, \forall a \in A \newline
-         & = \mathbb{E}[R_{t+1} + \gamma \max_{a'} q_*(S_{t+1}, a')|S_t=s, A_t=a] \newline
+q_*(s,a) & \dot = \max_{\pi} q_{\pi}(s,a) \quad \forall s \in S, \forall a \in A \\ 
+         & = \mathbb{E}[R_{t+1} + \gamma \max_{a'} q_*(S_{t+1}, a')|S_t=s, A_t=a] \\ 
          & = \sum_{s'} \sum_r p(s',r|s,a) (r + \gamma \max_{a'} q_*(s',a'))
 \end{align}
 $$ {#eq-bellman-optimality-action-value-function}

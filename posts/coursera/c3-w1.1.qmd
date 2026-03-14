@@ -28,13 +28,15 @@ title-block-banner: /images/banner_black_3.jpg
 
 ![RL algorithms](img/alg_selector.png){.column-margin group="slides"}
 
-Some of the notes I made in this course became a bit too long. Rather than break the flow of the lesson I decided to move them to a separate file. This is one of those notes.
+Some of the notes I made in this course became a bit too long. 
+Rather than break the flow of the lesson I decided to move them to a separate file. 
+This is one of those longer notes.
 
-# A few Thought on Generalization and discrimination in RL
+## A few Thought on Generalization and discrimination in RL
 
 There are a couple of issues on generalization.
 
-## How are generalization in ML is closely related to transfer learning in RL.
+### How are generalization in ML is closely related to transfer learning in RL.
 
 In ML we have a rather clear understanding of generalization. We have a training set and a test set. We train on the training set and then test on the test set. The goal is to do well on the test set. The test set is a sample from the same distribution as the training. 
 
@@ -59,7 +61,7 @@ So in one sense it is harder to generalize than to solve a specific problem. How
 -   Another direction I call heuristics concerns finding minimal policies that are just strong enough to get the agent to the goal a high percentage of the time.
 -   Learning should be aggregational and compositional. However, these terms require reinterpretation for each problem and at many levels of abstraction.
 
-## Human like to use Heuristic, which are are:
+### Human like to use Heuristic, which are are:
 
     - A minimal sub-optimal policy that is suffiecnt to get the agent to its goal with high probability.
     - In an MDP with lots of sub-goals, we may have benefit in learning learning heuristic style policy for each sub-goal and then compose them into a policy for the goal. 
@@ -81,11 +83,12 @@ So in one sense it is harder to generalize than to solve a specific problem. How
     -   A heuristic might be a very good behavior policy for off policy learning the optimal policy.
     -   I don't see RL algorithms for heuristics.
 
-##  Models in RL try to approximate MDP dynamics using its transition and rewards
+###  Models in RL try to approximate MDP dynamics using its transition and rewards
+
     -   In ML we often use boosting and bagging to aggregate very simple models.
     -   In RL we often replace the model by sampling from a replay buffer of the agent's past experiences. 
     
-##  The problem for a general ai is very much the problem of transfer learning in RL.
+###  The problem for a general ai is very much the problem of transfer learning in RL.
 
 -   agents learn a very specific policy for a very specific task - the learned representation cannot be mapped to other tasks or even other states in the same task.
 -   if agents learning was decomposed into
@@ -116,9 +119,21 @@ So in one sense it is harder to generalize than to solve a specific problem. How
             -   tempo
         -   localize value of pieces in different positions on the board using the learned tactics and strategy.
 
-## Bayesian models and hierarchical model encode knowledge using priors which can pool or bias beliefs towards a certain outcome.
+### BNP knowledge patterns
+
+Bayesian Nonparametrics models and hierarchical model encode knowledge in some noteworthy ways:
+
+1. Priors encode expert beliefs and can be tested using a prior predictive check. Posteriors can be queried in different ways to gain insight into what the model has learned with reperct to specific parameters.
+2. Conjugte priors which maintain a fixed structure while updating beliefs based on incoming evidence. These can oftern be interpreted in terms of the wight of the prior and the weight of the evidence.
+3. Hierachical models allow us to encode dependencies between parameters directly into the model structure.
+4. Hierarchical models use partial pooling to share statistical strength across related groups of data points. This allows the model to initially rely on a prior but shift towards the evidence as it accrues.
+5. using covariance mat
+
     -   learning in Bayesian models is about updating the initial beliefs based on incoming evidence.
-##  CI may be useful here
+
+
+
+###  CI may be useful here
 
 -   Is in a big way about mapping knowledge into
     -   Statistical joint probabilities,
@@ -130,3 +145,8 @@ So in one sense it is harder to generalize than to solve a specific problem. How
     -   Options are like do operations (interventions)
     -   Choosing between actions and options is like contrafactual reasoning.
 -   Using and verifying CI models could be the way to unify the spatial and temporal abstraction in RL.
+
+
+## Game theory 
+
+For game theoretic settings reaching an equilibrium can also be form of learning as different equilibria encode different strategies which extend policy from RL.

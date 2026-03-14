@@ -27,7 +27,7 @@ title-block-banner: /images/banner_black_3.jpg
 
 ## Lesson 1: Introduction to Temporal Difference Learning
 
-::: callout-info
+::: {.callout-info}
 ### Lesson Learning Goals {.unnumbered}
 
 -   [ ] Define temporal-difference learning [\#](#sec-l1g1)
@@ -79,17 +79,17 @@ How can we make updates at each time step?
 
 $$
 \begin{aligned}
-G_t & \dot= R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots \qquad \newline
+G_t & \dot= R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots \qquad \\ 
          &= R_{t+1} + \gamma G_{t+1} \qquad
 \end{aligned}
 $$ {#eq-return-definition}
 
 $$
 \begin{aligned}
-v_\pi(s_t)  & = \mathbb{E}_\pi [G_t \mid S_t = s] & \text{definition}\newline
-          & = \mathbb{E}_\pi [R_{t+1} + \gamma G_{t+1} \mid S_t = s] & \text{(subst. Recursive return)}\newline
-          & = \mathbb{E}_\pi[R_{t+1} + \gamma v_\pi (S_{t+1}) |S_t=s]    & \text{(subst. value function)}\newline
-          & = \mathbb{E}_\pi[R_{t+1}|S_t=s]  + \gamma \mathbb{E}_\pi[v_\pi (S_{t+1}) |S_t=s] & \text{(by linearity of Expectation)} \newline
+v_\pi(s_t)  & = \mathbb{E}_\pi [G_t \mid S_t = s] & \text{definition}\\ 
+          & = \mathbb{E}_\pi [R_{t+1} + \gamma G_{t+1} \mid S_t = s] & \text{(subst. Recursive return)}\\ 
+          & = \mathbb{E}_\pi[R_{t+1} + \gamma v_\pi (S_{t+1}) |S_t=s]    & \text{(subst. value function)}\\ 
+          & = \mathbb{E}_\pi[R_{t+1}|S_t=s]  + \gamma \mathbb{E}_\pi[v_\pi (S_{t+1}) |S_t=s] & \text{(by linearity of Expectation)} \\ 
           & = R_{t+1} + \gamma v_\pi (S_{t+1}) & \text{(by Expectation of constant RV)}
 \end{aligned}
 $$
@@ -117,8 +117,8 @@ We can use the following to make online TD updates like we were able to update o
 
 $$
 \begin{aligned}
-G_t & \dot = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots \newline
-&= R_{t+1} + \gamma G_{t+1} \newline
+G_t & \dot = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots \\ 
+&= R_{t+1} + \gamma G_{t+1} \\ 
 \end{aligned}
 $$
 
@@ -138,45 +138,11 @@ $$ this is one of the most important equations in reinforcement learning - we wi
 
 -   The TD(0) algorithm is a TD learning algorithm that uses a bootstrapping method to estimate the value of a state.
 
-::: callout-note
-### The TD(0) algorithm for estimating $v_\pi$ {#alg-td0}
-
-``` pseudocode
-#| label: alg-td-zero
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-
-\begin{algorithm}
-\caption{TD(0) for estimating $v_\pi$}
-\begin{algorithmic}[1]
-\State Input:
-  \State $\qquad \pi \leftarrow \text{policy to be evaluated}$
-\State Initialize:
-  \State $\qquad V(s) \leftarrow x \in \mathbb{R} \quad \forall s \in \mathcal{S}$
-\FORALL {episode $e$:}
-  \State $S \leftarrow \text{initial state of episode}$
-  \State $\text{Choose } A \sim \pi(\cdot \mid S)$
-  \FORALL {step $S \in e$:}
-    \State Take action $A$, observe $R, S'$
-    \State $V(S) \leftarrow V(S) + \alpha [R + \gamma V(S') - V(S)]$
-    \State $S \leftarrow S'$
-    \State $\text{Choose} A' \sim \pi(\cdot \mid S)$
-    \State $S$ is terminal
-  \ENDFOR
-\ENDFOR
-\end{algorithmic}
-\end{algorithm}
-```
-:::
+{{< include _c1-w2_alg-td0.qmd >}}
 
 ## Lesson 2: Advantages of TD
 
-::: callout-info
+::: {.callout-info}
 ### Lesson Learning Goals {.unnumbered}
 
 -   [ ] Understand the benefits of learning online with TD [\#](#sec-l2g1)

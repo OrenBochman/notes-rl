@@ -79,7 +79,7 @@ We will use these algorithms to learn the value function of the Random Walk 1000
 
 # Feature Construction & linear Function approximation
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 

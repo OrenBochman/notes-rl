@@ -46,7 +46,7 @@ title-block-banner: /images/banner_black_3.jpg
 -   [x] [RL Book§5.0-5.5 (pp.91-104)](http://incompleteideas.net/book/RLbook2020.pdf#page=91)
 :::
 
-::: callout-note
+::: {.callout-note}
 ## Definitions {.unnumbered}
 
 Here are most of the definitions we need for this module. Let us review them before we start.
@@ -155,7 +155,7 @@ Tabular methods
 
 # Lesson 1: Introduction to Monte-Carlo Methods
 
-::: callout-note
+::: {.callout-note}
 ### Lesson Learning Goals {.unnumbered}
 
 -   [x] Understand how [Monte-Carlo](#dfn-mc) can be used to estimate $v(s)$ value functions from sampled interaction [\#](#sec-l1g1)
@@ -192,81 +192,17 @@ more formally we can use the MC value prediction algorithm.
 
 Next we present an algorithm for estimating the value function of a policy $\pi$ using MC methods.
 
-::: {#nte-mc-value-prediction-any-visit .callout-note .alg}
-### MC prediction any visit for estimating $V \approx v_\pi$ {#alg-mc-prediction-any-visit}
+{{< include _c2-w1_alg-mc-prediction-any-visit.qmd >}}
 
-``` pseudocode
-#| label: alg-mc-prediction-any-visit
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-\begin{algorithm}
-\caption{MCFirstVisitValuePrediction($\pi$)} 
-\begin{algorithmic}[1]
-\State Input
-  \State $\qquad \pi$ to be evaluated
-\State Initialize:
-  \State $\qquad V(s) \leftarrow x \in \mathbb{R}$, arbitrarily, $\forall s \in \mathcal{S}$
-  \State $\qquad Returns(s)$ an empty list, $\forall s \in \mathcal{S}$
-\For {each episode:}
-    \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$
-    \State $G \leftarrow 0$
-    \For {each step of episode, $t = T-1, T-2,\ldots, 0$:}
-      \State $G \leftarrow \gamma G + R_{t+1}$
-      \State Append $G$ to $Returns(S_t)$
-      \State $V(S_t) \leftarrow average(Returns(S_t))$
-    \EndFor
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-```
-:::
-
-::: {#nte-mc-value-prediction-first-visit .callout-note .alg}
-### MC prediction fist visit for estimating $V \approx v_\pi$ {#alg-mc-prediction-first-visit}
-
-``` pseudocode
-#| label: alg-mc-prediction-first-visit
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-\begin{algorithm}
-\caption{MCAnyVisitValuePrediction($\pi$)} 
-\begin{algorithmic}[1]
-\State Input
-  \State $\qquad \pi$ to be evaluated
-\State Initialize:
-  \State $\qquad V(s) \in \mathbb{R}$, arbitrarily, $\forall s \in \mathcal{S}$
-  \State $\qquad Returns(s)$ an empty list, $\forall s \in \mathcal{S}$
-\For {each episode:}
-  \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$
-  \State $G \leftarrow 0$
-  \For {each step of episode, $t = T-1, T-2,\ldots, 0$:}
-    \State $G \leftarrow \gamma G + R_{t+1}$
-    \If{$S_t \not \in S_0, S_1,\ldots,S_{t-1}$}
-      \State Append $G$ to $Returns(S_t)$
-      \State $V(S_t) \leftarrow average(Returns(S_t))$
-    \EndIf
-  \EndFor
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-```
-:::
-
-::: callout-caution
+::: {.callout-caution}
 ### Any visit / First-visit
 
-The book uses presents a small variation called the *first visit MC method*, We considered the any-visit case. This estimates $v_\pi(s)$ using the average of the returns following an episode's first visit to $s$, whereas this the every-visit MC algorithms averages the returns following all visits to $s$
+The book uses presents a small variation called the *first visit MC method*. We considered the any-visit case. 
+This estimates $v_\pi(s)$ using the average of the returns following an episode's first visit to $s$, whereas this the every-visit MC algorithms averages the returns following all visits to $s$
 :::
+
+{{< include _c2-w1_alg-mc-prediction-first-visit.qmd >}}
+
 
 ::: callout-important
 ### Intuition for the Algorithm {.unnumbered}
@@ -328,11 +264,11 @@ In the programming assignment we will produce the following graphs
 
 we can use the MC prediction alg to estimate the expected returns for a state given a policy $\pi$
 
-::: callout-note
+::: {.callout-note}
 The key limitations of *MC value estimation algorithm* is its requirement for episodic tasks and for completing such an episode before it starts. In some games an episode can be very long.
 :::
 
-::: callout-note
+::: {.callout-note}
 ## :bulb: Is this really so? :thinking:
 
 -   If we work in the Bayesian paradigm with some prior and use Bayesian updating.
@@ -357,7 +293,7 @@ Implications of MC Learning
 
 # Lesson 2: Monte Carlo for Control {#sec-mc-control}
 
-::: callout-note
+::: {.callout-note}
 ### Lesson Learning Goals {.unnumbered}
 
 -   [ ] Estimate action-value functions using [Monte Carlo](#dfn-mc) [\#](#sec-l2g1)
@@ -397,7 +333,7 @@ Here, in the evaluation step, we estimate the action-values using MC prediction,
 
 # Lesson 3: Exploration Methods for Monte Carlo
 
-::: callout-note
+::: {.callout-note}
 ### Lesson Learning Goals {.unnumbered}
 
 -   [x] Understand why Exploring Starts can be problematic in real problems [\#](#sec-l3g1)
@@ -412,44 +348,10 @@ Mr White explains that we can't use a deterministic policy to learn action value
 
 So here is how can use exploring starts or some other exploration strategy to ensure that we can learn the action values for all actions in all states.
 
-::: callout-note
-### Monte Carlo Exploring Start {#alg-mc-es-control}
 
-``` pseudocode
-#| label: alg-mc-es-control
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-\begin{algorithm}
-\caption{MonteCarloExploringStartsGPI()}
-\begin{algorithmic}[1]
-\State Initialize:
-  \State $\qquad \pi(s) \in A(s) \quad \forall s\in \mathcal{S}$
-  \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \quad \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$
-  \State $\qquad Returns(s,a) \leftarrow \text {an empty list} \quad \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$
-\For {each episode:}
-  \State Choose $S_0 \in \mathcal{S}  and A_0 \in \mathcal{A}(S_0) \text{randomly :} p(s,a)>0 \forall s,a$ \comment{$\textcolor{blue}{Exploring Starts}$}
-  \State Generate an episode e from  $S_0, A_0$ by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$
-  \State $G \leftarrow 0$
-  \For {each step of $e, t \in T-1, T-2,..., 0:}  \comment{$\textcolor{blue}{Backward\ pass}$}
-    \State $G \leftarrow \gamma G + R_{t+1}$
-    \IF {$S_t , A_t \not \in S_0 , A_0 , S_1 , A_1 \ldots , S_{t-1} , A_{t-1}$}
-      \State Append $G$ to $Returns(S_t,A_t)$
-      \State $Q(S_t,A_t) \leftarrow average(Returns(S_t,A_t))\quad$ \comment{$\textcolor{blue}{\text{MC action-value estimate}}$}
-      \State $\pi(S_t) \leftarrow \arg\max_a Q(S_t,a)\quad$ \comment{$\textcolor{blue}{\text{greedy policy improvement}}$}
-    \EndIf
-  \EndFor
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-```
-:::
+{{< include _c2-w1_alg-mc-es-control.qmd >}}
 
-::: callout-tip
+::: {.callout-tip}
 ### Connecting the dots: MC vs DP {.unnumbered}
 
 Adam White points out how this is so much simpler than the DP methods we learned earlier. We don't need to solve a set of simultaneous equations. We can just use the MC method to estimate the action values and then use GPI to improve the policy. The only thing we need to do is to ensure that we explore all the actions in all the states.
@@ -471,7 +373,7 @@ Note: The Blackjack MDP can be improved using Exploring Starts since each initia
 
 ### ϵ-Soft Policies {#sec-l3g2}
 
-AN ALTERNATIVE approach to policy improvement is an generalization of both the $\epsilon$- greedy policy and the random uniform, which we first learned in the contexts of the multi-armed bandits problem in the fundamentals course.
+AN ALTERNATIVE approach to policy improvement is an generalization of both the $\epsilon$-greedy policy and the random uniform, which we first learned in the contexts of the multi-armed bandits problem in the fundamentals course.
 
 ϵ-soft policy
 
@@ -483,47 +385,8 @@ However this means we can never reach a deterministic optimal policy - but we ca
 
 We can get to a deterministic policy if we use a decaying $\epsilon$-greedy policy or if we greedify the policy breaking ties randomly.
 
-::: callout-note
-### MC control with ϵ-soft policies {#alg-mc-control}
+{{< include _c2-w1_alg-mc-ϵ-soft-control.qmd >}}
 
-``` pseudocode
-#| label: alg-mc-ϵ-soft-control
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-\begin{algorithm}
-\caption{MonteCarloϵ-SoftControl()} 
-\begin{algorithmic}[1]
-\State Initialize
-  \State $\qquad \epsilon \in (0,1)$ \Comment{ $\textcolor{blue}{\ algorithm\ parameter}$}
-  \State $\qquad \pi \leftarrow \epsilon$-soft policy \Comment{  $\textcolor{blue}{\ Initialize: policy}$}
-  \State $\qquad Q(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$
-  \State $\qquad Returns(s)$ an empty list, $\quad \forall s \in \mathcal{S}$
-\For {each episode:}
-  \State Generate an episode by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$
-  \State $G \leftarrow 0$
-  \For {each step of episode, $t \in T-1, T-2,..., 0$:}
-    \State $G \leftarrow \gamma G + R_{t+1}$
-    \State Append $G$ to $Returns(S_t,A_t)$
-    \State $Q(S_t,A_t) \leftarrow average(Returns(S_t,A_t))$
-    \State $A^* \leftarrow \arg\max_a Q(S_t,a) \qquad \textcolor{blue}{\text{(ties broken arbitrarily)}}$
-    \For {each $a \in \mathcal{A}$}
-      \If{$a = A^*$}
-        \State $\pi(a \mid S_t) \leftarrow 1 - \epsilon + \frac{\epsilon}{|A(S_t)|}$
-      \Else
-        \State $\pi(a \mid S_t) \leftarrow \frac{\epsilon}{|A(S_T)|}$
-      \EndIf
-    \EndFor
-  \EndFor
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-```
-:::
 
 The Highlights indicate modification of the Exploring Starts alg
 
@@ -535,7 +398,7 @@ The Highlights indicate modification of the Exploring Starts alg
 
 ## Lesson 4: Off-policy learning for prediction
 
-::: callout-note
+::: {.callout-note}
 ## Lesson Learning Goals {.unnumbered}
 
 -   [ ] Understand how off-policy learning can help deal with the exploration problem [\#](#sec-l4g1)
@@ -576,11 +439,11 @@ So if we have lots of samples we may not need to explore as much initially, but 
 The probability of a trajectory under $\pi$ is:
 
 $$
-\begin{align*}
-  P(A_t, S_{t+1}, & A_{t+1}, ... ,S_T | S_t, A_{t:T-1} \sim \pi) \newline
-  & = \pi(A_t|S_t)p(S_{t+1}|S_t, A_t)\pi(A_{t+1}, S_{t+1}) \cdot\cdot\cdot p(S_T|S_{T-1}, A_{T-1}) \newline
-  & = \prod_{k=t}^{T-1} \pi(A_k|S_k)p(S_{k+1}|S_k, A_k)
-\end{align*}
+\begin{aligned}
+  P(A_t, S_{t+1}, & A_{t+1}, \ldots , S_T \mid S_t, A_{t:T-1} \sim \pi) \\ 
+  & = \pi(A_t \mid S_t)p(S_{t+1} \mid S_t, A_t)\pi(A_{t+1}, S_{t+1}) \cdot\cdot\cdot p(S_T \mid S_{T-1}, A_{T-1}) \\ 
+  & = \prod_{k=t}^{T-1} \pi(A_k \mid S_k)p(S_{k+1} \mid S_k, A_k)
+\end{aligned}
 $$ {#eq-trajectory-probability}
 
 ### Importance sampling ratio {#sec-l4g4}
@@ -589,7 +452,7 @@ $$ {#eq-trajectory-probability}
 
 $$
 \begin{align}
-\rho_{t:T-1} & \doteq \frac{\prod_{k=t}^{T-1} \pi(A_k \mid S_k) \cancel{ p(S_{k+1} \mid S_k, A_k)}}{\prod_{k=t}^{T-1} b(A_k \mid S_k) \cancel{ p(S_{k+1} \mid S_k, A_k)} } \newline
+\rho_{t:T-1} & \doteq \frac{\prod_{k=t}^{T-1} \pi(A_k \mid S_k) \cancel{ p(S_{k+1} \mid S_k, A_k)}}{\prod_{k=t}^{T-1} b(A_k \mid S_k) \cancel{ p(S_{k+1} \mid S_k, A_k)} } \\ 
              & = \prod_{k=t}^{T-1} \frac{\pi(A_k \mid S_k)}{b(A_k \mid S_k)}
 \end{align}
 $$ {#eq-importance-sampling}
@@ -610,77 +473,12 @@ $$ {#eq-weighted-importance-sampling2}
 
 ![off policy trajectories](img/wk2-off-policy-trajectories.png){.column-margin group="slides"}
 
-::: callout-note
-### Off-policy every visit MC prediction {#alg-off-policy-mc-predictions}
 
-``` pseudocode
-#| label: alg-mc-off-policy-prediction
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
+{{< include _c2-w1_alg-off-policy-mc-predictions.qmd >}}
 
-\begin{algorithm}
-\caption{OffPolicyMonteCarloPrediction()} 
-\begin{algorithmic}[1]
-\State Input:
-  \State $\qquad \pi \leftarrow \text{policy to be evaluated}$
-\State Initialize:
-  \State $\qquad V(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$
-  \State $\qquad Returns(s) \text{ an empty list,} \quad \forall s \in \mathcal{S}$
-\For {each episode:}
-  \State Generate an episode by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$
-  \State $G \leftarrow 0, W \leftarrow 1$
-  \For {each step of episode, $t \in T-1, T-2,..., 0$:}
-    \State $G \leftarrow \gamma WG + R_{t+1}$
-    \State Append $G$ to $Returns(S_t)$
-    \State $V(S_t) \leftarrow average(Returns(S_t))$
-    \State $W \leftarrow W \frac{\pi(A_t|S_t)}{b(A_t|S_t)}$
-  \EndFor
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-```
-:::
 
-::: callout-note
-### Off-policy every visit MC control {#alg-off-control-mc-predictions}
+{{< include _c2-w1_alg-mc-off-control-prediction.qmd >}}
 
-``` pseudocode
-#| label: alg-mc-off-control-prediction
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-
-\begin{algorithm}
-\caption{OffPolicyMonteCarloPrediction()} 
-\begin{algorithmic}[1]
-\State Input:
-  \State $\qquad \pi \leftarrow \text{policy to be evaluated}$
-\State Initialize:
-  \State $\qquad V(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$
-  \State $\qquad Returns(s) \text{ an empty list,} \quad \forall s \in \mathcal{S}$
-\For {each episode:}
-  \State Generate an episode by following $b: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$
-  \State $G \leftarrow 0, W \leftarrow 1$
-  \For {each step of episode, $t = T-1, T-2,\ldots, 0$:}
-    \State $G \leftarrow \gamma WG + R_{t+1}$
-    \State Append $G$ to $Returns(S_t)$
-    \State $V(S_t) \leftarrow average(Returns(S_t))$
-    \State $W \leftarrow W \frac{\pi(A_t  \mid S_t)}{b(A_t \mid S_t)}$
-  \EndFor
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-```
-:::
 
 ### Emma Brunskill: Batch Reinforcement Learning
 
@@ -720,7 +518,7 @@ Counterfactual or Batch Reinforcement Learning
 
 :   In batch RL we have a fixed dataset of samples and we want to learn a new policy from this data.
 
-::: callout-note
+::: {.callout-note}
 ### Doubly Robust Estimators {.unnumbered}
 
 [Doubly robust estimators](https://en.wikipedia.org/wiki/Inverse_probability_weighting#Interpretation_and_%22double_robustness%22) is a technique from statistics that and causal inference that allows us to combine to do importance sampling and model based learning and a propensity score to estimate the value function. combine the best of both worlds - they are robust to errors in the model and the policy.

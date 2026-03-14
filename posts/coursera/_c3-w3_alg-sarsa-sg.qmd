@@ -1,0 +1,37 @@
+
+::: {#alg-td-sarsa}
+### Episodic Semi-gradient SARSA
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+  \caption{Episodic Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)}
+\begin{algorithmic}[1]
+\State $\textbf{Input:}$
+  \State $\qquad \text{a differentiable action-value fn parameterization } \hat{q}: \mathcal{S} \times A \times \mathbb{R}^d \to \mathbb{R}$
+\State $\textbf{Initialize:}$
+  \State $\qquad$ value function weights $\mathbf{w} \in \mathbb{R}^d$ arbitrarily, (e.g., $\mathbf{w} = 0$)  
+\For {each episode e:}
+  \State Initialize $S$
+  \State Choose A from S using policy derived from $\color{red}\hat{q}(S'A,\mathbf{w})$ (e.g., $\epsilon$-greedy)
+  \For {each step of e}
+    \State Take action A, observe R, S'
+    \If {$S'$ is terminal}
+      \State $\color{red}\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ 
+      \State Go to next episode
+    \EndIf
+    \State Choose A' as a function of $\color{red}\hat{q}(S'A,\mathbf{w})$ (e.g., $\epsilon$-greedy)
+    \State $\color{red}\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R + \gamma \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ 
+    \State $S \leftarrow S'$; 
+    \State $A \leftarrow A'$
+  \EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+:::

@@ -80,7 +80,7 @@ title-block-banner: /images/banner_black_3.jpg
   - I hope that you find these notes helpful.
 
 
-::: callout-caution
+::: {.callout-caution}
 ## Deceptively simple :bulb: {.unnumbered}
 
 [This course is **deceptively simple**]{.mark} - the chart in the margin provides a great summary of the material for the whole specialization. Only a handful of concepts are needed to master RL.
@@ -93,7 +93,7 @@ title-block-banner: /images/banner_black_3.jpg
 
 The following are my tips for getting the most from this specialization
 
-::: callout-tip
+::: {.callout-tip}
 ## Connecting The Dot to see the Forest For the Trees 🎄 
 
 To connect the dots I :heart: recommend:
@@ -112,7 +112,7 @@ To connect the dots I :heart: recommend:
 
 [^1]: The annotated book and flashcards will help here. This material is really logical - if you are surprised/confused you never assimilated some part of the material. Once you do it should become almost intuitive to reason about from scratch.
 
-::: callout-tip
+::: {.callout-tip}
 ## Mathematical Mnemonics 😍
 
 As a Mathematics major I can attest that Mathematics becomes 10x easier so long as you can recall 🧠 the basic definitions and their notation.
@@ -130,7 +130,7 @@ I have extracted the essentials from the text book below. Best to memorize these
 :::
 
 
-::: callout-note
+::: {.callout-note}
 ### Guest Lectures {.unnumbered}
 
 There are a number of guest lectures in this specialization - I think that about half are in the last course.

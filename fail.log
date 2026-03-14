@@ -1,0 +1,1513 @@
+Quarto version: 1.9.31
+
+[NotebookContext]: Starting Cleanup
+
+[1/2] posts/coursera/c3-w1.qmd
+
+Loaded deno-dom-native
+
+Creating SassCache at /home/oren/work/notes/notes-rl/.quarto/quarto-session-temp566b1c7f0ce7bfcf/sass
+
+Returning SassCache at /home/oren/work/notes/notes-rl/.quarto/quarto-session-temp566b1c7f0ce7bfcf/sass
+
+SassCache.getOrSet(...)
+
+SassCache.getFromHash(hash=160b5273be6b7100873ba4874d9777d6, inputHash=a7c245a4d13fbf4e2a36678664db0dcf, force=undefined)
+
+  cache miss
+
+  cache miss, setting
+
+SassCache.setFromHash(160b5273be6b7100873ba4874d9777d6, a7c245a4d13fbf4e2a36678664db0dcf), ...
+
+[execProcess] /opt/quarto/bin/tools/x86_64/dart-sass/sass /home/oren/work/notes/notes-rl/.quarto/quarto-session-temp566b1c7f0ce7bfcf/135aa13730f006a9.scss /home/oren/work/notes/notes-rl/.quarto/quarto-session-temp566b1c7f0ce7bfcf/sass/160b5273be6b7100873ba4874d9777d6.css --style compressed --quiet --load-path=/opt/quarto/share/formats/html/bootstrap/dist/scss --load-path=/opt/quarto/share/formats/html/bslib/bslib-scss
+
+[execProcess] Success: true, code: 0
+
+Returning SassCache at /home/oren/work/notes/notes-rl/.quarto/quarto-session-temp566b1c7f0ce7bfcf/sass
+
+SassCache.getOrSet(...)
+
+SassCache.getFromHash(hash=9d2de63d2a6730a986f3a7f1fd8df87a, inputHash=ce9cdd91c4c8fabbaaac12f004074984, force=undefined)
+
+  cache miss
+
+  cache miss, setting
+
+SassCache.setFromHash(9d2de63d2a6730a986f3a7f1fd8df87a, ce9cdd91c4c8fabbaaac12f004074984), ...
+
+[execProcess] /opt/quarto/bin/tools/x86_64/dart-sass/sass /home/oren/work/notes/notes-rl/.quarto/quarto-session-temp566b1c7f0ce7bfcf/765f5c72297a2238.scss /home/oren/work/notes/notes-rl/.quarto/quarto-session-temp566b1c7f0ce7bfcf/sass/9d2de63d2a6730a986f3a7f1fd8df87a.css --style compressed --quiet --load-path=/opt/quarto/share/formats/html/bootstrap/dist/scss --load-path=/opt/quarto/share/formats/html/bslib/bslib-scss
+
+[execProcess] Success: true, code: 0
+
+Returning SassCache at /home/oren/work/notes/notes-rl/.quarto/quarto-session-temp566b1c7f0ce7bfcf/sass
+
+SassCache.getOrSet(...)
+
+SassCache.getFromHash(hash=160b5273be6b7100873ba4874d9777d6, inputHash=a7c245a4d13fbf4e2a36678664db0dcf, force=undefined)
+
+  cache hit
+
+  cache hit
+
+Creating SassCache at /home/oren/.cache/quarto/sass
+
+Returning SassCache at /home/oren/.cache/quarto/sass
+
+SassCache.getOrSet(...)
+
+SassCache.getFromHash(hash=606289f1d48f6b05ba16068311e045b6, inputHash=31bdec10b9ea36646994c1d01da8bbc9, force=undefined)
+
+  cache hit
+
+  cache hit
+
+Returning SassCache at /home/oren/.cache/quarto/sass
+
+SassCache.getOrSet(...)
+
+SassCache.getFromHash(hash=23b16f6c884f9c0552082e62eeffc571, inputHash=e870d9070f6ab8b646ba0c46c890b8ba, force=undefined)
+
+  cache hit
+
+  cache hit
+
+[NotebookContext]: Writing all notebooks to /home/oren/work/notes/notes-rl/.quarto/quarto-session-temp566b1c7f0ce7bfcf/c67931437a1ea971.json
+
+-- Searching for R binary --
+
+Looking for 'Rscript' in QUARTO_R: undefined
+
+Looking for 'Rscript' in R_HOME: /usr/lib/R
+
+Found in /usr/lib/R/bin/Rscript
+
+[execProcess] /opt/quarto/bin/tools/x86_64/pandoc +RTS -K512m -RTS --defaults /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/quarto-defaults110970123a8e7ea0.yml /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/quarto-input82532fa159d39aaa.md --metadata-file /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/quarto-metadata4ed3c0f5d777441b.yml --verbose --trace --data-dir /opt/quarto/share/pandoc/datadir
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/template.patched from /tmp/quarto-session
+ef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/template.patched
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/metadata.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/metadata.html
+
+[INFO] Loaded /tmp/quarto-sessionef76991586
+13859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/styles.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/styles.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a
+552b3/d6ae01b58cdd6395/title-block.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/titl
+e-metadata.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-metadata.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cd
+d6395/_title-meta-author.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-author.html
+
+[INFO] Loaded /t
+mp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-auth
+or.html from /tmp/quarto-sessionef769915861385
+9a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-
+meta-author.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395
+/title-block.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/t
+itle-metadata.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-metadata.html
+
+[INFO] Loaded /tmp/quarto-sessio
+nef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-author.html from /tmp/quarto-sessionef7699158613859a/fb5fe9e
+d2a552b3/d6ae01b58cdd6395/_title-meta-author.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title
+-meta-author.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-author.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title
+-block.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-metadata.html from /tmp/quarto-sessionef76991586138
+59a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-metadata.html
+
+[INFO
+] Loaded /tmp/quarto-sessionef769915861
+3859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_t
+itle-meta-author.html from /tmp/quarto-s
+essionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58c
+dd6395/_title-meta-author.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-author.html from /tmp/quarto-ses
+sionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-author.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block.h
+tml from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block.html
+
+[INFO] 
+Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed
+2a552b3/d6ae01b58cdd6395/title-meta
+data.html from /tmp/quarto-sessionef769
+9158613859a/fb5fe9ed2a552b3/d6ae01b58cd
+d6395/title-metadata.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd639
+5/_title-meta-author.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-author.
+html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_
+title-meta-author.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-author.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block.html f
+rom /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58c
+dd6395/title-metadata.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-metadata.htm
+l
+
+[INFO] Loaded /tmp/quarto-sessionef769915861385
+9a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-author.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a5
+52b3/d6ae01b58cdd6395/_title-meta-author.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-auth
+or.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-author.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block.html f
+rom /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699
+158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-metadata.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a5
+52b3/d6ae01b58cdd6395/title-metadata.html
+
+[INFO] Load
+ed /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6a
+e01b58cdd6395/_title-meta-author.html from /
+tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b5
+8cdd6395/_title-meta-author.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-au
+thor.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-author.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block.html from /tmp/quarto-sessionef76991586
+13859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block.html
+
+[INFO] 
+Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-metadata.html from /tmp/quarto-sessione
+f7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/titl
+e-metadata.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe
+9ed2a552b3/d6ae01b58cdd6395/_title-meta-author.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_t
+itle-meta-author.html
+
+[INFO] 
+Loaded /tmp/quarto-sessionef
+76991586138
+59a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-m
+eta-author.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2
+a552b3/d6ae01b58cdd6395/_title-meta-author.html
+
+[INFO] Loaded /tmp/quarto-sessionef76991
+58613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block.html
+
+[INF
+O] Loaded /tmp/quarto-sessionef7699158613859
+a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-met
+adata.html from /tmp/quarto-sessionef769
+9158613859a/fb5fe9ed2a552b3/d6ae01b58cdd
+6395/title-metadata.html
+
+[INFO
+] Loaded /tmp/quarto-sessione
+f7699158613859a/fb5fe9ed2a552b3/d6ae01b5
+8cdd6395/_title-meta-author.html from /t
+mp/quarto-sessionef7699158613859a/fb5f
+e9ed2a552b3/d6ae01b58cdd6395/_title-met
+a-author.html
+
+[INFO] 
+Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395
+/_title-meta-author.html from /tmp/quart
+o-sessionef7699158613859a/fb5fe9ed2a5
+52b3/d6ae01b58cdd6395/_title-meta-aut
+hor.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block
+.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-block.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/ti
+tle-metadata.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/title-metadata.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_t
+itle-meta-author.html from /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-
+meta-author.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-author.html from /tmp/quart
+o-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/_title-meta-author.html
+
+[INFO] Loaded /tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/toc.html from /
+tmp/quarto-sessionef7699158613859a/fb5fe9ed2a552b3/d6ae01b58cdd6395/toc.html
+
+[trace] Parsed [Plain [Str "Oren",Space,Str "Bochman"]] at line 1
+[trace] Parsed [Plain [Str "Oren",Space,Str "Bochman"]] at line 1
+
+[trace] Parsed [Plain [Str "../../references.bib"]] at line 1
+[trace] Parsed [Plain [RawInline (Format "pandoc-native") "Str \"Coursera\" at line 1
+[trace] Parsed [Plain [RawInline (Format "pandoc-native") "Str \"Prediction at line 1
+[trace] Parsed [Plain [RawInline (Format "pandoc-native") "Str \"Reinforcem at line 1
+
+[trace] Parsed [Plain [Str "Monday,",Space,Str "April",Space,Str "1,",Space at line 1
+
+[trace] Parsed [Plain [Str "full"]] at line 1
+
+[trace] Parsed [Plain [Str "Psuedocode",Space,Str "for",Space,Str "the",Spa at line 1
+
+[trace] Parsed [Plain [Str "/opt/quarto/share/extension-subtrees/julia-engi at line 1
+[trace] Parsed [Plain [Str "img/nlp-brain-wordcloud.jpg"]] at line 1
+
+[trace] Parsed [Plain [Str "neural",Space,Str "networks"]] at line 1
+[trace] Parsed [Plain [Str "feature",Space,Str "construction"]] at line 1
+
+[trace] Parsed [Plain [Str "coarse",Space,Str "coding"]] at line 1
+
+[trace] Parsed [Plain [Str "feed-forward",Space,Str "architecture"]] at line 1
+
+[trace] Parsed [Plain [Str "activation",Space,Str "functions"]] at line 1
+
+[trace] Parsed [Plain [Str "deep",Space,Str "networks"]] at line 1
+
+[trace] Parsed [Plain [Str "online",Space,Str "setting"]] at line 1
+
+[trace] Parsed [Plain [Str "offline",Space,Str "setting"]] at line 1
+
+[trace] Parsed [Plain [Str "representation"]] at line 1
+
+[trace] Parsed [Plain [Str "learning",Space,Str "capacity"]] at line 1
+
+[trace] Parsed [Plain [Str "en"]] at line 1
+[trace] Parsed [Plain [Str "2024-04-01"]] at line 1
+
+[trace] Parsed [Plain [Str "Algorithm"]] at line 1
+
+[trace] Parsed [Plain [Str "Algorithm"]] at line 1
+
+[trace] Parsed [Plain [Str "true"]] at line 1
+
+[trace] Parsed [Plain [Str "1.9.31"]] at line 1
+
+[trace] Parsed [Plain [Str "Prediction",Space,Str "and",Space,Str "Control" at line 1
+
+[trace] Parsed [Plain [Str "darkly"]] at line 1
+
+[trace] Parsed [Plain [Str "flatly"]] at line 1
+
+[trace] Parsed [Plain [Str "On-Policy",Space,Str "Prediction",Space,Str "wi at line 1
+
+[trace] Parsed [Plain [Str "/images/banner_black_3.jpg"]] at line 1
+
+[trace] Parsed [Plain [Str "On",Space,Str "this",Space,Str "page"]] at line 1
+
+[trace] Parsed [] at line 3
+
+[trace] Parsed [Header 1 ("introduction",[],[]) [Str "Introduction"]] at line 5
+
+[trace] Parsed [Figure ("",[],[]) (Caption Nothing [Plain [Str "RL",Space,S at line 8
+
+[trace] Parsed [Figure ("",[],[]) (Caption Nothing [Plain [Str "RL",Space,S at line 11
+
+[trace] Parsed [Plain [Str "We",Space,Str "now",Space,Str "start",Space,Str at line 2
+
+[trace] Parsed [Plain [Str "In",Space,Str "terms",Space,Str "of",Space,Str  at line 2
+
+[trace] Parsed [Plain [Str "This",Space,Str "course",Space,Str "is",Space,S at line 2
+
+[trace] Parsed [Plain [Str "The",Space,Str "main",Space,Str "difference",Sp at line 1
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "However",Space,Str "many",Space,Str "of",Space, at line 2
+
+[trace] Parsed [Plain [Str "We",Space,Str "will",Space,Str "use",Space,Str  at line 2
+
+[trace] Parsed [Plain [Str "The",Space,Str "main",Space,Str "differences",S at line 2
+
+[trace] Parsed [Plain [Str "The",Space,Str "use",Space,Str "of",Space,Str " at line 1
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "Weights",Space,Str "lead",Space,Str "to",Space, at line 2
+
+[trace] Parsed [Plain [Str "Minimizing",Space,Str "the",Space,Str "continuo at line 2
+
+[trace] Parsed [Plain [Str "Using",Space,Str "sampling",Space,Str "leads",S at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "Weights",Space,Str "lead",Space,St at line 5
+
+[trace] Parsed [Plain [Str "The",Space,Str "idea",Space,Str "of",Space,Str  at line 2
+
+[trace] Parsed [Plain [Str "The",Space,Str "tradeoff",Space,Str "between",S at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "However",Space,Str "many",Space,St at line 11
+
+[trace] Parsed [Plain [Str "We",Space,Str "will",Space,Str "learn",Space,St at line 2
+
+[trace] Parsed [Plain [Str "We",Space,Str "will",Space,Str "also",Space,Str at line 2
+
+[trace] Parsed [Plain [Str "We",Space,Str "will",Space,Str "see",Space,Str  at line 2
+
+[trace] Parsed [Para [Str "We",Space,Str "will",Space,Str "see",Space,Str " at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "We",Space,Str "now",Space,Str "sta at line 29
+
+[trace] Parsed [Para [Str "I",Space,Str "did",Space,Str "not",Space,Str "fi at line 33
+
+[trace] Parsed [Header 3 ("readings",["unnumbered"],[]) [Str "Readings"]] at line 36
+
+[trace] Parsed [Plain [Str "[x]",Space,Cite [Citation {citationId = "sutton at line 2
+[trace] Parsed [BulletList [[Plain [Str "\9746",Space,Cite [Citation {citat at line 37
+[trace] Parsed [Div ("",["callout-tip"],[("collapse","true")]) [Header 3 (" at line 39
+
+[trace] Parsed [Header 1 ("lesson-1-estimating-value-functions-as-supervise at line 41
+
+[trace] Parsed [Para [Str "In",Space,Str "this",Space,Str "lesson",Space,St at line 43
+
+[trace] Parsed [Header 3 ("learning-objectives",["unnumbered"],[]) [Str "Le at line 46
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "h at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Explain"],Space,Str "the" at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Recognize"],Space,Str "th at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "t at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "w at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "h at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Explain"],Space,Str "why" at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "h at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Recognize"],Space,Str "no at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "\9746",Space,Emph [Str "Understand at line 55
+
+[trace] Parsed [Div ("",["callout-note"],[]) [Header 3 ("learning-objective at line 58
+
+[trace] Parsed [Header 2 ("moving-to-parameterized-policies-video",[],[]) [ at line 60
+
+[trace] Parsed [Para [Str "This",Space,Str "video",Space,Str "covers",Space at line 62
+
+[trace] Parsed [Para [Str "This",Space,Str "video",Space,Str "covers",Space at line 67
+
+[trace] Parsed [Para [Str "The",Space,Str "second",Space,Str "is",Space,Str at line 69
+
+[trace] Parsed [Para [Str "We",Space,Str "see",Space,Str "that",Space,Str " at line 72
+
+[trace] Parsed [Para [Str "This",Space,Str "is",Space,Str "called",Space,St at line 79
+
+[trace] Parsed [Para [Str "Then",Space,Str "we",Space,Str "use",Space,Str " at line 81
+
+[trace] Parsed [Para [Str "More",Space,Str "generally",Space,Str "we",Space at line 83
+
+[trace] Parsed [Para [Str "Adam",Space,Str "shows",Space,Str "that",Space,S at line 89
+
+[trace] Parsed [Para [Str "The",Space,Str "goal",Space,Str "is",Space,Str " at line 92
+
+[trace] Parsed [Header 2 ("sec-l1g1",[],[]) [Str "Understanding",Space,Str  at line 94
+
+[trace] Parsed [Plain [Str "In",Space,Str "the",Space,Str "previous",Space, at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "For",Space,Math InlineMath "V(s)",Space,Str "we at line 2
+
+[trace] Parsed [Plain [Str "For",Space,Math InlineMath "Q(s,a)",Space,Str " at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "For",Space,Math InlineMath "V(s)", at line 4
+
+[trace] Parsed [Plain [Strong [Str "Linear",Space,Str "value",Space,Str "fu at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Para [Str "We",Space,Str "represent",Space,Str "the",Space, at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "We",Space,Str "represent",Space,St at line 4
+
+[trace] Parsed [BulletList [[Plain [Str "In",Space,Str "the",Space,Str "pre at line 100
+[trace] Parsed [Para [Math DisplayMath "\n\\hat{v}(s, \\mathbb{w}) \\approx at line 104
+[trace] Parsed [Plain [Str "where:"]] at line 1
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Math InlineMath "\\hat{v}()",Space,Str "is",Space,St at line 2
+
+[trace] Parsed [Plain [Math InlineMath "\\mathbf{w}",Space,Str "is",Space,S at line 2
+
+[trace] Parsed [BulletList [[Plain [Math InlineMath "\\hat{v}()",Space,Str  at line 4
+
+[trace] Parsed [Para [Str "for",Space,Str "example:"]] at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "where:"],BulletList [[Plain [Math  at line 109
+
+[trace] Parsed [Header 2 ("sec-l1g2",[],[]) [Str "Linear",Space,Str "value" at line 111
+
+[trace] Parsed [Para [Str "We",Space,Str "can",Space,Str "write",Space,Str  at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "We",Space,Str "can",Space,Str "wri at line 113
+
+[trace] Parsed [Para [Math DisplayMath "\n\\hat{v}(s, \\mathbb{w}) \\dot =  at line 117
+
+[trace] Parsed [Plain [Str "where:"]] at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Math InlineMath "X",Space,Str "and",Space,Math Inlin at line 2
+
+[trace] Parsed [Plain [Math InlineMath "w_1",Space,Str "and",Space,Math Inl at line 2
+
+[trace] Parsed [BulletList [[Plain [Math InlineMath "X",Space,Str "and",Spa at line 4
+
+[trace] Parsed [Para [Str "now",Space,Str "learning",Space,Str "becomes",Sp at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "where:"],BulletList [[Plain [Math  at line 122
+
+[trace] Parsed [Para [Str "Finding",Space,Str "the",Space,Str "weights",Spa at line 124
+
+[trace] Parsed [Header 2 ("sec-l1g3",[],[]) [Str "Tabular",Space,Str "case" at line 126
+
+[trace] Parsed [Para [Image ("fig-rl-linear-approximation",["column-margin" at line 134
+
+[trace] Parsed [Plain [Str "here:"]] at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Math InlineMath "\\mathbf{w}",Space,Str "is",Space,S at line 2
+
+[trace] Parsed [Plain [Math InlineMath "\\mathbf{x}(s)",Space,Str "is",Spac at line 2
+
+[trace] Parsed [BulletList [[Plain [Math InlineMath "\\mathbf{w}",Space,Str at line 4
+
+[trace] Parsed [Plain [Str "linear",Space,Str "value",Space,Str "function", at line 2
+
+[trace] Parsed [Plain [Str "limitations",Space,Str "of",Space,Str "linear", at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "the",Space,Str "choice",Space,Str "of",Space,St at line 2
+
+[trace] Parsed [Plain [Str "it",Space,Str "can",Space,Str "only",Space,Str  at line 2
+
+[trace] Parsed [Plain [Str "it",Space,Str "can",Space,Str "only",Space,Str  at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "the",Space,Str "choice",Space,Str  at line 5
+
+[trace] Parsed [Plain [Str "so",Space,Str "how",Space,Str "are",Space,Str " at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Para [Str "we",Space,Str "can",Space,Str "see",Space,Str "f at line 4
+
+[trace] Parsed [BulletList [[Plain [Str "we",Space,Str "can",Space,Str "see at line 5
+
+[trace] Parsed [BulletList [[Plain [Str "here:"],BulletList [[Plain [Math I at line 146
+
+[trace] Parsed [Figure ("fig-rl-failure",[],[]) (Caption Nothing [Plain [St at line 149
+
+[trace] Parsed [Header 2 ("sec-l1g4",[],[]) [Str "There",Space,Str "are",Sp at line 151
+
+[trace] Parsed [Figure ("fig-neural-networks",[],[]) (Caption Nothing [Plai at line 153
+
+[trace] Parsed [Plain [Str "We",Space,Str "can",Space,Str "use",Space,Str " at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "one",Space,Str "hot",Space,Str "encoding"]] at line 2
+
+[trace] Parsed [Plain [Str "linear",Space,Str "functions"]] at line 2
+
+[trace] Parsed [Plain [Str "tile",Space,Str "coding"]] at line 2
+
+[trace] Parsed [Para [Str "neural",Space,Str "networks"]] at line 4
+
+[trace] Parsed [BulletList [[Plain [Str "one",Space,Str "hot",Space,Str "en at line 8
+[trace] Parsed [BulletList [[Plain [Str "We",Space,Str "can",Space,Str "use at line 160
+
+[trace] Parsed [Header 2 ("generalization-and-discrimination-video",[],[])  at line 162
+
+[trace] Parsed [Para [Str "In",Space,Str "this",Space,Str "video",Space,Str at line 165
+
+[trace] Parsed [Plain [Str "Generalization",Space,Str "-",Space,Str "using" at line 2
+
+[trace] Parsed [Para [Str "Discrimination",Space,Str "-",Space,Str "being", at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "Generalization",Space,Str "-",Spac at line 168
+
+[trace] Parsed [Header 2 ("sec-l1g5",[],[]) [Str "Understanding",Space,Str  at line 170
+
+[trace] Parsed [Figure ("fig-generalization-discrimination-chart",[],[]) (C at line 172
+
+[trace] Parsed [Plain [Str "Generalization:"]] at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "the",Space,Str "ability",Space,Str "to",Space,S at line 2
+
+[trace] Parsed [Plain [Str "in",Space,Str "the",Space,Str "case",Space,Str  at line 2
+
+[trace] Parsed [Plain [Str "in",Space,Str "the",Space,Str "tabular",Space,S at line 2
+
+[trace] Parsed [Plain [Str "in",Space,Str "the",Space,Str "case",Space,Str  at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "the",Space,Str "ability",Space,Str at line 6
+
+[trace] Parsed [Para [Str "Discrimination:",Space,Str "the",Space,Str "abil at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "Generalization:"],BulletList [[Pla at line 179
+
+[trace] Parsed [Header 2 ("sec-l1g6",[],[]) [Str "How",Space,Str "generaliz at line 181
+
+[trace] Parsed [Plain [Str "Generalization",Space,Str "can",Space,Str "be", at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "It",Space,Str "allows",Space,Str "us",Space,Str at line 2
+
+[trace] Parsed [Plain [Str "This",Space,Str "includes",Space,Str "states",S at line 2
+
+[trace] Parsed [Para [Str "It",Space,Str "allows",Space,Str "us",Space,Str  at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "It",Space,Str "allows",Space,Str " at line 6
+
+[trace] Parsed [BulletList [[Plain [Str "Generalization",Space,Str "can",Sp at line 186
+
+[trace] Parsed [Header 2 ("sec-l1g7",[],[]) [Str "Why",Space,Str "we",Space at line 188
+
+[trace] Parsed [Plain [Str "We",Space,Str "want",Space,Str "both",Space,Str at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "generalization",Space,Str "allows",Space,Str "u at line 2
+
+[trace] Parsed [Plain [Str "discrimination",Space,Str "allows",Space,Str "u at line 2
+
+[trace] Parsed [Plain [Str "generalization",Space,Str "allows",Space,Str "u at line 2
+
+[trace] Parsed [Para [Str "discrimination",Space,Str "allows",Space,Str "us at line 4
+
+[trace] Parsed [BulletList [[Plain [Str "generalization",Space,Str "allows" at line 8
+
+[trace] Parsed [BulletList [[Plain [Str "We",Space,Str "want",Space,Str "bo at line 195
+
+[trace] Parsed [Para [Str "We",Space,Str "hear",Space,Str "a",Space,Str "lo at line 197
+
+[trace] Parsed [Header 3 ("bias-variance-tradeoff",["unnumbered"],[]) [Str  at line 200
+
+[trace] Parsed [Plain [Str "an",Space,Str "important",Space,Str "result",Sp at line 1
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "Bias",Space,Str "is",Space,Str "the",Space,Str  at line 2
+
+[trace] Parsed [Plain [Str "High",Space,Str "bias",Space,Str "corresponds", at line 2
+
+[trace] Parsed [Plain [Str "Variance",Space,Str "is",Space,Str "the",Space, at line 2
+
+[trace] Parsed [Plain [Str "High",Space,Str "variance",Space,Str "correspon at line 2
+
+[trace] Parsed [Plain [Str "In",Space,Str "general",Space,Str "for",Space,S at line 2
+
+[trace] Parsed [Plain [Str "This",Space,Str "choice",Space,Str "is",Space,S at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "Bias",Space,Str "is",Space,Str "th at line 8
+
+[trace] Parsed [BulletList [[Plain [Str "an",Space,Str "important",Space,St at line 207
+
+[trace] Parsed [Div ("",["callout-tip"],[]) [Header 3 ("bias-variance-trade at line 209
+
+[trace] Parsed [Header 2 ("framing-value-estimation-as-supervised-learning- at line 211
+
+[trace] Parsed [Para [Str "In",Space,Str "this",Space,Str "video",Space,Str at line 213
+
+[trace] Parsed [Para [Str "Things",Space,Str "we",Space,Str "like",Space,St at line 215
+
+[trace] Parsed [Plain [Str "Value",Space,Str "fn",Space,Str "approximation" at line 2
+
+[trace] Parsed [Plain [Str "Action",Space,Str "fn",Space,Str "values",Space at line 2
+
+[trace] Parsed [Para [Str "Policies",Space,Str "(Pi)"]] at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "Value",Space,Str "fn",Space,Str "a at line 219
+
+[trace] Parsed [Para [Str "In",Space,Str "reality",Space,Str "we",Space,Str at line 221
+
+[trace] Parsed [Plain [Str "State",Space,Str "representations",Space,Str "- at line 2
+
+[trace] Parsed [Plain [Str "Models",Space,Str "of",Space,Str "Dynamics",Spa at line 2
+
+[trace] Parsed [Plain [Str "Reward",Space,Str "precesses",Space,Str "(R)",S at line 2
+
+[trace] Parsed [Plain [Str "Generalized",Space,Str "Value",Space,Str "funct at line 2
+
+[trace] Parsed [Para [Str "Options",Space,Str "(Spatial",Space,Str "or",Spa at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "State",Space,Str "representations" at line 227
+
+[trace] Parsed [Para [Str "Even",Space,Str "more",Space,Str "things",Space, at line 229
+
+[trace] Parsed [Plain [Str "Approximate/Compressed",Space,Str "policies",Sp at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "Fully",Space,Str "Pooled",Space,Str "policies", at line 2
+
+[trace] Parsed [Plain [Str "Partial",Space,Str "pooled",Space,Str "policies at line 2
+
+[trace] Parsed [Plain [Str "Unpooled",Space,Str "policies",Space,Str "(all" at line 2
+
+[trace] Parsed [Plain [Str "Priors",Space,Str "for",Space,Str "Policies"]] at line 2
+
+[trace] Parsed [Plain [Str "Hierarchies",Space,Str "of",Space,Str "options" at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "Fully",Space,Str "Pooled",Space,St at line 7
+
+[trace] Parsed [Plain [Str "Beliefs",Space,Str "about",Space,Str "policies" at line 2
+
+[trace] Parsed [Plain [Str "Beliefs",Space,Str "about",Space,Str "other",Sp at line 2
+
+[trace] Parsed [Plain [Str "Beliefs",Space,Str "about",Space,Str "the",Spac at line 2
+
+[trace] Parsed [Plain [Str "Causal",Space,Str "models",Space,Str "of",Space at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "what",Space,Str "can",Space,Str "we",Space,Str  at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "what",Space,Str "can",Space,Str "w at line 3
+
+[trace] Parsed [Plain [Str "Coordination",Space,Str "and",Space,Str "commun at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "What",Space,Str "part",Space,Str "of",Space,Str at line 2
+
+[trace] Parsed [Para [Str "What",Space,Str "part",Space,Str "of",Space,Str  at line 4
+
+[trace] Parsed [BulletList [[Plain [Str "What",Space,Str "part",Space,Str " at line 6
+
+[trace] Parsed [BulletList [[Plain [Str "Approximate/Compressed",Space,Str  at line 245
+
+[trace] Parsed [Header 2 ("sec-l1g8",[],[]) [Str "How",Space,Str "value",Sp at line 247
+[trace] Parsed [Para [Str "The",Space,Str "problem",Space,Str "of",Space,St at line 3
+[trace] Parsed [Plain [Str "In",Space,Str "the",Space,Str "case",Space,Str  at line 1
+[trace] Parsed [] at line 2
+[trace] Parsed [Plain [Str "the",Space,Str "inputs",Space,Str "are",Space,S at line 2
+[trace] Parsed [Plain [Str "the",Space,Str "outputs",Space,Str "are",Space, at line 2
+[trace] Parsed [BulletList [[Plain [Str "the",Space,Str "inputs",Space,Str  at line 4
+[trace] Parsed [Plain [Str "In",Space,Str "the",Space,Str "case",Space,Str  at line 1
+[trace] Parsed [] at line 2
+[trace] Parsed [Plain [Str "the",Space,Str "inputs",Space,Str "are",Space,S at line 2
+[trace] Parsed [Para [Str "the",Space,Str "outputs",Space,Str "are",Space,S at line 3
+[trace] Parsed [BulletList [[Plain [Str "the",Space,Str "inputs",Space,Str  at line 5
+[trace] Parsed [BulletList [[Plain [Str "In",Space,Str "the",Space,Str "cas at line 10
+[trace] Parsed [BulletList [[Para [Str "The",Space,Str "problem",Space,Str  at line 256
+[trace] Parsed [Header 2 ("sec-l1g9",[],[]) [Str "Not",Space,Str "all",Spac at line 258
+[trace] Parsed [Para [Str "In",Space,Str "principle,",Space,Str "any",Space at line 3
+[trace] Parsed [BlockQuote [Para [Str "In",Space,Str "principle,",Space,Str at line 260
+[trace] Parsed [Plain [Str "in",Space,Str "RL",Space,Str "the",Space,Str "a at line 2
+[trace] Parsed [Plain [Str "When",Space,Str "we",Space,Str "want",Space,Str at line 1
+[trace] Parsed [] at line 2
+[trace] Parsed [Plain [Str "non-stationary",Space,Str "data."]] at line 2
+[trace] Parsed [Para [Str "non-stationary",Space,Str "and",Space,Str "corre at line 3
+[trace] Parsed [BulletList [[Plain [Str "non-stationary",Space,Str "data."] at line 5
+[trace] Parsed [BulletList [[Plain [Str "in",Space,Str "RL",Space,Str "the" at line 265
+[trace] Parsed [Para [Str "In",Space,Str "fact",Space,Str "much",Space,Str  at line 267
+[trace] Parsed [Para [Str "In",Space,Str "TD",Space,Str "learning",Space,St at line 269
+[trace] Parsed [Header 1 ("lesson-2-the-objective-for-on-policy-prediction" at line 271
+[trace] Parsed [Header 3 ("learning-objectives-1",["unnumbered"],[]) [Str " at line 274
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "t at line 2
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Explain"],Space,Str "the" at line 2
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "t at line 2
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "t at line 2
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "h at line 2
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Outline"],Space,Str "the" at line 2
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "h at line 2
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Apply"],Space,Strong [Str at line 2
+[trace] Parsed [BulletList [[Plain [Str "\9746",Space,Emph [Str "Understand at line 282
+[trace] Parsed [Div ("",["callout-note"],[]) [Header 3 ("learning-objective at line 284
+[trace] Parsed [Header 2 ("the-value-error-objective-video",[],[]) [Str "Th at line 286
+[trace] Parsed [Para [Str "In",Space,Str "this",Space,Str "video",Space,Str at line 289
+[trace] Parsed [Para [Str "we",Space,Str "get",Space,Str "a",Space,Str "seq at line 291
+[trace] Parsed [Para [Str "It",Space,Str "turns",Space,Str "out",Space,Str  at line 293
+[trace] Parsed [] at line 295
+[trace] Parsed [Header 3 ("your-objective-is-my-loss",[],[]) [Str "Your",Sp at line 297
+[trace] Parsed [Para [Str "In",Space,Str "the",Space,Str "optimization",Spa at line 299
+[trace] Parsed [Para [Str "A",Space,Str "related",Space,Str "point",Space,S at line 301
+[trace] Parsed [Div ("",["callout-tip"],[("collapse","true")]) [Header 3 (" at line 303
+[trace] Parsed [Header 2 ("sec-l2g1",[],[]) [Str "Understanding",Space,Str  at line 305
+[trace] Parsed [Figure ("fig-mse",[],[]) (Caption Nothing [Plain [Str "mean at line 307
+[trace] Parsed [Plain [Str "An",Space,Str "idealized",Space,Str "Scenario:" at line 1
+[trace] Parsed [] at line 2
+[trace] Parsed [Plain [Str "input:",Space,Math InlineMath "\\{(S_1, v_\\pi( at line 2
+[trace] Parsed [Plain [Str "output:",Space,Math InlineMath "\\hat v(s,w) \\ at line 2
+[trace] Parsed [Plain [Str "however",Space,Str "in",Space,Str "reality",Spa at line 1
+[trace] Parsed [] at line 2
+[trace] Parsed [Plain [Str "this",Space,Str "could",Space,Str "be",Space,St at line 2
+[trace] Parsed [Plain [Str "but",Space,Str "initially",Space,Str "we",Space at line 2
+[trace] Parsed [BulletList [[Plain [Str "this",Space,Str "could",Space,Str  at line 4
+
+[trace] Parsed [Plain [Str "What",Space,Str "we",Space,Str "need",Space,Str at line 2
+
+[trace] Parsed [Plain [Str "Also",Space,Str "we",Space,Str "may",Space,Str  at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "input:",Space,Math InlineMath "\\{ at line 9
+
+[trace] Parsed [Para [Str "The",Space,Str "mean-squared",Space,Str "value", at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "An",Space,Str "idealized",Space,St at line 317
+
+[trace] Parsed [Para [Math DisplayMath "\n\\overline{VE} = \\sum_{s\\in S}\ at line 321
+
+[trace] Parsed [Plain [Str "where:"]] at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Math InlineMath "\\overline{VE}",Space,Str "is",Spac at line 2
+
+[trace] Parsed [Plain [Math InlineMath "\\mu(s)",Space,Str "is",Space,Str " at line 2
+
+[trace] Parsed [Plain [Math InlineMath "v_\\pi(s)",Space,Str "is",Space,Str at line 2
+
+[trace] Parsed [Plain [Math InlineMath "\\hat{v}(s, \\mathbf{w})",Space,Str at line 2
+
+[trace] Parsed [BulletList [[Plain [Math InlineMath "\\overline{VE}",Space, at line 6
+
+[trace] Parsed [Para [Str "the",Space,Str "goal",Space,Str "is",Space,Str " at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "where:"],BulletList [[Plain [Math  at line 328
+
+[trace] Parsed [Header 2 ("sec-l2g2",[],[]) [Str "Explaining",Space,Str "th at line 330
+
+[trace] Parsed [Plain [Str "The",Space,Str "state",Space,Str "distribution" at line 2
+
+[trace] Parsed [Plain [Str "This",Space,Str "makes",Space,Str "more",Space, at line 2
+
+[trace] Parsed [Plain [Str "The",Space,Str "state",Space,Str "distribution" at line 2
+
+[trace] Parsed [Plain [Str "The",Space,Str "state",Space,Str "distribution" at line 2
+
+[trace] Parsed [Plain [Str "We",Space,Str "will",Space,Str "later",Space,St at line 2
+
+[trace] Parsed [Plain [Str "In",Space,Str "the",Space,Str "diagram",Space,S at line 2
+
+[trace] Parsed [Para [Str "The",Space,Str "mean",Space,Str "square",Space,S at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "The",Space,Str "state",Space,Str " at line 338
+
+[trace] Parsed [Header 2 ("sec-l2g3",[],[]) [Str "The",Space,Str "idea",Spa at line 340
+
+[trace] Parsed [Plain [Str "Gradient",Space,Str "descent",Space,Str "is",Sp at line 2
+
+[trace] Parsed [Plain [Str "The",Space,Str "gradients",Space,Str "points",S at line 2
+
+[trace] Parsed [Plain [Str "Hence",Space,Str "the",Space,Str "name",Space,S at line 2
+
+[trace] Parsed [Para [Str "The",Space,Str "gradient",Space,Str "of",Space,S at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "Gradient",Space,Str "descent",Spac at line 345
+
+[trace] Parsed [Para [Math DisplayMath "\nw \\dot = \\left [ \\begin{matrix at line 350
+
+[trace] Parsed [Para [Str "for",Space,Str "a",Space,Str "linear",Space,Str  at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "for",Space,Str "a",Space,Str "line at line 352
+
+[trace] Parsed [Para [Math DisplayMath "\n\\hat{v}(s, \\mathbf{w}) = \\sum  at line 358
+
+[trace] Parsed [Para [Str "we",Space,Str "can",Space,Str "write",Space,Str  at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "we",Space,Str "can",Space,Str "wri at line 360
+
+[trace] Parsed [Para [Math DisplayMath "\nw_{t+1} \\dot= w_t - \\alpha \\na at line 364
+
+[trace] Parsed [Plain [Str "Stochastic",Space,Str "gradient",Space,Str "des at line 2
+
+[trace] Parsed [Plain [Str "Stochastic",Space,Str "gradient",Space,Str "des at line 2
+
+[trace] Parsed [Plain [Str "In",Space,Str "practice",Space,Str "we",Space,S at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Strong [Str "Adam"],Space,Str "-",Space,Str "which", at line 2
+
+[trace] Parsed [Plain [Strong [Str "RMSProp"],Space,Str "-",Space,Str "whic at line 2
+
+[trace] Parsed [Plain [Strong [Str "Adagrad"],Space,Str "-",Space,Str "whic at line 2
+
+[trace] Parsed [Para [Strong [Str "SGD"],Space,Str "-",Space,Str "which",Sp at line 3
+
+[trace] Parsed [BulletList [[Plain [Strong [Str "Adam"],Space,Str "-",Space at line 7
+
+[trace] Parsed [BulletList [[Plain [Str "Stochastic",Space,Str "gradient",S at line 372
+
+[trace] Parsed [Header 2 ("sec-l2g7",[],[]) [Str "Gradient",Space,Str "desc at line 374
+
+[trace] Parsed [Figure ("fig-gradient-descent",[],[]) (Caption Nothing [Pla at line 376
+
+[trace] Parsed [Plain [Str "Gradient",Space,Str "descent",Space,Str "conver at line 2
+
+[trace] Parsed [Plain [Str "Gradient",Space,Str "descent",Space,Str "can",S at line 2
+
+[trace] Parsed [Plain [Str "Stochastic",Space,Str "gradient",Space,Str "des at line 2
+
+[trace] Parsed [Para [Str "In",Space,Str "general",Space,Str "the",Space,St at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "Gradient",Space,Str "descent",Spac at line 381
+
+[trace] Parsed [Header 2 ("sec-l2g8",[],[]) [Str "How",Space,Str "to",Space at line 384
+
+[trace] Parsed [Para [Math DisplayMath "\n\\begin{aligned}\n\\nabla J(\\mat at line 393
+
+[trace] Parsed [Header 3 ("stochastic-gradient-descent",[],[]) [Str "Stocha at line 395
+
+[trace] Parsed [Para [Str "If",Space,Str "we",Space,Str "have",Space,Str "a at line 398
+
+[trace] Parsed [Para [Math DisplayMath "\nw_{t+1} \\dot= w_t + \\alpha [v_\ at line 402
+
+[trace] Parsed [Para [Str "This",Space,Str "allows",Space,Str "us",Space,St at line 404
+
+[trace] Parsed [Para [Str "This",Space,Str "updating",Space,Str "approach", at line 3
+
+[trace] Parsed [BlockQuote [Para [Str "This",Space,Str "updating",Space,Str at line 406
+
+[trace] Parsed [Para [Str "we",Space,Str "have",Space,Str "here",Space,Str  at line 408
+
+[trace] Parsed [Para [Str "One",Space,Str "option",Space,Str "is",Space,Str at line 410
+
+[trace] Parsed [Para [Str "Recall",Space,Str "that:"]] at line 412
+
+[trace] Parsed [Para [Math DisplayMath " \nv_\\pi(s) = \\mathbb{E}[G_t \\mi at line 416
+
+[trace] Parsed [Para [Str "so",Space,Str "we",Space,Str "can",Space,Str "su at line 418
+
+[trace] Parsed [Para [Math DisplayMath "\n\\begin{aligned}\nw_{t+1} & \\dot at line 425
+
+[trace] Parsed [Header 2 ("sec-l2g4",[],[]) [Str "The",Space,Str "gradient" at line 427
+
+[trace] Parsed [Para [Str "We",Space,Str "now",Space,Str "have",Space,Str " at line 429
+
+[trace] Parsed [Plain [Str "2024-06-01"]] at line 1
+
+[trace] Parsed [Plain [Str "pseudocode",Space,Str "for",Space,Str "the",Spa at line 1
+
+[trace] Parsed [Plain [Str "Gradient",Space,Str "Monte",Space,Str "Carlo",S at line 1
+
+[trace] Parsed [] at line 435
+
+[trace] Parsed [CodeBlock ("",["pseudocode"],[]) "#| html-indent-size: \"1. at line 466
+
+[trace] Parsed [Div ("alg-first-time-visit-gradient-mc",[],[]) [CodeBlock ( at line 469
+
+[trace] Parsed [Para [Str "The",Space,Str "Gradient",Space,Str "Monte",Spac at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "The",Space,Str "Gradient",Space,St at line 471
+
+[trace] Parsed [Header 2 ("sec-l2g5",[],[]) [Str "How",Space,Str "state",Sp at line 473
+
+[trace] Parsed [Figure ("fig-gradient-mc-state-agg",[],[]) (Caption Nothing at line 475
+
+[trace] Parsed [Plain [Str "State",Space,Str "aggregation"]] at line 2
+
+[trace] Parsed [Plain [Str "is",Space,Str "a",Space,Str "method",Space,Str  at line 2
+
+[trace] Parsed [Plain [Str "can",Space,Str "be",Space,Str "used",Space,Str  at line 2
+
+[trace] Parsed [Plain [Str "can",Space,Str "be",Space,Str "used",Space,Str  at line 2
+
+[trace] Parsed [Plain [Str "the",Space,Str "example",Space,Str "used",Space at line 2
+
+[trace] Parsed [Plain [Str "left",Space,Str "and",Space,Str "right",Space,S at line 2
+
+[trace] Parsed [Plain [Str "if",Space,Str "they",Space,Str "pass",Space,Str at line 2
+
+[trace] Parsed [Plain [Str "state",Space,Str "aggregation",Space,Str "is",S at line 2
+
+[trace] Parsed [Plain [Str "it",Space,Str "is",Space,Str "an",Space,Str "ex at line 2
+
+[trace] Parsed [Plain [Str "there",Space,Str "is",Space,Str "one",Space,Str at line 2
+
+[trace] Parsed [Para [Str "the",Space,Str "weights",Space,Str "are",Space,S at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "State",Space,Str "aggregation"]],[ at line 487
+
+[trace] Parsed [Para [Math DisplayMath "\nw \\leftarrow w + \\alpha [G_t -  at line 491
+
+[trace] Parsed [Para [Str "and",Space,Str "the",Space,Str "gradient",Space, at line 493
+
+[trace] Parsed [Para [Math DisplayMath "\n\\nabla \\hat{v}(S_t, \\mathbf{w} at line 497
+
+[trace] Parsed [Para [Str "which",Space,Str "is",Space,Str "either",Space,S at line 499
+
+[trace] Parsed [Header 2 ("sec-l2g6",[],[]) [Str "Applying",Space,Str "Grad at line 501
+
+[trace] Parsed [Plain [Str "Gradient",Space,Str "Monte",Space,Str "Carlo",S at line 2
+
+[trace] Parsed [Para [Str "The",Space,Str "algorithm",Space,Str "works",Spa at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "Gradient",Space,Str "Monte",Space, at line 504
+
+[trace] Parsed [Header 1 ("lesson-3-the-objective-for-td",[],[]) [Str "Less at line 506
+
+[trace] Parsed [Header 3 ("learning-objectives-2",["unnumbered"],[]) [Str " at line 509
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "t at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Highlight"],Space,Str "th at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Outline"],Space,Str "the" at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "t at line 2
+
+[trace] Parsed [Para [Str "[x]",Space,Emph [Str "Understand"],Space,Str "th at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "\9746",Space,Emph [Str "Understand at line 515
+
+[trace] Parsed [Div ("",["callout-note"],[]) [Header 3 ("learning-objective at line 517
+
+[trace] Parsed [Header 2 ("sec-l3g1",[],[]) [Str "The",Space,Str "TD-update at line 519
+
+[trace] Parsed [Para [Str "recall",Space,Str "the",Space,Str "Monte",Space, at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "recall",Space,Str "the",Space,Str  at line 521
+
+[trace] Parsed [Para [Math DisplayMath "\nw \\leftarrow w + \\alpha [G_t -  at line 526
+
+[trace] Parsed [Plain [Str "we",Space,Str "can",Space,Str "use",Space,Str " at line 2
+
+[trace] Parsed [Plain [Str "we",Space,Str "can",Space,Str "replace",Space,S at line 2
+
+[trace] Parsed [Plain [Str "we",Space,Str "can",Space,Str "call",Space,Str  at line 2
+
+[trace] Parsed [Para [Str "we",Space,Str "can",Space,Str "use",Space,Str "t at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "we",Space,Str "can",Space,Str "use at line 531
+
+[trace] Parsed [Para [Math DisplayMath "\nU_t \\dot=R_{t+1} + \\gamma \\hat at line 535
+
+[trace] Parsed [Plain [Str "but",Space,Str "this",Space,Str "is",Space,Str  at line 2
+
+[trace] Parsed [Plain [Str "there",Space,Str "is",Space,Str "no",Space,Str  at line 2
+
+[trace] Parsed [Plain [Str "however",Space,Str "the",Space,Str "update",Spa at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "it",Space,Str "has",Space,Str "lower",Space,Str at line 2
+
+[trace] Parsed [Plain [Str "it",Space,Str "can",Space,Str "update",Space,St at line 2
+
+[trace] Parsed [Plain [Str "it",Space,Str "can",Space,Str "learn",Space,Str at line 2
+
+[trace] Parsed [Plain [Str "it",Space,Str "can",Space,Str "learn",Space,Str at line 2
+
+[trace] Parsed [Plain [Str "it",Space,Str "can",Space,Str "learn",Space,Str at line 2
+[trace] Parsed [BulletList [[Plain [Str "it",Space,Str "has",Space,Str "low at line 7
+
+[trace] Parsed [Plain [Str "the",Space,Str "TD-update",Space,Str "is",Space at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Para [Str "let\8217s",Space,Str "estimate",Space,Str "the", at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "let\8217s",Space,Str "estimate",Sp at line 4
+
+[trace] Parsed [BulletList [[Plain [Str "but",Space,Str "this",Space,Str "i at line 546
+
+[trace] Parsed [Para [Math DisplayMath "\n\\begin{aligned}\n\\nabla J(\\mat at line 554
+
+[trace] Parsed [Para [Str "but",Space,Str "for",Space,Str "TD",Space,Str "w at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "but",Space,Str "for",Space,Str "TD at line 556
+
+[trace] Parsed [Para [Math DisplayMath "\n\\begin{aligned}\n\\nabla U_t = & at line 564
+
+[trace] Parsed [Para [Str "So",Space,Str "the",Space,Str "TD-update",Space, at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "So",Space,Str "the",Space,Str "TD- at line 566
+
+[trace] Parsed [Header 2 ("sec-l3g2",[],[]) [Str "Advantages",Space,Str "of at line 569
+
+[trace] Parsed [Plain [Str "Adam",Space,Str "point",Space,Str "out",Space,S at line 3
+
+[trace] Parsed [Plain [Str "TD",Space,Str "has",Space,Str "several",Space,S at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "TD",Space,Str "can",Space,Str "update",Space,St at line 2
+
+[trace] Parsed [Plain [Str "TD",Space,Str "can",Space,Str "learn",Space,Str at line 2
+
+[trace] Parsed [Plain [Str "TD",Space,Str "can",Space,Str "learn",Space,Str at line 2
+
+[trace] Parsed [Para [Str "TD",Space,Str "can",Space,Str "learn",Space,Str  at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "TD",Space,Str "can",Space,Str "upd at line 7
+
+[trace] Parsed [BulletList [[Plain [Str "Adam",Space,Str "point",Space,Str  at line 577
+
+[trace] Parsed [Header 2 ("sec-l3g3",[],[]) [Str "The",Space,Str "Semi-grad at line 579
+
+[trace] Parsed [Para [Str "The",Space,Str "Semi-gradient",Space,Str "TD(0)" at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "The",Space,Str "Semi-gradient",Spa at line 581
+
+[trace] Parsed [Plain [Str "2024-06-01"]] at line 1
+
+[trace] Parsed [Plain [Str "Psuedocode",Space,Str "for",Space,Str "the",Spa at line 1
+
+[trace] Parsed [Plain [Str "Semi-gradient",Space,Str "TD(0)"]] at line 1
+
+[trace] Parsed [] at line 588
+
+[trace] Parsed [CodeBlock ("",["pseudocode"],[]) "#| label: alg-td-zero\n#| at line 623
+
+[trace] Parsed [Div ("alg-semi-gradient-td-zero",[],[]) [CodeBlock ("",["ps at line 627
+
+[trace] Parsed [Header 2 ("sec-l3g4",[],[]) [Str "TD",Space,Str "converges" at line 629
+
+[trace] Parsed [Plain [Str "TD",Space,Str "converges",Space,Str "to",Space, at line 2
+
+[trace] Parsed [Para [Str "The",Space,Str "bias",Space,Str "of",Space,Str " at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "TD",Space,Str "converges",Space,St at line 632
+
+[trace] Parsed [Header 2 ("sec-l3g5",[],[]) [Str "TD",Space,Str "converges" at line 634
+
+[trace] Parsed [Figure ("fig-early-learning-mc-vs-td",[],[]) (Caption Nothi at line 636
+
+[trace] Parsed [Plain [Str "We",Space,Str "run",Space,Str "the",Space,Str " at line 2
+
+[trace] Parsed [Plain [Str "We",Space,Str "run",Space,Str "a",Space,Str "se at line 3
+
+[trace] Parsed [Plain [Str "TD",Space,Str "converges",Space,Str "much",Spac at line 2
+
+[trace] Parsed [Plain [Str "Gradient",Space,Str "Monte",Space,Str "Carlo",S at line 2
+
+[trace] Parsed [Plain [Str "TD",Space,Str "can",Space,Str "learn",Space,Str at line 2
+
+[trace] Parsed [Plain [Str "TD",Space,Str "can",Space,Str "learn",Space,Str at line 2
+
+[trace] Parsed [Para [Str "TD",Space,Str "can",Space,Str "learn",Space,Str  at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "We",Space,Str "run",Space,Str "the at line 645
+
+[trace] Parsed [Header 2 ("sec-l3g6",[],[]) [Str "Doina",Space,Str "Precup\ at line 647
+
+[trace] Parsed [Figure ("fig-generelization",[],[]) (Caption Nothing [Plain at line 650
+
+[trace] Parsed [Figure ("fig-options",[],[]) (Caption Nothing [Plain [Str " at line 653
+
+[trace] Parsed [Para [Str "In",Space,Str "this",Space,Str "talk,",Space,Lin at line 656
+
+[trace] Parsed [Plain [Str "Dorina",Space,Str "Precup",Space,Str "is",Space at line 2
+
+[trace] Parsed [Plain [Str "She",Space,Str "is",Space,Str "an",Space,Str "e at line 2
+
+[trace] Parsed [Plain [Str "Her",Space,Str "interests",Space,Str "are",Spac at line 2
+
+[trace] Parsed [Plain [Str "When",Space,Str "I",Space,Str "think",Space,Str at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "Learning",Space,Str "a",Space,Str "parameterize at line 2
+
+[trace] Parsed [Plain [Str "Learning",Space,Str "a",Space,Str "parameterize at line 2
+
+[trace] Parsed [Plain [Str "Being",Space,Str "able",Space,Str "to",Space,St at line 2
+
+[trace] Parsed [Plain [Str "Being",Space,Str "able",Space,Str "to",Space,St at line 2
+
+[trace] Parsed [Plain [Str "Being",Space,Str "able",Space,Str "to",Space,St at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "Learning",Space,Str "a",Space,Str  at line 7
+
+[trace] Parsed [Plain [Str "Dorina",Space,Str "talks",Space,Str "about",Spa at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "Action",Space,Str "duration",Space,Str "are",Sp at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "Action",Space,Str "duration",Space at line 3
+
+[trace] Parsed [Plain [Str "This",Space,Str "might",Space,Str "be",Space,St at line 2
+
+[trace] Parsed [Plain [Str "This",Space,Str "has",Space,Str "been",Space,St at line 2
+
+[trace] Parsed [Plain [Str "She",Space,Str "references",Space,Str "two",Spa at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Cite [Citation {citationId = "Sutton1999BetweenMA",  at line 2
+
+[trace] Parsed [Plain [Cite [Citation {citationId = "precup2000temporal", c at line 2
+
+[trace] Parsed [BulletList [[Plain [Cite [Citation {citationId = "Sutton199 at line 4
+
+[trace] Parsed [Plain [Str "Options",Space,Str "consists",Space,Str "of"]] at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "an",Space,Str "initiation",Space,Str "set",Spac at line 2
+
+[trace] Parsed [Plain [Str "a",Space,Str "policy",Space,Math InlineMath "\\ at line 2
+
+[trace] Parsed [Plain [Str "a",Space,Str "termination",Space,Str "condition at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "an",Space,Str "initiation",Space,S at line 5
+
+[trace] Parsed [Plain [Str "Options",Space,Str "are",Space,Quoted DoubleQuo at line 2
+
+[trace] Parsed [Plain [Str "The",Space,Str "model",Space,Str "will",Space,S at line 2
+
+[trace] Parsed [Plain [Str "IT",Space,Str "needs",Space,Str "expected",Spac at line 2
+
+[trace] Parsed [Plain [Str "A",Space,Str "transition",Space,Str "model",Spa at line 2
+
+[trace] Parsed [Plain [Str "These",Space,Str "models",Space,Str "are",Space at line 2
+
+[trace] Parsed [Plain [Str "Adding",Space,Str "options",Space,Str "to",Spac at line 2
+
+[trace] Parsed [Plain [Str "Precup\8217s",Space,Str "point",Space,Str "out" at line 2
+
+[trace] Parsed [Plain [Str "She",Space,Str "also",Space,Str "points",Space, at line 2
+
+[trace] Parsed [Plain [Str "According",Space,Str "to",Space,Str "her",Space at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Cite [Citation {citationId = "Bacon2016TheOA", citat at line 2
+
+[trace] Parsed [BulletList [[Plain [Cite [Citation {citationId = "Bacon2016 at line 3
+
+[trace] Parsed [Plain [Str "Earlier",Space,Str "work",Space,Str "uses",Spac at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Para [Cite [Citation {citationId = "bradtke1994reinforcemen at line 3
+
+[trace] Parsed [BulletList [[Plain [Cite [Citation {citationId = "bradtke19 at line 4
+
+[trace] Parsed [BulletList [[Plain [Str "Dorina",Space,Str "Precup",Space,S at line 689
+
+[trace] Parsed [Para [Str "the",Space,Str "property",Space,Str "that",Space at line 4
+
+[trace] Parsed [] at line 691
+
+[trace] Parsed [Header 3 ("options-ci",["unnumbered"],[]) [Str "Options",Sp at line 694
+
+[trace] Parsed [Plain [Str "This",Space,Str "type",Space,Str "of",Space,Str at line 2
+
+[trace] Parsed [Plain [Str "options",Space,Str "are",Space,Str "like",Space at line 2
+
+[trace] Parsed [Plain [Str "choosing",Space,Str "between",Space,Str "option at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "This",Space,Str "type",Space,Str " at line 697
+
+[trace] Parsed [Div ("",["callout-tip"],[]) [Header 3 ("options-ci",["unnum at line 701
+
+[trace] Parsed [Header 1 ("lesson-4-linear-td",[],[]) [Str "Lesson",Space,S at line 703
+
+[trace] Parsed [Header 3 ("learning-objectives-3",["unnumbered"],[]) [Str " at line 706
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Derive"],Space,Str "the", at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "t at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "w at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Highlight"],Space,Str "th at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Understand"],Space,Str "t at line 2
+
+[trace] Parsed [Plain [Str "[x]",Space,Emph [Str "Describe"],Space,Str "a", at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "\9746",Space,Emph [Str "Derive"],S at line 712
+
+[trace] Parsed [Div ("",["callout-note"],[]) [Header 3 ("learning-objective at line 714
+
+[trace] Parsed [Header 2 ("sec-l4g1",[],[]) [Str "Deriving",Space,Str "the" at line 716
+
+[trace] Parsed [Plain [Str "Linear",Space,Str "function",Space,Str "is",Spa at line 2
+
+[trace] Parsed [Plain [Str "simple",Space,Str "enough",Space,Str "to",Space at line 2
+
+[trace] Parsed [Plain [Str "powerful",Space,Str "enough",Space,Str "that",S at line 2
+
+[trace] Parsed [Plain [Str "The",Space,Str "TD-update",Space,Str "with",Spa at line 2
+
+[trace] Parsed [Plain [Str "The",Space,Str "TD-update",Space,Str "with",Spa at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "Compute",Space,Str "the",Space,Str "TD-error",S at line 2
+
+[trace] Parsed [Para [Str "Update",Space,Str "the",Space,Str "weights",Spac at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "Compute",Space,Str "the",Space,Str at line 5
+
+[trace] Parsed [BulletList [[Plain [Str "Linear",Space,Str "function",Space at line 724
+
+[trace] Parsed [Para [Str "recall",Space,Str "the",Space,Str "TD-update",Sp at line 726
+
+[trace] Parsed [Para [Math DisplayMath "\n\\delta \\dot= R_{t+1} + \\gamma  at line 731
+
+[trace] Parsed [Para [Str "in",Space,Str "the",Space,Str "linear",Space,Str at line 733
+
+[trace] Parsed [Para [Math DisplayMath "\n\\hat{v}(S_t, \\mathbf{w}) \\dot  at line 738
+
+[trace] Parsed [Para [Math DisplayMath "\nw \\leftarrow w + \\alpha \\delta at line 743
+
+[trace] Parsed [Header 2 ("sec-l4g2",[],[]) [Str "Tabular",Space,Str "TD(0) at line 745
+
+[trace] Parsed [Plain [Str "Tabular",Space,Str "TD(0)",Space,Str "is",Space at line 2
+
+[trace] Parsed [Plain [Str "In",Space,Str "the",Space,Str "tabular",Space,S at line 2
+
+[trace] Parsed [Plain [Str "In",Space,Str "the",Space,Str "linear",Space,St at line 2
+
+[trace] Parsed [Para [Str "Tabular",Space,Str "TD(0)",Space,Str "can",Space at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "Tabular",Space,Str "TD(0)",Space,S at line 750
+
+[trace] Parsed [Header 2 ("sec-l4g4",[],[]) [Str "Advantages",Space,Str "of at line 752
+
+[trace] Parsed [Plain [Str "Linear",Space,Str "value",Space,Str "function", at line 1
+
+[trace] Parsed [] at line 2
+
+[trace] Parsed [Plain [Str "Linear",Space,Str "value",Space,Str "function", at line 2
+
+[trace] Parsed [Plain [Str "Linear",Space,Str "value",Space,Str "function", at line 2
+
+[trace] Parsed [Plain [Str "Linear",Space,Str "value",Space,Str "function", at line 2
+
+[trace] Parsed [Plain [Str "Linear",Space,Str "value",Space,Str "function", at line 2
+
+[trace] Parsed [BulletList [[Plain [Str "Linear",Space,Str "value",Space,St at line 6
+
+[trace] Parsed [Plain [Str "If",Space,Str "we",Space,Str "have",Space,Str " at line 2
+
+[trace] Parsed [Para [Str "Most",Space,Str "of",Space,Str "the",Space,Str " at line 3
+
+[trace] Parsed [BulletList [[Plain [Str "Linear",Space,Str "value",Space,St at line 760
+
+[trace] Parsed [Header 2 ("sec-l4g5",[],[]) [Str "The",Space,Str "fixed",Sp at line 762
+
+[trace] Parsed [Para [Math DisplayMath "\nw_{t+1} \\dot= w_t + \\alpha [R_{ at line 766
+
+[trace] Parsed [Para [Str "recall",Space,Str "that",Space,Str "in",Space,St at line 768
+
+[trace] Parsed [Para [Math DisplayMath "\n\\hat{v}(S_{t+1}, \\mathbf{w}) \\ at line 772
+
+[trace] Parsed [Para [Str "with",Space,Str ":"]] at line 774
+
+[trace] Parsed [Plain [Math InlineMath "\\mathbf{w}",Space,Str "the",Space, at line 2
+
+[trace] Parsed [Para [Math InlineMath "\\mathbf{x}(S_{t+1})",Space,Str "the at line 4
+
+[trace] Parsed [BulletList [[Plain [Math InlineMath "\\mathbf{w}",Space,Str at line 778
+
+[trace] Parsed [Para [Str "using",Space,Str "this",Space,Str "definition",S at line 780
+
+[trace] Parsed [Para [Math DisplayMath "\n\\begin{aligned}\nw_{t+1} & = w_t at line 787
+
+[trace] Parsed [Para [Str "let",Space,Str "us",Space,Str "now",Space,Str "c at line 789
+
+[trace] Parsed [Para [Str "we",Space,Str "can",Space,Str "think",Space,Str  at line 792
+
+[trace] Parsed [Para [Math DisplayMath "\n\\mathbb{E}[\\Delta w_{t}]  = \\a at line 796
+
+[trace] Parsed [Para [Str "where:"]] at line 798
+
+[trace] Parsed [Plain [Math InlineMath "b = \\mathbb{E}[R_{t+1} \\mathbf{x} at line 2
+
+[trace] Parsed [Para [Math InlineMath "A = \\mathbb{E}[\\mathbf{x}_t( \\mat at line 3
+
+[trace] Parsed [BulletList [[Plain [Math InlineMath "b = \\mathbb{E}[R_{t+1 at line 801
+
+[trace] Parsed [Para [Str "note:",Space,Str "this",Space,Str "is",Space,Str at line 803
+
+[trace] Parsed [Para [Str "when",Space,Str "the",Space,Str "weights",Space, at line 805
+
+[trace] Parsed [Para [Math DisplayMath "\n\\begin{aligned}\n\\mathbb{E}[\\D at line 812
+
+[trace] Parsed [Para [Str "more",Space,Str "generally",Space,Math InlineMat at line 814
+
+[trace] Parsed [Para [Math DisplayMath "\n(b-Aw)^T(b-Aw)\n",Space,Str "{#eq at line 819
+
+[trace] Parsed [Para [Str "this",Space,Str "is",Space,Str "related",Space,S at line 821
+
+[trace] Parsed [Header 2 ("sec-l4g6",[],[]) [Str "Theoretical",Space,Str "g at line 823
+
+[trace] Parsed [Para [Math DisplayMath "\n\\overline{VE}(w_{TD}) \\leq \\fr at line 828
+
+[trace] Parsed [Plain [Str "if",Space,Math InlineMath "\\gamma \\approx 1", at line 2
+
+[trace] Parsed [Plain [Str "if",Space,Math InlineMath "\\gamma \\approx 0", at line 2
+
+[trace] Parsed [Para [Str "if",Space,Str "the",Space,Str "features",Space,S at line 4
+
+[trace] Parsed [BulletList [[Plain [Str "if",Space,Math InlineMath "\\gamma at line 833
+
+[trace] Parsed [Header 2 ("sec-l4g7",[],[]) [Str "Semi-gradient",Space,Str  at line 835
+
+[trace] Parsed [Para [Str "In",Space,Str "the",Space,Str "assignment",Space at line 840
+
+[trace] Parsed [Para [Span ("",["hidden","quarto-markdown-envelope-contents at line 847
+
+[trace] Parsed [Div ("quarto-navigation-envelope",["hidden"],[]) [Para [Spa at line 851
+
+[trace] Parsed [Para [Span ("",["hidden","quarto-markdown-envelope-contents at line 858
+
+[trace] Parsed [Div ("quarto-meta-markdown",["hidden"],[]) [Para [Span ("", at line 862
+
+[INFO] Running filter /opt/quart
+o/share/filters/main.lua
+
+[trace] Parsed [] at line 4
+
+[trace] Parsed [] at line 4
+
+[trace] Parsed [] at line 4
+
+[trace] Parsed [] at line 4
+
+[trace] Parsed [] at line 4
+
+[trace] Parsed [] at line 4
+
+[trace] Parsed [] at line 4
+
+[trace] Parsed [] at line 4
+
+[trace] Parsed [] at line 4
+
+[trace] Parsed [] at line 4
+
+[trace] Parsed [Header 2 ("eq-fn-approx",[],[]) []] at line 4
+
+[trace] Parsed [Header 2 ("eq-lin-fn-approx",[],[]) []] at line 4
+
+[trace] Parsed [Header 2 ("eq-msve",[],[]) []] at line 4
+
+[trace] Parsed [Header 2 ("eq-gradient-def",[],[]) []] at line 4
+
+[trace] Parsed [Header 2 ("eq-grad-lin-fn",[],[]) []] at line 4
+
+[trace] Parsed [Header 2 ("eq-grad-descent",[],[]) []] at line 4
+
+[trace] Parsed [Header 2 ("eq-sgd",[],[]) []] at line 4
+
+[trace] Parsed [Header 2 ("eq-gradient-mc-update",[],[]) []] at line 4
+
+[trace] Parsed [Header 2 ("eq-td-target",[],[]) []] at line 4
+
+[trace] Parsed [Header 2 ("eq-td-grad",[],[]) []] at line 4
+
+[trace] Parsed [Header 2 ("eq-td-grad-ut",[],[]) []] at line 4
+
+FATAL (/opt/quarto/share/filters/main.lua:14569) An error occurred:
+This is an internal error. Please file a bug report at https://github.com/quarto-dev/quarto-cli/
+
+Error running filter /opt/quarto/share/filters/main.lua:
+...uarto/share/pandoc/datadir/
+../../filters/modules/jog.lua:34: FATAL QUARTO ERROR
+stack traceback:
+	/opt/quarto/share/filters/main.lua:2622: in function 'fatal'
+	/opt/quarto/share/filters/main.lua:2202: in function 'fail'
+	/opt/quarto/share/filters/main.lua:2207: in function
+ 'internal_e
+rro
+r
+'
+
+	/opt/
+quarto/sh
+are/filters/main.l
+ua:14569: in function </o
+pt/quarto/share/filters/
+main.lua:14565>
+	(...tail c
+alls...)
+	...uarto/share/pa
+ndoc/datadir/../../filters
+/modules/jog.lua:34: in upva
+lue 'run_filter_function'
+	...
+uarto/share/pandoc/datadir/..
+/../filters/modules/jog.lua:
+223: in function <...uarto/sha
+re/pandoc/datadir/../../filte
+rs/modules/jog.
+lu
+a:202>
+	(.
+..ta
+il calls...)
+	[C]: in fun
+ction 'pandoc.List.map'
+	...u
+arto/share/pandoc/datadir/..
+/../filters/modules/jog.lua:
+125: in upvalue 'recurse'
+	
+...uarto/share/pandoc/data
+dir/../../filters/modules/j
+og.lua:222: in local 'jogger'
+
+	...uarto/share/pandoc/dat
+adir/../../filters/modules/jo
+g.lua:98: in upvalue 'recur
+se'
+	...	(skipping 8 levels
+)
+	...uarto/share/pandoc/data
+dir/../../filters/modules/j
+og.lua:98: in upvalue 'recurs
+e'
+	...uarto/share/pandoc/datadir/
+../../filters/modules/jog.lua
+:222: in function <...uarto/
+share/pandoc/datadir/../..
+/filters/modules/jog.lua:202
+>
+	(...tail calls...)
+	[C]: 
+in function 'pandoc.List.map'
+	
+...uarto/share/pandoc/datadir/
+../../filters/modules/jog.lua:125: in upvalue 'recurse'
+	...uarto/share/pandoc/datadir/../../filters/modules/jog.lua:222: in local 'jogger'
+	...uarto/share/pandoc/datadir/../../filters/modules/jog.lua:171: in upvalue 'recurse'
+	...uarto/share/pandoc/datadir/../../filters/modules/jog.lua:222: in function <...uarto/share/pandoc/datadir/../../filters/modules/jog.lua:202>
+	(...tail calls...)
+	/opt/quarto/share/filters/main.lua:574: in function </opt/quarto/share/filters/main.lua:552>
+	(...tail calls...)
+	/opt/quarto/share/filters/main.lua:1317: in local 'callback'
+	/opt/quarto/share/filters/main.lua:1335: in upvalue 'run_emulated_filter_chain'
+	/opt/quarto/share/filters/main.lua:1371: in function </opt/quarto/share/filters/main.lua:1368>
+
+[execProcess] Success: false, code: 83
+
+(WARN) Error encountered when rendering files
+
+[NotebookContext]: Starting Cleanup
+
+(ERROR) Error
+    at renderFiles (file:///opt/quarto/bin/quarto.js:136513:49)
+    at eventLoopTick (ext:core/01_core.js:179:7)
+    at async renderProject (file:///opt/quarto/bin/quarto.js:137056:23)
+    at async _Command.actionHandler (file:///opt/quarto/bin/quarto.js:162834:34)
+    at async _Command.execute (file:///opt/quarto/bin/quarto.js:102009:7)
+    at async _Command.parseCommand (file:///opt/quarto/bin/quarto.js:101886:14)
+    at async quarto4 (file:///opt/quarto/bin/quarto.js:187495:5)
+    at async file:///opt/quarto/bin/quarto.js:187523:5
+    at async file:///opt/quarto/bin/quarto.js:187378:14
+    at async mainRunner (file:///opt/quarto/bin/quarto.js:187380:5)
+    at async file:///opt/quarto/bin/quarto.js:187516:3
+
+SassCache cleanup executing for /home/oren/.cache/quarto/sass
+
+SassCache cleanup executing for /home/oren/work/notes/notes-rl/.quarto/quarto-session-temp566b1c7f0ce7bfcf/sass
+

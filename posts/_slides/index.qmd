@@ -12,7 +12,6 @@ format:
       buttons: false
     preview-links: auto
     logo: images/quarto.png
-    css: styles.css
     footer: '[https:/quarto.org](https://meta.quarto.org)'
 resources:
   - demo.pdf

@@ -19,28 +19,30 @@ about:
 
 This are my notes on Reinforcement learning.
 I got started with David Silver's lectures on YouTube 
-Then took the four course specilization By Martha nad Adam White from Alberta Coursera. That coverd most of Sutton and Barto's book.
+Then took the four course specialization By Martha nad Adam White from Alberta Coursera. 
+That covered most of Sutton and Barto's book.
 This is a nice course and I got a perfect grade. But I can't put up the code or quizzes online
 due to the honor code.
-- The Deep Reinforcement Learning course by Hugging Face does not have this restrictions. So I'm now working my way theough this.
+- The Deep Reinforcement Learning course by Hugging Face does not have this restrictions. So I'm now working my way through this.
 
-- [Richard S. Sutton](http://incompleteideas.net/) has some suggestions like keeping a research notebook. I kept having questions during study and I found that by keeping a notebook I could get some of them out of my head. I could even solve some or make progress.
-- The specilization also featured a large number of resaerchers in the field.
-- I stated looking them up and seeing if they had interesting talks online.
+- [Richard S. Sutton](http://incompleteideas.net/) has some suggestions like keeping a research notebook. 
+  I kept having questions during study and I found that by keeping a notebook I could get some of them out of my head. I could even solve some or make progress.
+- The specialization also featured a large number of researchers in the field.
+- I started looking them up and seeing if they had interesting talks online.
 
 I started doing that too. The next step is to consolidate the many
 notes into this blog.
 
-they answers to questions no botherd to ask
+they answers to questions no bother to ask
 
 
 This is a space to share my insights about my interests.
 
-- Open.AI has a RL blog. They list a bunch of papers on deep RL. I plan to read them and write about them here time premmiting.
-- However there is lots of intersting material I found online
+- Open.AI has a RL blog. They list a bunch of papers on deep RL. I plan to read them and write about them here time permitting.
+- However there is lots of interesting material I found online
 
 
-- Talk on double robust tomphson sampling
+- Talk on double robust Thompson sampling
 
 - [AdKDD 2022 Dynamic collaborative filtering Thompson Sampling for cross-domain ad recommendation](https://www.youtube.com/watch?v=DAL7cpE3K7E)
 

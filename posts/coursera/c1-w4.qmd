@@ -46,7 +46,8 @@ What is surprising at first is that even starting with a uniform random policy w
 - [x] [RL Book§4.1-5,6-7, pp73-88](http://incompleteideas.net/book/RLbook2020.pdf#page=72) 
 :::
 
-::: callout-note
+
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
  
 - [x] Understand the distinction between **policy evaluation** and **control**. [\#](#sec-policy-evaluation-control)
@@ -121,34 +122,7 @@ The algorithm is guaranteed to converge to the value function for the policy $\p
 
 Here is the concise statement of the algorithm with just one array in pseudo code:
 
-``` pseudocode
-#| label: alg-Iterative-Policy-Evaluation
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-
-\begin{algorithm}
-\caption{Iterative Policy Evaluation, for estimating $V \approx v_{\pi}$}
-\begin{algorithmic}[1]
-\State Input: $\pi$, the policy to be evaluated, default to uniform random policy
-\State Algorithm parameter: a small threshold $\theta > 0$ determining accuracy of estimation
-\State $V(s) \leftarrow \leftarrow \vec 0 \forall s \in S$
-\REPEAT
-  \STATE $\Delta \leftarrow 0$
-  \FORALL { $s\in S$}
-    \STATE $v \leftarrow  V(s)$
-    \STATE $V(s) \leftarrow \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]\quad$ \comment{ Bellman equation}
-    \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$
-  \ENDFOR
-\UNTIL{$\Delta < \theta$}
-\State Output: $V \approx v_{\pi}$
-\end{algorithmic}
-\end{algorithm}
-```
+{{< include _c1-w4_alg-iterative-policy-evaluation.qmd >}}
 
 note: the algorithm makes a couple of assumptions that are omitted in the pseudo code.
 
@@ -161,7 +135,7 @@ The iterative policy evaluation algorithm can be applied to compute the value fu
 
 # Lesson 2: Policy Iteration (Control) 
 
-::: callout-note
+::: {.callout-note}
 
 ### Learning Objectives
 
@@ -234,101 +208,25 @@ $$ {#eq-action-value-function}
 
 this is the the key step the policy improvement step of the policy iteration algorithm.
 
-``` pseudocode
-#| label: alg-Policy-Iteration
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
 
-\begin{algorithm}
-\caption{Policy Iteration, for estimating $\pi \approx \pi_{\star}$}
-\begin{algorithmic}[1]
-\State Input: $\pi$, the policy to be evaluated
-\State Algorithm parameter: a small threshold $\theta > 0$ determining accuracy of estimation
-\State Initialize $V(s) \in \mathbb{R}, \quad \pi(s) \in A(s)\ \forall s\in S,\quad V(terminal)= 0$
-\State 
-\State {Policy Evaluation}
-\REPEAT
-  \STATE $\Delta \leftarrow 0$
-  \FORALL { $s\in S$}
-    \STATE $v \leftarrow  V(s)$
-    \STATE $V(s) \leftarrow \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$
-    \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$
-  \ENDFOR
-\UNTIL{$\Delta < \theta$}
 
-\State 
-\State {Policy Improvement}
-\ForAll { $s\in S$}
-  \State old-action $\leftarrow \pi(s)$
-  \State $\pi(s) \leftarrow \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]\quad$ \comment{ greedyfication}
-  \If {old-action $\neq \pi(s)$}
-      \State policy-stable $\leftarrow$ false
-    \EndIf
-\EndFor
-\If {policy-stable} 
-  \Return  {$V \approx v_\star,\ \pi \approx \pi_\star$}
-\Else
-  \State go to Policy Evaluation
-\EndIf
-\end{algorithmic}
-\end{algorithm}
-```
 
 ## Value Iteration {#sec-l2g5}
 
 Value iteration is an important example of Generalized Policy Iteration. 
-It is an iterative algorithm that computes the optimal value function and the 
-optimal policy for a given MDP but it does not directly referrence a particular
-policy. 
 
-In value iteration, the algorithm starts with an initial estimate of the value function 
-and iteratively runs a single step of greedy polict evaluation per step, using
-the greedy value to update the state-value function.
+It is an iterative algorithm that computes the optimal value function and the  optimal policy for a given MDP but it does not directly reference a particular policy. 
 
-updates the value function until it converges to the optimal value function.
+In value iteration, the algorithm starts with an initial estimate of the value function  and iteratively runs a single step of greedy policy evaluation per step, using the greedy value to update the state-value function.
 
+Updates the value function until it converges to the optimal value function.
 
+{{< include _c1-w4_alg-policy-iteration.qmd >}}
 
-``` pseudocode
-#| label: alg-Value-Iteration
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-
-\begin{algorithm}
-\caption{Value Iteration, for estimating $\pi \approx \pi_{\star}$}
-\begin{algorithmic}[1]
-\State Input: $\pi$, the policy to be evaluated
-\State Algorithm parameter: a small threshold $\theta > 0$ determining accuracy of estimation
-\State Initialize $V(s) \leftarrow \vec{0} \forall s \in \mathbb{R}$
-
-\REPEAT
-  \STATE $\Delta \leftarrow 0$
-  \FORALL { $s\in S$}
-    \STATE $v \leftarrow  V(s)$
-    \STATE $V(s) \leftarrow max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$
-    \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$
-  \ENDFOR
-\UNTIL{$\Delta < \theta$}
-\State Output: $V \approx v_{\pi}$ such that
-\State $\pi(s) = \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$
-
-\end{algorithmic}
-\end{algorithm}
-```
 
 ### The Dance of Policy and Value {#sec-l2g4}
 
-![Dance of Policy and Value](img/rl-dance.png){.column-margin}
+![Dance of Policy and Value](img/rl-dance.png){.column-margin group="slides"}
 
 The policy iteration algorithm is called the dance of policy and value because
 it alternates between policy evaluation and policy improvement. The policy
@@ -341,7 +239,7 @@ value iteration, which alternates between policy evaluation and policy.
 
 # Lesson 3: Generalized Policy Iteration
 
-::: callout-note
+::: {.callout-note}
 
 ### Learning Objectives
 
@@ -355,46 +253,57 @@ value iteration, which alternates between policy evaluation and policy.
 
 ### Generalized Policy Iteration {#sec-l3g1}
 
-Generalized policy iteration is a framework for solving reinforcement learning
-problems that combines policy evaluation and policy improvement in a single
-loop. The idea is to alternate between evaluating the policy and improving the
-policy until the policy converges to the optimal policy.
+Generalized policy iteration is a framework for solving reinforcement learning problems that combines policy evaluation and policy improvement in a single loop. 
+The idea is to alternate between evaluating the policy and improving the policy until the policy converges to the optimal policy.
 
 ### Value Iteration {#sec-l3g2}
 
-Value iteration is an important example of generalized policy iteration. It is
-an iterative algorithm that computes the optimal value function and the optimal
-policy for a given MDP. The algorithm starts with an initial estimate of the
-value function and iteratively updates the value function until it converges to
-the optimal value function.
+Value iteration is an important example of generalized policy iteration. It is an iterative algorithm that computes the optimal value function and the optimal policy for a given MDP. 
+The algorithm starts with an initial estimate of the value function and iteratively updates the value function until it converges to the optimal value function.
 
 ### Synchronous and Asynchronous Dynamic Programming {#sec-l3g3}
 
 Synchronous dynamic programming methods update all states in the MDP in each
-iteration, while asynchronous dynamic programming methods update only a subset
-of states in each iteration. Synchronous dynamic programming methods are
-typically slower than asynchronous dynamic programming methods, but they are
-guaranteed to converge to the optimal policy.
+iteration, while asynchronous dynamic programming methods update only a subset of states in each iteration. 
+Synchronous dynamic programming methods are typically slower than asynchronous dynamic programming methods, but they are guaranteed to converge to the optimal policy.
 
 ### Brute Force Search {#sec-l3g4}
 
 Brute force search is an alternative method for searching for an optimal policy.
 It involves exploring all possible policies and selecting the policy that
-maximizes the expected return. Brute force search is computationally expensive
-and is not practical for large MDPs.
+maximizes the expected return. 
+Brute force search is computationally expensive and is not practical for large MDPs.
 
 ### Monte Carlo {#sec-l3g5}
 
-Monte Carlo is an alternative method for learning a value function. It involves
-estimating the value function by sampling returns from the environment. Monte
-Carlo is computationally expensive and is not practical for large MDPs.
+Monte Carlo is an alternative method for learning a value function. It involves estimating the value function by sampling returns from the environment. 
+Monte Carlo is computationally expensive and is not practical for large MDPs.
+
+::: {.callout-tip}
+## Variational Inference for Large MDPs
+
+**Update** Since learning this lecture I studied Variational Inference which is a modern method for approximating complex probability distributions and allows us to scale up MCMC using optimization with a mean field assumption AKA MFVI. Revisiting this note I wonder if this and related methods have been used to overcome the above mentioned limitation of classic MCMC for finding optimal policies in large MDPs.
+
+1. VAI (Variational Bayeian Inference) that supports scaling up MCMC using optimization with a mean field assumption.
+  -  c.f. Variational Policy Iteration (VPI) that can be used to find the optimal policy in large MDPs. 
+  - [@chow2020variational] Variational Model-based Policy Optimization (VMBPO)
+  - [@meyer2024warm] Warm-Start Variational Quantum Policy Iteration (WS-VarQPI)
+  - [@levine2013variational] Variational Policy Search via Trajectory Optimization
+  - [@salkuyeh2016interpolated] Variational Value Iteration (VVI)
+1. Further speedups by preprocessing using coresets to reduce  N for large tabular settings
+1. further flexibility by using a coreset tree
+1. using the online variants ie.e SVI that might be more inline with RL.
+1. using a Posterior Corrections e.g. Linear Response Variational Bayes (LRVB) to overcome the issues for VAE underestimating variance or missing mean.
+
+
+
+
+:::
 
 ### Advantage of Dynamic Programming {#sec-l3g6}
 
-Dynamic programming and bootstrapping are more efficient than brute force search
-and Monte Carlo for finding the optimal policy. Dynamic programming and
-bootstrapping exploit the structure of the MDP to update the value function
-iteratively, while brute force search and Monte Carlo do not.
+Dynamic programming and bootstrapping are more efficient than brute force search and Monte Carlo for finding the optimal policy. 
+Dynamic programming and bootstrapping exploit the structure of the MDP to update the value function iteratively, while brute force search and Monte Carlo do not.
 
 ### Warren Powell: Approximate dynamic programming for fleet management
 

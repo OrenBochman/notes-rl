@@ -1,0 +1,30 @@
+
+::: {#alg-simple-epsilon-greedy-bandit}
+### Simple Ɛ-Greedy bandit
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+\caption{Simple Bandit($\epsilon$)}
+\begin{algorithmic}[1]
+\State $Q(a) \leftarrow 0\ \forall a\ $ \Comment{ $\textcolor{blue}{initialize\ action\ values}$}
+\State $N(a) \leftarrow 0\ \forall a\ $ \Comment{ $\textcolor{blue}{initialize\ counter\ for\ actions\ taken}$}
+\For{$t = 1, 2, \ldots \infty$}
+  \State  $A_t \leftarrow \begin{cases}
+    \arg\max_a Q(a) & \text{with probability } 1 - \epsilon \\
+    \text{a random action} & \text{with probability } \epsilon
+    \end{cases}$
+  \State $R_t \leftarrow \text{Bandit}(A_t)$
+  \State $N(A_t) \leftarrow N(A_t) + 1$
+  \State $Q(A_t) \leftarrow Q(A_t) + \frac{1}{N(A_t)}[R_t - Q(A_t)]$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+:::

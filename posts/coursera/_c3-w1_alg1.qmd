@@ -1,0 +1,40 @@
+--- 
+title: "Gradient Monte Carlo and Linear TD"
+date: 2024-06-01
+description: "pseudocode for the gradient Monte Carlo and linear TD algorithms for estimating value functions with function approximation" 
+---
+
+::: {#alg-first-time-visit-gradient-mc}
+### First-visit gradient Monte Carlo for estimating $v_\pi$
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+\caption{MC prediction first visit for estimating $V \approx v_\pi$ }
+\begin{algorithmic}[1]
+\State Input
+  \State $\qquad \pi$ to be evaluated
+ \State  $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$
+\State Algorithm parameters:
+  \State $\qquad \alpha \in (0, 1]$ step size
+\State Initialize:
+  \State $\qquad \mathbf{w} \leftarrow x \in \mathbb{R^d} \text{ arbiterly}$ (e.g. w=0)
+\For {each episode:}
+  \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$
+  \State $G \leftarrow 0$
+  \For {each step of episode, $t = 0, 1, \ldots, T-1$:}
+      \State $\mathbf{w} \leftarrow w_t + \alpha [G_t - \hat{v}(S_t , \mathbf{w_1})] \nabla \hat{v}(S_t , \mathbf{w})$
+  \EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+
+
+:::

@@ -1,0 +1,36 @@
+
+::: {#alg-mc-es-control}
+### Monte Carlo Exploring Start 
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+\caption{MonteCarloExploringStartsGPI()}
+\begin{algorithmic}[1]
+\State Initialize:
+  \State $\qquad \pi(s) \in A(s) \quad \forall s\in \mathcal{S}$
+  \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \quad \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$
+  \State $\qquad Returns(s,a) \leftarrow \text {an empty list} \quad \forall s \in \mathcal{S}, a \in \mathcal{A}(s)$
+\For {each episode:}
+  \State Choose $S_0 \in \mathcal{S}  and A_0 \in \mathcal{A}(S_0) \text{randomly :} p(s,a)>0 \forall s,a$ \comment{$\textcolor{blue}{Exploring Starts}$}
+  \State Generate an episode e from  $S_0, A_0$ by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$
+  \State $G \leftarrow 0$
+  \For {each step of $e, t \in T-1, T-2,..., 0:}  \comment{$\textcolor{blue}{Backward\ pass}$}
+    \State $G \leftarrow \gamma G + R_{t+1}$
+    \IF {$S_t , A_t \not \in S_0 , A_0 , S_1 , A_1 \ldots , S_{t-1} , A_{t-1}$}
+      \State Append $G$ to $Returns(S_t,A_t)$
+      \State $Q(S_t,A_t) \leftarrow average(Returns(S_t,A_t))\quad$ \comment{$\textcolor{blue}{\text{MC action-value estimate}}$}
+      \State $\pi(S_t) \leftarrow \arg\max_a Q(S_t,a)\quad$ \comment{$\textcolor{blue}{\text{greedy policy improvement}}$}
+    \EndIf
+  \EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+:::

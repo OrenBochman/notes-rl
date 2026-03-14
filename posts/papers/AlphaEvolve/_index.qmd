@@ -1,0 +1,4 @@
+---
+title: "AlphaEvolve: A Generalized Framework for Evolutionary Algorithms"
+date: "2026-03-14"
+---

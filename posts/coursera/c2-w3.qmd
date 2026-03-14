@@ -25,7 +25,7 @@ title-block-banner: /images/banner_black_3.jpg
 
 ## Lesson 1: TD for Control
 
-::: callout-info
+::: {.callout-info}
 ### Lesson Learning Goals {.unnumbered}
 
 -   [x] Explain how generalized policy iteration can be used with TD to find improved policies [\#](#sec-l1g1)
@@ -36,10 +36,10 @@ title-block-banner: /images/banner_black_3.jpg
 
 ## Generalized Policy Iteration with TD {#sec-l1g1}
 
-we would like now to combine TD with a planning algorithm to use TD for control. We
+we would like now to combine TD with a planning algorithm to use TD for control. 
 This will be a GPI algorithm.
 
-::: callout-info
+::: {.callout-info}
 ### Generalized Policy Iteration - Recap {.unnumbered}
 
 lets recap the Generalized Policy Iteration (GPI) algorithm:
@@ -61,22 +61,31 @@ lets recap the Generalized Policy Iteration (GPI) algorithm:
       - improvement pi after the single time step.
 :::
 
-Recall how in the first course we saw DP methods for solving MDPs using the four part dynamic function and its variants. We used the Bellman equation to write down a system of linear equations for the value function and solve them exactly. We then used the value function to find the optimal policy. So in DP we don't need to interact with the environment or to learn. We can compute the value function and the optimal policy exactly.
+Recall how in the first course we saw DP methods for solving MDPs using the four part dynamic function and its variants. 
+We used the Bellman equation to write down a system of linear equations for the value function and solve them exactly. 
+We then used the value function to find the optimal policy. 
+So in DP we don't need to interact with the environment or to learn. 
+We can compute the value function and the optimal policy exactly.
 
-In these course we relaxed the assumption of knowing the transition dynamics or the expected returns. This creates a new challange of learning V or Q from experience.
+In these course we relaxed the assumption of knowing the transition dynamics or the expected returns. 
+This creates a new challenge of learning $V$ or $Q$ from experience.
 
 In the first lesson we saw how MC methods can help us learn the value function but with the caveat that we need to wait until the end of the episode to update the value function.
 
-However we have now seen how the TD(0) algorithm uses recursive nature of the Bellman equation for the value function to make approximate updates to the value function. This allows us to learn Values of states directly from experience.
+However we have now seen how the *TD(0)* algorithm uses recursive nature of the Bellman equation for the value function to make approximate updates to the value function. This allows us to learn Values of states directly from experience.
 
-Once we are able to approximate the value function, we can use it to create new generalized policy iteration algorithms. This part of the GPI remains the same, we still evaluate the policy and improve it. But now we can do this in an online fashion, updating the value function after each step. 
+Once we are able to approximate the value function, we can use it to create new generalized policy iteration algorithms. 
+This part of the GPI remains the same, we still evaluate the policy and improve it. 
+But now we can do this in an online fashion, updating the value function after each step. 
 
 In SARSA we are making updates to the policy after a single step - this may lead to much faster convergence to the optimal policy.
 It also allows us to improve our plans during an episode or in a continuing task.
 
-The advantage of TD methods is that they can be used in continuing tasks, where the agent interacts with the environment indefinitely. This is because the value function is updated after each step, and the agent can continue to learn and improve its policy as it interacts with the environment. But this advantage is better understood by considering the episodic tasks, where the agent can learn during an episode that consequences of its actions are sub optimal. This allows TD(0) based GPI to make more frequent updates to the policy within one episode.
+The advantage of TD methods is that they can be used in continuing tasks, where the agent interacts with the environment indefinitely. 
+This is because the value function is updated after each step, and the agent can continue to learn and improve its policy as it interacts with the environment. But this advantage is better understood by considering the episodic tasks, where the agent can learn during an episode that consequences of its actions are sub optimal. 
+This allows *TD(0)* based GPI to make more frequent updates to the policy within one episode.
 
-## Sarsa: On-policy TD Control {#sec-l1g2}
+## SARSA: On-policy TD Control {#sec-l1g2}
 
 Next we consider how we can derive and use a similar approximate updating of the action-value function to learn the action-value function directly from experience.
 
@@ -84,54 +93,21 @@ lets recap the Bellman equation for the action-value function:
 
 $$
 \begin{aligned}
-q_\pi(s,a) & \dot = \mathbb{E}_\pi[G_t | S_t = s, A_t = a] \qquad \newline
+q_\pi(s,a) & \dot = \mathbb{E}_\pi[G_t | S_t = s, A_t = a] \qquad \\ 
 & = \sum_{s', r} p(s', r | s, a) [r + \gamma \sum_{a'}\pi(a' \mid s') q_\pi(s', a')] \qquad
 \end{aligned}
 $$ {#eq-belman-action-value}
 
-We can now use the same idea of bootstrapping to update the action-value function after each step. This is basis of Sarsa algorithm.
+We can now use the same idea of bootstrapping to update the action-value function after each step. 
+This is basis of SARSA algorithm.
 
 $$
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha [R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t)]
 $$ {#eq-sarsa-update}
 
-::: callout-note
-### SARSA {#alg-sarsa}
+{{< include _c2-w3_alg-sarsa.qmd  >}}
 
-``` pseudocode
-#| label: alg-sarsa
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-
-\begin{algorithm}
-\caption{SARSA($\alpha,\epsilon$)}
-\begin{algorithmic}[1]
-\State Initialize:
-  \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$
-  
-\For {each episode e:}
-  \State Initialize $S$
-  \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy)
-  \For {each step of e}
-    \State Take action A, observe R, S'
-    \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy)
-    \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma Q(S',A') - Q(S, A)]$
-    \State $S \leftarrow S'$; $A \leftarrow A'$
-  \EndFor
-  \State until $S$ is terminal
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-```
-:::
-
-
-The SARSA algorithm is due to Rummery, Gavin Adrian, and Mahesan Niranjan. The name Sarsa is due to Rich Sutton and comes from the fact that the algorithm uses the tuple $(S_t, A_t, R_{t+1}, S_{t+1}, A_{t+1})$ to update the action-value function. [@Rummery1994OnlineQU]
+The SARSA algorithm c.f. [@Rummery1994OnlineQU] . The name Sarsa is due to Rich Sutton and comes from the fact that the algorithm uses the tuple $(S_t, A_t, R_{t+1}, S_{t+1}, A_{t+1})$ to update the action-value function. 
 
 SARSA is a sample-based algorithm to solve the Bellman equation for action-values.
 - It picks an action based on the current policy and then
@@ -146,12 +122,13 @@ In this grid world isn't a good fit for MC methods as most policies never termin
 This is because the agent is pushed up by the wind and has to learn to navigate to the goal.
 Anyhow if the episode never terminates MC wont be able to update the value function.
 
-But Sarsa can learn the optimal policy in this environment by abandoning the epsilon greedy policy in mid episode and finding better policies. We can see that early episodes take longer to terminate after the e-greedy policy stops peaks.
+But SARSA can learn the optimal policy in this environment by abandoning the epsilon greedy policy in mid-episode and finding better policies. 
+We can see that early episodes take longer to terminate after the e-greedy policy stops peaks.
 
 ## Performance of Learning Algorithms in an MDP {#sec-l1g4}
 
 On the right side of the figure we see the performance of the learning algorithms in the windy grid world.
-We see that in this chart the Sarsa algorithm learns the optimal policy at 
+We see that in this chart the SARSA algorithm learns the optimal policy at 
 Around step 7000 where the gradient becomes constant. 
 
 
@@ -163,7 +140,7 @@ this is because it learns by sampling from the policy induced by Q while followi
 
 ## Lesson 2: Off-policy TD Control: Q-learning
 
-::: callout-info
+::: {.callout-info}
 ### Lesson Learning Goals {.unnumbered}
 
 -   [x] Describe the Q-learning algorithm [\#](#sec-l2g1)
@@ -192,46 +169,11 @@ $$
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha [R_{t+1} + \gamma \max_a Q(S_{t+1}, a') - Q(S_t, A_t)]
 $$ {#eq-q-learning-update}
 
-::: callout-note
-### Q-learning (off-policy TD control) {#alg-q-learning}
-
-``` pseudocode
-#| label: alg-q-learning
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-
-\begin{algorithm}
-\caption{Q-learning Off-policy TD control}
-\begin{algorithmic}[1]
-\State Initialize:
-  \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$
-  
-\For {each episode e:}
-  \State Initialize $S$
-  \For {each step of e}
-    \State Choose A from $A_B(S)$ using any ergodic Behavioural policy $B$ - perhaps the $\epsilon$-greedy induced by Q.
-    \State Take action A, observe R, S'
-    \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \max_a Q(S',a) - Q(S, A)]$
-    \State $S \leftarrow S'$
-  \EndFor
- \State until $S$ is terminal
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-```
-Note: I made some cosmetic changes to the psuedo code in the book to 
-resolve the confusion I had about nature the behavioral policy.
 
 
-:::
+{{< include _c2-w3_alg-q-leaning.qmd >}}
 
-::: callout-caution
-
+::: {.callout-caution}
 ### The behavioral policy in Q-learning {.unnumbered}
 
 Q-learning has a subtle issue I found confusing at first. 
@@ -268,7 +210,7 @@ Q function that we are learning?
 
 :::
 
-::: callout-note
+::: {.callout-note}
 ### Do these algorithms converge? {.unnumbered}
 
 - Is Q-learning guaranteed to converge ?
@@ -314,7 +256,7 @@ my disbelief that the algs are guarenteed to converge and return to the point.
 - it policy evaluation by a TD updates of Q the action-value function based on the reward and the next action.
 
 
-::: callout-tip
+::: {.callout-tip}
 ### why can't q-learning account for the consequences of exploration in its policy ?
 
 q-learning learns the optimal policy but follows a some other policy. 
@@ -332,7 +274,7 @@ a different algorithm!
 
 ## Q-learning in an Example MDP {#sec-l2g4}
 
-![windy gridworld](img/rl-sarsa-windy-gridworld.png){.column-margin}
+![windy grid world](img/rl-sarsa-windy-gridworld.png){.column-margin group="slides"}
 
 
 In this grid world isn't a good fit for MC methods as most policies never terminate.
@@ -349,22 +291,22 @@ Q-learning does not need Importance sampling to learn off-policy. This is becaus
 is learning action values. 
 
 
-## Comparing Sarsa and Q-learning {#sec-l2g5}
+## Comparing SARSA and Q-learning {#sec-l2g5}
 
 Q-learning is an off-policy algorithm:
 
 - the target policy is the optimal policy since the update rule approximates the Bellman optimality equation.
 - the behavior policy is initially given updated at each step from the inital get updated a bit towards the optimal policy at each step.
 
- because it is learning $\pi_*$ (the optimal policy) but it samples a different policy. 
+Because it is learning $\pi_*$ (the optimal policy) but it samples a different policy. 
 
-This is in contrast to Sarsa, which is an on-policy algorithm because it learns the policy that it follows.
+This is in contrast to SARSA, which is an on-policy algorithm because it learns the policy that it follows.
 
 
 
 ## Lesson 3: Expected SARSA
 
-::: callout-info
+::: {.callout-info}
 ### Lesson Learning Goals {.unnumbered}
 
 -   [ ] Describe the Expected SARSA algorithm [\#](#sec-l3g1)
@@ -376,35 +318,33 @@ This is in contrast to Sarsa, which is an on-policy algorithm because it learns 
 
 $$
 \begin{aligned}
-Q(S_t, A_t) & \leftarrow Q(S_t, A_t) + \alpha [R_{t+1} + \gamma \mathbb{E}[Q(S_{t+1}, A_{t+1})] - Q(S_t, A_t)] \newline
+Q(S_t, A_t) & \leftarrow Q(S_t, A_t) + \alpha [R_{t+1} + \gamma \mathbb{E}[Q(S_{t+1}, A_{t+1})] - Q(S_t, A_t)] \\ 
 & \leftarrow Q(S_t, A_t) + \alpha [R_{t+1} + \gamma \sum_a \pi(a|S_{t+1}) \cdot Q(S_{t+1}, a) - Q(S_t, A_t)]
 \end{aligned}
 $$
 
-### Understanding Expected Sarsa {#sec-l3g1}
+### Understanding Expected SARSA {#sec-l3g1}
 
-
-lets recap the Bellman equation for the action-value function:
+Let's recap the Bellman equation for the action-value function:
 
 $$
 \begin{aligned}
-q_\pi(s,a) & \dot = \mathbb{E}_\pi[G_t | S_t = s, A_t = a] \qquad \newline
-& = \sum_{s', r} p(s', r | s, a) [r + \gamma \sum_{a'}\pi(a' \mid s') q_\pi(s', a')] \qquad
+q_\pi(s,a) & \dot = \mathbb{E}_\pi[G_t \mid S_t = s, A_t = a] \qquad \\ 
+& = \sum_{s', r} p(s', r \mid s, a) [r + \gamma \sum_{a'}\pi(a' \mid s') q_\pi(s', a')] \qquad
 \end{aligned}
 $$ {#eq-belman-action-value}
 
-We can now use the same idea of bootstrapping to update the action-value function after each step. This is basis of Sarsa algorithm.
+We can now use the same idea of bootstrapping to update the action-value function after each step. This is basis of SARSA algorithm.
 
-in the sarsa update rule:
+in the SARSA update rule:
 
 $$
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha [R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t)]
 $$ {#eq-sarsa-update}
 
-we knows the policy $\pi$ so we can make a better update by replacing the sampled next action 
-with the expected value of the next action under the policy $\pi$.
+we knows the policy $\pi$ so we can make a better update by replacing the sampled next action  with the expected value of the next action under the policy $\pi$.
 
-This is the basis of Expected Sarsa.
+This is the basis of Expected SARSA.
 
 which uses the update rule:
 
@@ -412,55 +352,20 @@ $$
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha [R_{t+1} + \gamma \sum_a \pi(a|S_{t+1}) \cdot Q(S_{t+1}, a) - Q(S_t, A_t)]
 $$ {#eq-expected-sarsa-update}
 
-Otherwise the algorithm is the same as Sarsa.
+Otherwise the algorithm is the same as SARSA.
 
-- This target is more stable than the Sarsa target because it is less noisy. 
-- This makes it converge faster than Sarsa.
+- This target is more stable than the SARSA target because it is less noisy. 
+- This makes it converge faster than SARSA.
 
-this has a has a down side - it has more computation than Sarsa due to avaraging over many actions
-for every step.
+This has a has a down side - it has more computation than SARSA due to averaging over many actions for every step.
 
 
-::: callout-note
-### Expected Sarsa {#alg-expected-sarsa}
+{{< include _c2-w3_alg-expected-sarsa.qmd >}}
 
-``` pseudocode
-#| label: alg-q-learning
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-
-\begin{algorithm}
-\caption{expected SARSA}
-\begin{algorithmic}[1]
-
-\State Initialize:
-  \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$
-  
-\For {each episode e:}
-  \State Initialize $S$
-  \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy)
-  \For {each step of e}
-    \State Take action A, observe R, S'
-    \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy)
-    \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \sum_a \pi(a|S') Q(S',A') - Q(S, A)]$
-    \State $S \leftarrow S'$; $A \leftarrow A'$
-    \State $S$ is terminal
-  \EndFor
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-```
-:::
-
-::: callout-tip
+::: {.callout-tip}
 ## Summary - Connecting the dots {.unnumbered}
 
--   Expected Sarsa is a generalization of Q-learning and Sarsa.
+-   Expected SARSA is a generalization of Q-learning and SARSA.
 -   There are many RL algorithms in our specialization flowchart.
 -   We would like to find a few or even one algorithm that may be widely applicable to many different settings, carrying over the insights we learned from each new algorithm.
 -   The first step in this direction was introducing the $epsilon$ parameter to the bandit algorithms, which allowed us to treat the exploration-exploitation trade-off. We have seen additional strategies for exploration but we have been using either an $\epsilon$-greedy strategy or a epsilon-soft strategy in most algorithms.
@@ -470,7 +375,7 @@ for every step.
 -   Next we introduced GPI in which we combined policy evaluation and policy improvement algorithms to iteratively approximate the optimal policy in a single algorithm.
 -   Another lesson was to using the TD error to bootstrap the value function. This let us update value functions after each step, rather than waiting until the end of the episode, increasing the data efficiency of the algorithms.
     -   We also saw that we can use this idea with action-value functions, which is more fine grained than the value function and can lead to more efficient learning.
--   Next we saw that Expected Sarsa is one such algorithm that can be used in many different settings.
+-   Next we saw that Expected SARSA is one such algorithm that can be used in many different settings.
     -   It can be used in episodic and continuing tasks,
     -   It can be used for on-policy and off-policy learning.
     -   It is a GPI algorithm that uses the TD error to update the action-value function. And it the $\epsilon$-greedy strategy implicit in its action-value function.

@@ -1,0 +1,32 @@
+
+
+:::  {#alg-expected-sarsa}
+### Expected SARSA
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+\caption{Expected SARSA}
+\begin{algorithmic}[1]
+\State Initialize:
+  \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$  
+\For {each episode e:}
+  \State Initialize $S$
+  \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy)
+  \For {each step of e}
+    \State Take action A, observe R, S'
+    \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy)
+    \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma \sum_a \pi(a|S') Q(S',A') - Q(S, A)]$
+    \State $S \leftarrow S'$; $A \leftarrow A'$
+    \State $S$ is terminal
+  \EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+:::

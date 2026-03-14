@@ -1,0 +1,44 @@
+--- 
+title: "Semi-gradient TD(0)"
+date: 2024-06-01
+description: "Psuedocode for the semi-gradient TD(0) algorithm for estimating value functions with function approximation" 
+---
+
+
+::: {#alg-semi-gradient-td-zero}
+### Semi-gradient TD(0) for estimating $v_\pi$
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{Semi-gradient TD(0) for estimating $v_\pi$}
+\begin{algorithmic}[1]
+\State Input:
+  \State $\qquad \pi \leftarrow \text{policy to be evaluated}$
+   \State  $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$
+\State Algorithm parameters:
+  \State $\qquad \alpha \in (0, 1]$ step size
+  \State $\qquad \gamma \in [0, 1]$ discount factor
+\State Initialize:
+  \State $\qquad value function weights w \leftarrow x \in \mathbb{R}^d \quad \forall s \in \mathcal{S}$ (e.g. w=0)
+\FORALL {episode $e$:}
+  \State $Initialize S$
+  \FORALL {step $S \in e$:}
+    \State $\text{Choose } A \sim \pi(\cdot \mid S)$
+    \State Take action $A$, observe $R, S'$
+    \State $w \leftarrow w + \alpha [R + \gamma \hat{v}(S', \mathbf{w}) - \hat{v}(S, \mathbf{w})] \nabla \hat{v}(S, \mathbf{w})$
+    \State $S \leftarrow S'$
+    \State until $S$ is terminal
+  \ENDFOR
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+```
+:::

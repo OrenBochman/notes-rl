@@ -23,7 +23,8 @@ date: last-modified
 bibliography: references.bib 
 
 format:
-  html:    
+  html: 
+    lightbox: true   
     theme:
       light: flatly
       dark: darkly
@@ -38,39 +39,14 @@ format:
     from: "markdown+emoji"
     include-in-header:
       text: |
-        <script>
-        MathJax = {
-          loader: {
-            load: ['[tex]/boldsymbol']
-          },
-          tex: {
-            tags: "all",
-            inlineMath: [['$','$'], ['\\(','\\)']],
-            displayMath: [['$$','$$'], ['\\[','\\]']],
-            processEscapes: true,
-            processEnvironments: true,
-            packages: {
-              '[+]': ['boldsymbol']
-            }
-          }
-        };
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
 
   # pdf:
   #   include-before-body:
   #     text: |
-  #       \numberwithin{algorithm}{chapter}
   #       \algrenewcommand{\algorithmiccomment}[1]{\hskip3em$\rightarrow$ #1}
 
-crossref:
-  custom:
-    - kind: float
-      key: algo
-      reference-prefix: "Algorithm"
-      caption-prefix: "Algorithm"
-      latex-env: algo
-      latex-list-of-description: Algorithm
 
 
 execute:
@@ -79,7 +55,9 @@ execute:
 
 filters:
   - pseudocode
+
 pseudocode:
   caption-prefix: "Algorithm"
   reference-prefix: "Algorithm"
   caption-number: true
+  caption-align: "left"

@@ -1,0 +1,34 @@
+
+::: {#alg-off-policy-mc-predictions}
+### Off-policy every visit MC prediction 
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+\caption{OffPolicyMonteCarloPrediction()} 
+\begin{algorithmic}[1]
+\State Input:
+  \State $\qquad \pi \leftarrow \text{policy to be evaluated}$
+\State Initialize:
+  \State $\qquad V(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$
+  \State $\qquad Returns(s) \text{ an empty list,} \quad \forall s \in \mathcal{S}$
+\For {each episode:}
+  \State Generate an episode by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$
+  \State $G \leftarrow 0, W \leftarrow 1$
+  \For {each step of episode, $t \in T-1, T-2,..., 0$:}
+    \State $G \leftarrow \gamma WG + R_{t+1}$
+    \State Append $G$ to $Returns(S_t)$
+    \State $V(S_t) \leftarrow average(Returns(S_t))$
+    \State $W \leftarrow W \frac{\pi(A_t|S_t)}{b(A_t|S_t)}$
+  \EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+:::

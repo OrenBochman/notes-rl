@@ -1,0 +1,34 @@
+
+::: {#alg-value-iteration}
+## Value Iteration, for estimating $\pi \approx \pi_{\star}$
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+\caption{Value Iteration, for estimating $\pi \approx \pi_{\star}$}
+\begin{algorithmic}[1]
+\State Input: $\pi$, the policy to be evaluated
+\State Algorithm parameter: a small threshold $\theta > 0$ determining accuracy of estimation
+\State Initialize $V(s) \leftarrow \vec{0} \forall s \in \mathbb{R}$
+
+\REPEAT
+  \STATE $\Delta \leftarrow 0$
+  \FORALL { $s\in S$}
+    \STATE $v \leftarrow  V(s)$
+    \STATE $V(s) \leftarrow max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$
+    \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$
+  \ENDFOR
+\UNTIL{$\Delta < \theta$}
+\State Output: $V \approx v_{\pi}$ such that
+\State $\pi(s) = \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$
+
+\end{algorithmic}
+\end{algorithm}
+```
+:::

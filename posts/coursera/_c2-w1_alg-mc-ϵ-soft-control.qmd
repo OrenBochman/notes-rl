@@ -1,0 +1,49 @@
+
+::: {#alg-mc-ϵ-soft-control}
+### MC control with ϵ-soft policies 
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+\caption{MonteCarloϵ-SoftControl()} 
+\begin{algorithmic}[1]
+\State Initialize
+  \State $\qquad \epsilon \in (0,1)$ \Comment{ $\textcolor{blue}{\ algorithm\ parameter}$}
+  \State $\qquad \pi \leftarrow \epsilon$-soft policy \Comment{  $\textcolor{blue}{\ Initialize: policy}$}
+  \State $\qquad Q(s) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S}$
+  \State $\qquad Returns(s)$ an empty list, $\quad \forall s \in \mathcal{S}$
+\For {each episode:}
+  \State Generate an episode by following $\pi: S_0, A_0, R_1,\ldots, S_{T-1}, A_{T-1}, R_T$
+  \State $G \leftarrow 0$
+  \For {each step of episode, $t \in T-1, T-2,..., 0$:}
+    \State $G \leftarrow \gamma G + R_{t+1}$
+    \State Append $G$ to $Returns(S_t,A_t)$
+    \State $Q(S_t,A_t) \leftarrow average(Returns(S_t,A_t))$
+    \State $A^* \leftarrow \arg\max_a Q(S_t,a) \qquad \textcolor{blue}{\text{(ties broken arbitrarily)}}$
+    \For {each $a \in \mathcal{A}$}
+      \If{$a = A^*$}
+        \State $\pi(a \mid S_t) \leftarrow 1 - \epsilon + \frac{\epsilon}{|A(S_t)|}$
+      \Else
+        \State $\pi(a \mid S_t) \leftarrow \frac{\epsilon}{|A(S_T)|}$
+      \EndIf
+    \EndFor
+  \EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+:::
+
+The Highlights indicate modification of the Exploring Starts alg
+
+1.  We can start with Uniform-random as its epsilon-soft.
+2.  Episode generation uses the current $\pi$ ($\epsilon$-soft policy) *before* it is improved.
+3.  We drop the first-visit check - this is an every-visit MC algorithm.
+4.  The new policy generated in each iteration is $\epsilon$-greedy w.r.t. the current action-value estimate, which is improved prior.
+5.  The optimal $\epsilon$-soft policy is an $\epsilon$-soft policy.

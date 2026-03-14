@@ -39,7 +39,7 @@ Going over the paper kept generating many more insights then the material in the
 :::
 
 
-::: callout-note
+::: {.callout-note}
 
 ## Some challenges in reading
 
@@ -148,10 +148,10 @@ I prefer 1 as it is how I tend to simulate it.
 > The overall payoff is symmetric for communication between A and B is taken as the average of A’s ability to convey information to B, and B’s ability to convey information to A.
 
 $$
-\begin{align*}
+\begin{aligned}
 \mathbb{E}[\text{Payoffs}\mid L,L'] &= \frac{1}{2}  \overbrace{\sum_{i=1}^n \sum_{j=1}^m p_{ij} q'_{ij}}^{\text{A's ability to send interpretable messages}}  + \frac{1}{2}  \overbrace{\sum_{i=1}^n \sum_{j=1}^m p'_{ji} q_{ji}}^{\text{B's ability to interpret messages}} \\&=
 \frac{1}{2}  \sum_{i=1}^n \sum_{j=1}^m ( p_{ij} q'_{ij} +p'_{ji} q_{ji} ) = 
-\end{align*}
+\end{aligned}
 $$
 
 The original formula is rather cryptic. So this version breaks it into parts and annotates it.
@@ -185,9 +185,9 @@ The paper again lacks some important details. Are the agents the details
 If we increase our basic signals (think phonemes) we can handle more states. However phonemes exist in a restricted space and as more are added it becomes harder to distinguish between them. This is exacerbated by the fact that we add an explicit chance of communications error based on the phonemic similarity.
 
 $$
-\begin{align*}
+\begin{aligned}
 \mathbb{E}[\text{Payoffs}\mid L,L'] &= \frac{1}{2}  \sum_{i=1}^n \sum_{j=1}^m \left [  p_{ij} \left( \sum_{j=1}^m u'_{jk}q'_{ki} \right) + p'_{ij} \left( \sum_{j=1}^m u_{jk}q_{ki} \right) \right] = 
-\end{align*}
+\end{aligned}
 $$
 
 where:

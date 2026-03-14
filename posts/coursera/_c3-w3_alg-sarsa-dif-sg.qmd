@@ -1,0 +1,35 @@
+
+::: {#alg-sarsa-dif-sg}
+### Differential Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+  \caption{Differential Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)}
+\begin{algorithmic}[1]
+\State $\textbf{Input:}$
+  \State $\qquad \text{a differentiable action-value fn parameterization } \hat{q}: \mathcal{S} \times A \times \mathbb{R}^d \to \mathbb{R}$
+\State $\textbf{Algorithm parameters:}$
+  \State $\qquad \alpha, \beta > 0$
+\State $\textbf{Initialize:}$
+  \State $\qquad$ value function weights $\mathbf{w} \in \mathbb{R}^d$ arbitrarily, (e.g., $\mathbf{w} = 0$)  
+  \State $\bar{R} source \in \mathbb{R}$ avg reward estimate
+\State Initialize $S$ and action $A$
+\For {each step}
+  \State Take action A, observe R, S'    
+  \State Choose A' as a function of $\hat{q}(S',\cdot,\mathbf{w})$ (e.g., $\epsilon$-greedy)
+  \State $\delta \leftarrow R - \bar{R} + \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) $
+  \State $ \bar{R}\leftarrow  \bar{R} + \beta \delta$
+  \State $\mathbf{w} \leftarrow \mathbf{w} + \alpha \delta \nabla \hat{q}(S, A, \mathbf{w})$ 
+  \State $S \leftarrow S'$; $A \leftarrow A'$  
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+:::

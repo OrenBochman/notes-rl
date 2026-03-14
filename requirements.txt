@@ -1,7 +1,7 @@
 numpy
 pandas
 # statsmodels
-# matplotlib
+matplotlib
 # seaborn
 # plotly
 # altair
@@ -27,3 +27,4 @@ gymnasium
 # #mesa_models @ git+https://github.com/projectmesa/mesa-examples#egg=mesa-models
 # pettingzoo
 # torcheval
+networkx

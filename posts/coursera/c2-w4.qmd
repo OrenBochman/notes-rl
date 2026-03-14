@@ -25,7 +25,7 @@ title-block-banner: /images/banner_black_3.jpg
 
 ## Lesson 1: What is a model?
 
-::: callout-info
+::: {.callout-info}
 ### Lesson Learning Goals {.unnumbered}
 
 -   [ ] Describe what a model is and how they can be used [\#](#sec-l1g1)
@@ -103,7 +103,7 @@ Also there are:Environment simulator
 
 ## Lesson 2: Planning
 
-::: callout-info
+::: {.callout-info}
 ### Lesson Learning Goals {.unnumbered}
 
 -   [ ] Explain how planning is used to improve policies [\#](#sec-l2g1)
@@ -136,7 +136,7 @@ advantages of planning
 
 ## Lesson 3: Dyna as a formalism for planning
 
-::: callout-info
+::: {.callout-info}
 ### Lesson Learning Goals {.unnumbered}
 
 -   [ ] Recognize that direct RL updates use experience from the environment to improve a policy or value function [\#](#sec-l3g1)
@@ -217,7 +217,7 @@ The short term would track the last k visits in each state and the long term all
 
 ## Lesson 4: Dealing with inaccurate models
 
-::: callout-info
+::: {.callout-info}
 ### Lesson Learning Goals {.unnumbered}
 
 -   [ ] Identify ways in which models can be inaccurate [\#](#sec-l4g1)

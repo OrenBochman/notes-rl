@@ -1,0 +1,31 @@
+
+::: {#alg-greedy-bandit}
+### Bernoulli Greedy Algorithm
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+\caption{BernGreedy(K, α, β)}
+\begin{algorithmic}[1]
+\For{$t = 1, 2, . . .$}
+\State
+\State \Comment{ estimate model}
+\For{$k = 1, . . . , K$}
+\State $\hat\theta_k \leftarrow  a_k / (α_k + β_k)$
+\EndFor
+\State \Comment{ select and apply action:}
+\State $x_t \leftarrow \arg\max_k \hat{\theta}_k$
+\State Apply $x_t$ and observe $r_t$
+\State \Comment{ update distribution:}
+\State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+:::

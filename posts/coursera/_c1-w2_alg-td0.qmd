@@ -1,0 +1,35 @@
+::: {#alg-td0}
+### The TD(0) algorithm for estimating $v_\pi$ 
+
+```pseudocode
+
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{TD(0) for estimating $v_\pi$}
+\begin{algorithmic}[1]
+\State Input:
+  \State $\qquad \pi \leftarrow \text{policy to be evaluated}$
+\State Initialize:
+  \State $\qquad V(s) \leftarrow x \in \mathbb{R} \quad \forall s \in \mathcal{S}$
+\FORALL {episode $e$:}
+  \State $S \leftarrow \text{initial state of episode}$
+  \State $\text{Choose } A \sim \pi(\cdot \mid S)$
+  \FORALL {step $S \in e$:}
+    \State Take action $A$, observe $R, S'$
+    \State $V(S) \leftarrow V(S) + \alpha [R + \gamma V(S') - V(S)]$
+    \State $S \leftarrow S'$
+    \State $\text{Choose} A' \sim \pi(\cdot \mid S)$
+    \State $S$ is terminal
+  \ENDFOR
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+```
+:::

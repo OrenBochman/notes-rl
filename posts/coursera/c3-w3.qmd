@@ -37,7 +37,7 @@ The algorithms we will be discussing in this lesson are function approximation v
 
 # Lesson 1: Episodic SARSA with Function Approximation
 
-::: callout-note
+::: {.callout-note}
 ### Learning objectives {.unnumbered}
 
 - [x] *Explain* the update for Episodic SARSA with function approximation [\#](#sec-l1g1)
@@ -84,41 +84,6 @@ Next we will [see](#fig-episodic-semi-gradient-sarsa) how to use SARSA in episod
 
 
 
-::: callout-note
-### SARSA {#alg-sarsa}
-
-``` pseudocode
-#| label: alg-sarsa
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-
-\begin{algorithm}
-\caption{SARSA($\alpha,\epsilon$)}
-\begin{algorithmic}[1]
-\State Initialize:
-  \State $\qquad Q(s,a) \leftarrow x \in \mathbb{R} \forall s \in \mathcal{S^+}, a\in\mathcal{A}(s)\ except\ for\ Q(terminal,\cdot)=0$
-  
-\For {each episode e:}
-  \State Initialize $S$
-  \State Choose A from S using policy derived from Q (e.g., $\epsilon$-greedy)
-  \For {each step of e}
-    \State Take action A, observe R, S'
-    \State Choose A' from S' using policy derived from Q (e.g., $\epsilon$-greedy)
-    \State $Q(S, A) \leftarrow Q(S, A) + \alpha [R + \gamma Q(S',A') - Q(S, A)]$
-    \State $S \leftarrow S'$; $A \leftarrow A'$
-  \EndFor
-  \State until $S$ is terminal
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-```
-:::
-
 SARSA is a sample-based algorithm to solve the Bellman equation for action-values.
 
 - It picks an action based on the current policy and then
@@ -133,47 +98,7 @@ This figure shows the algorithm for Episodic semi-gradient SARSA which uses func
 
 [@Rummery1994OnlineQU] introduced SARSA, but the name is due to Rich Sutton.
 
-::: callout-note
-### Episodic Semi-gradient SARSA {#alg-sg-sarsa}
-
-``` pseudocode
-#| label: alg-td-sarsa
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-
-
-\begin{algorithm}
-  \caption{Episodic Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)}
-\begin{algorithmic}[1]
-
-\State $\textbf{Input:}$
-  \State $\qquad \text{a differentiable action-value fn parameterization } \hat{q}: \mathcal{S} \times A \times \mathbb{R}^d \to \mathbb{R}$
-\State $\textbf{Initialize:}$
-  \State $\qquad$ value function weights $\mathbf{w} \in \mathbb{R}^d$ arbitrarily, (e.g., $\mathbf{w} = 0$)  
-\For {each episode e:}
-  \State Initialize $S$
-  \State Choose A from S using policy derived from $\color{red}\hat{q}(S'A,\mathbf{w})$ (e.g., $\epsilon$-greedy)
-  \For {each step of e}
-    \State Take action A, observe R, S'
-    \If {$S'$ is terminal}
-      \State $\color{red}\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ 
-      \State Go to next episode
-    \EndIf
-    \State Choose A' as a function of $\color{red}\hat{q}(S'A,\mathbf{w})$ (e.g., $\epsilon$-greedy)
-    \State $\color{red}\mathbf{w} \leftarrow \mathbf{w} + \alpha \left[ R + \gamma \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) \right] \nabla \hat{q}(S, A, \mathbf{w})$ 
-    \State $S \leftarrow S'$; 
-    \State $A \leftarrow A'$
-  \EndFor
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-```
-:::
+{{< include _c3-w3_alg-sarsa-fa.qmd >}}
 
 This allows us to learn a good policy for the task. We will also need a step to update the weights.
 
@@ -182,12 +107,13 @@ This allows us to learn a good policy for the task. We will also need a step to 
     title='Advances in Value Estimation in Reinforcement Learning' >}}
 
 Talk titled 'Advances in Value Estimation in Reinforcement Learning' at 
-London Machine Learning Meetu by Martha White on Two Pieces of Research on Exploration in Reinforcement Learning. On work from [patterson2024generalizedprojectedbellmanerror]
+London Machine Learning Meetu by Martha White on Two Pieces of Research on Exploration in Reinforcement Learning. On work from [@patterson2024generalizedprojectedbellmanerror]
 :::
+
+{{< include _c3-w3_alg-sarsa-sg.qmd >}}
 
 
 ::: {.callout-note}
-
 ### Over Thinking Semi-gradient SARSA {.unnumbered}:
 
 So you think you understand SARSA with function approximation?
@@ -207,10 +133,10 @@ $$
 since we dont know the action value function we can't compute the true value of the next state. Instead we use the value of the next state.
 
 $$
-\begin{align*}
+\begin{aligned}
   \overline{{QE}}(w) &\approx \sum_{s\in \mathcal{S},a\in \mathcal{A}} \mu(s)\left[ r+\gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w})  \right]^2 \\ 
   &= \mathbb{E}_\mu \left[ (r+\gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w}))^2 \right]
-\end{align*}
+\end{aligned}
 $$
 
 
@@ -227,11 +153,11 @@ $$
   - $\gamma$ is the discount factor
 
 $$ 
-\begin{align*}
+\begin{aligned}
 \nabla_\mathbf{w} J(w) &= \mathbb{E}_\mu \left[ \sum_{t=0}^\infty \gamma^t \nabla_\mathbf{w} \left( r_t + \gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w}) \right)^2 \right] \\
-&= \mathbb{E}_\mu \left[ \sum_{t=0}^\infty \gamma^t 2 \left( r_t + \gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w}) \right) \nabla_\mathbf{w} \left( r_t + \gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w}) \right) \right] \newline
+&= \mathbb{E}_\mu \left[ \sum_{t=0}^\infty \gamma^t 2 \left( r_t + \gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w}) \right) \nabla_\mathbf{w} \left( r_t + \gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w}) \right) \right] \\ 
 &= \mathbb{E}_\mu \left[ \sum_{t=0}^\infty \gamma^t 2 \delta  \left( \gamma \nabla_\mathbf{w} \hat{q}(s',a',\mathbf{w}) - \nabla_\mathbf{w} \hat{q}(s,a,\mathbf{w}) \right) \right] \\
-\end{align*}
+\end{aligned}
 $$
 
 where $\delta = r_t + \gamma \hat{q}(s',a',\mathbf{w}) - \hat{q}(s,a,\mathbf{w})$ is the TD error.
@@ -277,7 +203,6 @@ $$
 1. How can we reduce this correlation?
 1. What is the policy improvement operator?
 1. What is the Lipschitz constant of this operator and why don't we see this in the SARSA algorithm?
-
 
 :::
 
@@ -400,7 +325,7 @@ $$ {#eq-semi-gradient-Q-learning-update}
 
 # Lesson 2: Exploration under Function Approximation 
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 - [x] *Understanding* optimistically initializing your value function as a form of exploration [\#](#sec-l2g1)
@@ -438,7 +363,7 @@ However the last video by Satinder Singh discusses using intrinsic motivation to
 
 # Lesson 3: Average Reward 
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 - [x] *Describe* the average reward setting [\#](#sec-l3g1)
@@ -563,44 +488,7 @@ Many algorithms from the discounted settings can be rewritten to apply to the av
 
 ## Differential Value Functions v.s. Discounted Value Functions {#sec-l3g3}
 
-::: callout-note
-### Episodic Semi-gradient SARSA {#alg-diff-sg-sarsa}
-
-``` pseudocode
-#| label: alg-differential-sg-sarsa
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-
-
-\begin{algorithm}
-  \caption{Differential Semi-gradient SARSA for estimating ($\hat{q} \approx q_*$)}
-\begin{algorithmic}[1]
-\State $\textbf{Input:}$
-  \State $\qquad \text{a differentiable action-value fn parameterization } \hat{q}: \mathcal{S} \times A \times \mathbb{R}^d \to \mathbb{R}$
-\State $\textbf{Algorithm parameters:}$
-  \State $\qquad \alpha, \beta > 0$
-\State $\textbf{Initialize:}$
-  \State $\qquad$ value function weights $\mathbf{w} \in \mathbb{R}^d$ arbitrarily, (e.g., $\mathbf{w} = 0$)  
-  \State $\bar{R} source \in \mathbb{R}$ avg reward estimate
-\State Initialize $S$ and action $A$
-\For {each step}
-  \State Take action A, observe R, S'    
-  \State Choose A' as a function of $\hat{q}(S',\cdot,\mathbf{w})$ (e.g., $\epsilon$-greedy)
-  \State $\delta \leftarrow R - \bar{R} + \hat{q}(S', A', \mathbf{w}) - \hat{q}(S, A, \mathbf{w}) $
-  \State $ \bar{R}\leftarrow  \bar{R} + \beta \delta$
-  \State $\mathbf{w} \leftarrow \mathbf{w} + \alpha \delta \nabla \hat{q}(S, A, \mathbf{w})$ 
-  \State $S \leftarrow S'$; $A \leftarrow A'$  
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-```
-:::
-
+{{< include _c3-w3_alg-sarsa-dif-sg.qmd >}}
 
 ## Satinder Singh on Intrinsic Rewards (Video)
 
@@ -631,7 +519,7 @@ Satinder Singh is a professor at the University of Michigan. He is a leading res
 
 Now Satinder Singh is a good speaker and he has lots of interesting research results to share. Unfortunately, this video is not his finest hour. I would definitely recommend watching some of his other talks linked above.
 
-::: callout-note
+::: {.callout-note}
 
 ### Discussion prompt {.unnumbered}
 

@@ -140,7 +140,7 @@ Here are three extra videos by experts in the field that delve deeper into this 
 
 # Lesson 1: Learning Parameterized Policies 
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 - [x] Understand how to define policies as parameterized functions [\#](#sec-l1g1)
@@ -317,7 +317,7 @@ Example where the optimal policy is stochastic:
 In mountain car, the parameterized value function is complex, but the parameterized policy is simple.
 :::
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 - [x] Describe the objective for policy gradient algorithms [\#](#sec-l2g1)
@@ -335,11 +335,11 @@ In this video Martha White dive deep into the objective for policy gradient algo
 Formalizing the goal as an Objective
 
 $$
-\begin{align*}
- G_t &= \sum_{t=0}^{T}  R_{t}  \quad && \text{(episodic)} \newline
- G_t &= \sum_{t=0}^{\infty} \gamma^t R_{t}   \quad && \text{(continuing - discounted reward)} \newline
+\begin{aligned}
+ G_t &= \sum_{t=0}^{T}  R_{t}  \quad && \text{(episodic)} \\ 
+ G_t &= \sum_{t=0}^{\infty} \gamma^t R_{t}   \quad && \text{(continuing - discounted reward)} \\ 
  G_t &= \sum_{t=0}^{\infty} R_{t} - r(\pi)  \quad && \text{(continuing - avg. reward)}
-\end{align*}
+\end{aligned}
 $$ {#eq-objectives}
 
 The average reward Objective for a policy is as follows:
@@ -368,10 +368,10 @@ There are a few challenges with using the gradient in [the above equation](#eq-a
 According to the lesson $\mu(s)$ depends on $\theta$. Martha White point out that this state importance though parameterized only by s actually depends on the the policy $\pi$ which will evolve during its training based on the values of $\theta$. Which means out notation here is a bit misleading. She then contrasts it with the value function gradient is being evaluated using a fixed policy.
 
 $$
-\begin{align*}
-\nabla_w \bar{VE} &= \nabla_w \sum_{s}\textcolor{red}{\underbrace{\mu(s)}_{\text{Independent of }\mathbf{w}}}  [V_{\pi}(s)-\bar{v}(s,w)]^2 \newline
+\begin{aligned}
+\nabla_w \bar{VE} &= \nabla_w \sum_{s}\textcolor{red}{\underbrace{\mu(s)}_{\text{Independent of }\mathbf{w}}}  [V_{\pi}(s)-\bar{v}(s,w)]^2 \\ 
 &=\sum_{s} \textcolor{red}{\mu(s)} \nabla_w [V_{\pi}(s)-\bar{v}(s,w)]^2 
-\end{align*} \text{(value function gradient)} \qquad
+\end{aligned} \text{(value function gradient)} \qquad
 $$ {#eq-value-function-gradient}
 
 
@@ -412,18 +412,18 @@ $$ {#eq-product-rule}
 therefore:
 
 $$
-\begin{align*}
-\nabla_\theta r(\pi) &= \sum_{t=0}^{T} \nabla \mu(s) \sum_{a} \pi(a \mid s,\theta) \sum_{s',r} p(s',r \mid s,a) r \newline &+  \sum_{t=0}^{T} \mu(s) \nabla \sum_{a} \pi(a \mid s, \theta) \sum_{s',r} p(s',r \mid s,a) r 
-\end{align*}
+\begin{aligned}
+\nabla_\theta r(\pi) &= \sum_{t=0}^{T} \nabla \mu(s) \sum_{a} \pi(a \mid s,\theta) \sum_{s',r} p(s',r \mid s,a) r \\  &+  \sum_{t=0}^{T} \mu(s) \nabla \sum_{a} \pi(a \mid s, \theta) \sum_{s',r} p(s',r \mid s,a) r 
+\end{aligned}
 $$ {#eq-policy-gradient-naive}
 
 
 The first term is the gradient of the stationary distribution and the second term is the gradient of the policy. The policy gradient theorem simplifies this expression by eliminating the need to estimate the gradient of the stationary distribution.
 
 $$
-\begin{align*}
+\begin{aligned}
 \nabla_\theta r(\pi) &= \sum_{s\in \mathcal{S}} \mu(s) \textcolor{red}{ \sum_{a\in{\mathcal{A}}} \nabla \pi(a \mid s,\theta)  q_\pi(s,a) }
-\end{align*}
+\end{aligned}
 $$ {#eq-policy-gradient-theorem}
 
 The policy gradient theorem provides a new expression for the gradient of the average reward objective. This expression involves summing, over all states and actions, the product of the gradient of the policy and the action-value function (Q). The gradient of the policy indicates how to adjust parameters to increase the probability of an action, while the action-value function represents the expected return from taking that action.
@@ -480,8 +480,8 @@ backup diagram from $v_\pi(s)$ to $q_\pi(s,a)$
 
 $$
 \begin{align} 
- V_\pi(s) &= \mathbb{E_\pi}[q(s_t,a)  \mid s_t = s, a_t=a ] && \text{(def. of Value)} \newline
- &= \sum_a Pr(a \mid s) q_\pi(s,a) && \text{(def. of Expectation)} \newline
+ V_\pi(s) &= \mathbb{E_\pi}[q(s_t,a)  \mid s_t = s, a_t=a ] && \text{(def. of Value)} \\ 
+ &= \sum_a Pr(a \mid s) q_\pi(s,a) && \text{(def. of Expectation)} \\ 
  &= \textcolor{red}{\sum_a \pi(a \mid s)} \textcolor{green}{q_\pi(s,a)} && \text {(def. of policy)}
 \end{align}
 $$ {#eq-3-18-solution}
@@ -506,33 +506,33 @@ backup diagram from $q_\pi(s,a)$ to $v_\pi(s')$
 ### Solution {.unnumbered}
 
 $$
-\begin{align*}
-q_\pi(s, a) &= \mathbb{E}[R_{t+1} v_\pi (s_{t+1}) \mid s_t = s, a_t = a] \newline
+\begin{aligned}
+q_\pi(s, a) &= \mathbb{E}[R_{t+1} v_\pi (s_{t+1}) \mid s_t = s, a_t = a] \\ 
  &= \textcolor{blue}{\sum_{s', r} p(s', r \mid s, a)} \textcolor{pink}{[r + v_\pi(s')]} 
-\end{align*} \qquad
+\end{aligned} \qquad
 $$ {#ex-319-solution}
 
 $$
-\begin{align*}
+\begin{aligned}
 q_\pi(s, a) &= \sum_{s'} \mathbb{E}_\pi[G_{t} \mid S_{t+1}=s'] Pr\{S_{t+1} = s' \mid S_t = s, A_t = a\}
-\newline &= \sum_{s'} \mathbb{E}[R_{t+1} + \gamma G_{t+1} \mid S_t = s, A_t = a, S_{t+1} = s'] Pr\{S_{t+1} = s' \mid S_t = s, A_t = a\} 
-\newline &= \sum_{s',r} \left( r + \gamma \underbrace{\mathbb{E}[G_{t+1} \mid S_{t+1} = s']}_{v_\pi|(s')} \right) p(s', r \mid s, a)
-\newline &= \sum_{s',r} [ r + \gamma v_\pi(s')] p(s', r \mid s, a)
-\end{align*}
+\\  &= \sum_{s'} \mathbb{E}[R_{t+1} + \gamma G_{t+1} \mid S_t = s, A_t = a, S_{t+1} = s'] Pr\{S_{t+1} = s' \mid S_t = s, A_t = a\} 
+\\  &= \sum_{s',r} \left( r + \gamma \underbrace{\mathbb{E}[G_{t+1} \mid S_{t+1} = s']}_{v_\pi|(s')} \right) p(s', r \mid s, a)
+\\  &= \sum_{s',r} [ r + \gamma v_\pi(s')] p(s', r \mid s, a)
+\end{aligned}
 $$
 
 
 Here is my version of the proof:
 
 $$
-\begin{align*} 
+\begin{aligned} 
 \textcolor{cyan}{\nabla_\theta V_\pi(s)} &= \nabla_\theta \sum_a \textcolor{red}{\pi(a \mid s)} \textcolor{green}{ q_\pi(s,a) } && \text{backup } v_\pi \to q_\pi \text{ (Ex 3.18)}
-\newline &= \sum_a \nabla_\theta \pi(a \mid s) q_\pi(s,a) + \pi(a \mid s) \nabla_\theta q_\pi(s,a) && \text{product rule}
-\newline &= \sum_a \nabla_\theta \pi(a \mid s) q_\pi(s,a) + \pi(a \mid s) \nabla_\theta \sum_{s'} \textcolor{blue}{P(s',r \mid s, a)} \textcolor{pink}{[r + V_\pi(s')]} && \text{backup } q_\pi \to v_\pi \text{ (Ex 3.19)} 
-\newline &= \sum_a \nabla_\theta \pi(a \mid s) q_\pi(s,a) + \pi(a \mid s) \sum_{s'} P(s',r \mid s, a) \nabla_\theta V_\pi(s') && P, r \text{ are const w.r.t. } \theta \newline
+\\  &= \sum_a \nabla_\theta \pi(a \mid s) q_\pi(s,a) + \pi(a \mid s) \nabla_\theta q_\pi(s,a) && \text{product rule}
+\\  &= \sum_a \nabla_\theta \pi(a \mid s) q_\pi(s,a) + \pi(a \mid s) \nabla_\theta \sum_{s'} \textcolor{blue}{P(s',r \mid s, a)} \textcolor{pink}{[r + V_\pi(s')]} && \text{backup } q_\pi \to v_\pi \text{ (Ex 3.19)} 
+\\  &= \sum_a \nabla_\theta \pi(a \mid s) q_\pi(s,a) + \pi(a \mid s) \sum_{s'} P(s',r \mid s, a) \nabla_\theta V_\pi(s') && P, r \text{ are const w.r.t. } \theta \\ 
 =& \sum_{a \in \mathcal{A}} \Big( \nabla_\theta \pi(a \mid s)Q_\pi(s, a) + \pi(a \mid s) \sum_{s'} P(s' \mid s,a)  \textcolor{cyan}{\nabla_\theta V_\pi(s')} \Big) && \text{total rule of probability on r for P } 
-\newline & \blacksquare && \qquad
-\end{align*}
+\\  & \blacksquare && \qquad
+\end{aligned}
 $$ {#eq-policy-gradient-theorem-proof}
 
 
@@ -546,7 +546,7 @@ Crucially, the policy gradient theorem eliminates the need to estimate the gradi
 # Lesson 3: Actor-Critic for Continuing Tasks 
 
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 - [x] Derive a sample-based estimate for the gradient of the average reward objective [\#](#sec-l3g1)
@@ -596,7 +596,7 @@ the change is in the last three lines. The baseline is subtracted from the retur
 
 # Lesson 4: Policy Parameterizations 
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 - [x] Derive the actor-critic update for a softmax policy with linear action preferences [\#](#sec-l4g1)
@@ -710,7 +710,7 @@ The second part is the state action features multiplied by the policy summed ove
 
 
 
-::: callout-note
+::: {.callout-note}
 
 ### Discussion prompt {.unnumbered}
 

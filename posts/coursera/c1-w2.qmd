@@ -6,18 +6,13 @@ title: Markov Decision Processes
 description: In week 2 we learn about Markov Decision Processes (MDP) and how to compute value functions and optimal policies, assuming you have the MDP model. We implement dynamic programming to compute value functions and optimal policies.
 author: Oren Bochman
 draft: false
-categories:
-  - Coursera
-  - Fundamentals
-  - Reinforcement Learning
-keywords:
-  - Markov decision processes
-  - MDP
+categories: [Coursera, Fundamentals, Reinforcement Learning]
+keywords: [Markov decision processes, MDP, Bellman equations, value functions, optimal policies, dynamic programming]
 image: img/nlp-brain-wordcloud.jpg
 title-block-banner: /images/banner_black_3.jpg
 ---
 
-![RL logo](img/logo.png){.column-margin} 
+![RL logo](img/logo.png){.column-margin .nolightbox} 
 
 ![RL algorithms](img/alg_selector.png){.column-margin group="slides"}
 
@@ -29,7 +24,7 @@ title-block-banner: /images/banner_black_3.jpg
 -   [x] [@sutton2018reinforcement§3.3, pp. 47-56] [book](http://incompleteideas.net/book/RLbook2020.pdf#page=47)
 :::
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 -   [x] Understand Markov Decision Processes (MDP). [\#](#l1g1)
@@ -38,11 +33,19 @@ title-block-banner: /images/banner_black_3.jpg
 -   [x] Explain how many diverse processes can be written in terms of the MDP framework. [\#](#l1g4)
 :::
 
+::: {#vid-silver-2015 .column-margin}
+{{< video src="https://youtu.be/2pWv7GOvuf0?t=2591" title="David Silver's UCL Course on Reinforcement Learning" >}}
+
+In [@silver2015] Silver covers The Markov Property, Markov Processes, Markov Reward Processes, etc.
+:::
+
 Before I started this course I viewed [@silver2015] online course by David Silver who in many ways is the face of RL. He is also the lead of the AlphaGo project, a principal researcher at DeepMind and a lecturer at University College London. Silver is also featured in one of the Lectures in this specialization. In his course he develops the MDP constructively starting with simpler structures as is often done in mathematics. I find this is a good way to learn how to think about how we generalize and specialize from more abstract to more concrete structures.
 
-Many students of probability theory will be familiar with Markov Chains. And Markov Decision Processes are a generalization of Markov Chains.
+ What I like about Silver's presentation is that he uses a constructive approach to construct an MDP much like other mathematical structures are introduced .e.g. field in an Algebra course is introduced by first defining a group, then a ring, and then a field which allows us to see how the different structures are related and how they build on each other. This approach is particularly helpful when many of the students are already familiar with the simpler structures. In this case since Markov chains are so ubiquitous in many fields, most students will already be familiar with them, so starting with Markov chains and then building up to MDPs seems better than just starting with MDPs. Also it makes it easier to introduce an important extension to MDPs, such are POMDPs which is what Silver does in his course and in the notes.
 
-In [@silver2015] he begins with a **Markov Process**, with states and transitions probabilities, by adding **rewards** he constructs a *Markov reward process*. Then by adding **actions** he constructs a *Markov decision process*. He explains these and in the notes covers three additional extensions. In the the notes he also add the following MDP extensions:
+
+
+In [@silver2015] Silver begins with a **Markov Process**, with states and transitions probabilities, by adding **rewards** he constructs a *Markov reward process*. Then by adding **actions** he constructs a *Markov decision process*. He explains these and in the notes covers three additional extensions. In the the notes he also add the following MDP extensions:
 
 -   Infinite and continuous MDPs - the case of optimal control
 -   Partially observable MDPs.
@@ -51,15 +54,17 @@ In [@silver2015] he begins with a **Markov Process**, with states and transition
 
 ## Markov Process {#sec-Markov-Process}
 
+![A diagram representing a two-state Markov process. The numbers are the probability of changing from one state to another state.](MarkovProccess.png){.column-margin group="slides"}
+
 Silver goes into some detail on what we mean by state in RL:
 
 -   In th abstract state can be any function of the history.
 -   The state should summarize the information on the previous actions, and rewards.
--   He points out that the history in RL can be very long, for Atari games it can include actions plus all the pixels for every screen in many plays of the game. In contrast the state tries to capture the bare essentials of the history for decision making at each time step. For Atari games they used the last 4 screens as the state.
+-   He points out that the [history in RL can be very long, for Atari games it can include actions plus all the pixels for every screen in many plays of the game. In contrast the state tries to capture the bare essentials of the history for decision making at each time step]{.mark}. For Atari games they used the last 4 screens as the state.
 -   A second point is that there is always a state. The full history is also a state, but not a very useful one. The internal representation of the ram in the Atari game is also a state, much smaller but this is the representation used by the environment and contains more information than is available to the agent. Ideally the agent would want to model this state, but again it contains lots more information than is available would need to male a decision.
 -   Another useful property of the state is that it should have the Markov Property for a state space which is when the future is independent of the past given the present.
 
-A state S$_t$ is Markov if and only if:
+A state $S_t$ is Markov if and only if:
 
 $$ 
 \mathbb{P}[S_{t+1}  \vert  S_{t}] =  \mathbb{P}[S_{t+1}  \vert  S_1,...,S_t] \qquad \text{(Markov Property)}
@@ -69,7 +74,7 @@ $$ {#eq-markov-property}
 
 Recall:
 
-> a statistic satisfies the criterion for sufficency when no other statistic that can be calculated from the same [sample](https://en.wikipedia.org/wiki/Sample_(statistics) "Sample (statistics)") provides any additional information as to the value of the parameter". — [@doi:10.1098/rsta.1922.0009]
+> a statistic satisfies the criterion for sufficiency when no other statistic that can be calculated from the same [sample](https://en.wikipedia.org/wiki/Sample_(statistics) "Sample (statistics)") provides any additional information as to the value of the parameter". — [@doi:10.1098/rsta.1922.0009]
 
 For a Markov state $s$ and successor state $s'$, the state transition probability is defined by:
 
@@ -77,70 +82,82 @@ $$
 \mathbb{P}_{ss'} = \mathbb{P}[S_{t+1}=s'  \vert  S_t=s]
 $$
 
-::: callout-note
-## Markov Process or Chain Definion {#def-Markov-Process}
+::: {#def-Markov-Process}
+## Markov Process AKA Chain  
 
-A Markov Process is
+A Markov Process is a tuple $⟨S,P⟩$ where:
 
-:   a tuple $⟨S,P⟩$
-
-where:
-
--   $S$ is a (finite) set of states
--   $P$ is a state transition probability matrix, $P_{ss'} = P[S_{t+1} = s'  \vert S_t=s]$ State transition matrix $P_{ss'}$ defines transition probabilities from all states $s$ to all successor states $s'$,
+- $S$ is a (finite) set of states
+- $P$ is a state transition probability matrix, 
+  $P_{ss'} = P[S_{t+1} = s'  \vert S_t=s]$ State transition matrix $P_{ss'}$ defines transition probabilities from all states $s$ to all successor states $s'$,
 
 $$
-\begin{align*}
+\begin{aligned}
   P=\left( \begin{array}{cc}
-      p_{11} & \cdots & p_{1n} \newline
-      \vdots & \ddots & \vdots \newline
+      p_{11} & \cdots & p_{1n} \\ 
+      \vdots & \ddots & \vdots \\ 
       p_{n1} & \cdots & p_{nn} \end{array} \right)
-\end{align*}
+\end{aligned}
 $$ {#eq-transition-matrix}
-:::
+
+:::   
+<!-- #def-Markov-Process -->
+
+
+
+A [Markov process]() AKA [Markov chain](https://en.wikipedia.org/wiki/Markov_chain), are well studied in probability theory and have many applications in physics, chemistry, economics, and many other fields. They are used to simplify the analysis of complex systems by modeling them as a sequence of states with probabilistic transitions but without a long term memory. I.e. in the Markov process the future is independent of the past given the present. Another way of saying this is that the once the current state is known, the history of how we got to that state is irrelevant for predicting the future.  This is the idea of a sufficient statistic. The state is a sufficient statistic of the future.
+
+While this may seem like a strong assumption, it is possible to bundle up into the current state all the relevant information from the history that we need to make decisions about the future.
+
+For example in Atari games the current state uses the last 4 screens, which allows us to overcome the static nature of a single screen and represent the velocity of objects in the game, which is important for making decisions about the future. However it is up to the algorithm to figure out which pixels are part of the same object in the different screens etc. 
+
+While the Markov process captures the dynamics of the environment, using the $P$ matrix, it lacks the notion of rewards and actions. 
 
 ## Markov Reward Process {#sec-MRP}
 
 A Markov Reward Process **(MRP)** is a Markov chain with values.
 
-::: callout-note
-### Markov Reward Process Definition {#def-MRP}
+::: {#def-MRP}
+## Markov Reward Process (MRP)
 
-A Markov Reward Process is
-
-:   a tuple $⟨S, P, R, \gamma⟩$
-
-where:
+A Markov Reward Process is a tuple $⟨S, P, R, \gamma⟩$ with:
 
 -   $S$ is a finite set of states
--   $P$ is a state transition probability matrix, where $P_{ss'} =  \mathbb{P}[S_{t+1} = s' \vert  S_t = s]$
+-   $P$ is a state transition probability matrix.
 -   $R$ is a reward function, $R_s = \mathbb{E}[R_{t+1} \vert S_t = s]$
 -   $\gamma$ is a discount factor, $\gamma \in [0, 1]$
 :::
 
-::: callout-note
-### the return definition {#def-return}
+Note that the first two parts of the tuple are just a *Markov process*. 
+The reward function $R$ assigns a reward to each state. 
+The discount factor $\gamma$ is a little less obvious - it determines how much the agent cares about future rewards if that's a bit abstract, perhaps think of it as the strength of the lens through which the agent views the future. 
 
-The return $G_t$
+A discount factor of 0 means that the agent only cares about immediate rewards, while a factor of 1 means that it cares about future rewards just as much as immediate rewards. Now let's make this more precise by defining the return and the value function.
 
-:   is the total discounted reward from time-step t.
+::: {#def-return}
+### The return  $G_t$
+
+is the total discounted reward from time-step t.
 
 $$
 G_t =R_{t+1}+\gamma R_{t+2}+...=\sum_{k=0}^{\infty} \gamma^k R_{t+k+1} 
 $$ {#eq-return}
 
-where:
 
--   $R_t$ is the reward at time-step $t$
--   $\gamma$ the discount factor $\gamma \in [0, 1]$ is the present value of future rewards.
--   The value of receiving reward $R$ after $k+1$ time-steps is $\gamma^k R$
--   This values immediate reward above delayed reward.
-    -   $\gamma = 0$ makes the agent short-sighted.
-    -   $\gamma = 1$ makes the agent far-sighted.
+- where:
+  -   $R_t$ is the reward at time-step $t$
+  -   $\gamma$ the discount factor $\gamma \in [0, 1]$ is the present value of future rewards.
+  -   The value of receiving reward $R$ after $k+1$ time-steps is $\gamma^k R$
+  -   This values immediate reward above delayed reward.
+      -   $\gamma = 0$ makes the agent short-sighted.
+      -   $\gamma = 1$ makes the agent far-sighted.
 :::
 
-::: callout-note
-### The value function {#def-value}
+The return $G_t$ is a random variable because both the rewards and the transitions can be stochastic. The return is the total discounted reward from time-step $t$.
+
+
+:::  {#def-value}
+### The value function
 
 The value function:
 
@@ -161,13 +178,13 @@ The value function can be decomposed into two parts:
 The Bellman equation for MRPs expresses this relationship:
 
 $$
-\begin{align*} 
-v(s) &= \mathbb{E}[G_t  \vert  S_t=s] \newline
-& = \mathbb{E}[R_{t+1} + \gamma R_{t+2}+\gamma^2 R_{t+3} + ...  \vert S_t = s]   \newline
-& = \mathbb{E}[R_{t+1} + \gamma( R_{t+2}+\gamma^2 R_{t+3} + ... )  \vert S_t = s]   \newline
-& = \mathbb{E}[R_{t+1} + \gamma G_{t+1}  \vert  S_t = s]   \newline
+\begin{aligned} 
+v(s) &= \mathbb{E}[G_t  \vert  S_t=s] \\ 
+& = \mathbb{E}[R_{t+1} + \gamma R_{t+2}+\gamma^2 R_{t+3} + ...  \vert S_t = s]   \\ 
+& = \mathbb{E}[R_{t+1} + \gamma( R_{t+2}+\gamma^2 R_{t+3} + ... )  \vert S_t = s]   \\ 
+& = \mathbb{E}[R_{t+1} + \gamma G_{t+1}  \vert  S_t = s]   \\ 
 & = \mathbb{E}[R_{t+1} + \gamma v(S_{t+1})  \vert S_t = s] 
-\end{align*} \qquad \text{(Bellman Equation)}
+\end{aligned} \qquad \text{(Bellman Equation)}
 $$ {#eq-bellman-mrp}
 
 The Bellman equation can also be expressed in terms of the dynamics matrix for state transitions:
@@ -183,22 +200,19 @@ where we use the dynamics matrix $P$ to express the expected value of the succes
 -   The k-Armed Bandit problem does not account for the fact that different situations call for different actions.
 -   Because it the problem is limited to a single state agents can only make decisions based on immediate reward so they fail to consider the long-term impact of their decisions - this is an inability to make plan.
 
-![The agent–environment interaction in a Markov decision process.](img/rl-agent-env.png){.column-margin}
+![The agent–environment interaction in a Markov decision process.](img/rl-agent-env.png){.column-margin group="slides"}
 
-::: callout-note
-### MDP definition {#def-MDP}
+::: {#def-MDP}
+### MDP definition 
 
-A Markov Decision Process is a Markov Reward Process with decisions.
+A Markov Decision Process is a Markov Reward Process with decisions i.e. a tuple $⟨S, A, P, R, \gamma⟩$
 
-:   a tuple $⟨S, A, P, R, \gamma⟩$
-
-where:
-
--   $S$ is a finite set of states
--   $A$ is a finite set of actions
--   $P$ is a state transition probability matrix, $P_{ss'}^a = \mathbb{P}[S_{t+1} = s' \vert S_t = s, A_t = a]$
--   $R$ is a reward function, $R_s^a = \mathbb{E}[R_{t+1} \vert S_t = s, A_t = a]$
--   $\gamma$ is a discount factor, $\gamma \in [0, 1]$
+- where:
+  -   $S$ is a finite set of states
+  -   $A$ is a finite set of actions
+  -   $P$ is a state transition probability matrix, $P_{ss'}^a = \mathbb{P}[S_{t+1} = s' \vert S_t = s, A_t = a]$
+  -   $R$ is a reward function, $R_s^a = \mathbb{E}[R_{t+1} \vert S_t = s, A_t = a]$
+  -   $\gamma$ is a discount factor, $\gamma \in [0, 1]$
 :::
 
 ### The dynamics of an MDP {#sec-MDP-dynamics}
@@ -235,17 +249,17 @@ In a tabular setting, we can also express this function as a table. Here is my s
 
 a couple of takeaways from this exercise are:
 
-1.  rewards are uniquely assigned for action at s resulting in s' so we don't need to make r another factor (i.e. list all possible rewards for (s,a,s') tuple.
+1.  Rewards are uniquely assigned for action at $s$ resulting in $s'$ so we don't need to make $r$ another factor i.e. list all possible rewards for $(s,a,s')$ tuple.
 
-2.  there are (s,a,s',r) tuples for which we don't have a non-zero probabilities - since there are no transition possible.
+2.  there are $(s,a,s',r)$ tuples for which we don't have a non-zero probabilities - since there are no transition possible.
 
-    e.g. the robot wont charge when high, so there isn't a transition from that state, nor a reward, nor a probability.
+e.g. the robot wont charge when high, so there isn't a transition from that state, nor a reward, nor a probability.
 
 ### Graphical representation of an MDP {#sec-MDP-graphical}
 
 The graphical representation of an MDP is a directed graph where the nodes represent states and the edges represent actions. The graph is labeled with the probabilities of transitioning from one state to another given an action.
 
-![graphical MDP for cleaning robot](img/rl-mdp-graph.png){.column-margin}
+![graphical MDP for cleaning robot](img/rl-mdp-graph.png){#fig-mdp-graph .column-margin group="slides"}
 
 In an MDP, the probabilities given by four part dynamics function completely characterize the environment’s dynamics.
 
@@ -261,7 +275,7 @@ We can use the four-part dynamics function to compute the **state transition pro
 
 $$
 \begin{align}
-  p(s' \vert s,a) &= \mathbb{P}[S_t = s'\vert S_{t-1} = s, A_{t-1} = a] \newline
+  p(s' \vert s,a) &= \mathbb{P}[S_t = s'\vert S_{t-1} = s, A_{t-1} = a] \\ 
   &= \sum_{r \in R} p(s',r \vert s,a) \qquad \text{(state transition p)}
 \end{align}
 $$ {#eq-transition-probabilities}
@@ -272,7 +286,7 @@ We can use the four-part dynamics function to compute the **expected rewards** f
 
 $$
 \begin{align}
-  r(s,a) &= \mathbb{E}[R_t \vert S_{t-1} = s, A_{t-1} = a] \newline
+  r(s,a) &= \mathbb{E}[R_t \vert S_{t-1} = s, A_{t-1} = a] \\ 
   &= \sum_{r \in R} r  \times \sum_{s' \in S}  p(s', r, \vert s, a) 
 \end{align}
 $$ {#eq-expected-reward-for-state-action}
@@ -283,7 +297,7 @@ We can also get the expected reward for a given state, action, and successor sta
 
 $$
 \begin{align}
-  r(s,a,s') &= \mathbb{E}[R_t \vert S_{t-1} = s, A_{t-1} = a, S_t = s'] \newline
+  r(s,a,s') &= \mathbb{E}[R_t \vert S_{t-1} = s, A_{t-1} = a, S_t = s'] \\ 
   &= \sum_{r \in R} r \times 
   \frac {  p(s', r \vert s, a) } {  p(s' \vert s, a) } 
 \end{align}
@@ -295,8 +309,8 @@ Note: perhaps implementing these in python might be further clarify the math for
 
 # Lesson 2: Goal of Reinforcement Learning
 
-::: callout-note
-### Learning Objectives
+::: {.callout-note}
+### Learning Objectives {.unnumbered}
 
 -   [x] Describe how rewards relate to the goal of an agent. [\#](#l2g1)
 -   [x] Understand episodes and identify episodic tasks. [\#](#l2g2)
@@ -318,7 +332,7 @@ $$
 
 The goal of an agent is to maximize the expected cumulative reward.
 
-::: callout-note
+::: {.callout-note}
 ### The reward hypothesis {#def-reward-hypothesis}
 
 That all of what we mean by goals and purposes can be well thought of as the maximization of the expected value of the cumulative sum of a received scalar signal (called reward).
@@ -328,28 +342,76 @@ see [@SILVER2021103535]
 
 some basic formulations of the goal of an agent:
 
-1.  Maze runner: -1 for each time step until the goal is reached, then 0.
-2.  Recycling robot: +1 per can, 0 otherwise.
-3.  Chess: 1 for a win, 0 for a draw, -1 for a loss.
+1.  **Maze runner**: -1 for each time step until the goal is reached, then 0.
+2.  **Recycling robot**: +1 per can, 0 otherwise.
+3.  **Chess**: 1 for a win, 0 for a draw, -1 for a loss.
 
-Note there is more material on this subject in the guest lecture by Michael Littman.
+My insight about reward formulation based on real world experience from working in advertising is that the when the reward is sparse and delayed in chess the credit assignment problem is more difficult than from cases where rewards are proximal and more frequent.
+
+In web analytics for advertising data scientist come up with different attribution model in which they try to assign credit for a conversion to different touch points in the customer journey and more importantly to specific interaction with advertisements. There is however advertising that is not captured e.g. offline advertising. And even if one had an accurate record of all the adverts a customer was exposed can anyone really assign credit to which specific interactions resulted in a purchase? This is clearly a situation where all models are false but some are useful.
+
+If we get to choose or better yet engineer the reward function than we should strive to make the make credit assignment as easy as possible for the agent. This should then help the rest of the algorithmic machinery to learn faster and more efficiently since the RL problem is all about propagating local rewards to a global value function or policy. Learning value function might not complete very quickly but the optimal policy might be learned much faster if the reward function lets the value function stabilize faster.
 
 ## Episodes and Episodic Tasks {#l2g2}
 
-An episode is a sequence of states, actions, and rewards that ends in a terminal state. An episodic task is a task with a well-defined terminal state.
+::: {#def-episode}
+## An episode 
+is a sequence of states, actions, and rewards that ends in a terminal state. 
+:::
 
-An example of an episodic task is a game of chess, where the game ends when one player wins or the game is a draw. The opposite setting of an episodic task is a continuing task, where the agent interacts with the environment indefinitely.
+::: {#def-episodic-task}
+An episodic task is a task with a well-defined terminal state.
+:::
 
-## Guest Lecture with Michael Littman on The Reward Hypothesis
+::: {#exm-episodic-task}
+## Chess is an episodic task
+An example of an episodic task is a game of chess, where the game ends when one player wins or the game is a draw. Then the agents gets a reward of +1 for a win, 0 for a draw, and -1 for a loss. The episode ends when the game is over. But the agents can play many games of chess. However rewards for one game of chess are not affected by the rewards for other games of chess. Each game is an episode and the rewards for one episode do not affect the rewards for another episode.
+
+One interesting point about chess is that the rewards is sparse and delayed. If we wanted our agent to learn to play faster we might be able to help it out by providing intermediate rewards and penalties 
+  - material advantage 
+  - positional advantage like 
+      - controlling the center, 
+      - controlling diagonals, open ranks or files,
+      - passed pawns,
+      - occupying outposts with knights,
+  - positional disadvantage like
+      - doubled pawns
+      - isolated pawns
+  - moving pieces twice in the opening
+  - castling early
+  - having like hanging pieces 
+  
+As we add more intermediate rewards we make the credit assignment problem easier for the agent and it should be able to learn faster. 
+  
+However, we need to be careful not to add too many rewards or we might end up with a reward function that is too complex and hard to optimize. We also need to be careful not to add rewards that are not aligned with the ultimate goal of winning the game. 
+  
+For example, if we add a reward for controlling the center, we might end up with an agent that is too focused on controlling the center and neglects other important aspects of the game. This suggests we want to make the feature available and perhaps let the agent learn the reward function itself using an inverse reinforcement learning approach or a function approximation approach.
+:::
+
+ The opposite setting of an **episodic task** is a **continuing task**, where the agent interacts with the environment indefinitely. In many ways the continuing task, particularly one with a long horizon, is more realistic and more challenging than the episodic setting. While we will soon cover a technique for dealing with both episodic and continuing tasks using the a discount factor which simplifies the math, 
+ 
+ 
+::: {.callout-note}
+## Continuing tasks and different time frames
+the continuing task presents an extra challenge in that the agent might benefit in learning about sub-goals using different time frames. This is not covered in the course! However it seems to be something that could be accomplished using the type of models that can handle aggregate signals over different time/space scales.
+
+It could be interesting to make a small environment like the Sugarscape in a maze where agents need to learn to forage for resources like food and water but location of these is intermittent, seasonal, (following some sort of sinusoid function over space with mismatched frequencies) so that sugar might have a weekly cycle and water might have a monthly cycle and a salt might have a quarterly cycle. So that they would need to get as much salt to survive the winter...  They might need to navigate a maze and the maze might be affected by flooding so that some paths are blocked at certain times and open at other times. 
+:::
+
+
+
+## Guest Lecture with Michael Littman on The Reward Hypothesis {#sec-guest-lecture-littman}
 
 ::: {.callout-note}
+## Michael Littman Bio
 
-## Michael Littman
+- Littman is a professor at Brown University and a leading researcher in reinforcement learning. He is known for his work on the reward hypothesis and the exploration-exploitation trade-off.
 
 - [His website](https://www.littmania.com/media#h.p_pIcJ-rzB3Cp6)
--
+:::
 
-Littman is a professor at Brown University and a leading researcher in reinforcement learning. He is known for his work on the reward hypothesis and the exploration-exploitation trade-off. He motivates the reward hypothesis with a humorous take on the old adage:
+
+ He motivates the reward hypothesis with a humorous take on the old adage:
 
 -   Give a man a fish and he'll eat for a day - traditional programming
 -   Teach a man to fish and he'll eat for a lifetime - supervised learning
@@ -386,8 +448,8 @@ The big elephant in the room is that we can reject the reward hypothesis and hav
 
 # Lesson 3: Continuing Tasks
 
-::: callout-note
-### Learning Objectives
+::: {.callout-note}
+### Learning Objectives {.unnumbered}
 
 -   [x] Formulate returns for continuing tasks using discounting. [\#](#l3g1)
 -   [x] Describe how returns at successive time steps are related to each other. [\#](#l3g2)
@@ -402,7 +464,7 @@ The big elephant in the room is that we can reject the reward hypothesis and hav
 
 $$
 \begin{align}
-G_t&=R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots \newline 
+G_t&=R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots \\  
 &= \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}
 \end{align}
 $$ {#eq-discounted-return-continuing}
@@ -411,8 +473,8 @@ $$ {#eq-discounted-return-continuing}
 
 $$  
 \begin{align}
-G_t &= R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots \newline 
-&= R_{t+1} + \gamma ( R_{t+2} + \gamma R_{t+3} + \ldots ) \newline
+G_t &= R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots \\  
+&= R_{t+1} + \gamma ( R_{t+2} + \gamma R_{t+3} + \ldots ) \\ 
 &= R_{t+1} + \gamma G_{t+1} 
 \end{align}
 $$ {#eq-return-recursive}
@@ -431,7 +493,7 @@ this form of the return is called the recursive form of the return and is useful
 -   To avoid infinite returns in continuing tasks, we use discounting to ensure that the return is finite.
 -   The discount factor $\gamma\in(0,1)$ is the present value of future rewards.
 
-@sutton2018reinforcement emphasizes that we can use the discount factor of \[0,1\] to unify both episodic and continuing tasks Here \gamma = 0 corresponds to myopic view of optimizing immediate rewards like in the k-armed bandit problem. The discount factor \gamma = 1 corresponds to the long-term view of optimizing undiscounted expected cumulative reward. into a single framework. This is a powerful idea that allows us to use the same algorithms for both types of tasks.
+@sutton2018reinforcement emphasizes that we can use the discount factor of $[0,1]$ to unify both episodic and continuing tasks Here $\gamma = 0$ corresponds to myopic view of optimizing immediate rewards like in the k-armed bandit problem. The discount factor $\gamma = 1$ corresponds to the long-term view of optimizing undiscounted expected cumulative reward. into a single framework. This is a powerful idea that allows us to use the same algorithms for both types of tasks.
 
 I think it is a good place to consider a couple of ideas raised by Littman in the guest lecture:
 
@@ -442,35 +504,48 @@ Behavioral economics has considered a notion of hyperbolic discounting where the
 two forms of hyperbolic discounting are:
 
 $$
- G(D) = \frac{1}{1 + \gamma D}
+G(D) = \frac{1}{1 + \gamma D}
 $$
 
 $$
-φh(τ) = (1+ ατ)−γ/α
-$$ {#eq-hyperbolic-discounting} where:
+\phi_h(\tau) = (1+ \alpha\tau)−\gamma/\alpha
+$$ {#eq-hyperbolic-discounting} 
 
--   $φh(τ)$ is the hyperbolic discount factor at time $τ$
--   $α$ is the rate of discounting
--   $γ$ is the delay parameter
+where:
+
+-   $\phi_h(\tau)$ is the hyperbolic discount factor at time $τ$
+-   $\alpha$ is the rate of discounting
+-   $\gamma$ is the delay parameter
 
 there is also quasi-hyperbolic discounting which is a combination of exponential and hyperbolic discounting.
 
 $$
  G(D) = \begin{cases} 
-  1 & \text{if } t = 0  \newline
+  1 & \text{if } t = 0  \\ 
   \beta^k \delta^{D} & \text{if } t > 0
   \end{cases}
-$$
+$$ {#eq-quasi-hyperbolic-discounting}
+
+where:
+
+-   $\beta$ is the short-term discount factor
+-   $\delta$ is the long-term discount factor
+-   $D$ is the delay
 
 The notation for both terminal and non-terminal states is $S^+$
 
-Exercise 2.10 proof of Equation 3.10
+
+---
+
+## Exercises
+
+Exercise 2.10: proof of Equation 3.10
 
 $$
-\begin{align*}
-G_t &= \sum_{k=0}^\infty \gamma^k = lim_{n \rightarrow \infty} (1 + \gamma + \gamma^2 + ... + \gamma^n) \newline
-&= lim_{n \rightarrow \infty} \frac{(1 + \gamma + \gamma^2 + ... + \gamma^n) (1 - \gamma)}{(1 - \gamma)} \newline
-&= lim_{n \rightarrow \infty} \frac{1 - \gamma^{n+1}}{1 - \gamma} \newline
+\begin{aligned}
+G_t &= \sum_{k=0}^\infty \gamma^k = \lim_{n \rightarrow \infty} (1 + \gamma + \gamma^2 + ... + \gamma^n) \\ 
+&= \lim_{n \rightarrow \infty} \frac{(1 + \gamma + \gamma^2 + ... + \gamma^n) (1 - \gamma)}{(1 - \gamma)} \\ 
+&= \lim_{n \rightarrow \infty} \frac{1 - \gamma^{n+1}}{1 - \gamma} \\ 
 &= \frac{1}{1 - \gamma} 
-\end{align*}
+\end{aligned}
 $$

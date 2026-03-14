@@ -2,16 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.39">
+<meta name="generator" content="quarto-1.9.31">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Oren Bochman">
-<meta name="keywords" content="the k-armed bandit problem, bandit algorithms, exploration, explotation, epsilon greedy algorithm, sample avarage method">
+<meta name="keywords" content="the k-armed bandit problem, bandit algorithms, exploration, exploitation, epsilon greedy algorithm, sample average method">
 <meta name="description" content="In week 1 we define some key concepts like rewards, states, action, value functions, action values functions. We consider the the multi-armed bandit problem, leading to exploration explotation dillema, and the epsilon greedy algorithm.">
 
-<title>The K-Armed Bandit Problem – Notes on Reinfocement Learning</title>
+<title>The K-Armed Bandit Problem – Notes on Reinforcement Learning</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -24,8 +26,9 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -36,7 +39,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -57,7 +60,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -68,19 +90,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
 <link href="../../favicon.ico" rel="icon">
-<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7c69b197886ae2a34062761d21e44731.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-2a9a3f180cf500eef5b976fdc6f22fdf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7c69b197886ae2a34062761d21e44731.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-594d21605a7b9fb32547fedacd8fc358.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-d396125c57f3f0defba792e7b0e7a5dc.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-53e333c44ad91e7e6fb689e28a48ce26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-65daee0ea38b11146b100396567ce7dc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-53e333c44ad91e7e6fb689e28a48ce26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -114,26 +142,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         background: /images/banner_black_3.jpg;
       }
 </style>
-<script>
-MathJax = {
-  loader: {
-    load: ['[tex]/boldsymbol']
-  },
-  tex: {
-    tags: "all",
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\\[','\\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    packages: {
-      '[+]': ['boldsymbol']
+<script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+<script>window.backupDefine = window.define; window.define = undefined;</script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+    <style type="text/css">
+    .ps-root .ps-algorithm {
+      border-top: 2px solid;
+      border-bottom: 2px solid;
     }
-  }
-};
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+    .pseudocode-container {
+      text-align: left;
+    }
+    </style>
+  
+      <style type="text/css">
+      .ps-algorithm > .ps-line {
+        text-align: left;
+      }
+      </style>
+    
 
-  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -148,7 +176,7 @@ MathJax = {
    });
 }}});
   </script>
-  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -161,7 +189,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -177,10 +205,172 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
@@ -188,7 +378,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">Notes on Reinfocement Learning</span>
+    <span class="navbar-title">Notes on Reinforcement Learning</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -241,12 +431,6 @@ window.Quarto = {
   
   <div class="quarto-title-meta">
 
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Oren Bochman </p>
-            </div>
-    </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
@@ -262,7 +446,7 @@ window.Quarto = {
   <div>
     <div class="keywords">
       <div class="block-title">Keywords</div>
-      <p>the k-armed bandit problem, bandit algorithms, exploration, explotation, epsilon greedy algorithm, sample avarage method</p>
+      <p>the k-armed bandit problem, bandit algorithms, exploration, exploitation, epsilon greedy algorithm, sample average method</p>
     </div>
   </div>
   
@@ -280,34 +464,35 @@ window.Quarto = {
 
 
 
+
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/logo.png" class="img-fluid figure-img"></p>
+<p><img src="img/logo.png" class="nolightbox img-fluid figure-img"></p>
 <figcaption>RL logo</figcaption>
 </figure>
 </div><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/alg_selector.png" class="img-fluid figure-img" data-group="slides"></p>
+<p><a href="img/alg_selector.png" class="lightbox" data-gallery="slides" title="RL algorithms"><img src="img/alg_selector.png" class="img-fluid figure-img" alt="RL algorithms"></a></p>
 <figcaption>RL algorithms</figcaption>
 </figure>
 </div></div>
 <section id="sec-lesson-k-armed-bandit" class="level1 page-columns page-full">
 <h1>Lesson 1: The K-Armed Bandit</h1>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Read
+<span class="screen-reader-only">Tip</span>Read
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ul class="task-list">
-<li><label><input type="checkbox" checked=""><a href="http://incompleteideas.net/book/RLbook2020.pdf#page=47">@sutton2018reinforcement§2.1-7, pp.&nbsp;25-36</a></label></li>
-<li><label><input type="checkbox" checked=""><a href="http://incompleteideas.net/book/RLbook2020.pdf#page=47">@sutton2018reinforcement§2.8, pp.&nbsp;42-43</a></label></li>
+<li><label><input type="checkbox" checked=""><a href="http://incompleteideas.net/book/RLbook2020.pdf#page=47"><span class="citation" data-cites="sutton2018reinforcement">Sutton and Barto (<span>2018</span>)</span>§2.1-7, pp.&nbsp;25-36</a></label></li>
+<li><label><input type="checkbox" checked=""><a href="http://incompleteideas.net/book/RLbook2020.pdf#page=47"><span class="citation" data-cites="sutton2018reinforcement">Sutton and Barto (<span>2018</span>)</span>§2.8, pp.&nbsp;42-43</a></label></li>
 </ul>
 </div>
 </div>
@@ -318,7 +503,7 @@ Read
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Goals
+<span class="screen-reader-only">Note</span>Goals
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -331,7 +516,7 @@ Goals
 </div>
 </div>
 <blockquote class="blockquote">
-<p>In reinforcement learning, the agent generates its own training data by interacting with the world. The agent must learn the consequences of his own actions through trial and error, rather than being told the correct action – <span class="citation" data-cites="white2020fundamental">[@white2020fundamental]</span></p>
+<p>In reinforcement learning, the agent generates its own training data by interacting with the world. The agent must learn the consequences of his own actions through trial and error, rather than being told the correct action – <span class="citation" data-cites="white2020fundamental">(<a href="#ref-white2020fundamental" role="doc-biblioref">Matha White 2020</a>)</span></p>
 </blockquote>
 <section id="sec-k-armed-bandit" class="level2">
 <h2 class="anchored" data-anchor-id="sec-k-armed-bandit">K-armed bandits 🐙</h2>
@@ -347,7 +532,7 @@ Goals
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Difference between bandits and RL
+<span class="screen-reader-only">Note</span>Difference between bandits and RL
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -360,7 +545,7 @@ Difference between bandits and RL
 
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><video src="img/multi_armed_bandit.webm" class="img-fluid" controls=""><a href="img/multi_armed_bandit.webm">Video</a></video></p>
+<p><a href="img/multi_armed_bandit.webm" class="lightbox" data-gallery="slides" title="bandit"><video src="img/multi_armed_bandit.webm" class="img-fluid" controls=""></video></a><a href="img/multi_armed_bandit.webm">bandit</a></p>
 <figcaption>bandit</figcaption>
 </figure>
 </div></div><div id="exm-clinical-trials" class="theorem example">
@@ -377,7 +562,7 @@ Difference between bandits and RL
 
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/rl-clinical-trial.png" class="img-fluid figure-img"></p>
+<p><a href="img/rl-clinical-trial.png" class="lightbox" data-gallery="slides" title="clinical trial"><img src="img/rl-clinical-trial.png" class="img-fluid figure-img" alt="clinical trial"></a></p>
 <figcaption>clinical trial</figcaption>
 </figure>
 </div></div><section id="sec-l1g3" class="level4">
@@ -385,8 +570,8 @@ Difference between bandits and RL
 <p>The <strong>value</strong> of an action is its <strong>expected reward</strong> which can be expressed mathematically as:</p>
 <p><span id="eq-action-value"><span class="math display">
 \begin{align}
-q_{\star}(a) &amp; \doteq \mathbb{E}[R_t  \vert  A_t=a] \space \forall a \in \{a_1 ... a_k\} \newline
-             &amp; = \sum_r p(r|a)r \qquad \text{(action value)}
+q_{\star}(a) &amp; \doteq \mathbb{E}[R_t  \vert  A_t=a] \space \forall a \in \{a_1 \ldots a_k\} \\  
+             &amp; = \sum_r p(r \mid a)r \qquad \text{(action value)}
 \end{align}
 \tag{1}</span></span></p>
 <p>where:</p>
@@ -411,7 +596,7 @@ q_{\star}(a) &amp; \doteq \mathbb{E}[R_t  \vert  A_t=a] \space \forall a \in \{a
 
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/rl-descion-problems.png" class="img-fluid figure-img"></p>
+<p><a href="img/rl-descion-problems.png" class="lightbox" data-gallery="slides" title="decisions"><img src="img/rl-descion-problems.png" class="img-fluid figure-img" alt="decisions"></a></p>
 <figcaption>decisions</figcaption>
 </figure>
 </div></div><p>example of decisions under uncertainty:</p>
@@ -424,7 +609,7 @@ q_{\star}(a) &amp; \doteq \mathbb{E}[R_t  \vert  A_t=a] \space \forall a \in \{a
 
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/rl-why-bandits.png" class="img-fluid figure-img"></p>
+<p><a href="img/rl-why-bandits.png" class="lightbox" data-gallery="slides" title="why discuss bandits"><img src="img/rl-why-bandits.png" class="img-fluid figure-img" alt="why discuss bandits"></a></p>
 <figcaption>why discuss bandits</figcaption>
 </figure>
 </div></div><p>It best to consider issues and algorithms design choices in the simplest setting first. The bandit problem is the simplest setting for RL. More advanced algorithms will incorporate parts we use to solve this simple settings.</p>
@@ -445,7 +630,7 @@ q_{\star}(a) &amp; \doteq \mathbb{E}[R_t  \vert  A_t=a] \space \forall a \in \{a
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Goals
+<span class="screen-reader-only">Note</span>Goals
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -464,7 +649,7 @@ Goals
 
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/rl-clinical-trial-q(a).png" class="img-fluid figure-img"></p>
+<p><a href="img/rl-clinical-trial-q(a).png" class="lightbox" data-gallery="slides" title="estimating action values"><img src="img/rl-clinical-trial-q(a).png" class="img-fluid figure-img" alt="estimating action values"></a></p>
 <figcaption>estimating action values</figcaption>
 </figure>
 </div></div><p>In Tabular RL settings The action value function <span class="math inline">q</span> is nothing more than a table with one {state, action} pair per row and its value. More generally, like when we will consider function approximation in course 3, it is a mapping from {state, action} pair to a expected reward.</p>
@@ -508,22 +693,22 @@ Q_t(a) \doteq \frac{\text{sum of rewards for action a taken time } t}{\text{numb
 <dl>
 <dt>Exploration</dt>
 <dd>
-<p>Testing any action that might be better than our best.</p>
+Testing any action that might be better than our best.
 </dd>
 <dt>Exploitation</dt>
 <dd>
-<p>Using the best action.</p>
+Using the best action.
 </dd>
 </dl>
 <p>Should the doctor explore new treatments that might harm his patients or exploit the current treatment. In real life bacteria gain immunity to antibiotics so there is merit to exploring new treatments. However, a new treatment can be harmful to some patients. Ideally we want to enjoy the benefits of the best treatment but to be open to new and better alternatives but we can only do one at a time.</p>
-<p><span class="marked">Since exploitation is by definition mutually exclusive with exploration we must choose one and give up the benefits of the other. This is the <strong>dilemma of Exploration and Exploitation</strong>.</span> How an agent resolves this dilemma in practice depends on the agent’s preferences and the type of state space it inhabits, if it has just started or encounters a <strong>changing landscape,</strong> it should make an effort to explore, on the other hand if it has explored enough to be certain of a global maximum it would prefer to exploit.</p>
+<p><span class="marked">Since exploitation is by definition mutually exclusive with exploration we must choose one and give up the benefits of the other. This is the <strong>dilemma of Exploration and Exploitation</strong>.</span> How an agent resolves this dilemma in practice depends on the agent’s preferences and the type of state space it inhabits, if it has just started or encounters a <strong>changing landscape</strong> it should make an effort to explore, on the other hand if it has explored enough to be certain of a global maximum it would prefer to exploit.</p>
 </section>
 <section id="L2G4" class="level3">
 <h3 class="anchored" data-anchor-id="L2G4">Defining Online learning ?</h3>
 <dl>
 <dt>Online learning</dt>
 <dd>
-<p>learning by updating the agent’s value function or the action value function step by step as an agent transverses the states seeking the goal. Online learning is important to handle MDP which can change.</p>
+learning by updating the agent’s value function or the action value function step by step as an agent transverses the states seeking the goal. Online learning is important to handle MDP which can change.
 </dd>
 </dl>
 <p>One simple way an agent can use online learning is to try actions by random and keep track of the subsequent states. Eventually we should reach the goal state. If we repeat this many times we can estimate the expected rewards for each action.</p>
@@ -538,16 +723,16 @@ q_t(a)=\frac{\text{sum or rewards when a taken prior to t}}{\text{number of time
 
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/rl-sample-avarage-method.png" class="img-fluid figure-img"></p>
+<p><a href="img/rl-sample-avarage-method.png" class="lightbox" data-gallery="slides" title="example"><img src="img/rl-sample-avarage-method.png" class="img-fluid figure-img" alt="example"></a></p>
 <figcaption>example</figcaption>
 </figure>
 </div></div><p><span id="eq-sample-average-incremental-update-rule"><span class="math display">
 \begin{align}
-Q_{n+1} &amp;= \frac{1}{n} \sum_{i=1}^n R_i \newline
-  &amp; = \frac{1}{n} \Bigg(R_n + \sum_i^{n-1} R_i\Bigg) \newline
-  &amp; = \frac{1}{n} \Bigg(R_n + (n-1) \frac{1}{(n-1)}\sum_i^{n-1} R_i\Bigg) \newline
-  &amp;= \frac{1}{n} \Big(R_n + (n-1) Q_{n}\Big) \newline
-  &amp;= \frac{1}{n} \Big(R_n + nQ_{n} -Q_{n} \Big) \newline
+Q_{n+1} &amp;= \frac{1}{n} \sum_{i=1}^n R_i \\
+  &amp; = \frac{1}{n} \Bigg(R_n + \sum_i^{n-1} R_i\Bigg) \\
+  &amp; = \frac{1}{n} \Bigg(R_n + (n-1) \frac{1}{(n-1)}\sum_i^{n-1} R_i\Bigg) \\
+  &amp;= \frac{1}{n} \Big(R_n + (n-1) Q_{n}\Big) \\
+  &amp;= \frac{1}{n} \Big(R_n + nQ_{n} -Q_{n} \Big) \\
   &amp;= Q_n + \frac{1}{n} \Big[R_n - Q_{n}\Big]
 \end{align}
 \tag{4}</span></span></p>
@@ -568,9 +753,12 @@ Q_{n+1} &amp;= \frac{1}{n} \sum_{i=1}^n R_i \newline
 <p><span id="eq-general-incremental-update-rule"><span class="math display">
 Q_{n+1} = Q_n + \alpha \Big[R_n - Q_{n}\Big] \qquad a\in (0,1)
 \tag{5}</span></span></p>
-<div id="simple-epsilon-greedy-bandit-algorithm" class="pseudocode-container quarto-float" data-line-number-punc=":" data-line-number="true" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-no-end="false" data-comment-delimiter="#" data-pseudocode-number="1">
+<div id="alg-simple-epsilon-greedy-bandit" class="theorem algorithm">
+<p><span class="theorem-title"><strong>Algorithm 1 (Simple Ɛ-Greedy bandit)</strong></span> &nbsp;</p>
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-indent-size="1.2em" data-no-end="false" data-line-number="true" data-comment-delimiter="#" data-caption-prefix="Algorithm">
 <div class="pseudocode">
 \begin{algorithm} \caption{Simple Bandit($\epsilon$)}\begin{algorithmic} \State $Q(a) \leftarrow 0\ \forall a\ $ \Comment{ $\textcolor{blue}{initialize\ action\ values}$} \State $N(a) \leftarrow 0\ \forall a\ $ \Comment{ $\textcolor{blue}{initialize\ counter\ for\ actions\ taken}$} \For{$t = 1, 2, \ldots \infty$} \State $A_t \leftarrow \begin{cases} \arg\max_a Q(a) &amp; \text{with probability } 1 - \epsilon \\ \text{a random action} &amp; \text{with probability } \epsilon \end{cases}$ \State $R_t \leftarrow \text{Bandit}(A_t)$ \State $N(A_t) \leftarrow N(A_t) + 1$ \State $Q(A_t) \leftarrow Q(A_t) + \frac{1}{N(A_t)}[R_t - Q(A_t)]$ \EndFor \end{algorithmic} \end{algorithm}
+</div>
 </div>
 </div>
 </section>
@@ -583,7 +771,7 @@ Q_{n+1} = Q_n + \alpha \Big[R_n - Q_{n}\Big] \qquad a\in (0,1)
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Goals
+<span class="screen-reader-only">Note</span>Goals
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -599,17 +787,23 @@ Goals
 </div>
 </div>
 <p>the following is a Bernoulli greedy algorithm</p>
-<div id="alg-greedy-bandit" class="pseudocode-container quarto-float" data-line-number-punc=":" data-line-number="true" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-no-end="false" data-comment-delimiter="#" data-pseudocode-number="2">
+<div id="alg-greedy-bandit" class="theorem algorithm">
+<p><span class="theorem-title"><strong>Algorithm 2 (Bernoulli Greedy Algorithm)</strong></span> &nbsp;</p>
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-indent-size="1.2em" data-no-end="false" data-line-number="true" data-comment-delimiter="#" data-caption-prefix="Algorithm">
 <div class="pseudocode">
 \begin{algorithm} \caption{BernGreedy(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \State \State \Comment{ estimate model} \For{$k = 1, . . . , K$} \State $\hat\theta_k \leftarrow a_k / (α_k + β_k)$ \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
+</div>
 </div>
 </div>
 <section id="sec-epsilon-greedy-policies" class="level2">
 <h2 class="anchored" data-anchor-id="sec-epsilon-greedy-policies">Ɛ-Greedy Policies</h2>
 <p>The Ɛ-greedy policy uses a simple heuristic to balance exploration with exploitation. The idea is to choose the best action with probability <span class="math inline">1-\epsilon</span> and to choose a random action with probability <span class="math inline">\epsilon</span>.</p>
-<div id="alg-epsilon-greedy" class="pseudocode-container quarto-float" data-line-number-punc=":" data-line-number="true" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-no-end="false" data-comment-delimiter="#" data-pseudocode-number="3">
+<div id="alg-Ɛ-greedy-bandit" class="theorem algorithm">
+<p><span class="theorem-title"><strong>Algorithm 3 (Ɛ-Greedy bandit)</strong></span> &nbsp;</p>
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-indent-size="1.2em" data-no-end="false" data-line-number="true" data-comment-delimiter="#" data-caption-prefix="Algorithm">
 <div class="pseudocode">
 \begin{algorithm} \caption{EpsilonGreedy(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, \ldots $} \State p = random() \If {$p &lt; \epsilon$} \State select radom action $x_t \qquad$ \Comment{explore} \Else \State select $x_t = \arg\max_k \hat{\theta}_k \qquad$ \Comment{exploit} \EndIf \EndFor \end{algorithmic} \end{algorithm}
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-caution callout-titled">
@@ -618,7 +812,7 @@ Goals
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-The problem with Ɛ-greedy policies
+<span class="screen-reader-only">Caution</span>The problem with Ɛ-greedy policies
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -631,10 +825,10 @@ The problem with Ɛ-greedy policies
 </div>
 </div>
 <p>The following is a simple implementation of the Ɛ-greedy algorithm in Python from <a href="https://www.geeksforgeeks.org/epsilon-greedy-algorithm-in-reinforcement-learning/?ref=ml_lbp">geeksforgeeks.org</a></p>
-<div id="637b2d47" class="cell" data-execution_count="1">
+<div id="2534467c" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import required libraries </span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import required libraries </span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt </span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  </span>
@@ -686,81 +880,99 @@ The problem with Ɛ-greedy policies
 <span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> a <span class="kw">in</span> actions: </span>
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(a.mean) </span>
 <span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> cumulative_average </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> cumulative_average </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="028bd09c" class="cell" data-execution_count="2">
+<div id="3d5eb310" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>c_1 <span class="op">=</span> run_experiment(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>, <span class="fl">0.1</span>, <span class="dv">100000</span>) </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#print(c_1)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>c_1 <span class="op">=</span> run_experiment(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>, <span class="fl">0.1</span>, <span class="dv">100000</span>) </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#print(c_1)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-stderr">
+<pre><code>findfont: Font family ['STIXGeneral'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['STIXGeneral'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['STIXGeneral'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['STIXGeneral'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['STIXNonUnicode'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['STIXNonUnicode'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['STIXNonUnicode'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['STIXSizeOneSym'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['STIXSizeTwoSym'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['STIXSizeThreeSym'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['STIXSizeFourSym'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['STIXSizeFiveSym'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['cmtt10'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['cmb10'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['cmss10'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['DejaVu Sans Display'] not found. Falling back to DejaVu Sans.</code></pre>
+</div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="c1-w1_files/figure-html/cell-3-output-1.png" width="579" height="412" class="figure-img"></p>
+<p><a href="c1-w1_files/figure-html/cell-3-output-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="c1-w1_files/figure-html/cell-3-output-2.png" width="579" height="412" class="figure-img"></a></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.0533891142612195
-2.02556827747505
-2.9967725891863877</code></pre>
+<pre><code>0.9869094176522599
+1.9944413043989206
+2.9991352147860435</code></pre>
 </div>
 </div>
-<div id="676270b4" class="cell" data-execution_count="3">
+<div id="055848e0" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>c_05 <span class="op">=</span> run_experiment(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>, <span class="fl">0.05</span>, <span class="dv">100000</span>) </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#print(c_05)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>c_05 <span class="op">=</span> run_experiment(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>, <span class="fl">0.05</span>, <span class="dv">100000</span>) </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#print(c_05)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="c1-w1_files/figure-html/cell-4-output-1.png" width="571" height="412" class="figure-img"></p>
+<p><a href="c1-w1_files/figure-html/cell-4-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="c1-w1_files/figure-html/cell-4-output-1.png" width="571" height="412" class="figure-img"></a></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.0039926459413782
-2.00700337763791
-3.003536310561855</code></pre>
+<pre><code>1.007780601606105
+2.011659588715033
+2.9981729676672453</code></pre>
 </div>
 </div>
-<div id="fa15f71a" class="cell" data-execution_count="4">
+<div id="2769fd3a" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>c_01 <span class="op">=</span> run_experiment(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>, <span class="fl">0.01</span>, <span class="dv">100000</span>) </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#print(c_01)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>c_01 <span class="op">=</span> run_experiment(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>, <span class="fl">0.01</span>, <span class="dv">100000</span>) </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#print(c_01)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="c1-w1_files/figure-html/cell-5-output-1.png" width="571" height="412" class="figure-img"></p>
+<p><a href="c1-w1_files/figure-html/cell-5-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="c1-w1_files/figure-html/cell-5-output-1.png" width="571" height="412" class="figure-img"></a></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.9611950383032279
-2.026899073102919
-2.9958268510720685</code></pre>
+<pre><code>0.932242790233463
+2.006226294773818
+2.9993737054899463</code></pre>
 </div>
 </div>
-<div id="ade451c8" class="cell" data-execution_count="5">
+<div id="34db6455" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># log scale plot </span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>plt.plot(c_1, label <span class="op">=</span><span class="st">'eps = 0.1'</span>) </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>plt.plot(c_05, label <span class="op">=</span><span class="st">'eps = 0.05'</span>) </span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>plt.plot(c_01, label <span class="op">=</span><span class="st">'eps = 0.01'</span>) </span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>plt.legend() </span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>) </span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>plt.show() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># log scale plot </span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>plt.plot(c_1, label <span class="op">=</span><span class="st">'eps = 0.1'</span>) </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>plt.plot(c_05, label <span class="op">=</span><span class="st">'eps = 0.05'</span>) </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>plt.plot(c_01, label <span class="op">=</span><span class="st">'eps = 0.01'</span>) </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>plt.legend() </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">'log'</span>) </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>plt.show() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="c1-w1_files/figure-html/cell-6-output-1.png" width="571" height="412" class="figure-img"></p>
+<p><a href="c1-w1_files/figure-html/cell-6-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="c1-w1_files/figure-html/cell-6-output-1.png" width="571" height="412" class="figure-img"></a></p>
 </figure>
 </div>
 </div>
@@ -776,37 +988,37 @@ The problem with Ɛ-greedy policies
 </section>
 <section id="sec-optimistic-initial-values" class="level2">
 <h2 class="anchored" data-anchor-id="sec-optimistic-initial-values">Optimistic initial values</h2>
-<dl>
-<dt>Optimistic initial values</dt>
-<dd>
-<p>Setting all initially action values greater than the algorithmically available values in [0,1]</p>
-</dd>
-</dl>
+<div id="def-optimistic-initial-values" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1 (Optimistic initial values)</strong></span> Setting all initially action values greater than the algorithmically available values in <span class="math inline">[0,1]</span></p>
+</div>
 <p>The methods we have discussed are dependent on the initial action-value estimates, <span class="math inline">Q_1(a)</span>. In the language of statistics, we call these methods biased by their initial estimates. For the sample-average methods, the bias disappears once all actions have been selected at least once. For methods with constant <span class="math inline">\alpha</span>, the bias is permanent, though decreasing over time.</p>
-<div id="alg-optimitc-greedy-bandit" class="pseudocode-container quarto-float" data-line-number-punc=":" data-line-number="true" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-no-end="false" data-comment-delimiter="#" data-pseudocode-number="4">
+<div id="alg-optimistic-greedy-bern-bandit" class="theorem algorithm">
+<p><span class="theorem-title"><strong>Algorithm 4 (Optimistic Greedy Bernoulli Bandit)</strong></span> &nbsp;</p>
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-indent-size="1.2em" data-no-end="false" data-line-number="true" data-comment-delimiter="#" data-caption-prefix="Algorithm">
 <div class="pseudocode">
 \begin{algorithm} \caption{OptimisticBernGreedy(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \State \State \Comment{ estimate model} \For{$k = 1, . . . , K$} \State $\hat\theta_k \leftarrow 1 \qquad$ \Comment{optimistic initial value} \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
 </div>
 </div>
+</div>
 </section>
-<section id="sec-benefits-of-optimistic-initial-values-for-early-exploration" class="level2">
+<section id="sec-benefits-of-optimistic-initial-values-for-early-exploration" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="sec-benefits-of-optimistic-initial-values-for-early-exploration">Benefits of optimistic initial values for early exploration</h2>
 <p>Setting the initial action values to be higher than the true values has the effect of causing various bandit algorithm to try to exploit them - only to find out that most values are not as rewarding as it was led to expect.</p>
 <p>What happens is that the algorithm will initially explore more than it would have otherwise. Possibly even trying all the actions at least once.</p>
 <p>In the short-term it will perform worse than Ɛ- greedy which tend to exploit. But as more of the state space is explored at least once the algorithm will beat an Ɛ-greedy policy which can take far longer to explore the space and find the optimal options.</p>
-<div class="quarto-figure quarto-figure-center">
+
+<div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/rl-optimistic-initial-conditions.png" class="img-fluid figure-img"></p>
+<p><a href="img/rl-optimistic-initial-conditions.png" class="lightbox" data-gallery="slides" title="The effect of optimistic initial action-value estimates"><img src="img/rl-optimistic-initial-conditions.png" class="img-fluid figure-img" alt="The effect of optimistic initial action-value estimates"></a></p>
 <figcaption>The effect of optimistic initial action-value estimates</figcaption>
 </figure>
-</div>
-<div class="callout callout-style-default callout-caution callout-titled">
+</div></div><div class="callout callout-style-default callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Criticisms of optimistic initial values
+<span class="screen-reader-only">Caution</span>Criticisms of optimistic initial values
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -821,12 +1033,12 @@ Criticisms of optimistic initial values
 <section id="sec-the-ucb-action-selection-method" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="sec-the-ucb-action-selection-method">The UCB action selection method</h2>
 <p>UCB is an acronym for Upper Confidence Bound. The idea behind it is to select the action that has the highest upper confidence bound. This has the advantage over epsilon greedy that it will explore more in the beginning and then exploit more as the algorithm progresses.</p>
-<p>the upper confidence bound is defined as:</p>
+<p>The upper confidence bound is defined as:</p>
 <p><span id="eq-ucb"><span class="math display">
-A_t = \arg\max\_a \Bigg[
-  \underbrace{Q_t(a)}_{exploitation} +
+A_t = \arg\max_a \Bigg[
+  \underbrace{Q_t(a)\vphantom{\sqrt{\frac{\ln t}{N_t(a)}} }}_{exploitation} +
   \underbrace{c \sqrt{\frac{\ln t}{N_t(a)} }}_{exploration}
-\Bigg] \qquad
+\Bigg]
 \tag{6}</span></span></p>
 <p>where:</p>
 <ul>
@@ -837,14 +1049,17 @@ A_t = \arg\max\_a \Bigg[
 
 <div class="no-row-height column-margin column-container"><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/rl_wk1_ucb.png" class="img-fluid figure-img"></p>
+<p><a href="img/rl_wk1_ucb.png" class="lightbox" data-gallery="slides" title="UCB intuition"><img src="img/rl_wk1_ucb.png" class="img-fluid figure-img" alt="UCB intuition"></a></p>
 <figcaption>UCB intuition</figcaption>
 </figure>
 </div></div><p>The idea is we the action for which the action value plus the highest possible uncertainty give the highest sum. We are being optimistic in assuming this choice will give the highest reward. In reality any value in the confidence interval could be the true value. Each time we select an action we reduce the uncertainty in the exploration term and we also temper our optimism of the upper confidence bound by the number of times we have selected the action. This means that we will prefer to visit the actions that have not been visited as often.</p>
 <p>The main advantage of UCB is that it is more efficient than epsilon greedy in the long run. If we measure the cost of learning in terms of the regret - the difference between the expected reward of the optimal action and the expected reward of the action we choose. UCB has a lower regret than epsilon greedy. The downside is that it is more complex and requires more computation.</p>
-<div id="alg-brn-UCB" class="pseudocode-container quarto-float" data-line-number-punc=":" data-line-number="true" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-no-end="false" data-comment-delimiter="#" data-pseudocode-number="5">
+<div id="alg-brn-UCB" class="theorem algorithm">
+<p><span class="theorem-title"><strong>Algorithm 5 (Upper confidence bound (UCB) bandit algorithm)</strong></span> &nbsp;</p>
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-indent-size="1.2em" data-no-end="false" data-line-number="true" data-comment-delimiter="#" data-caption-prefix="Algorithm">
 <div class="pseudocode">
 \begin{algorithm} \caption{UCB(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \For { $k = 1, . . . , K$ } \State \Comment{ $\textcolor{blue}{compute\ UCBs}$} \State $U_k = \hat\theta_k + c \sqrt{\frac{\ln t}{N_k}}$ \EndFor \State \Comment{ $\textcolor{blue}{select\ and\ apply\ action}$} \State $x_t \leftarrow \arg\max_k h(x,U_x)$ \State Apply xt and observe $y_t$ and $r_t$ \State \Comment{ $\textcolor{blue}{estimate\ model}$} \For{$k = 1, . . . , K$} \State $\hat\theta_k \leftarrow a_k / (α_k + β_k)$ \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
+</div>
 </div>
 </div>
 <p>Note we can model UCB using an urn model.</p>
@@ -855,9 +1070,12 @@ A_t = \arg\max\_a \Bigg[
 <section id="Sec-Thompson-Sampling-Algorithm" class="level3">
 <h3 class="anchored" data-anchor-id="Sec-Thompson-Sampling-Algorithm">Thompson Sampling Algorithm</h3>
 <p>The algorithm is as follows:</p>
-<div id="alg-bernoulli-thompson-sampling" class="pseudocode-container quarto-float" data-line-number-punc=":" data-line-number="true" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-no-end="false" data-comment-delimiter="#" data-pseudocode-number="6">
+<div id="alg-bernoulli-thompson-sampling" class="theorem algorithm">
+<p><span class="theorem-title"><strong>Algorithm 6 (Bernulli Thompson Sampling)</strong></span> &nbsp;</p>
+<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-pseudocode-number="1" data-indent-size="1.2em" data-no-end="false" data-line-number="true" data-comment-delimiter="#" data-caption-prefix="Algorithm">
 <div class="pseudocode">
-\begin{algorithm} \caption{BernTS(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \State \State \Comment{ sample model} \For{$k = 1, . . . , K$} \State Sample $\hat\theta_k \sim beta(α_k, β_k)$ \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
+\begin{algorithm} \caption{Bernulli Thompson Sampling(K, α, β)}\begin{algorithmic} \For{$t = 1, 2, . . .$} \State \State \Comment{ sample model} \For{$k = 1, . . . , K$} \State Sample $\hat\theta_k \sim beta(α_k, β_k)$ \EndFor \State \Comment{ select and apply action:} \State $x_t \leftarrow \arg\max_k \hat{\theta}_k$ \State Apply $x_t$ and observe $r_t$ \State \Comment{ update distribution:} \State $(α_{x_t}, β_{x_t}) \leftarrow (α_{x_t} + r_t, β_{x_t} + 1 − r_t)$ \EndFor \end{algorithmic} \end{algorithm}
+</div>
 </div>
 </div>
 <ul>
@@ -902,542 +1120,427 @@ A_t = \arg\max\_a \Bigg[
 </ul>
 <section id="coding-bandits-with-mesa" class="level2">
 <h2 class="anchored" data-anchor-id="coding-bandits-with-mesa">Coding Bandits with MESA</h2>
-<div id="48d05ff2" class="cell" data-execution_count="6">
+<div id="dba769c0" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mesa <span class="im">import</span> Model, Agent</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mesa.time <span class="im">import</span> RandomActivation</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EpsilonGreedyAgent(Agent):</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">    This agent implements the epsilon-greedy </span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, unique_id, model, num_arms, epsilon<span class="op">=</span><span class="fl">0.1</span>):</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(unique_id,model)</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.num_arms <span class="op">=</span> num_arms</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.epsilon <span class="op">=</span> epsilon</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.q_values <span class="op">=</span> np.zeros(num_arms)  <span class="co"># Initialize Q-value estimates</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.action_counts <span class="op">=</span> np.zeros(num_arms)  <span class="co"># Track action counts</span></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> choose_action(<span class="va">self</span>):</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.random.rand() <span class="op">&lt;</span> <span class="va">self</span>.epsilon:</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Exploration: Choose random arm</span></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> np.random.randint(<span class="dv">0</span>, <span class="va">self</span>.num_arms)</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Exploitation: Choose arm with highest Q-value</span></span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> np.argmax(<span class="va">self</span>.q_values)</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>, model):</span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        chosen_arm <span class="op">=</span> <span class="va">self</span>.choose_action()</span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>        reward <span class="op">=</span> model.get_reward(chosen_arm)</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> reward <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>, <span class="st">"Reward is not provided by the model"</span></span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.action_counts[chosen_arm] <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.q_values[chosen_arm] <span class="op">=</span> (<span class="va">self</span>.q_values[chosen_arm] <span class="op">*</span> <span class="va">self</span>.action_counts[chosen_arm] <span class="op">+</span> reward) <span class="op">/</span> (<span class="va">self</span>.action_counts[chosen_arm] <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TestbedModel(Model):</span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a><span class="co">    This model represents the 10-armed bandit testbed environment.</span></span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, num_arms, mean_reward, std_dev,num_agents<span class="op">=</span><span class="dv">1</span>):</span>
-<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
-<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.num_agents <span class="op">=</span> num_agents</span>
-<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.num_arms <span class="op">=</span> num_arms</span>
-<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.mean_reward <span class="op">=</span> mean_reward</span>
-<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.std_dev <span class="op">=</span> std_dev</span>
-<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.env_init()</span>
-<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>        <span class="co">#self.arms = [None] * num_arms  # List to store arm rewards</span></span>
-<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.schedule <span class="op">=</span> RandomActivation(<span class="va">self</span>)</span>
-<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.num_agents):</span>
-<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>          <span class="va">self</span>.create_agent(EpsilonGreedyAgent, i, <span class="fl">0.1</span>) </span>
-<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> env_init(<span class="va">self</span>,env_info<span class="op">=</span>{}):</span>
-<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.arms <span class="op">=</span> np.random.randn(<span class="va">self</span>.num_arms)  <span class="co"># Initialize arm rewards</span></span>
-<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> create_agent(<span class="va">self</span>, agent_class, agent_id, epsilon):</span>
-<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
-<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a><span class="co">        Create an RL agent instance with the specified class and parameters.</span></span>
-<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>        agent <span class="op">=</span> agent_class(agent_id, <span class="va">self</span>, <span class="va">self</span>.num_arms, epsilon)</span>
-<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.schedule.add(agent)</span>
-<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> agent</span>
-<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> step(<span class="va">self</span>):</span>
-<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> agent <span class="kw">in</span> <span class="va">self</span>.schedule.agents:</span>
-<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>            chosen_arm <span class="op">=</span> agent.choose_action()</span>
-<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>            reward <span class="op">=</span> np.random.normal(<span class="va">self</span>.mean_reward, <span class="va">self</span>.std_dev)</span>
-<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.arms[chosen_arm] <span class="op">=</span> reward  <span class="co"># Update arm reward in the model</span></span>
-<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>            agent.step(<span class="va">self</span>)  <span class="co"># Pass the model instance to the agent for reward access</span></span>
-<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_reward(<span class="va">self</span>, arm_id):</span>
-<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Access reward from the stored list</span></span>
-<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.arms[arm_id]</span>
-<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
-<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> TestbedModel(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">1</span>)  <span class="co"># Create model with 10 arms</span></span>
-<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a>num_runs <span class="op">=</span> <span class="dv">200</span>                  <span class="co"># The number of times we run the experiment</span></span>
-<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a>num_steps <span class="op">=</span> <span class="dv">1000</span>                <span class="co"># The number of pulls of each arm the agent takes</span></span>
-<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a><span class="co"># Run simulation for multiple steps</span></span>
-<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> tqdm(<span class="bu">range</span>(num_runs)):</span>
-<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_steps):</span>
-<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a>        model.step()</span>
-<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a>    model.step()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mesa <span class="im">import</span> Model, Agent</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EpsilonGreedyAgent(Agent):</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">"""</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">  This agent implements the epsilon-greedy </span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">  """</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, model, num_arms, epsilon<span class="op">=</span><span class="fl">0.1</span>):</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">super</span>().<span class="fu">__init__</span>(model)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.num_arms <span class="op">=</span> num_arms</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.epsilon <span class="op">=</span> epsilon</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.q_values <span class="op">=</span> np.zeros(num_arms)  <span class="co"># Initialize Q-value estimates</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>.action_counts <span class="op">=</span> np.zeros(num_arms)  <span class="co"># Track action counts</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> choose_action(<span class="va">self</span>):</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> np.random.rand() <span class="op">&lt;</span> <span class="va">self</span>.epsilon:</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>          <span class="co"># Exploration: Choose random arm</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>          <span class="cf">return</span> np.random.randint(<span class="dv">0</span>, <span class="va">self</span>.num_arms)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span>:</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>          <span class="co"># Exploitation: Choose arm with highest Q-value</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>          <span class="cf">return</span> np.argmax(<span class="va">self</span>.q_values)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>      chosen_arm <span class="op">=</span> <span class="va">self</span>.choose_action()</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>      reward <span class="op">=</span> <span class="va">self</span>.model.get_reward(chosen_arm)</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>      <span class="cf">assert</span> reward <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>, <span class="st">"Reward is not provided by the model"</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.action_counts[chosen_arm] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>      step_size <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> <span class="va">self</span>.action_counts[chosen_arm]</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.q_values[chosen_arm] <span class="op">+=</span> step_size <span class="op">*</span> (reward <span class="op">-</span> <span class="va">self</span>.q_values[chosen_arm])</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TestbedModel(Model):</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  <span class="co">"""</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="co">  This model represents the 10-armed bandit testbed environment.</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="co">  """</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, num_arms, mean_reward, std_dev,num_agents<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>      <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.num_agents <span class="op">=</span> num_agents</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.num_arms <span class="op">=</span> num_arms</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.mean_reward <span class="op">=</span> mean_reward</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.std_dev <span class="op">=</span> std_dev</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.env_init()</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.num_agents):</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.create_agent(EpsilonGreedyAgent, <span class="fl">0.1</span>)</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> env_init(<span class="va">self</span>,env_info<span class="op">=</span>{}):</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.arm_means <span class="op">=</span> np.random.normal(<span class="va">self</span>.mean_reward, <span class="va">self</span>.std_dev, size<span class="op">=</span><span class="va">self</span>.num_arms)</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> create_agent(<span class="va">self</span>, agent_class, epsilon):</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>      <span class="co">"""</span></span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a><span class="co">      Create an RL agent instance with the specified class and parameters.</span></span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a><span class="co">      """</span></span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> agent_class(<span class="va">self</span>, <span class="va">self</span>.num_arms, epsilon)</span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> step(<span class="va">self</span>):</span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.agents.shuffle_do(<span class="st">"step"</span>)</span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> get_reward(<span class="va">self</span>, arm_id):</span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> np.random.normal(<span class="va">self</span>.arm_means[arm_id], <span class="fl">1.0</span>)</span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> TestbedModel(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">1</span>)  <span class="co"># Create model with 10 arms</span></span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>num_runs <span class="op">=</span> <span class="dv">200</span>                  <span class="co"># The number of times we run the experiment</span></span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>num_steps <span class="op">=</span> <span class="dv">1000</span>                <span class="co"># The number of pulls of each arm the agent takes</span></span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a><span class="co"># Run simulation for multiple steps</span></span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> tqdm(<span class="bu">range</span>(num_runs)):</span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_steps):</span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a>        model.step()</span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a>    model.step()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>/home/oren/.local/lib/python3.10/site-packages/mesa/time.py:82: FutureWarning:
-
-The AgentSet is experimental. It may be changed or removed in any and all future releases, including patch releases.
-We would love to hear what you think about this new feature. If you have any thoughts, share them with us here: https://github.com/projectmesa/mesa/discussions/1919
-
-  0%|          | 0/200 [00:00&lt;?, ?it/s]  4%|▍         | 9/200 [00:00&lt;00:02, 81.16it/s]  9%|▉         | 18/200 [00:00&lt;00:02, 78.80it/s] 13%|█▎        | 26/200 [00:00&lt;00:02, 77.88it/s] 17%|█▋        | 34/200 [00:00&lt;00:02, 78.48it/s] 21%|██        | 42/200 [00:00&lt;00:02, 78.66it/s] 26%|██▌       | 51/200 [00:00&lt;00:01, 79.00it/s] 30%|██▉       | 59/200 [00:00&lt;00:01, 78.95it/s] 34%|███▎      | 67/200 [00:00&lt;00:01, 78.94it/s] 38%|███▊      | 75/200 [00:00&lt;00:01, 79.14it/s] 42%|████▏     | 83/200 [00:01&lt;00:01, 79.37it/s] 46%|████▌     | 91/200 [00:01&lt;00:01, 79.55it/s] 50%|████▉     | 99/200 [00:01&lt;00:01, 79.04it/s] 54%|█████▍    | 108/200 [00:01&lt;00:01, 79.46it/s] 58%|█████▊    | 116/200 [00:01&lt;00:01, 78.05it/s] 62%|██████▏   | 124/200 [00:01&lt;00:00, 77.45it/s] 66%|██████▌   | 132/200 [00:01&lt;00:00, 75.88it/s] 70%|███████   | 140/200 [00:01&lt;00:00, 74.49it/s] 74%|███████▍  | 148/200 [00:01&lt;00:00, 73.76it/s] 78%|███████▊  | 156/200 [00:02&lt;00:00, 73.19it/s] 82%|████████▏ | 164/200 [00:02&lt;00:00, 72.36it/s] 86%|████████▌ | 172/200 [00:02&lt;00:00, 72.04it/s] 90%|█████████ | 180/200 [00:02&lt;00:00, 72.29it/s] 94%|█████████▍| 188/200 [00:02&lt;00:00, 72.33it/s] 98%|█████████▊| 196/200 [00:02&lt;00:00, 72.68it/s]100%|██████████| 200/200 [00:02&lt;00:00, 75.97it/s]</code></pre>
+<pre><code>
+  0%|          | 0/200 [00:00&lt;?, ?it/s]
+  6%|▌         | 11/200 [00:00&lt;00:01, 108.50it/s]
+ 11%|█         | 22/200 [00:00&lt;00:01, 107.90it/s]
+ 16%|█▋        | 33/200 [00:00&lt;00:01, 108.80it/s]
+ 22%|██▎       | 45/200 [00:00&lt;00:01, 111.86it/s]
+ 28%|██▊       | 57/200 [00:00&lt;00:01, 113.58it/s]
+ 34%|███▍      | 69/200 [00:00&lt;00:01, 113.91it/s]
+ 40%|████      | 81/200 [00:00&lt;00:01, 114.79it/s]
+ 46%|████▋     | 93/200 [00:00&lt;00:00, 115.67it/s]
+ 52%|█████▎    | 105/200 [00:00&lt;00:00, 116.29it/s]
+ 58%|█████▊    | 117/200 [00:01&lt;00:00, 114.31it/s]
+ 64%|██████▍   | 129/200 [00:01&lt;00:00, 115.04it/s]
+ 70%|███████   | 141/200 [00:01&lt;00:00, 115.89it/s]
+ 76%|███████▋  | 153/200 [00:01&lt;00:00, 116.01it/s]
+ 82%|████████▎ | 165/200 [00:01&lt;00:00, 116.17it/s]
+ 88%|████████▊ | 177/200 [00:01&lt;00:00, 116.37it/s]
+ 94%|█████████▍| 189/200 [00:01&lt;00:00, 115.65it/s]
+100%|██████████| 200/200 [00:01&lt;00:00, 114.71it/s]</code></pre>
 </div>
 </div>
+
 
 
 </section>
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-white2020fundamental" class="csl-entry" role="listitem">
+Matha White, Adam White. 2020. <em>Fundmnentrals on Reinforcement Learning</em>. University of Alberta; <span class="smallcaps">url:</span>&nbsp;<a href="https://www.coursera.org/learn/fundamentals-of-reinforcement-learning/" class="uri">https://www.coursera.org/learn/fundamentals-of-reinforcement-learning/</a>.
+</div>
+<div id="ref-sutton2018reinforcement" class="csl-entry" role="listitem">
+Sutton, R. S., and A. G. Barto. 2018. <em>Reinforcement Learning, Second Edition: An Introduction</em>. Adaptive Computation and Machine Learning Series. MIT Press. <a href="http://incompleteideas.net/book/RLbook2020.pdf">http://incompleteideas.net/book/RLbook2020.pdf</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
     }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const disableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'prefetch';
-    }
-  }
-  const enableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'stylesheet';
-    }
-  }
-  const manageTransitions = (selector, allowTransitions) => {
-    const els = window.document.querySelectorAll(selector);
-    for (let i=0; i < els.length; i++) {
-      const el = els[i];
-      if (allowTransitions) {
-        el.classList.remove('notransition');
-      } else {
-        el.classList.add('notransition');
-      }
-    }
-  }
-  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
-    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
-    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
-    let newTheme = '';
-    if(darkModeDefault) {
-      newTheme = isAlternate ? baseTheme : alternateTheme;
-    } else {
-      newTheme = isAlternate ? alternateTheme : baseTheme;
-    }
-    const changeGiscusTheme = () => {
-      // From: https://github.com/giscus/giscus/issues/336
-      const sendMessage = (message) => {
-        const iframe = document.querySelector('iframe.giscus-frame');
-        if (!iframe) return;
-        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
-      }
-      sendMessage({
-        setConfig: {
-          theme: newTheme
-        }
-      });
-    }
-    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
-    if (isGiscussLoaded) {
-      changeGiscusTheme();
-    }
-  }
-  const toggleColorMode = (alternate) => {
-    // Switch the stylesheets
-    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-    manageTransitions('#quarto-margin-sidebar .nav-link', false);
-    if (alternate) {
-      enableStylesheet(alternateStylesheets);
-      for (const sheetNode of alternateStylesheets) {
-        if (sheetNode.id === "quarto-bootstrap") {
-          toggleBodyColorMode(sheetNode);
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
         }
       }
-    } else {
-      disableStylesheet(alternateStylesheets);
-      toggleBodyColorPrimary();
-    }
-    manageTransitions('#quarto-margin-sidebar .nav-link', true);
-    // Switch the toggles
-    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-    for (let i=0; i < toggles.length; i++) {
-      const toggle = toggles[i];
-      if (toggle) {
-        if (alternate) {
-          toggle.classList.add("alternate");     
-        } else {
-          toggle.classList.remove("alternate");
-        }
-      }
-    }
-    // Hack to workaround the fact that safari doesn't
-    // properly recolor the scrollbar when toggling (#1455)
-    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
-      manageTransitions("body", false);
-      window.scrollTo(0, 1);
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        manageTransitions("body", true);
-      }, 40);  
-    }
-  }
-  const isFileUrl = () => { 
-    return window.location.protocol === 'file:';
-  }
-  const hasAlternateSentinel = () => {  
-    let styleSentinel = getColorSchemeSentinel();
-    if (styleSentinel !== null) {
-      return styleSentinel === "alternate";
-    } else {
       return false;
     }
-  }
-  const setStyleSentinel = (alternate) => {
-    const value = alternate ? "alternate" : "default";
-    if (!isFileUrl()) {
-      window.localStorage.setItem("quarto-color-scheme", value);
-    } else {
-      localAlternateSentinel = value;
-    }
-  }
-  const getColorSchemeSentinel = () => {
-    if (!isFileUrl()) {
-      const storageValue = window.localStorage.getItem("quarto-color-scheme");
-      return storageValue != null ? storageValue : localAlternateSentinel;
-    } else {
-      return localAlternateSentinel;
-    }
-  }
-  const darkModeDefault = false;
-  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
-  // Dark / light mode switch
-  window.quartoToggleColorScheme = () => {
-    // Read the current dark / light value 
-    let toAlternate = !hasAlternateSentinel();
-    toggleColorMode(toAlternate);
-    setStyleSentinel(toAlternate);
-    toggleGiscusIfUsed(toAlternate, darkModeDefault);
-  };
-  // Ensure there is a toggle, if there isn't float one in the top right
-  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-    const a = window.document.createElement('a');
-    a.classList.add('top-right');
-    a.classList.add('quarto-color-scheme-toggle');
-    a.href = "";
-    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-    const i = window.document.createElement("i");
-    i.classList.add('bi');
-    a.appendChild(i);
-    window.document.body.appendChild(a);
-  }
-  // Switch to dark mode if need be
-  if (hasAlternateSentinel()) {
-    toggleColorMode(true);
-  } else {
-    toggleColorMode(false);
-  }
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
       }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
     }
-    return false;
-  }
-  const onCopySuccess = function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
-      }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
         }
       }
       return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
-  });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
     });
-    clipboardModal.on('success', onCopySuccess);
-  }
-  const viewSource = window.document.getElementById('quarto-view-source') ||
-                     window.document.getElementById('quarto-code-tools-source');
-  if (viewSource) {
-    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-    viewSource.addEventListener("click", function(e) {
-      if (sourceUrl) {
-        // rstudio viewer pane
-        if (/\bcapabilities=\b/.test(window.location)) {
-          window.open(sourceUrl);
-        } else {
-          window.location.href = sourceUrl;
-        }
-      } else {
-        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-        modal.show();
-      }
-      return false;
-    });
-  }
-  function toggleCodeHandler(show) {
-    return function(e) {
-      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-      for (let i=0; i<detailsSrc.length; i++) {
-        const details = detailsSrc[i].parentElement;
-        if (show) {
-          details.open = true;
-        } else {
-          details.removeAttribute("open");
-        }
-      }
-      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
-      const fromCls = show ? "hidden" : "unhidden";
-      const toCls = show ? "unhidden" : "hidden";
-      for (let i=0; i<cellCodeDivs.length; i++) {
-        const codeDiv = cellCodeDivs[i];
-        if (codeDiv.classList.contains(fromCls)) {
-          codeDiv.classList.remove(fromCls);
-          codeDiv.classList.add(toCls);
-        } 
-      }
-      return false;
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
     }
-  }
-  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-  if (hideAllCode) {
-    hideAllCode.addEventListener("click", toggleCodeHandler(false));
-  }
-  const showAllCode = window.document.getElementById("quarto-show-all-code");
-  if (showAllCode) {
-    showAllCode.addEventListener("click", toggleCodeHandler(true));
-  }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/notes-rl\/");
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-        // undo the damage that might have been done by quarto-nav.js in the case of
-        // links that we want to consider external
-        if (link.dataset.originalHref !== undefined) {
-          link.href = link.dataset.originalHref;
-        }
-          // target, if specified
-          link.setAttribute("target", "_blank");
-          if (link.getAttribute("rel") === null) {
-            link.setAttribute("rel", "noopener");
-          }
-      }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start',
-    };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note) {
-        return note.innerHTML;
-      } else {
-        return "";
-      }
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
-        }
-      }
-    }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
           } else {
-            container.appendChild(child.cloneNode(true));
-            break;
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
           }
         }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
         }
-        return container.innerHTML
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/notes-rl\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
       } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
       }
     }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
           }
         } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
+            const note = htmlDoc.querySelector('main.content');
             if (note !== null) {
-              const html = processXRef(id, note);
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -1445,196 +1548,172 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             instance.show();
           });
         }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            div.style.left = 0;
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+      }, function(instance) {
       });
     }
-  }
-});
-</script>
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
 </div> <!-- /content -->
     <script type="text/javascript">
     (function(d) {
       d.querySelectorAll(".pseudocode-container").forEach(function(el) {
         let pseudocodeOptions = {
-          indentSize: el.dataset.indentSize || "1.2em",
-          commentDelimiter: el.dataset.commentDelimiter || "//",
-          lineNumber: el.dataset.lineNumber === "true" ? true : false,
-          lineNumberPunc: el.dataset.lineNumberPunc || ":",
-          noEnd: el.dataset.noEnd === "true" ? true : false,
-          titlePrefix: el.dataset.captionPrefix || "Algorithm"
+          indentSize: el.dataset.indentSize,
+          commentDelimiter: " " + el.dataset.commentDelimiter + " ",
+          lineNumber: el.dataset.lineNumber.toLowerCase() === "true",
+          lineNumberPunc: el.dataset.lineNumberPunc,
+          noEnd: el.dataset.noEnd.toLowerCase() === "true",
+          titlePrefix: el.dataset.captionPrefix,
         };
         pseudocode.renderElement(el.querySelector(".pseudocode"), pseudocodeOptions);
       });
@@ -1657,6 +1736,38 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     })(document);
     </script>
   
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

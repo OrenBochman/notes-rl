@@ -1,0 +1,22 @@
+---
+title: "AlphTensor: Discovering novel algorithms with AlphaTensor"
+date: 2025-03-14
+---
+
+- This is a paper about using deep reinforcement learning to discover novel algorithms for matrix multiplication. 
+- When this came out I was not particularly excited. Certainly faster matrix multiplication is a nice result. However the saving is not that large unless the matrices are very large. 
+- Also it seems to me that it is not clear to what extent this is a saving and to what extent it is some kind of algorithmic tradeoff. For example, the saving in the number of multiplications is not necessarily a saving in the overall computational complexity of the algorithm.
+- Another point that I might make is that the story has been hyped to some extent - the algorithmic acceleration is not really a problem that is of great importance to the world for many years. There have been a number of advances since Strassen's algorithm and the problem of matrix multiplication is not really a bottleneck for many applications and there are many other bottlenecks in most applications. 
+- People have been doing this for many years by hand and once the computers came along the number of operations has not been the problem. More so with the advent of hardware accelerators like mathematical co-processer, GPUs and more recently TPUs.
+- There is a rich body of research on speeding matrix multiplication for both general and specific classes of matrices and for exact and approximate algorithms. Theoretical results indicate that there are algorithms that are faster than Strassen's algorithm for large matrices. However the methods focused more on limits and less on practical algorithms which are hard to find and implement. 
+- So it is worth pointing out that this result did not come out of the blue as many have suggested online ir that it is a revolutionary breakthrough. Rather it has filled in the gap between the theoretical results and the practical algorithms for speeding up matrix multiplication. In fact it shown  that for specific cases it can find algorithms that are faster than Strassen's algorithm which are not particularly useful results.
+- Also the results found by the algorithm were very quickly improved upon by human researchers. This is a rather amusing result and shows that the RL algorithm was a good searcher but not a smart mathematician suggesting that the devil here is in the details of how the problem was encoded as an RL problem and how the search was conducted.
+- There are many problems associated with computer algebra and many additional algorithms that are no less important like numeric stability, parallelizability, memory usage and more. Also for many classes of matrices there are algorithms that are much faster than Strassen's algorithm. c.f. Coppersmith–Winograd algorithm and more recently the Le Gall algorithm. 
+- What is particularly interesting is that this problem has solved a challenging mathematical problem using RL and Monte Carlo Tree Search (MCTS). This suggests that there it may be used to solve other challenging mathematical problems or computer science problems. So what might be interesting is to understand how the researchers behind this paper were able to encode this problem as an RL problem and secondly how they used RL to solve it.
+
+- [Discovering novel algorithms with AlphaTensor](https://deepmind.google/blog/discovering-novel-algorithms-with-alphatensor/){}
+- [code](https://github.com/google-deepmind/alphatensor)
+- however like many DeepMind papers, the paper is quite challenging to replicate and understand.
+- [OpenTensor: Reproducing Faster Matrix Multiplication Discovering Algorithms](https://arxiv.org/pdf/2405.20748)
+- [OpenTensor code](https://github.com/YiwenAI/OpenTensor)
+

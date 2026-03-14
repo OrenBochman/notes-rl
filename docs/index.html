@@ -2,13 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.39">
+<meta name="generator" content="quarto-1.9.31">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Oren Bochman">
 
-<title>rl-notes – Notes on Reinfocement Learning</title>
+<title>rl-notes – Notes on Reinforcement Learning</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -33,17 +37,20 @@ ul.task-list li input[type="checkbox"] {
 <link href="./favicon.ico" rel="icon">
 <script src="site_libs/quarto-listing/list.min.js"></script>
 <script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7c69b197886ae2a34062761d21e44731.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-2a9a3f180cf500eef5b976fdc6f22fdf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7c69b197886ae2a34062761d21e44731.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-594d21605a7b9fb32547fedacd8fc358.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-d396125c57f3f0defba792e7b0e7a5dc.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-53e333c44ad91e7e6fb689e28a48ce26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-65daee0ea38b11146b100396567ce7dc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-53e333c44ad91e7e6fb689e28a48ce26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
 <link href="site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -102,26 +109,27 @@ ul.task-list li input[type="checkbox"] {
     }
   })
   </script>
-<script>
-MathJax = {
-  loader: {
-    load: ['[tex]/boldsymbol']
-  },
-  tex: {
-    tags: "all",
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\\[','\\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    packages: {
-      '[+]': ['boldsymbol']
+<style>html{ scroll-behavior: smooth; }</style>
+<script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+<script>window.backupDefine = window.define; window.define = undefined;</script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+    <style type="text/css">
+    .ps-root .ps-algorithm {
+      border-top: 2px solid;
+      border-bottom: 2px solid;
     }
-  }
-};
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+    .pseudocode-container {
+      text-align: left;
+    }
+    </style>
+  
+      <style type="text/css">
+      .ps-algorithm > .ps-line {
+        text-align: left;
+      }
+      </style>
+    
 
-  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -136,7 +144,7 @@ MathJax = {
    });
 }}});
   </script>
-  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -149,7 +157,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -166,9 +174,171 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="styles.css">
-<link rel="alternate" type="application/rss+xml" title="Notes on Reinfocement Learning" href="index.xml" data-external="1"></head>
+<link rel="alternate" type="application/rss+xml" title="Notes on Reinforcement Learning" href="index.xml" data-external="1"></head>
 
-<body class="nav-fixed">
+<body class="floating nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
@@ -176,7 +346,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">Notes on Reinfocement Learning</span>
+    <span class="navbar-title">Notes on Reinforcement Learning</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -208,7 +378,7 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-page-left">
       <h1 class="title">rl-notes</h1>
@@ -218,6 +388,12 @@ window.Quarto = {
   
   <div class="quarto-title-meta column-page-left">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Oren Bochman </p>
+            </div>
+    </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
@@ -226,18 +402,26 @@ window.Quarto = {
       </div>
     </div>
     
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">Saturday, January 18, 2025</p>
+      </div>
+    </div>
       
     </div>
     
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
+  
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(23)</span></div><div class="category" data-category="QWR2ZXJ0aXNpbmc=">Advertising <span class="quarto-category-count">(3)</span></div><div class="category" data-category="QmFuZGl0">Bandit <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Q2xhc3NpZmljYXRpb24=">Classification <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Q29sbGFib3JhdGl2ZSUyMEZpbHRlcmluZw==">Collaborative Filtering <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Q291cnNlcmE=">Coursera <span class="quarto-category-count">(15)</span></div><div class="category" data-category="RW1lcmdlbnQlMjBMYW5ndWFnZXM=">Emergent Languages <span class="quarto-category-count">(1)</span></div><div class="category" data-category="RXZvbHV0aW9uYXJ5JTIwZ2FtZSUyMHRoZW9yeQ==">Evolutionary game theory <span class="quarto-category-count">(1)</span></div><div class="category" data-category="RnVuZGFtZW50YWxz">Fundamentals <span class="quarto-category-count">(5)</span></div><div class="category" data-category="TkxQ">NLP <span class="quarto-category-count">(1)</span></div><div class="category" data-category="TmFtZWQlMjBFbnRpdHklMjBSZWNvZ25pdGlvbg==">Named Entity Recognition <span class="quarto-category-count">(1)</span></div><div class="category" data-category="T3B0aW9ucw==">Options <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UGFwZXI=">Paper <span class="quarto-category-count">(7)</span></div><div class="category" data-category="UHJlZGljdGlvbiUyMGFuZCUyMENvbnRyb2wlMjB3aXRoJTIwRnVuY3Rpb24lMjBBcHByb3hpbWF0aW9u">Prediction and Control with Function Approximation <span class="quarto-category-count">(6)</span></div><div class="category" data-category="UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n">Reinforcement Learning <span class="quarto-category-count">(17)</span></div><div class="category" data-category="UmV2aWV3">Review <span class="quarto-category-count">(7)</span></div><div class="category" data-category="U2FtcGxlLWJhc2VkJTIwTGVhcm5pbmclMjBNZXRob2Rz">Sample-based Learning Methods <span class="quarto-category-count">(4)</span></div><div class="category" data-category="U2lnbmFsaW5nJTIwR2FtZXM=">Signaling Games <span class="quarto-category-count">(1)</span></div><div class="category" data-category="VGVtcG9yYWwlMjBBYnN0cmFjdGlvbg==">Temporal Abstraction <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c2lnbmFsaW5nJTIwZ2FtZXM=">signaling games <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c3R1Yg==">stub <span class="quarto-category-count">(1)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(25)</span></div><div class="category" data-category="QWR2ZXJ0aXNpbmc=">Advertising <span class="quarto-category-count">(3)</span></div><div class="category" data-category="QmFuZGl0">Bandit <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Q2xhc3NpZmljYXRpb24=">Classification <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Q29sbGFib3JhdGl2ZSUyMEZpbHRlcmluZw==">Collaborative Filtering <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Q291cnNlcmE=">Coursera <span class="quarto-category-count">(15)</span></div><div class="category" data-category="RW1lcmdlbnQlMjBMYW5ndWFnZXM=">Emergent Languages <span class="quarto-category-count">(1)</span></div><div class="category" data-category="RXZvbHV0aW9uYXJ5JTIwZ2FtZSUyMHRoZW9yeQ==">Evolutionary game theory <span class="quarto-category-count">(1)</span></div><div class="category" data-category="RnVuZGFtZW50YWxz">Fundamentals <span class="quarto-category-count">(5)</span></div><div class="category" data-category="TmFtZWQlMjBFbnRpdHklMjBSZWNvZ25pdGlvbg==">Named Entity Recognition <span class="quarto-category-count">(1)</span></div><div class="category" data-category="TkxQ">NLP <span class="quarto-category-count">(1)</span></div><div class="category" data-category="T3B0aW9ucw==">Options <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UGFwZXI=">Paper <span class="quarto-category-count">(7)</span></div><div class="category" data-category="UHJlZGljdGlvbiUyMGFuZCUyMENvbnRyb2wlMjB3aXRoJTIwRnVuY3Rpb24lMjBBcHByb3hpbWF0aW9u">Prediction and Control with Function Approximation <span class="quarto-category-count">(6)</span></div><div class="category" data-category="UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n">Reinforcement Learning <span class="quarto-category-count">(17)</span></div><div class="category" data-category="UmV2aWV3">Review <span class="quarto-category-count">(7)</span></div><div class="category" data-category="U2FtcGxlLWJhc2VkJTIwTGVhcm5pbmclMjBNZXRob2Rz">Sample-based Learning Methods <span class="quarto-category-count">(4)</span></div><div class="category" data-category="c2lnbmFsaW5nJTIwZ2FtZXM=">signaling games <span class="quarto-category-count">(1)</span></div><div class="category" data-category="U2lnbmFsaW5nJTIwR2FtZXM=">Signaling Games <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c3R1Yg==">stub <span class="quarto-category-count">(1)</span></div><div class="category" data-category="VGVtcG9yYWwlMjBBYnN0cmFjdGlvbg==">Temporal Abstraction <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+
 
 
 
@@ -250,20 +434,20 @@ window.Quarto = {
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="listing-actions-group">
    <div class="input-group input-group-sm quarto-listing-sort">
-     <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-     <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-       <option value="" disabled="" selected="" hidden="">Order By</option>
-       <option value="index" data-direction="asc">Default</option>
-         <option value="listing-title" data-direction="asc">
-          Title
-        </option>
-         <option value="listing-date-sort" data-direction="asc">
-          Date - Oldest
-        </option>
-         <option value="listing-date-sort" data-direction="desc">
-          Date - Newest
-        </option>
-     </select>
+    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
+    <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
+      <option value="" disabled="" selected="" hidden="">Order By</option>
+      <option value="index" data-direction="asc">Default</option>
+      <option value="listing-title" data-direction="asc">
+        Title
+      </option>
+      <option value="listing-date-sort" data-direction="asc">
+        Date - Oldest
+      </option>
+      <option value="listing-date-sort" data-direction="desc">
+        Date - Newest
+      </option>
+    </select>
   </div>
     <div class="input-group input-group-sm quarto-listing-filter">
       <span class="input-group-text"><i class="bi bi-search"></i></span>
@@ -271,12 +455,37 @@ window.Quarto = {
     </div>
 </div>
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="UGFwZXIlMkNSZXZpZXclMkNOTFAlMkNDbGFzc2lmaWNhdGlvbiUyQ05hbWVkJTIwRW50aXR5JTIwUmVjb2duaXRpb24=" data-listing-date-sort="1738015200000" data-listing-file-modified-sort="1738092263722" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2636">
-<div class="thumbnail">
-<p><a href="./posts/papers/BabbleLabble/index.html" class="no-external"></a></p><a href="./posts/papers/BabbleLabble/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/papers/BabbleLabble/cover.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/papers/BabbleLabble/index.html" class="no-external"></a></p>
+<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1741903200000" data-listing-file-modified-sort="1773507584138" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="559">
+<div class="thumbnail"><a href="./posts/papers/AlphaTensor/index.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/papers/AlphaTensor/index.html" class="no-external">AlphTensor: Discovering novel algorithms with AlphaTensor</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/papers/AlphaTensor/index.html" class="no-external"></a>
 </div>
+<div class="delink listing-description"><a href="./posts/papers/AlphaTensor/index.html" class="no-external">
+This is a paper about using deep reinforcement learning to discover novel algorithms for matrix multiplication.
+</a></div>
+</div>
+<div class="metadata">
+<a href="./posts/papers/AlphaTensor/index.html" class="no-external">
+<div class="listing-date">
+Friday, March 14, 2025
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="UGFwZXIlMkNSZXZpZXclMkNOTFAlMkNDbGFzc2lmaWNhdGlvbiUyQ05hbWVkJTIwRW50aXR5JTIwUmVjb2duaXRpb24=" data-listing-date-sort="1738015200000" data-listing-file-modified-sort="1738092263722" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2636">
+<div class="thumbnail"><a href="./posts/papers/BabbleLabble/index.html" class="no-external">
+
+<img loading="lazy" src="./posts/papers/BabbleLabble/cover.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/papers/BabbleLabble/index.html" class="no-external">Training Classifiers with Natural Language Explanations</a>
@@ -285,25 +494,21 @@ window.Quarto = {
 <a href="./posts/papers/BabbleLabble/index.html" class="no-external">Paper Review</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('UGFwZXI='); return false;">
-Paper
+
+<div class="listing-category" onclick="window.quartoListingCategory('UGFwZXI='); return false;">Paper</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmV2aWV3'); return false;">Review</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('TkxQ'); return false;">NLP</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q2xhc3NpZmljYXRpb24='); return false;">Classification</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('TmFtZWQlMjBFbnRpdHklMjBSZWNvZ25pdGlvbg=='); return false;">Named Entity Recognition</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmV2aWV3'); return false;">
-Review
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('TkxQ'); return false;">
-NLP
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Q2xhc3NpZmljYXRpb24='); return false;">
-Classification
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('TmFtZWQlMjBFbnRpdHklMjBSZWNvZ25pdGlvbg=='); return false;">
-Named Entity Recognition
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/papers/BabbleLabble/index.html" class="no-external">A review of the paper ‘Training Classifiers with Natural Language Explanations’ by Hancock et al.</a>
-</div>
+<div class="delink listing-description"><a href="./posts/papers/BabbleLabble/index.html" class="no-external">
+<p>A review of the paper ‘Training Classifiers with Natural Language Explanations’ by Hancock et al.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/papers/BabbleLabble/index.html" class="no-external">
@@ -313,12 +518,12 @@ Tuesday, January 28, 2025
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="UGFwZXIlMkNSZXZpZXclMkNBZHZlcnRpc2luZw==" data-listing-date-sort="1737151200000" data-listing-file-modified-sort="1737227143374" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="641">
-<div class="thumbnail">
-<p><a href="./posts/papers/Offpolicy-AuctionGym/index.html" class="no-external"></a></p><a href="./posts/papers/Offpolicy-AuctionGym/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/papers/Offpolicy-AuctionGym/cover.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/papers/Offpolicy-AuctionGym/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="2" data-categories="UGFwZXIlMkNSZXZpZXclMkNBZHZlcnRpc2luZw==" data-listing-date-sort="1737151200000" data-listing-file-modified-sort="1737227143374" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="641">
+<div class="thumbnail"><a href="./posts/papers/Offpolicy-AuctionGym/index.html" class="no-external">
+
+<img loading="lazy" src="./posts/papers/Offpolicy-AuctionGym/cover.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/papers/Offpolicy-AuctionGym/index.html" class="no-external">Off-Policy Learning-to-Bid with AuctionGym</a>
@@ -327,19 +532,17 @@ Tuesday, January 28, 2025
 <a href="./posts/papers/Offpolicy-AuctionGym/index.html" class="no-external">Paper Review</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('UGFwZXI='); return false;">
-Paper
+
+<div class="listing-category" onclick="window.quartoListingCategory('UGFwZXI='); return false;">Paper</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmV2aWV3'); return false;">Review</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('QWR2ZXJ0aXNpbmc='); return false;">Advertising</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmV2aWV3'); return false;">
-Review
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('QWR2ZXJ0aXNpbmc='); return false;">
-Advertising
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/papers/Offpolicy-AuctionGym/index.html" class="no-external">Additional work with AuctionGym</a>
-</div>
+<div class="delink listing-description"><a href="./posts/papers/Offpolicy-AuctionGym/index.html" class="no-external">
+<p>Additional work with AuctionGym</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/papers/Offpolicy-AuctionGym/index.html" class="no-external">
@@ -349,12 +552,12 @@ Saturday, January 18, 2025
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="UGFwZXIlMkNSZXZpZXclMkNBZHZlcnRpc2luZw==" data-listing-date-sort="1737151200000" data-listing-file-modified-sort="1737244041621" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="672">
-<div class="thumbnail">
-<p><a href="./posts/papers/AuctionGym/index.html" class="no-external"></a></p><a href="./posts/papers/AuctionGym/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/papers/AuctionGym/cover.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/papers/AuctionGym/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="3" data-categories="UGFwZXIlMkNSZXZpZXclMkNBZHZlcnRpc2luZw==" data-listing-date-sort="1737151200000" data-listing-file-modified-sort="1737244041621" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="672">
+<div class="thumbnail"><a href="./posts/papers/AuctionGym/index.html" class="no-external">
+
+<img loading="lazy" src="./posts/papers/AuctionGym/cover.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/papers/AuctionGym/index.html" class="no-external">Learning to Bid with AuctionGym</a>
@@ -363,19 +566,17 @@ Saturday, January 18, 2025
 <a href="./posts/papers/AuctionGym/index.html" class="no-external">Paper Review</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('UGFwZXI='); return false;">
-Paper
+
+<div class="listing-category" onclick="window.quartoListingCategory('UGFwZXI='); return false;">Paper</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmV2aWV3'); return false;">Review</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('QWR2ZXJ0aXNpbmc='); return false;">Advertising</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmV2aWV3'); return false;">
-Review
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('QWR2ZXJ0aXNpbmc='); return false;">
-Advertising
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/papers/AuctionGym/index.html" class="no-external">Introducing (AuctionGym)</a>
-</div>
+<div class="delink listing-description"><a href="./posts/papers/AuctionGym/index.html" class="no-external">
+<p>Introducing (AuctionGym)</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/papers/AuctionGym/index.html" class="no-external">
@@ -385,12 +586,12 @@ Saturday, January 18, 2025
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="UGFwZXIlMkNSZXZpZXclMkNCYW5kaXQlMkNBZHZlcnRpc2luZyUyQ0NvbGxhYm9yYXRpdmUlMjBGaWx0ZXJpbmc=" data-listing-date-sort="1737151200000" data-listing-file-modified-sort="1737246696495" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="339">
-<div class="thumbnail">
-<p><a href="./posts/papers/DCTS/index.html" class="no-external"></a></p><a href="./posts/papers/DCTS/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/papers/DCTS/cover.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/papers/DCTS/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="4" data-categories="UGFwZXIlMkNSZXZpZXclMkNCYW5kaXQlMkNBZHZlcnRpc2luZyUyQ0NvbGxhYm9yYXRpdmUlMjBGaWx0ZXJpbmc=" data-listing-date-sort="1737151200000" data-listing-file-modified-sort="1737246696495" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="339">
+<div class="thumbnail"><a href="./posts/papers/DCTS/index.html" class="no-external">
+
+<img loading="lazy" src="./posts/papers/DCTS/cover.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/papers/DCTS/index.html" class="no-external">Dynamic collaborative filtering Thompson Sampling for cross-domain advertisements recommendation</a>
@@ -399,25 +600,21 @@ Saturday, January 18, 2025
 <a href="./posts/papers/DCTS/index.html" class="no-external">Paper Review</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('UGFwZXI='); return false;">
-Paper
+
+<div class="listing-category" onclick="window.quartoListingCategory('UGFwZXI='); return false;">Paper</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmV2aWV3'); return false;">Review</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('QmFuZGl0'); return false;">Bandit</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('QWR2ZXJ0aXNpbmc='); return false;">Advertising</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q29sbGFib3JhdGl2ZSUyMEZpbHRlcmluZw=='); return false;">Collaborative Filtering</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmV2aWV3'); return false;">
-Review
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('QmFuZGl0'); return false;">
-Bandit
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('QWR2ZXJ0aXNpbmc='); return false;">
-Advertising
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Q29sbGFib3JhdGl2ZSUyMEZpbHRlcmluZw=='); return false;">
-Collaborative Filtering
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/papers/DCTS/index.html" class="no-external">Introducing (DCTS) The Dynamic Collaborative Filtering Thompson Sampling algorithm for cross-domain advertisements recommendation.</a>
-</div>
+<div class="delink listing-description"><a href="./posts/papers/DCTS/index.html" class="no-external">
+<p>Introducing (DCTS) The Dynamic Collaborative Filtering Thompson Sampling algorithm for cross-domain advertisements recommendation.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/papers/DCTS/index.html" class="no-external">
@@ -427,12 +624,12 @@ Saturday, January 18, 2025
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="UmVpbmZvcmNlbWVudCUyMExlYXJuaW5nJTJDUGFwZXIlMkNSZXZpZXc=" data-listing-date-sort="1735768800000" data-listing-file-modified-sort="1737249032318" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1753">
-<div class="thumbnail">
-<p><a href="./posts/papers/Becoming-a-successful-loser/index.html" class="no-external"></a></p><a href="./posts/papers/Becoming-a-successful-loser/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/papers/Becoming-a-successful-loser/cover.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/papers/Becoming-a-successful-loser/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="5" data-categories="UmVpbmZvcmNlbWVudCUyMExlYXJuaW5nJTJDUGFwZXIlMkNSZXZpZXc=" data-listing-date-sort="1735768800000" data-listing-file-modified-sort="1737249032318" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1753">
+<div class="thumbnail"><a href="./posts/papers/Becoming-a-successful-loser/index.html" class="no-external">
+
+<img loading="lazy" src="./posts/papers/Becoming-a-successful-loser/cover.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/papers/Becoming-a-successful-loser/index.html" class="no-external">On Learning To Become a Successful Loser: A Comparison of Alternative Abstractions of Learning Processes in the Loss Domain</a>
@@ -441,19 +638,17 @@ Saturday, January 18, 2025
 <a href="./posts/papers/Becoming-a-successful-loser/index.html" class="no-external">Paper Review</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UGFwZXI='); return false;">Paper</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmV2aWV3'); return false;">Review</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('UGFwZXI='); return false;">
-Paper
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmV2aWV3'); return false;">
-Review
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/papers/Becoming-a-successful-loser/index.html" class="no-external">A comparison of five mathematical models that predict student behavior in repeated decision-making tasks involving gains and losses.</a>
-</div>
+<div class="delink listing-description"><a href="./posts/papers/Becoming-a-successful-loser/index.html" class="no-external">
+<p>A comparison of five mathematical models that predict student behavior in repeated decision-making tasks involving gains and losses.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/papers/Becoming-a-successful-loser/index.html" class="no-external">
@@ -463,12 +658,12 @@ Thursday, January 2, 2025
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-categories="UmVpbmZvcmNlbWVudCUyMExlYXJuaW5nJTJDUGFwZXIlMkNSZXZpZXclMkNUZW1wb3JhbCUyMEFic3RyYWN0aW9uJTJDT3B0aW9ucw==" data-listing-date-sort="1731189600000" data-listing-file-modified-sort="1737245923417" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="24" data-listing-word-count-sort="4621">
-<div class="thumbnail">
-<p><a href="./posts/papers/Temp-Abstraction/index.html" class="no-external"></a></p><a href="./posts/papers/Temp-Abstraction/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/papers/Temp-Abstraction/cover.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/papers/Temp-Abstraction/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="6" data-categories="UmVpbmZvcmNlbWVudCUyMExlYXJuaW5nJTJDUGFwZXIlMkNSZXZpZXclMkNUZW1wb3JhbCUyMEFic3RyYWN0aW9uJTJDT3B0aW9ucw==" data-listing-date-sort="1731189600000" data-listing-file-modified-sort="1737245923417" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="24" data-listing-word-count-sort="4621">
+<div class="thumbnail"><a href="./posts/papers/Temp-Abstraction/index.html" class="no-external">
+
+<img loading="lazy" src="./posts/papers/Temp-Abstraction/cover.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/papers/Temp-Abstraction/index.html" class="no-external">Temporal Abstraction in Reinforcement Learning with the Successor Representation</a>
@@ -477,25 +672,21 @@ Thursday, January 2, 2025
 <a href="./posts/papers/Temp-Abstraction/index.html" class="no-external">Paper Review</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UGFwZXI='); return false;">Paper</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmV2aWV3'); return false;">Review</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('VGVtcG9yYWwlMjBBYnN0cmFjdGlvbg=='); return false;">Temporal Abstraction</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('T3B0aW9ucw=='); return false;">Options</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('UGFwZXI='); return false;">
-Paper
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmV2aWV3'); return false;">
-Review
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('VGVtcG9yYWwlMjBBYnN0cmFjdGlvbg=='); return false;">
-Temporal Abstraction
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('T3B0aW9ucw=='); return false;">
-Options
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/papers/Temp-Abstraction/index.html" class="no-external">This paper review is an extended introduction to temporal abstraction using options. It covers lots of advanced concepts in reinforcement learning that were introduced in Doina’s Precup’s talk in the Coursera Specialization on Reinforcement Learning by Martha White and Adam White. The paper is a deep dive into the topic of options and the successor representation. It is a long paper with lots of advanced concepts and algorithms. The paper is a great resource for anyone interested in reinforcement learning and temporal abstraction.</a>
-</div>
+<div class="delink listing-description"><a href="./posts/papers/Temp-Abstraction/index.html" class="no-external">
+<p>This paper review is an extended introduction to temporal abstraction using options. It covers lots of advanced concepts in reinforcement learning that were introduced in Doina’s Precup’s talk in the Coursera Specialization on Reinforcement Learning by Martha White and Adam White. The paper is a deep dive into the topic of options and the successor representation. It is a long paper with lots of advanced concepts and algorithms. The paper is a great resource for anyone interested in reinforcement learning and temporal abstraction.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/papers/Temp-Abstraction/index.html" class="no-external">
@@ -505,12 +696,12 @@ Sunday, November 10, 2024
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="c2lnbmFsaW5nJTIwZ2FtZXMlMkNzdHVi" data-listing-date-sort="1728421200000" data-listing-file-modified-sort="1737246094382" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="635">
-<div class="thumbnail">
-<p><a href="./posts/papers/Emergent-communication/index.html" class="no-external"></a></p><a href="./posts/papers/Emergent-communication/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/papers/Emergent-communication/cover.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/papers/Emergent-communication/index.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="7" data-categories="c2lnbmFsaW5nJTIwZ2FtZXMlMkNzdHVi" data-listing-date-sort="1728421200000" data-listing-file-modified-sort="1737246094382" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="635">
+<div class="thumbnail"><a href="./posts/papers/Emergent-communication/index.html" class="no-external">
+
+<img loading="lazy" src="./posts/papers/Emergent-communication/cover.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/papers/Emergent-communication/index.html" class="no-external">Emergent Communication of Generalizations</a>
@@ -519,16 +710,15 @@ Sunday, November 10, 2024
 <a href="./posts/papers/Emergent-communication/index.html" class="no-external">paper review</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('c2lnbmFsaW5nJTIwZ2FtZXM='); return false;">
-signaling games
+
+<div class="listing-category" onclick="window.quartoListingCategory('c2lnbmFsaW5nJTIwZ2FtZXM='); return false;">signaling games</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('c3R1Yg=='); return false;">stub</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('c3R1Yg=='); return false;">
-stub
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/papers/Emergent-communication/index.html" class="no-external">I think this is an amazing paper. I read it critically and made copious notes to see what I could learn from it. The paper point out some limitations of Lewis referential…</a>
-</div>
+<div class="delink listing-description"><a href="./posts/papers/Emergent-communication/index.html" class="no-external">
+I think this is an amazing paper. I read it critically and made copious notes to see what I could learn from it. The paper point out some limitations of Lewis referential…
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/papers/Emergent-communication/index.html" class="no-external">
@@ -538,12 +728,37 @@ Wednesday, October 9, 2024
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="7" data-categories="UGFwZXIlMkNSZXZpZXclMkNTaWduYWxpbmclMjBHYW1lcyUyQ0VtZXJnZW50JTIwTGFuZ3VhZ2VzJTJDRXZvbHV0aW9uYXJ5JTIwZ2FtZSUyMHRoZW9yeQ==" data-listing-date-sort="1713387600000" data-listing-file-modified-sort="1737248527717" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2620">
-<div class="thumbnail">
-<p><a href="./posts/papers/Evolution-of-language/index.html" class="no-external"></a></p><a href="./posts/papers/Evolution-of-language/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/papers/Evolution-of-language/cover.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/papers/Evolution-of-language/index.html" class="no-external"></a></p>
+<div class="quarto-post image-right" data-index="8" data-listing-date-sort="1717189200000" data-listing-file-modified-sort="1773234728885" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="126">
+<div class="thumbnail"><a href="./posts/coursera/quicksort.html" class="no-external">
+
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/coursera/quicksort.html" class="no-external">Quicksort Algorithm</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/coursera/quicksort.html" class="no-external"></a>
 </div>
+<div class="delink listing-description"><a href="./posts/coursera/quicksort.html" class="no-external">
+<p>Pseudocode for the Quicksort algorithm</p>
+</a></div>
+</div>
+<div class="metadata">
+<a href="./posts/coursera/quicksort.html" class="no-external">
+<div class="listing-date">
+Saturday, June 1, 2024
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="9" data-categories="UGFwZXIlMkNSZXZpZXclMkNTaWduYWxpbmclMjBHYW1lcyUyQ0VtZXJnZW50JTIwTGFuZ3VhZ2VzJTJDRXZvbHV0aW9uYXJ5JTIwZ2FtZSUyMHRoZW9yeQ==" data-listing-date-sort="1713387600000" data-listing-file-modified-sort="1773223418553" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2620">
+<div class="thumbnail"><a href="./posts/papers/Evolution-of-language/index.html" class="no-external">
+
+<img loading="lazy" src="./posts/papers/Evolution-of-language/cover.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/papers/Evolution-of-language/index.html" class="no-external">The Evolution of Language</a>
@@ -552,25 +767,21 @@ Wednesday, October 9, 2024
 <a href="./posts/papers/Evolution-of-language/index.html" class="no-external">Paper Review</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('UGFwZXI='); return false;">
-Paper
+
+<div class="listing-category" onclick="window.quartoListingCategory('UGFwZXI='); return false;">Paper</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmV2aWV3'); return false;">Review</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('U2lnbmFsaW5nJTIwR2FtZXM='); return false;">Signaling Games</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('RW1lcmdlbnQlMjBMYW5ndWFnZXM='); return false;">Emergent Languages</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('RXZvbHV0aW9uYXJ5JTIwZ2FtZSUyMHRoZW9yeQ=='); return false;">Evolutionary game theory</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmV2aWV3'); return false;">
-Review
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('U2lnbmFsaW5nJTIwR2FtZXM='); return false;">
-Signaling Games
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('RW1lcmdlbnQlMjBMYW5ndWFnZXM='); return false;">
-Emergent Languages
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('RXZvbHV0aW9uYXJ5JTIwZ2FtZSUyMHRoZW9yeQ=='); return false;">
-Evolutionary game theory
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/papers/Evolution-of-language/index.html" class="no-external">In this paper the authors model the evolutionof Languages through its adaptation to resist errors in communication.</a>
-</div>
+<div class="delink listing-description"><a href="./posts/papers/Evolution-of-language/index.html" class="no-external">
+<p>In this paper the authors model the evolutionof Languages through its adaptation to resist errors in communication.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/papers/Evolution-of-language/index.html" class="no-external">
@@ -580,12 +791,12 @@ Thursday, April 18, 2024
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="8" data-categories="Q291cnNlcmElMkNQcmVkaWN0aW9uJTIwYW5kJTIwQ29udHJvbCUyMHdpdGglMjBGdW5jdGlvbiUyMEFwcHJveGltYXRpb24lMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1712178000000" data-listing-file-modified-sort="1737215408192" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="24" data-listing-word-count-sort="4736">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c3-w4.html" class="no-external"></a></p><a href="./posts/coursera/c3-w4.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c3-w4.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="10" data-categories="Q291cnNlcmElMkNQcmVkaWN0aW9uJTIwYW5kJTIwQ29udHJvbCUyMHdpdGglMjBGdW5jdGlvbiUyMEFwcHJveGltYXRpb24lMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1712178000000" data-listing-file-modified-sort="1773223453855" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="24" data-listing-word-count-sort="4751">
+<div class="thumbnail"><a href="./posts/coursera/c3-w4.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/coursera/c3-w4.html" class="no-external">Policy Gradient</a>
@@ -594,19 +805,17 @@ Thursday, April 18, 2024
 <a href="./posts/coursera/c3-w4.html" class="no-external">Prediction and Control with Function Approximation</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UHJlZGljdGlvbiUyMGFuZCUyMENvbnRyb2wlMjB3aXRoJTIwRnVuY3Rpb24lMjBBcHByb3hpbWF0aW9u'); return false;">Prediction and Control with Function Approximation</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('UHJlZGljdGlvbiUyMGFuZCUyMENvbnRyb2wlMjB3aXRoJTIwRnVuY3Rpb24lMjBBcHByb3hpbWF0aW9u'); return false;">
-Prediction and Control with Function Approximation
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c3-w4.html" class="no-external">Sometimes, the behavior codified in the policy is much simpler than the action value function. Thus, learning the policy directly can be more efficient. Learning policies is…</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c3-w4.html" class="no-external">
+Sometimes, the behavior codified in the policy is much simpler than the action value function. Thus, learning the policy directly can be more efficient. Learning policies is…
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c3-w4.html" class="no-external">
@@ -619,12 +828,12 @@ Oren Bochman
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="9" data-categories="Q291cnNlcmElMkNQcmVkaWN0aW9uJTIwYW5kJTIwQ29udHJvbCUyMHdpdGglMjBGdW5jdGlvbiUyMEFwcHJveGltYXRpb24lMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1712091600000" data-listing-file-modified-sort="1737215325054" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="23" data-listing-word-count-sort="4600">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c3-w3.html" class="no-external"></a></p><a href="./posts/coursera/c3-w3.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c3-w3.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="11" data-categories="Q291cnNlcmElMkNQcmVkaWN0aW9uJTIwYW5kJTIwQ29udHJvbCUyMHdpdGglMjBGdW5jdGlvbiUyMEFwcHJveGltYXRpb24lMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1712091600000" data-listing-file-modified-sort="1773512581132" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="21" data-listing-word-count-sort="4120">
+<div class="thumbnail"><a href="./posts/coursera/c3-w3.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/coursera/c3-w3.html" class="no-external">Control with Approximation</a>
@@ -633,19 +842,17 @@ Oren Bochman
 <a href="./posts/coursera/c3-w3.html" class="no-external">Prediction and Control with Function Approximation</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UHJlZGljdGlvbiUyMGFuZCUyMENvbnRyb2wlMjB3aXRoJTIwRnVuY3Rpb24lMjBBcHByb3hpbWF0aW9u'); return false;">Prediction and Control with Function Approximation</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('UHJlZGljdGlvbiUyMGFuZCUyMENvbnRyb2wlMjB3aXRoJTIwRnVuY3Rpb24lMjBBcHByb3hpbWF0aW9u'); return false;">
-Prediction and Control with Function Approximation
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c3-w3.html" class="no-external">In this video, Adam White, discusses the algorithm for “Episodic SARSA with function approximation”. He explains how it can be used to solve reinforcement learning problems…</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c3-w3.html" class="no-external">
+In this video, Adam White, discusses the algorithm for “Episodic SARSA with function approximation”. He explains how it can be used to solve reinforcement learning problems…
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c3-w3.html" class="no-external">
@@ -658,12 +865,12 @@ Oren Bochman
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="10" data-categories="Q291cnNlcmElMkNQcmVkaWN0aW9uJTIwYW5kJTIwQ29udHJvbCUyMHdpdGglMjBGdW5jdGlvbiUyMEFwcHJveGltYXRpb24lMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1712005200000" data-listing-file-modified-sort="1737215317335" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3247">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c3-w2.html" class="no-external"></a></p><a href="./posts/coursera/c3-w2.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c3-w2.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="12" data-categories="Q291cnNlcmElMkNQcmVkaWN0aW9uJTIwYW5kJTIwQ29udHJvbCUyMHdpdGglMjBGdW5jdGlvbiUyMEFwcHJveGltYXRpb24lMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1712005200000" data-listing-file-modified-sort="1773223453854" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3249">
+<div class="thumbnail"><a href="./posts/coursera/c3-w2.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/coursera/c3-w2.html" class="no-external">Constructing Features for Prediction</a>
@@ -672,19 +879,17 @@ Oren Bochman
 <a href="./posts/coursera/c3-w2.html" class="no-external">Prediction and Control with Function Approximation</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UHJlZGljdGlvbiUyMGFuZCUyMENvbnRyb2wlMjB3aXRoJTIwRnVuY3Rpb24lMjBBcHByb3hpbWF0aW9u'); return false;">Prediction and Control with Function Approximation</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('UHJlZGljdGlvbiUyMGFuZCUyMENvbnRyb2wlMjB3aXRoJTIwRnVuY3Rpb24lMjBBcHByb3hpbWF0aW9u'); return false;">
-Prediction and Control with Function Approximation
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c3-w2.html" class="no-external">We discussed methods for representing large, an possibly continuous state spaces. Ways to construct features. A representation is an agent’s internal encoding of the state…</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c3-w2.html" class="no-external">
+We discussed methods for representing large, an possibly continuous state spaces. Ways to construct features. A representation is an agent’s internal encoding of the state…
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c3-w2.html" class="no-external">
@@ -697,12 +902,12 @@ Oren Bochman
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="11" data-categories="Q291cnNlcmElMkNQcmVkaWN0aW9uJTIwYW5kJTIwQ29udHJvbCUyMHdpdGglMjBGdW5jdGlvbiUyMEFwcHJveGltYXRpb24lMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1712005200000" data-listing-file-modified-sort="1737215313470" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="13" data-listing-word-count-sort="2514">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c3-w2.1.html" class="no-external"></a></p><a href="./posts/coursera/c3-w2.1.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c3-w2.1.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="13" data-categories="Q291cnNlcmElMkNQcmVkaWN0aW9uJTIwYW5kJTIwQ29udHJvbCUyMHdpdGglMjBGdW5jdGlvbiUyMEFwcHJveGltYXRpb24lMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1712005200000" data-listing-file-modified-sort="1773220378957" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="13" data-listing-word-count-sort="2514">
+<div class="thumbnail"><a href="./posts/coursera/c3-w2.1.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/coursera/c3-w2.1.html" class="no-external">Constructing Features for Prediction</a>
@@ -711,19 +916,17 @@ Oren Bochman
 <a href="./posts/coursera/c3-w2.1.html" class="no-external">Prediction and Control with Function Approximation</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UHJlZGljdGlvbiUyMGFuZCUyMENvbnRyb2wlMjB3aXRoJTIwRnVuY3Rpb24lMjBBcHByb3hpbWF0aW9u'); return false;">Prediction and Control with Function Approximation</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('UHJlZGljdGlvbiUyMGFuZCUyMENvbnRyb2wlMjB3aXRoJTIwRnVuY3Rpb24lMjBBcHByb3hpbWF0aW9u'); return false;">
-Prediction and Control with Function Approximation
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c3-w2.1.html" class="no-external">This is not a video lecture or notes for a learning goal. This is however my attempts to cover some material from the readings from chapter 9 of <span class="citation" data-cites="sutton2018reinforcement">[@sutton2018reinforcement]</span> me…</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c3-w2.1.html" class="no-external">
+This is not a video lecture or notes for a learning goal. This is however my attempts to cover some material from the readings from chapter 9 of <span class="citation" data-cites="sutton2018reinforcement">(Sutton and Barto 2018)</span> menti…
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c3-w2.1.html" class="no-external">
@@ -736,33 +939,31 @@ Oren Bochman
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="12" data-categories="Q291cnNlcmElMkNQcmVkaWN0aW9uJTIwYW5kJTIwQ29udHJvbCUyMHdpdGglMjBGdW5jdGlvbiUyMEFwcHJveGltYXRpb24lMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1711918800000" data-listing-file-modified-sort="1737215308148" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="37" data-listing-word-count-sort="7221">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c3-w1.html" class="no-external"></a></p><a href="./posts/coursera/c3-w1.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c3-w1.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="14" data-categories="Q291cnNlcmElMkNQcmVkaWN0aW9uJTIwYW5kJTIwQ29udHJvbCUyMHdpdGglMjBGdW5jdGlvbiUyMEFwcHJveGltYXRpb24lMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1711918800000" data-listing-file-modified-sort="1773391686596" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="35" data-listing-word-count-sort="6927">
+<div class="thumbnail"><a href="./posts/coursera/c3-w1.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/coursera/c3-w1.html" class="no-external">On-Policy Prediction with Approximation</a>
+<a href="./posts/coursera/c3-w1.html" class="no-external">Semi-gradient TD(0)</a>
 </h3>
 <div class="listing-subtitle">
 <a href="./posts/coursera/c3-w1.html" class="no-external">Prediction and Control with Function Approximation</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UHJlZGljdGlvbiUyMGFuZCUyMENvbnRyb2wlMjB3aXRoJTIwRnVuY3Rpb24lMjBBcHByb3hpbWF0aW9u'); return false;">Prediction and Control with Function Approximation</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('UHJlZGljdGlvbiUyMGFuZCUyMENvbnRyb2wlMjB3aXRoJTIwRnVuY3Rpb24lMjBBcHByb3hpbWF0aW9u'); return false;">
-Prediction and Control with Function Approximation
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c3-w1.html" class="no-external">I did not find the derivation of the SGD alg particularly enlightening and I have seen it several times. However the online setting is the best motivation for the use of SGD…</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c3-w1.html" class="no-external">
+I did not find the derivation of the SGD alg particularly enlightening and I have seen it several times. However the online setting is the best motivation for the use of SGD…
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c3-w1.html" class="no-external">
@@ -775,12 +976,12 @@ Oren Bochman
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="13" data-categories="Q291cnNlcmElMkNQcmVkaWN0aW9uJTIwYW5kJTIwQ29udHJvbCUyMHdpdGglMjBGdW5jdGlvbiUyMEFwcHJveGltYXRpb24lMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1711918800000" data-listing-file-modified-sort="1737216618338" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1785">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c3-w1.1.html" class="no-external"></a></p><a href="./posts/coursera/c3-w1.1.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c3-w1.1.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="15" data-categories="Q291cnNlcmElMkNQcmVkaWN0aW9uJTIwYW5kJTIwQ29udHJvbCUyMHdpdGglMjBGdW5jdGlvbiUyMEFwcHJveGltYXRpb24lMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1711918800000" data-listing-file-modified-sort="1773247282981" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1924">
+<div class="thumbnail"><a href="./posts/coursera/c3-w1.1.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/coursera/c3-w1.1.html" class="no-external">On-Policy Prediction with Approximation</a>
@@ -789,19 +990,17 @@ Oren Bochman
 <a href="./posts/coursera/c3-w1.1.html" class="no-external">Prediction and Control with Function Approximation</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UHJlZGljdGlvbiUyMGFuZCUyMENvbnRyb2wlMjB3aXRoJTIwRnVuY3Rpb24lMjBBcHByb3hpbWF0aW9u'); return false;">Prediction and Control with Function Approximation</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('UHJlZGljdGlvbiUyMGFuZCUyMENvbnRyb2wlMjB3aXRoJTIwRnVuY3Rpb24lMjBBcHByb3hpbWF0aW9u'); return false;">
-Prediction and Control with Function Approximation
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c3-w1.1.html" class="no-external">Some of the notes I made in this course became a bit too long. Rather than break the flow of the lesson I decided to move them to a separate file. This is one of those notes.</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c3-w1.1.html" class="no-external">
+Some of the notes I made in this course became a bit too long. Rather than break the flow of the lesson I decided to move them to a separate file. This is one of those…
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c3-w1.1.html" class="no-external">
@@ -814,12 +1013,12 @@ Oren Bochman
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="14" data-categories="Q291cnNlcmElMkNTYW1wbGUtYmFzZWQlMjBMZWFybmluZyUyME1ldGhvZHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1709503200000" data-listing-file-modified-sort="1737215611726" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="16" data-listing-word-count-sort="3016">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c2-w4.html" class="no-external"></a></p><a href="./posts/coursera/c2-w4.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c2-w4.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="16" data-categories="Q291cnNlcmElMkNTYW1wbGUtYmFzZWQlMjBMZWFybmluZyUyME1ldGhvZHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1709503200000" data-listing-file-modified-sort="1773220415977" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="16" data-listing-word-count-sort="3016">
+<div class="thumbnail"><a href="./posts/coursera/c2-w4.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/coursera/c2-w4.html" class="no-external">Sample-based Learning Methods</a>
@@ -828,19 +1027,17 @@ Oren Bochman
 <a href="./posts/coursera/c2-w4.html" class="no-external">Planning, Learning &amp; Acting</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('U2FtcGxlLWJhc2VkJTIwTGVhcm5pbmclMjBNZXRob2Rz'); return false;">Sample-based Learning Methods</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('U2FtcGxlLWJhc2VkJTIwTGVhcm5pbmclMjBNZXRob2Rz'); return false;">
-Sample-based Learning Methods
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c2-w4.html" class="no-external">In these module we define cover model based RL sampling. We start with the Dyna architecture. Then we consider tabular Q-planning algorithm, the Tabular Dyna-Q and Dyna-Q+ algorithms</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c2-w4.html" class="no-external">
+<p>In these module we define cover model based RL sampling. We start with the Dyna architecture. Then we consider tabular Q-planning algorithm, the Tabular Dyna-Q and Dyna-Q+ algorithms</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c2-w4.html" class="no-external">
@@ -853,12 +1050,12 @@ Oren Bochman
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="15" data-categories="Q291cnNlcmElMkNTYW1wbGUtYmFzZWQlMjBMZWFybmluZyUyME1ldGhvZHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1709416800000" data-listing-file-modified-sort="1737215620131" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3314">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c2-w3.html" class="no-external"></a></p><a href="./posts/coursera/c2-w3.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c2-w3.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="17" data-categories="Q291cnNlcmElMkNTYW1wbGUtYmFzZWQlMjBMZWFybmluZyUyME1ldGhvZHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1709416800000" data-listing-file-modified-sort="1773509940893" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="15" data-listing-word-count-sort="2921">
+<div class="thumbnail"><a href="./posts/coursera/c2-w3.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/coursera/c2-w3.html" class="no-external">Temporal Difference Learning Methods for Control</a>
@@ -867,19 +1064,17 @@ Oren Bochman
 <a href="./posts/coursera/c2-w3.html" class="no-external">Sample-based Learning Methods</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('U2FtcGxlLWJhc2VkJTIwTGVhcm5pbmclMjBNZXRob2Rz'); return false;">Sample-based Learning Methods</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('U2FtcGxlLWJhc2VkJTIwTGVhcm5pbmclMjBNZXRob2Rz'); return false;">
-Sample-based Learning Methods
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c2-w3.html" class="no-external">This week, we will learn to using TD learning for control, as a generalized policy iteration strategy. We will see three different algorithms based on bootstrapping and Bellman equations for control: Sarsa, Q-learning and Expected Sarsa. We will see some of the differences between the methods for on-policy and off-policy control, and that Expected Sarsa is a unified algorithm for both.</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c2-w3.html" class="no-external">
+<p>This week, we will learn to using TD learning for control, as a generalized policy iteration strategy. We will see three different algorithms based on bootstrapping and Bellman equations for control: Sarsa, Q-learning and Expected Sarsa. We will see some of the differences between the methods for on-policy and off-policy control, and that Expected Sarsa is a unified algorithm for both.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c2-w3.html" class="no-external">
@@ -889,12 +1084,12 @@ Sunday, March 3, 2024
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="16" data-categories="Q291cnNlcmElMkNTYW1wbGUtYmFzZWQlMjBMZWFybmluZyUyME1ldGhvZHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1709330400000" data-listing-file-modified-sort="1737215624846" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1142">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c2-w2.html" class="no-external"></a></p><a href="./posts/coursera/c2-w2.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c2-w2.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="18" data-categories="Q291cnNlcmElMkNTYW1wbGUtYmFzZWQlMjBMZWFybmluZyUyME1ldGhvZHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1709330400000" data-listing-file-modified-sort="1773485251289" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1024">
+<div class="thumbnail"><a href="./posts/coursera/c2-w2.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/coursera/c2-w2.html" class="no-external">Temporal Difference Learning Methods for Prediction</a>
@@ -903,19 +1098,17 @@ Sunday, March 3, 2024
 <a href="./posts/coursera/c2-w2.html" class="no-external">Sample-based Learning Methods</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('U2FtcGxlLWJhc2VkJTIwTGVhcm5pbmclMjBNZXRob2Rz'); return false;">Sample-based Learning Methods</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('U2FtcGxlLWJhc2VkJTIwTGVhcm5pbmclMjBNZXRob2Rz'); return false;">
-Sample-based Learning Methods
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c2-w2.html" class="no-external">In these unit we define some key terms like rewards, states, action, value functions, action values functions. Then we consider at the the multi-armed bandit problem leading to exploration explotation dillema, the epsilon greedy algorithm.</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c2-w2.html" class="no-external">
+<p>In these unit we define some key terms like rewards, states, action, value functions, action values functions. Then we consider at the the multi-armed bandit problem leading to exploration explotation dillema, the epsilon greedy algorithm.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c2-w2.html" class="no-external">
@@ -925,12 +1118,12 @@ Saturday, March 2, 2024
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="17" data-categories="Q291cnNlcmElMkNTYW1wbGUtYmFzZWQlMjBMZWFybmluZyUyME1ldGhvZHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1709244000000" data-listing-file-modified-sort="1737215672579" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="24" data-listing-word-count-sort="4756">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c2-w1.html" class="no-external"></a></p><a href="./posts/coursera/c2-w1.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c2-w1.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="19" data-categories="Q291cnNlcmElMkNTYW1wbGUtYmFzZWQlMjBMZWFybmluZyUyME1ldGhvZHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1709244000000" data-listing-file-modified-sort="1773473270457" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3838">
+<div class="thumbnail"><a href="./posts/coursera/c2-w1.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/coursera/c2-w1.html" class="no-external">Monte-Carlo Methods for Prediction &amp; Control</a>
@@ -939,19 +1132,17 @@ Saturday, March 2, 2024
 <a href="./posts/coursera/c2-w1.html" class="no-external">Sample-based Learning Methods</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('U2FtcGxlLWJhc2VkJTIwTGVhcm5pbmclMjBNZXRob2Rz'); return false;">Sample-based Learning Methods</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('U2FtcGxlLWJhc2VkJTIwTGVhcm5pbmclMjBNZXRob2Rz'); return false;">
-Sample-based Learning Methods
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c2-w1.html" class="no-external">In this module we learn about Sample based MC methods that allow learning from sampled episodes. We revise our initial algorithm to better handle exploration. In off policy RL we see methods to learn a policy using samples from another policy, corrected using importance sampleing.</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c2-w1.html" class="no-external">
+<p>In this module we learn about Sample based MC methods that allow learning from sampled episodes. We revise our initial algorithm to better handle exploration. In off policy RL we see methods to learn a policy using samples from another policy, corrected using importance sampleing.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c2-w1.html" class="no-external">
@@ -961,12 +1152,12 @@ Friday, March 1, 2024
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="18" data-categories="Q291cnNlcmElMkNGdW5kYW1lbnRhbHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1651698000000" data-listing-file-modified-sort="1737215476179" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2180">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c1-w4.html" class="no-external"></a></p><a href="./posts/coursera/c1-w4.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c1-w4.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="20" data-categories="Q291cnNlcmElMkNGdW5kYW1lbnRhbHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1651698000000" data-listing-file-modified-sort="1773481609061" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2025">
+<div class="thumbnail"><a href="./posts/coursera/c1-w4.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/coursera/c1-w4.html" class="no-external">Dynamic Programming</a>
@@ -975,19 +1166,17 @@ Friday, March 1, 2024
 <a href="./posts/coursera/c1-w4.html" class="no-external">RL Fundamentals</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('RnVuZGFtZW50YWxz'); return false;">Fundamentals</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('RnVuZGFtZW50YWxz'); return false;">
-Fundamentals
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c1-w4.html" class="no-external">In week 4 we learn how to compute value functions and optimal policies, assuming you have the MDP model. You will implement dynamic programming to compute value functions and optimal policies and understand the utility of dynamic programming.</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c1-w4.html" class="no-external">
+<p>In week 4 we learn how to compute value functions and optimal policies, assuming you have the MDP model. You will implement dynamic programming to compute value functions and optimal policies and understand the utility of dynamic programming.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c1-w4.html" class="no-external">
@@ -1000,12 +1189,12 @@ Oren Bochman
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="19" data-categories="Q291cnNlcmElMkNGdW5kYW1lbnRhbHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1651611600000" data-listing-file-modified-sort="1737215493305" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="15" data-listing-word-count-sort="2822">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c1-w3.html" class="no-external"></a></p><a href="./posts/coursera/c1-w3.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c1-w3.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="21" data-categories="Q291cnNlcmElMkNGdW5kYW1lbnRhbHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1651611600000" data-listing-file-modified-sort="1773243922201" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="15" data-listing-word-count-sort="2842">
+<div class="thumbnail"><a href="./posts/coursera/c1-w3.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/coursera/c1-w3.html" class="no-external">Value Functions &amp; Bellman Equations</a>
@@ -1014,19 +1203,17 @@ Oren Bochman
 <a href="./posts/coursera/c1-w3.html" class="no-external">RL Fundamentals</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('RnVuZGFtZW50YWxz'); return false;">Fundamentals</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('RnVuZGFtZW50YWxz'); return false;">
-Fundamentals
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c1-w3.html" class="no-external">In week 3 we learn about Value Functions and Bellman Equations, which are the key technology behind all the algorithms we will learn. We learn the definition of policies and value functions, as well as Bellman equations.</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c1-w3.html" class="no-external">
+<p>In week 3 we learn about Value Functions and Bellman Equations, which are the key technology behind all the algorithms we will learn. We learn the definition of policies and value functions, as well as Bellman equations.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c1-w3.html" class="no-external">
@@ -1039,12 +1226,12 @@ Oren Bochman
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="20" data-categories="Q291cnNlcmElMkNGdW5kYW1lbnRhbHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1651525200000" data-listing-file-modified-sort="1737215460673" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="19" data-listing-word-count-sort="3670">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c1-w2.html" class="no-external"></a></p><a href="./posts/coursera/c1-w2.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c1-w2.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="22" data-categories="Q291cnNlcmElMkNGdW5kYW1lbnRhbHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1651525200000" data-listing-file-modified-sort="1773524265369" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="26" data-listing-word-count-sort="5041">
+<div class="thumbnail"><a href="./posts/coursera/c1-w2.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/coursera/c1-w2.html" class="no-external">Markov Decision Processes</a>
@@ -1053,19 +1240,17 @@ Oren Bochman
 <a href="./posts/coursera/c1-w2.html" class="no-external">RL Fundamentals</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('RnVuZGFtZW50YWxz'); return false;">Fundamentals</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('RnVuZGFtZW50YWxz'); return false;">
-Fundamentals
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c1-w2.html" class="no-external">In week 2 we learn about Markov Decision Processes (MDP) and how to compute value functions and optimal policies, assuming you have the MDP model. We implement dynamic programming to compute value functions and optimal policies.</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c1-w2.html" class="no-external">
+<p>In week 2 we learn about Markov Decision Processes (MDP) and how to compute value functions and optimal policies, assuming you have the MDP model. We implement dynamic programming to compute value functions and optimal policies.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c1-w2.html" class="no-external">
@@ -1078,12 +1263,12 @@ Oren Bochman
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="21" data-categories="Q291cnNlcmElMkNGdW5kYW1lbnRhbHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1651438800000" data-listing-file-modified-sort="1737215441606" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="22" data-listing-word-count-sort="4305">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c1-w1.html" class="no-external"></a></p><a href="./posts/coursera/c1-w1.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c1-w1.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="23" data-categories="Q291cnNlcmElMkNGdW5kYW1lbnRhbHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1651438800000" data-listing-file-modified-sort="1773513547659" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="19" data-listing-word-count-sort="3612">
+<div class="thumbnail"><a href="./posts/coursera/c1-w1.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/coursera/c1-w1.html" class="no-external">The K-Armed Bandit Problem</a>
@@ -1092,37 +1277,32 @@ Oren Bochman
 <a href="./posts/coursera/c1-w1.html" class="no-external">RL Fundamentals</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('RnVuZGFtZW50YWxz'); return false;">Fundamentals</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('RnVuZGFtZW50YWxz'); return false;">
-Fundamentals
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c1-w1.html" class="no-external">In week 1 we define some key concepts like rewards, states, action, value functions, action values functions. We consider the the multi-armed bandit problem, leading to exploration explotation dillema, and the epsilon greedy algorithm.</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c1-w1.html" class="no-external">
+<p>In week 1 we define some key concepts like rewards, states, action, value functions, action values functions. We consider the the multi-armed bandit problem, leading to exploration explotation dillema, and the epsilon greedy algorithm.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c1-w1.html" class="no-external">
 <div class="listing-date">
 Monday, May 2, 2022
 </div>
-<div class="listing-author">
-Oren Bochman
-</div>
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="22" data-categories="Q291cnNlcmElMkNGdW5kYW1lbnRhbHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1651352400000" data-listing-file-modified-sort="1737215553392" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1901">
-<div class="thumbnail">
-<p><a href="./posts/coursera/c1-w0.html" class="no-external"></a></p><a href="./posts/coursera/c1-w0.html" class="no-external">
-<p><img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/coursera/c1-w0.html" class="no-external"></a></p>
-</div>
+<div class="quarto-post image-right" data-index="24" data-categories="Q291cnNlcmElMkNGdW5kYW1lbnRhbHMlMkNSZWluZm9yY2VtZW50JTIwTGVhcm5pbmc=" data-listing-date-sort="1651352400000" data-listing-file-modified-sort="1773220459145" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1901">
+<div class="thumbnail"><a href="./posts/coursera/c1-w0.html" class="no-external">
+
+<img loading="lazy" src="./posts/coursera/img/nlp-brain-wordcloud.jpg" class="thumbnail-image">
+
+</a></div>
 <div class="body">
 <h3 class="no-anchor listing-title">
 <a href="./posts/coursera/c1-w0.html" class="no-external">Course Introduction</a>
@@ -1131,19 +1311,17 @@ Oren Bochman
 <a href="./posts/coursera/c1-w0.html" class="no-external">RL Fundamentals</a>
 </div>
 <div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">
-Coursera
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q291cnNlcmE='); return false;">Coursera</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('RnVuZGFtZW50YWxz'); return false;">Fundamentals</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">Reinforcement Learning</div>
+
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('RnVuZGFtZW50YWxz'); return false;">
-Fundamentals
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('UmVpbmZvcmNlbWVudCUyMExlYXJuaW5n'); return false;">
-Reinforcement Learning
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/coursera/c1-w0.html" class="no-external">In week 1 we define some key concepts like rewards, states, action, value functions, action values functions. We consider the the multi-armed bandit problem, leading to exploration explotation dillema, and the epsilon greedy algorithm.</a>
-</div>
+<div class="delink listing-description"><a href="./posts/coursera/c1-w0.html" class="no-external">
+<p>In week 1 we define some key concepts like rewards, states, action, value functions, action values functions. We consider the the multi-armed bandit problem, leading to exploration explotation dillema, and the epsilon greedy algorithm.</p>
+</a></div>
 </div>
 <div class="metadata">
 <a href="./posts/coursera/c1-w0.html" class="no-external">
@@ -1157,441 +1335,326 @@ Oren Bochman
 </div>
 </div>
 </div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+<div class="listing-no-matching d-none">No matching items</div>
+</div><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{bochman2025,
+  author = {Bochman, Oren},
+  title = {Rl-Notes},
+  date = {2025-01-18},
+  url = {https://orenbochman.github.io/notes-rl/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-bochman2025" class="csl-entry quarto-appendix-citeas" role="listitem">
+Bochman, Oren. 2025. <span>“Rl-Notes.”</span> January 18. <a href="https://orenbochman.github.io/notes-rl/">https://orenbochman.github.io/notes-rl/</a>.
+</div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
     }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const disableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'prefetch';
-    }
-  }
-  const enableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'stylesheet';
-    }
-  }
-  const manageTransitions = (selector, allowTransitions) => {
-    const els = window.document.querySelectorAll(selector);
-    for (let i=0; i < els.length; i++) {
-      const el = els[i];
-      if (allowTransitions) {
-        el.classList.remove('notransition');
-      } else {
-        el.classList.add('notransition');
-      }
-    }
-  }
-  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
-    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
-    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
-    let newTheme = '';
-    if(darkModeDefault) {
-      newTheme = isAlternate ? baseTheme : alternateTheme;
-    } else {
-      newTheme = isAlternate ? alternateTheme : baseTheme;
-    }
-    const changeGiscusTheme = () => {
-      // From: https://github.com/giscus/giscus/issues/336
-      const sendMessage = (message) => {
-        const iframe = document.querySelector('iframe.giscus-frame');
-        if (!iframe) return;
-        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
-      }
-      sendMessage({
-        setConfig: {
-          theme: newTheme
-        }
-      });
-    }
-    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
-    if (isGiscussLoaded) {
-      changeGiscusTheme();
-    }
-  }
-  const toggleColorMode = (alternate) => {
-    // Switch the stylesheets
-    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-    manageTransitions('#quarto-margin-sidebar .nav-link', false);
-    if (alternate) {
-      enableStylesheet(alternateStylesheets);
-      for (const sheetNode of alternateStylesheets) {
-        if (sheetNode.id === "quarto-bootstrap") {
-          toggleBodyColorMode(sheetNode);
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
         }
       }
-    } else {
-      disableStylesheet(alternateStylesheets);
-      toggleBodyColorPrimary();
-    }
-    manageTransitions('#quarto-margin-sidebar .nav-link', true);
-    // Switch the toggles
-    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-    for (let i=0; i < toggles.length; i++) {
-      const toggle = toggles[i];
-      if (toggle) {
-        if (alternate) {
-          toggle.classList.add("alternate");     
-        } else {
-          toggle.classList.remove("alternate");
-        }
-      }
-    }
-    // Hack to workaround the fact that safari doesn't
-    // properly recolor the scrollbar when toggling (#1455)
-    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
-      manageTransitions("body", false);
-      window.scrollTo(0, 1);
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        manageTransitions("body", true);
-      }, 40);  
-    }
-  }
-  const isFileUrl = () => { 
-    return window.location.protocol === 'file:';
-  }
-  const hasAlternateSentinel = () => {  
-    let styleSentinel = getColorSchemeSentinel();
-    if (styleSentinel !== null) {
-      return styleSentinel === "alternate";
-    } else {
       return false;
     }
-  }
-  const setStyleSentinel = (alternate) => {
-    const value = alternate ? "alternate" : "default";
-    if (!isFileUrl()) {
-      window.localStorage.setItem("quarto-color-scheme", value);
-    } else {
-      localAlternateSentinel = value;
-    }
-  }
-  const getColorSchemeSentinel = () => {
-    if (!isFileUrl()) {
-      const storageValue = window.localStorage.getItem("quarto-color-scheme");
-      return storageValue != null ? storageValue : localAlternateSentinel;
-    } else {
-      return localAlternateSentinel;
-    }
-  }
-  const darkModeDefault = false;
-  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
-  // Dark / light mode switch
-  window.quartoToggleColorScheme = () => {
-    // Read the current dark / light value 
-    let toAlternate = !hasAlternateSentinel();
-    toggleColorMode(toAlternate);
-    setStyleSentinel(toAlternate);
-    toggleGiscusIfUsed(toAlternate, darkModeDefault);
-  };
-  // Ensure there is a toggle, if there isn't float one in the top right
-  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-    const a = window.document.createElement('a');
-    a.classList.add('top-right');
-    a.classList.add('quarto-color-scheme-toggle');
-    a.href = "";
-    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-    const i = window.document.createElement("i");
-    i.classList.add('bi');
-    a.appendChild(i);
-    window.document.body.appendChild(a);
-  }
-  // Switch to dark mode if need be
-  if (hasAlternateSentinel()) {
-    toggleColorMode(true);
-  } else {
-    toggleColorMode(false);
-  }
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
       }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
     }
-    return false;
-  }
-  const onCopySuccess = function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
-      }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
         }
       }
       return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
-  });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
     });
-    clipboardModal.on('success', onCopySuccess);
-  }
-  const viewSource = window.document.getElementById('quarto-view-source') ||
-                     window.document.getElementById('quarto-code-tools-source');
-  if (viewSource) {
-    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-    viewSource.addEventListener("click", function(e) {
-      if (sourceUrl) {
-        // rstudio viewer pane
-        if (/\bcapabilities=\b/.test(window.location)) {
-          window.open(sourceUrl);
-        } else {
-          window.location.href = sourceUrl;
-        }
-      } else {
-        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-        modal.show();
-      }
-      return false;
-    });
-  }
-  function toggleCodeHandler(show) {
-    return function(e) {
-      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-      for (let i=0; i<detailsSrc.length; i++) {
-        const details = detailsSrc[i].parentElement;
-        if (show) {
-          details.open = true;
-        } else {
-          details.removeAttribute("open");
-        }
-      }
-      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
-      const fromCls = show ? "hidden" : "unhidden";
-      const toCls = show ? "unhidden" : "hidden";
-      for (let i=0; i<cellCodeDivs.length; i++) {
-        const codeDiv = cellCodeDivs[i];
-        if (codeDiv.classList.contains(fromCls)) {
-          codeDiv.classList.remove(fromCls);
-          codeDiv.classList.add(toCls);
-        } 
-      }
-      return false;
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
     }
-  }
-  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-  if (hideAllCode) {
-    hideAllCode.addEventListener("click", toggleCodeHandler(false));
-  }
-  const showAllCode = window.document.getElementById("quarto-show-all-code");
-  if (showAllCode) {
-    showAllCode.addEventListener("click", toggleCodeHandler(true));
-  }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/orenbochman\.github\.io\/notes-rl\/");
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-        // undo the damage that might have been done by quarto-nav.js in the case of
-        // links that we want to consider external
-        if (link.dataset.originalHref !== undefined) {
-          link.href = link.dataset.originalHref;
-        }
-          // target, if specified
-          link.setAttribute("target", "_blank");
-          if (link.getAttribute("rel") === null) {
-            link.setAttribute("rel", "noopener");
-          }
-      }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start',
-    };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note) {
-        return note.innerHTML;
-      } else {
-        return "";
-      }
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
-        }
-      }
-    }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
           } else {
-            container.appendChild(child.cloneNode(true));
-            break;
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
           }
         }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
         }
-        return container.innerHTML
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("^(?:http:|https:)\/\/www\.quarto\.org\/custom");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
       } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
       }
     }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
           }
         } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
+            const note = htmlDoc.querySelector('main.content');
             if (note !== null) {
-              const html = processXRef(id, note);
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -1599,196 +1662,211 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             instance.show();
           });
         }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            div.style.left = 0;
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+      }, function(instance) {
       });
     }
-  }
-});
-</script>
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+        for (let i=0; i<annoteTargets.length; i++) {
+          const annoteTarget = annoteTargets[i];
+          const targetCell = annoteTarget.getAttribute("data-target-cell");
+          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+          const contentFn = () => {
+            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+            if (content) {
+              const tipContent = content.cloneNode(true);
+              tipContent.classList.add("code-annotation-tip-content");
+              return tipContent.outerHTML;
+            }
+          }
+          const config = {
+            allowHTML: true,
+            content: contentFn,
+            onShow: (instance) => {
+              selectCodeLines(instance.reference);
+              instance.reference.classList.add('code-annotation-active');
+              window.tippy.hideAll();
+            },
+            onHide: (instance) => {
+              unselectCodeLines();
+              instance.reference.classList.remove('code-annotation-active');
+            },
+            maxWidth: 300,
+            delay: [50, 0],
+            duration: [200, 0],
+            offset: [5, 10],
+            arrow: true,
+            appendTo: function(el) {
+              return el.parentElement.parentElement.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'quarto',
+            placement: 'right',
+            popperOptions: {
+              modifiers: [
+              {
+                name: 'flip',
+                options: {
+                  flipVariations: false, // true by default
+                  allowedAutoPlacements: ['right'],
+                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                },
+              },
+              {
+                name: 'preventOverflow',
+                options: {
+                  mainAxis: false,
+                  altAxis: false
+                }
+              }
+              ]        
+            }      
+          };
+          window.tippy(annoteTarget, config); 
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
 </div> <!-- /content -->
     <script type="text/javascript">
     (function(d) {
       d.querySelectorAll(".pseudocode-container").forEach(function(el) {
         let pseudocodeOptions = {
-          indentSize: el.dataset.indentSize || "1.2em",
-          commentDelimiter: el.dataset.commentDelimiter || "//",
-          lineNumber: el.dataset.lineNumber === "true" ? true : false,
-          lineNumberPunc: el.dataset.lineNumberPunc || ":",
-          noEnd: el.dataset.noEnd === "true" ? true : false,
-          titlePrefix: el.dataset.captionPrefix || "Algorithm"
+          indentSize: el.dataset.indentSize,
+          commentDelimiter: " " + el.dataset.commentDelimiter + " ",
+          lineNumber: el.dataset.lineNumber.toLowerCase() === "true",
+          lineNumberPunc: el.dataset.lineNumberPunc,
+          noEnd: el.dataset.noEnd.toLowerCase() === "true",
+          titlePrefix: el.dataset.captionPrefix,
         };
         pseudocode.renderElement(el.querySelector(".pseudocode"), pseudocodeOptions);
       });
@@ -1815,4 +1893,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

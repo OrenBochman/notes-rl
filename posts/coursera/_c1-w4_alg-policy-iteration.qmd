@@ -1,0 +1,47 @@
+::: {#alg-policy-iteration}
+## Policy Iteration, for estimating $\pi \approx \pi_{\star}$
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{Policy Iteration, for estimating $\pi \approx \pi_{\star}$}
+\begin{algorithmic}[1]
+\State Input: $\pi$, the policy to be evaluated
+\State Algorithm parameter: a small threshold $\theta > 0$ determining accuracy of estimation
+\State Initialize $V(s) \in \mathbb{R}, \quad \pi(s) \in A(s)\ \forall s\in S,\quad V(terminal)= 0$
+\State 
+\State {Policy Evaluation}
+\REPEAT
+  \STATE $\Delta \leftarrow 0$
+  \FORALL { $s\in S$}
+    \STATE $v \leftarrow  V(s)$
+    \STATE $V(s) \leftarrow \sum_{a} \pi(a|s) \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]$
+    \STATE $\Delta \leftarrow \max(\Delta, |v - V(s)|)$
+  \ENDFOR
+\UNTIL{$\Delta < \theta$}
+
+\State 
+\State {Policy Improvement}
+\ForAll { $s\in S$}
+  \State old-action $\leftarrow \pi(s)$
+  \State $\pi(s) \leftarrow \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V(s')]\quad$ \comment{ greedyfication}
+  \If {old-action $\neq \pi(s)$}
+      \State policy-stable $\leftarrow$ false
+    \EndIf
+\EndFor
+\If {policy-stable} 
+  \Return  {$V \approx v_\star,\ \pi \approx \pi_\star$}
+\Else
+  \State go to Policy Evaluation
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+```
+:::

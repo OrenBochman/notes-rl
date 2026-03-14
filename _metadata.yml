@@ -38,3 +38,12 @@ lightbox:
   desc-position: right
   loop: false
   css-class: "my-css-class"
+
+crossref:
+  custom:
+    - kind: float
+      key: alg
+      reference-prefix: "Algorithm"
+      caption-prefix: "Algorithm"
+      latex-env: alg
+      latex-list-of-description: Algorithm

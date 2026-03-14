@@ -5,21 +5,8 @@ title: On-Policy Prediction with Approximation
 subtitle: Prediction and Control with Function Approximation
 author: Oren Bochman
 draft: false
-categories:
-  - Coursera
-  - Prediction and Control with Function Approximation
-  - Reinforcement Learning
-keywords:
-    - neural networks
-    - feature construction
-    - coarse coding
-    - feed-forward architecture
-    - activation functions
-    - deep networks
-    - online setting
-    - offline setting
-    - representation
-    - learning capacity
+categories: [Coursera,Prediction and Control with Function Approximation,Reinforcement Learning]
+keywords: [neural networks, feature construction, coarse coding, feed-forward architecture, activation functions, deep networks, online setting, offline setting, representation, learning capacity]
 image: img/nlp-brain-wordcloud.jpg
 title-block-banner: /images/banner_black_3.jpg
 ---
@@ -28,7 +15,9 @@ title-block-banner: /images/banner_black_3.jpg
 
 ![RL logo](img/logo.png){.column-margin} 
 
+
 ![RL algorithms](img/alg_selector.png){.column-margin group="slides"}
+
 
 -   We now start the third course in the reinforcement learning specialization.
 -   In terms of the [@fig-rl-chart chart] we are on the left branch of the tree.
@@ -55,14 +44,14 @@ Minibatches are then a natural extension of this idea.
 ::: {.callout-tip collapse="true"}
 ### Readings {.unnumbered}
 
--   [x] [@sutton2018reinforcement§9.1-9.4, pp. 194-209] [book](http://incompleteideas.net/book/RLbook2020.pdf#page=194)
+- [x] [@sutton2018reinforcement§9.1-9.4, pp. 194-209] [book](http://incompleteideas.net/book/RLbook2020.pdf#page=194)
 :::
 
 # Lesson 1: Estimating Value Functions as Supervised Learning
 
 In this lesson we will cover some important notation that will remain with us till the end of the course. Mathematically most of it is trivial, but it is important to understand the notation - otherwise the rest of the course will be hard to follow.
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 -   [x] *Understand* how we can use **parameterized functions** to approximate value functions [\#](#sec-l1g1)
@@ -147,10 +136,10 @@ Finding the weights that minimize the error between the approximate value functi
 
 ![Linear value function generalize the tabular case](img/c3-w2-parametrized_functions.png){#fig-rl-linear-approximation .column-margin}
 $$
-\begin{align*}
-\hat{v}(s, \mathbb{w}) & \dot = \sum w_i x_i(s) \newline
+\begin{aligned}
+\hat{v}(s, \mathbb{w}) & \dot = \sum w_i x_i(s) \\ 
                        & = <\mathbf{w}, \mathbf{x}(s)> \qquad
-\end{align*}
+\end{aligned}
 $$
 
 -   here:
@@ -164,6 +153,7 @@ $$
 -   so how are tabular functions a special case of linear value function approximation?
     -   we can see from the figure that all we need is use one hot encoding for the features. Then the weighted vector will be the same as the value function in the table.
 
+
 ![Linear value function approximation failure](img/rl-linear-fn-fail.png){#fig-rl-failure .column-margin}
 
 
@@ -176,7 +166,6 @@ $$
     -   linear functions
     -   tile coding
     -   neural networks
-
 
 
 ## Generalization and Discrimination (video)
@@ -216,7 +205,7 @@ The video is about:
 
 We hear a lot about function approximation and gradient methods having a bias or high variance. I tracked this from wikipedia and statistical learning. While it makes sense for a Bayesian regression I'm not sure that it is quite correct for RL. Unfortunately I don't have a better explanation, though reviewing [this policy gradient lecture might be helpful](https://www.youtube.com/watch?v=y3oqOjHilio)
 
-::: callout-tip
+::: {.callout-tip}
 ### Bias-variance tradeoff {.unnumbered}
 
 -   an important result called the [**bias-variance tradeoff**](https://en.wikipedia.org/wiki/Bias-variance_tradeoff):
@@ -290,7 +279,7 @@ In TD learning the target depends on $w$ but in supervised learning the target i
 
 # Lesson 2: The Objective for On-policy Prediction
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 -   [x] *Understand* the **mean-squared value error objective** for policy evaluation [\#](#sec-l2g1)
@@ -367,7 +356,7 @@ $$ {#eq-msve}
 $$
 w \dot = \left [ \begin{matrix} w_1 \\ \vdots \\ w_d  \end{matrix} \right ] \qquad 
 \nabla f = \left [ \begin{matrix} \frac{\partial f}{\partial w_1} \\ \vdots \\ \frac{\partial f}{\partial w_d}  \end{matrix} \right ] \qquad
-$$
+$$ {#eq-gradient-def}
 
 -   for a linear function:
 
@@ -404,11 +393,11 @@ $$ {#eq-grad-descent}
 
 
 $$
-\begin{align*}
+\begin{aligned}
 \nabla J(\mathbf{w}) &= \nabla \sum_{s\in S} \mu(s)[v_\pi(s) - \hat{v}(s, \mathbf{w})]^2 \qquad  \qquad  \hat{v}(s, \mathbf{w}) = <\mathbf{w},\mathbf{x}(s)> \\
                      &=  \sum_{s\in S}  \mu(s) \nabla [v_\pi(s) - \hat{v}(s, \mathbf{w})]^2 \qquad  \qquad \nabla   \hat{v}(s, \mathbf{w}) = \mathbf{x}(s) \\
                      &=  \sum_{s\in S} \mu(s) 2 [v_\pi(s) - \hat{v}(s, \mathbf{w})]\nabla \hat{v}(s, \mathbf{w})
-\end{align*} \qquad 
+\end{aligned} \qquad 
 $$
 
 
@@ -438,50 +427,17 @@ $$
 so we can substitute the true value with the return from the state $s_1$.
 
 $$
-\begin{align*}
-w_{t+1} & \dot= w_t + \alpha [v_\pi(S_1) - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w}) \qquad \\
-        & \dot = w_t + \alpha [G_1 - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w}) \qquad
-\end{align*}
+\begin{aligned}
+w_{t+1} & \doteq w_t + \alpha [v_\pi(S_1) - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w}) \\
+        & \doteq w_t + \alpha [G_1 - \hat{v}(s_1, \mathbf{w_1})]\nabla \hat{v}(s, \mathbf{w})
+\end{aligned}
 $$ {#eq-gradient-mc-update}
 
 ## The gradient Monte Carlo algorithm for value estimation {#sec-l2g4}
 
 We now have a way to update the weights of the value function using the gradient of the mean-squared value error. Which allows us to present the gradient Monte Carlo algorithm for value estimation.
 
-
-::: {#nte--gradient-mc .callout-note .alg}
-### MC prediction fist visit for estimating $V \approx v_\pi$ {#alg-mc-prediction-first-visit}
-
-``` pseudocode
-#| label: alg-gradient-mc
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-\begin{algorithm}
-\caption{GradientMC($\pi$)}
-\begin{algorithmic}[1]
-\State Input
-  \State $\qquad \pi$ to be evaluated
- \State  $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$
-\State Algorithm parameters:
-  \State $\qquad \alpha \in (0, 1]$ step size
-\State Initialize:
-  \State $\qquad \mathbf{w} \leftarrow x \in \mathbb{R^d} \text{ arbiterly}$ (e.g. w=0)
-\For {each episode:}
-  \State Generate an episode by following $\pi: S_0, A_0, R_1, S_1, A_1, R_2,\ldots, S_{T-1}, A_{T-1}, R_T$
-  \State $G \leftarrow 0$
-  \For {each step of episode, $t = 0, 1, \ldots, T-1$:}
-      \State $\mathbf{w} \leftarrow w_t + \alpha [G_t - \hat{v}(S_t , \mathbf{w_1})] \nabla \hat{v}(S_t , \mathbf{w})$
-  \EndFor
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-```
-:::
+{{< include /posts/coursera/_c3-w1_alg1.qmd >}}
 
 -   The Gradient Monte Carlo algorithm is a policy evaluation algorithm that uses stochastic gradient descent to minimize the mean-squared value error.
 
@@ -520,7 +476,7 @@ which is either 1 or 0 depending on the group of states.
 
 # Lesson 3: The Objective for TD
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 -   [x] *Understand* the **TD-update** for function approximation [\#](#sec-l3g1)
@@ -561,21 +517,21 @@ $$ {#eq-td-target}
   - let's estimate the gradient of the mean squared value error with respect to the weights $\mathbf{w}$:
   
 $$
-\begin{align*}
-\nabla J(\mathbf{w}) & = \nabla \frac{1}{2}[U_t - \hat{v}(S_t, \mathbf{w})]^2 \newline
+\begin{aligned}
+\nabla J(\mathbf{w}) & = \nabla \frac{1}{2}[U_t - \hat{v}(S_t, \mathbf{w})]^2 \\ 
                      & = (U_t - \hat{v}(S_t, \mathbf{w})) (\nabla U_t - \nabla \hat{v}(S_t, \mathbf{w})) \\
                      & \ne - (U_t - \hat{v}(S_t, \mathbf{w})) \nabla \hat{v}(S_t, \mathbf{w}) \quad \text{unless} \quad \nabla  U_t = 0
-\end{align*}
+\end{aligned}
 $$ {#eq-td-grad}
 
 - but for TD we have:
 
 $$
-\begin{align*}
-\nabla U_t = & = \nabla (R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})) \newline
-            & = \gamma \nabla \hat{v}(S_{t+1}, \mathbf{w}) \newline
+\begin{aligned}
+\nabla U_t = & = \nabla (R_{t+1} + \gamma \hat{v}(S_{t+1}, \mathbf{w})) \\ 
+            & = \gamma \nabla \hat{v}(S_{t+1}, \mathbf{w}) \\ 
             & \ne 0
-\end{align*}
+\end{aligned}
 $$ {#eq-td-grad-ut}
 
 - So the TD-update isn't a true gradient update. However TD often converge  in many cases we care updates.
@@ -595,44 +551,7 @@ $$ {#eq-td-grad-ut}
 
 -   The Semi-gradient TD(0) algorithm is a policy evaluation algorithm that uses the TD-update for function approximation.
 
-::: {.callout-note}
-### The Semi-gradient TD(0) algorithm for estimating $v_\pi$ {#alg-td0}
-
-``` pseudocode
-#| label: alg-td-zero
-#| html-indent-size: "1.2em"
-#| html-comment-delimiter: "#"
-#| html-line-number: true
-#| html-line-number-punc: ":"
-#| html-no-end: false
-#| pdf-placement: "htb!"
-#| pdf-line-number: true
-
-\begin{algorithm}
-\caption{Semi-gradient TD(0) for estimating $v_\pi$}
-\begin{algorithmic}[1]
-\State Input:
-  \State $\qquad \pi \leftarrow \text{policy to be evaluated}$
-   \State  $\qquad \text{a differentiable function } \hat{v}: \mathcal{S} \times \mathbb{R}^d \rightarrow \mathbb{R}$
-\State Algorithm parameters:
-  \State $\qquad \alpha \in (0, 1]$ step size
-  \State $\qquad \gamma \in [0, 1]$ discount factor
-\State Initialize:
-  \State $\qquad value function weights w \leftarrow x \in \mathbb{R}^d \quad \forall s \in \mathcal{S}$ (e.g. w=0)
-\FORALL {episode $e$:}
-  \State $Initialize S$
-  \FORALL {step $S \in e$:}
-    \State $\text{Choose } A \sim \pi(\cdot \mid S)$
-    \State Take action $A$, observe $R, S'$
-    \State $w \leftarrow w + \alpha [R + \gamma \hat{v}(S', \mathbf{w}) - \hat{v}(S, \mathbf{w})] \nabla \hat{v}(S, \mathbf{w})$
-    \State $S \leftarrow S'$
-    \State until $S$ is terminal
-  \ENDFOR
-\ENDFOR
-\end{algorithmic}
-\end{algorithm}
-```
-:::
+{{< include /posts/coursera/_c3-w1_alg2.qmd >}}
 
 
 ## TD converges to a biased value estimate {#sec-l3g4}
@@ -657,7 +576,9 @@ $$ {#eq-td-grad-ut}
 
 ![Dorina Precup](img/rl-dorina-precup.png){#fig-generelization .column-margin}
 
+
 ![Options are a temporal generalization](img/rl-dorina-options.png){#fig-options .column-margin}
+
 
 In this talk, [Dorina Precup](https://rl.cs.mcgill.ca/people/doina-precup/) discusses the challenges of building knowledge for AI agents using reinforcement learning.
 
@@ -673,7 +594,7 @@ In this talk, [Dorina Precup](https://rl.cs.mcgill.ca/people/doina-precup/) disc
     -   Being able to learn from a small number of examples.
 -   Dorina talks about two other aspects of generalization:
     -   Action duration are one time step in an MDP, yet in reality some actions like traveling from one city to another require sticking to the action over an extended period of time.
--   This might be happen through planning but idealy, agents should be able to learn skills which are sequences of actions that are executed over an extended period of time.
+-   This might be happen through planning but ideally, agents should be able to learn skills which are sequences of actions that are executed over an extended period of time.
 -   This has been formalized in the literature as options.
 -   She references two sources
     -   [@Sutton1999BetweenMA] a paper from 1999 on options in reinforcement learning.
@@ -697,7 +618,7 @@ In this talk, [Dorina Precup](https://rl.cs.mcgill.ca/people/doina-precup/) disc
 
 [^1]: the property that the future is independent of the past given the present
 
-::: callout-tip
+::: {.callout-tip}
 ### Options & CI {.unnumbered}
 
 -   This type of formulation seems very similar to that used by [Judea Pearl](https://www.youtube.com/watch?v=JxzjdTc15A0) in his structural graphical model of Causality. If we can express options as a graph of states we can use his algorithms to infer the best options to take in a given state.
@@ -709,7 +630,7 @@ In this talk, [Dorina Precup](https://rl.cs.mcgill.ca/people/doina-precup/) disc
 
 # Lesson 4: Linear TD
 
-::: callout-note
+::: {.callout-note}
 ### Learning Objectives {.unnumbered}
 
 -   [x] *Derive* the TD-update with linear function approximation [\#](#sec-l4g1)
@@ -787,10 +708,10 @@ with :
 using this definition we can write the update rule as:
 
 $$
-\begin{align*}
-w_{t+1} & = w_t + \alpha [R_{t+1} + \gamma \mathbf{w}^T \mathbf{x}_{t+1} - \mathbf{w}^T \mathbf{x}] \mathbf{x}_t \newline
-        &=  w_t + \alpha [R_{t+1} \mathbf{x}_t -  \mathbf{x}_t( \mathbf{x}_t - \gamma \mathbf{x_{t+1}})^T \mathbf{w_t}] \newline
-\end{align*}
+\begin{aligned}
+w_{t+1} & = w_t + \alpha [R_{t+1} + \gamma \mathbf{w}^T \mathbf{x}_{t+1} - \mathbf{w}^T \mathbf{x}] \mathbf{x}_t \\ 
+        &=  w_t + \alpha [R_{t+1} \mathbf{x}_t -  \mathbf{x}_t( \mathbf{x}_t - \gamma \mathbf{x_{t+1}})^T \mathbf{w_t}] \\ 
+\end{aligned}
 $$
 
 let us now consider what this update looks like in expectation:
@@ -812,10 +733,10 @@ note: this is a linear system of equations that looks like a **linear regression
 when the weights do not change we have a fixed point:
 
 $$
-\begin{align*}
-\mathbb{E}[\Delta w_{TD}] & = \alpha(b-Aw_{TD}) = 0 \newline
+\begin{aligned}
+\mathbb{E}[\Delta w_{TD}] & = \alpha(b-Aw_{TD}) = 0 \\ 
 \implies & w_{TD} = A^{-1}b
-\end{align*}
+\end{aligned}
 $$ {#eq-fixed-point}
 
 more generally $w_{TD}$ is the solution to this equation and we could show that it minimises

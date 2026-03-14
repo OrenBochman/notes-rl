@@ -1,0 +1,26 @@
+::: {#alg-Ɛ-greedy-bandit}
+### Ɛ-Greedy bandit
+
+```pseudocode
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "#"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+\begin{algorithm}
+\caption{EpsilonGreedy(K, α, β)}
+\begin{algorithmic}[1]
+\For{$t = 1, 2, \ldots $}
+\State p = random()
+  \If {$p < \epsilon$}
+    \State select radom action $x_t \qquad$ \Comment{explore}
+  \Else
+    \State select $x_t = \arg\max_k \hat{\theta}_k \qquad$  \Comment{exploit}
+  \EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+```
+:::
