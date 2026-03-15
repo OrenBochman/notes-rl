@@ -5547,7 +5547,7 @@ Sutton, R., Doina Precup, and Satinder Singh. 1999. <span>“Between MDPs and Se
   <media:content url="https://orenbochman.github.io/notes-rl/posts/coursera/img/nlp-brain-wordcloud.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
-  <title>On-Policy Prediction with Approximation</title>
+  <title>Learning and Generalization</title>
   <dc:creator>Oren Bochman</dc:creator>
   <link>https://orenbochman.github.io/notes-rl/posts/coursera/c3-w1.1.html</link>
   <description><![CDATA[ 
@@ -5569,10 +5569,20 @@ Sutton, R., Doina Precup, and Satinder Singh. 1999. <span>“Between MDPs and Se
 <figcaption>RL algorithms</figcaption>
 </figure>
 </div></div>
-<p>Some of the notes I made in this course became a bit too long. Rather than break the flow of the lesson I decided to move them to a separate file. This is one of those longer notes.</p>
+<p>This post grew out of a long note I made during the RL course on Coursera.</p>
 <section id="a-few-thought-on-generalization-and-discrimination-in-rl" class="level2">
 <h2 class="anchored" data-anchor-id="a-few-thought-on-generalization-and-discrimination-in-rl">A few Thought on Generalization and discrimination in RL</h2>
 <p>There are a couple of issues on generalization.</p>
+<div id="dfn-heuristic">
+<section id="heuristics" class="level3">
+<h3 class="anchored" data-anchor-id="heuristics">Heuristics</h3>
+<p>A heuristic is a minimal sub-optimal policy that is sufficient to get the agent to its goal with high probability.</p>
+</section>
+</div>
+<p>Note that as a strategy it is not optimal but possibly quite useful, because navigating a maze without a heuristic may take very long time while a heuristic would get you to your goal</p>
+<div id="exm-maze-island-heuristic" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1</strong></span> For instance in a maze which lacks islands a heuristic might be to always go right until you reach the goal. If the maze has islands you will miss those islands. A better heuristic might be to always go right but mark the left option. If you later pass the marked left option on your right cross it out but if you pass it on your left again then take it and cross it out. This heuristic would let you navigate islands but would requires multiple passes through the maze.</p>
+</div>
 <section id="how-are-generalization-in-ml-is-closely-related-to-transfer-learning-in-rl." class="level3">
 <h3 class="anchored" data-anchor-id="how-are-generalization-in-ml-is-closely-related-to-transfer-learning-in-rl.">How are generalization in ML is closely related to transfer learning in RL.</h3>
 <p>In ML we have a rather clear understanding of generalization. We have a training set and a test set. We train on the training set and then test on the test set. The goal is to do well on the test set. The test set is a sample from the same distribution as the training.</p>
@@ -5711,7 +5721,6 @@ Sutton, R., Doina Precup, and Satinder Singh. 1999. <span>“Between MDPs and Se
 
  ]]></description>
   <category>Coursera</category>
-  <category>Prediction and Control with Function Approximation</category>
   <category>Reinforcement Learning</category>
   <guid>https://orenbochman.github.io/notes-rl/posts/coursera/c3-w1.1.html</guid>
   <pubDate>Sun, 31 Mar 2024 21:00:00 GMT</pubDate>

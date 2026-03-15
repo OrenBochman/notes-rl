@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Oren Bochman">
-<meta name="keywords" content="neural networks, feature construction, coarse coding, feed-forward architecture, activation functions, deep networks, online setting, offline setting, representation, learning capacity">
+<meta name="keywords" content="heuristics, generalization, abstraction, transfer learning">
 
-<title>Learning and Generalization – Notes on Reinforcement Learning</title>
+<title>Heuristics – Notes on Reinforcement Learning</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -28,33 +28,33 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../favicon.ico" rel="icon">
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7c69b197886ae2a34062761d21e44731.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-2a9a3f180cf500eef5b976fdc6f22fdf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7c69b197886ae2a34062761d21e44731.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-53e333c44ad91e7e6fb689e28a48ce26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-65daee0ea38b11146b100396567ce7dc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-53e333c44ad91e7e6fb689e28a48ce26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script src="../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
-<link href="../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
-<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../favicon.ico" rel="icon">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-7c69b197886ae2a34062761d21e44731.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-2a9a3f180cf500eef5b976fdc6f22fdf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-7c69b197886ae2a34062761d21e44731.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-53e333c44ad91e7e6fb689e28a48ce26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-65daee0ea38b11146b100396567ce7dc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-53e333c44ad91e7e6fb689e28a48ce26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
+<link href="../../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
+<script src="../../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -107,6 +107,49 @@ ul.task-list li input[type="checkbox"] {
       </style>
     
 
+  <script defer="" src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -280,7 +323,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Notes on Reinforcement Learning</span>
     </a>
   </div>
@@ -291,7 +334,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html"> 
+    <a class="nav-link" href="../../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
@@ -316,10 +359,9 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Learning and Generalization</h1>
+      <h1 class="title">Heuristics</h1>
             <p class="subtitle lead">in ML and RL</p>
                                 <div class="quarto-categories">
-                <div class="quarto-category">Coursera</div>
                 <div class="quarto-category">Reinforcement Learning</div>
               </div>
                   </div>
@@ -349,7 +391,7 @@ ul.task-list li input[type="checkbox"] {
   <div>
     <div class="keywords">
       <div class="block-title">Keywords</div>
-      <p>neural networks, feature construction, coarse coding, feed-forward architecture, activation functions, deep networks, online setting, offline setting, representation, learning capacity</p>
+      <p>heuristics, generalization, abstraction, transfer learning</p>
     </div>
   </div>
   
@@ -379,157 +421,138 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>RL algorithms</figcaption>
 </figure>
 </div></div>
-<p>This post grew out of a long note I made during the RL course on Coursera.</p>
-<section id="a-few-thought-on-generalization-and-discrimination-in-rl" class="level2">
-<h2 class="anchored" data-anchor-id="a-few-thought-on-generalization-and-discrimination-in-rl">A few Thought on Generalization and discrimination in RL</h2>
-<p>There are a couple of issues on generalization.</p>
+<p>Today I’d like to meditate on heuristics in RL and how they can be used to speed up learning and create more generally capable agents.</p>
+<section id="a-few-thoughts-on-generalization-and-discrimination-in-rl" class="level2">
+<h2 class="anchored" data-anchor-id="a-few-thoughts-on-generalization-and-discrimination-in-rl">A few Thoughts on Generalization and Discrimination in RL</h2>
+<p>Heuristics are mental shortcuts, “rules of thumb,” or intuitive strategies. Based on the RL specialization, I might define it as a minimal policy that has a high probability of getting the agent to its goal. Many agents can struggle for a long time (millions of steps) before they reach the goal even once, yet this is a necessary perquisite to evaluate the value function that is required for learning a good policy. Thus even a poor heuristic can speed the agents up by getting it to the goal more often and thus allowing it to learn a better policy faster.</p>
 <div id="dfn-heuristic">
 <section id="heuristics" class="level3">
 <h3 class="anchored" data-anchor-id="heuristics">Heuristics</h3>
-<p>A heuristic is a minimal sub-optimal policy that is sufficient to get the agent to its goal with high probability.</p>
+<p>A heuristic is a minimal stochastic policy that is sufficient to get the agent to its goal with high probability.</p>
 </section>
 </div>
 <p>Note that as a strategy it is not optimal but possibly quite useful, because navigating a maze without a heuristic may take very long time while a heuristic would get you to your goal</p>
 <div id="exm-maze-island-heuristic" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1</strong></span> For instance in a maze which lacks islands a heuristic might be to always go right until you reach the goal. If the maze has islands you will miss those islands. A better heuristic might be to always go right but mark the left option. If you later pass the marked left option on your right cross it out but if you pass it on your left again then take it and cross it out. This heuristic would let you navigate islands but would requires multiple passes through the maze.</p>
+<p><span class="theorem-title"><strong>Example 1 (Maze Runner Heuristic)</strong></span> For instance in a maze which lacks islands a heuristic might be to always follow the right wall with your finger until you reach the goal.</p>
 </div>
-<section id="how-are-generalization-in-ml-is-closely-related-to-transfer-learning-in-rl." class="level3">
-<h3 class="anchored" data-anchor-id="how-are-generalization-in-ml-is-closely-related-to-transfer-learning-in-rl.">How are generalization in ML is closely related to transfer learning in RL.</h3>
-<p>In ML we have a rather clear understanding of generalization. We have a training set and a test set. We train on the training set and then test on the test set. The goal is to do well on the test set. The test set is a sample from the same distribution as the training.</p>
-<p>Geometrically, for classification we want to a decision boundary that separates the classes with the least error and with a fewest number of parameters. This is the essence of the bias-variance tradeoff.</p>
-<p>In RL we tend to think of generalization as the ability of an agent to perform well on a task that is different from the one it was trained on. The algorithms can take decades of CPU compute to solve a simple video game. But change a few pixels in the game and the agent can’t play at all. This suggest these agents are severely overfitting.</p>
-<p>Would we be able to learn much faster if we could avoid overfitting i.e.&nbsp;if we could generalize better?</p>
-<p>One point worth considering here is that solving a general problem is harder than a specific one.</p>
-<p>E.g. To solve a maze we need a policy matrix. To solve all mazes we need an algorithm.</p>
-<p>So in one sense it is harder to generalize than to solve a specific problem. However it also should allow us to discard most of the irrelevant information that take up most of the model’s capacity and end up slowing down learning.</p>
+<p>This heuristic would fail if the maze has its exit on an island but it should work well in other cases. If we think there are islands in the maze we might use a more complex heuristic, e.g.</p>
+<div id="exm-maze-island-heuristic" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2 (Maze Runner Heuristic with Islands)</strong></span> &nbsp;</p>
 <ul>
-<li>Agents learn a policy that is only suitable to a specific task. The policy doesn’t generalize to even small changes in the task, e.g.&nbsp;moving the start and goal in the same maze tasks.</li>
-<li>Learned representation for features are not abstract and thus can’t be mapped to a slightly different task (e.g.&nbsp;changing a few pixels in a game)</li>
-<li>We definitely can’t map the representation to different tasks.</li>
-<li>Ideally, we would like to deal with challenging problems by reusing knowledge from agents trained on other problems.</li>
-<li>One direction called options lays in decomposing learning a policy for a goal into reframing it into learning sub-goals, strategies and tactics and basic moves.</li>
-<li>Another direction I call heuristics concerns finding minimal policies that are just strong enough to get the agent to the goal a high percentage of the time.</li>
-<li>Learning should be aggregational and compositional. However, these terms require reinterpretation for each problem and at many levels of abstraction.</li>
+<li>Always follow the right wall with your finger, but mark the other forks (to the left) with a chalk.</li>
+<li>If you later pass the marked option to your right cross it out.</li>
+<li>If you pass it to your left again take it and cross it out.</li>
+<li>If you reach the start again without reaching the goal, start again until you have marked all the options to the left.</li>
 </ul>
-</section>
-<section id="human-like-to-use-heuristic-which-are-are" class="level3">
-<h3 class="anchored" data-anchor-id="human-like-to-use-heuristic-which-are-are">Human like to use Heuristic, which are are:</h3>
-<pre><code>- A minimal sub-optimal policy that is suffiecnt to get the agent to its goal with high probability.
-- In an MDP with lots of sub-goals, we may have benefit in learning learning heuristic style policy for each sub-goal and then compose them into a policy for the goal. 
-- Composing heuristics is vague so let try make it clear.
-    - We want to follow the heuristic policy until we reach a sub-goal.
-    - We then switch to the policy for the next sub-goal. 
-    - If we have well established entry and exit points for each heuristic we can have two benefits one is generalization and the other is discrimination.
-        - Generalization is due to using the same heuristic from different starting points.
-        - Discrimination is due to having different heuristics for different sub-goals.
-        - A third advantage is that the heuristic policy is for a smaller state space and can be learned faster.
-        - Third advantage is may be that of mapping different sub-problem to the same heuristic may allow us to discard some of the features of the state space that are not required for the heuristic to work.
-    - Thus composing heuristics in this case is just about switching between heuristics at the right time.
-    - Another direction is to use the heuristics as a form of  priors for the policy we want to learn.  
-    - Simple models are often a good fit for more problems than complex models.
-    - If we are good at learning to decompose problems into simpler sub problems and then we might be able to leverage the power of heuristics.
-
--   Heuristics don't always work but overall they capture the essence of the solution to the problem.
--   Heuristics are usually more general than an optimal policy.
--   A heuristic might be a very good behavior policy for off policy learning the optimal policy.
--   I don't see RL algorithms for heuristics.</code></pre>
-</section>
-<section id="models-in-rl-try-to-approximate-mdp-dynamics-using-its-transition-and-rewards" class="level3">
-<h3 class="anchored" data-anchor-id="models-in-rl-try-to-approximate-mdp-dynamics-using-its-transition-and-rewards">Models in RL try to approximate MDP dynamics using its transition and rewards</h3>
-<pre><code>-   In ML we often use boosting and bagging to aggregate very simple models.
--   In RL we often replace the model by sampling from a replay buffer of the agent's past experiences. </code></pre>
-</section>
-<section id="the-problem-for-a-general-ai-is-very-much-the-problem-of-transfer-learning-in-rl." class="level3">
-<h3 class="anchored" data-anchor-id="the-problem-for-a-general-ai-is-very-much-the-problem-of-transfer-learning-in-rl.">The problem for a general ai is very much the problem of transfer learning in RL.</h3>
+</div>
+<p>This heuristic is more complex and may require multiple passes but should have a higher probability of eventually reaching the goal. Note that the heuristic requires a (subtle change of state space) We need to be able to leave a mark, possibly a number at certain locations in the maze.</p>
+<p>A faster heuristic that might be even better might be to use a ball of yarn to allow us to backtrack to the last fork we took if we find ourself at a dead end or if we reach a junction that we have fully explored.</p>
+<div id="exm-maze-island-heuristic" class="theorem example">
+<p><span class="theorem-title"><strong>Example 3 (Maze Runner Heuristic with Islands and Backtracking)</strong></span> &nbsp;</p>
 <ul>
-<li>agents learn a very specific policy for a very specific task - the learned representation cannot be mapped to other tasks or even other states in the same task.</li>
-<li>if agents learning was decomposed into
-<ul>
-<li>learning very general policies that solved more abstract problems and then</li>
-<li>learning a good composition of these policies to solve the specific problem.</li>
-<li>only after getting to this point would the agent try to optimize the policy for the specific task.</li>
-<li>e.g.&nbsp;chess
-<ul>
-<li>learn the basic moves and average value of pieces</li>
-<li>learning tactics - short term goals</li>
-<li>learning about end game
-<ul>
-<li>update the value of pieces based on the ending</li>
-</ul></li>
-<li>learning about strategy
-<ul>
-<li>positional play
-<ul>
-<li>learn about pawn formations and weak square
-<ul>
-<li>value of pawn formations</li>
-<li>how they can be used with learned tactics.</li>
-</ul></li>
-<li>the center
-<ul>
-<li>add value to pieces based on their position on the board</li>
-</ul></li>
-<li>open files and diagonals</li>
-</ul></li>
-<li>long term plans
-<ul>
-<li>minority attack, king side attack, central breakthrough</li>
-<li>creating a passed pawn</li>
-<li>exchanging to win in the end game</li>
-<li>sacrificing material to get a better position</li>
-<li>attacking the king</li>
-</ul></li>
-<li>castling</li>
-<li>piece development and the center</li>
-<li>tempo</li>
-</ul></li>
-<li>localize value of pieces in different positions on the board using the learned tactics and strategy.</li>
-</ul></li>
-</ul></li>
+<li>Always follow the right wall with your finger, but mark the other forks (to the left) with a chalk.</li>
+<li>If you later pass the marked option to your right cross it out.</li>
+<li>If you pass it to your left again take it and cross it out.</li>
+<li>If you reach a dead end or a junction that you have fully explored, backtrack to the last fork you took and try a different route.</li>
+<li>If you reach the start again without reaching the goal, start again until you have marked all the options to the left.</li>
 </ul>
-</section>
-<section id="bnp-knowledge-patterns" class="level3">
-<h3 class="anchored" data-anchor-id="bnp-knowledge-patterns">BNP knowledge patterns</h3>
-<p>Bayesian Nonparametrics models and hierarchical model encode knowledge in some noteworthy ways:</p>
+</div>
+<p>another idea that is often discussed in the context of maze solving is that if we have a hypothesis of where thee goal is located we may want to prefer explore routes from locations that are closer to the goal rather than ones that a further away.</p>
+<div id="exm-maze-proximity-heuristic" class="theorem example">
+<p><span class="theorem-title"><strong>Example 4 (Maze Runner Proximity Heuristic)</strong></span> &nbsp;</p>
+<ul>
+<li>Always follow the right wall with your finger, but mark the other forks (to the left) with a chalk.</li>
+<li>If you later pass the marked option to your right cross it out.</li>
+<li>If you pass it to your left again take it and cross it out.</li>
+<li>If you reach a dead end or a junction that you have fully explored, backtrack to the last fork you took and try a different route.</li>
+<li>If you have a hypothesis of where the goal is located, backtrack to the location having unexplored routes at the location that is closest to the goal rather than ones that are further.</li>
+<li>If you reach the start again without reaching the goal, start again until you have marked all the options to the left.</li>
+</ul>
+</div>
+<p>Now one more point the idea of a distance for a maze is tricky. While the euclidean distance might be better than no distance at all, as one gains more knowledge about the maze one might be able to derive a better distance metric say one based on the successor representation of the state space.</p>
+<p>Since the heuristic is a minimal policy it can often be improved by adding more rules or exceptions to it. However the main points I’d like to make is are:</p>
 <ol type="1">
-<li><p>Priors encode expert beliefs and can be tested using a prior predictive check. Posteriors can be queried in different ways to gain insight into what the model has learned with reperct to specific parameters.</p></li>
-<li><p>Conjugte priors which maintain a fixed structure while updating beliefs based on incoming evidence. These can oftern be interpreted in terms of the wight of the prior and the weight of the evidence.</p></li>
-<li><p>Hierachical models allow us to encode dependencies between parameters directly into the model structure.</p></li>
-<li><p>Hierarchical models use partial pooling to share statistical strength across related groups of data points. This allows the model to initially rely on a prior but shift towards the evidence as it accrues.</p></li>
-<li><p>using covariance mat</p>
-<ul>
-<li>learning in Bayesian models is about updating the initial beliefs based on incoming evidence.</li>
-</ul></li>
+<li>These heuristics policies are independent of the size of the maze. <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</li>
+<li>They are likely to be better than a random uninformed policy for almost any maze.</li>
 </ol>
-</section>
-<section id="ci-may-be-useful-here" class="level3">
-<h3 class="anchored" data-anchor-id="ci-may-be-useful-here">CI may be useful here</h3>
+<p>So these strategies are more general than an <span class="math inline">\pi^\star</span> the optimal policy that solves a specific maze in the smallest number of steps. In light of both 1. and 2. we might want to learn such a heuristic policy for a specfic task and use it as a “prior” for our learning of the optimal policy for that task.</p>
+<p>Making this more precise I would say that we could use the heuristic policy for off-policy learning of the optimal policy and that this would be faster than learning the optimal policy from the uniform random policy.</p>
+<p>Note: that this heuristic policy might also be useful for other maze based tasks, e.g.&nbsp;sokoban, which is a puzzle game that involves pushing boxes around a maze to reach a goal though it might require different heuristics for moving the boxes around. Nethack has many maze based levels so an agent equipped with a good maze heuristic might be able to navigate those levels faster. Packman is also a maze based game but here one has different goals and might want to use a different heuristic yet the same maze heuristic might be useful when if just needs to explore.</p>
+<section id="the-how-to-solve-it-heuristic" class="level3">
+<h3 class="anchored" data-anchor-id="the-how-to-solve-it-heuristic">The how to solve it Heuristic</h3>
+<p>In c.f. <strong>How to Solve It</strong> George Pólya suggests the following steps when solving a mathematical problem:</p>
+<ol type="1">
+<li>First, you have to understand the problem.[2]</li>
+<li>After understanding, make a plan.[3]</li>
+<li>Carry out the plan.[4]</li>
+<li>Look back on your work.[5] How could it be better?</li>
+<li>If you cannot solve the proposed problem, try to solve first some related problem. Could you imagine a more accessible related problem?</li>
+</ol>
+<p>This is a very general heuristic for solving (mathematical) problems. Now lets consider how it might be reinterpreted in the context of RL:</p>
+<ol type="1">
+<li><strong>Understanding the problem</strong>
 <ul>
-<li>Is in a big way about mapping knowledge into
+<li>Understanding the state space and the action space. There may be different ways to encode the problem as an MDP which are more or less suitable for learning a good policy or are more similar to some problem we have already solved.</li>
+<li>We may be able generalize faster (i.e.&nbsp;find spatio-temporal abstractions) if we can solve a sequence of simple to more complex environments.</li>
+<li>Understanding the reward structure and the transition dynamics.</li>
+<li>Understanding the goal and how to evaluate success.</li>
+<li>Suppose the agent can access previous experiences accross different environments and tasks, that understanding the problem might be about
 <ul>
-<li>Statistical joint probabilities,</li>
-<li>Casual concepts that are not in the joint distributions like interventions and Contrafactuals, latent, missing, mediators, confounders, etc.</li>
-<li>Hypothesizing a causal structural model, deriving a statistical model and Testing it against the data.</li>
-<li>Interventions in the form of actions and options -</li>
+<li>Find if it is on a task and or environment that is has experienced.</li>
+<li>If the environment is familiar, can it identify the abstracttions that are most relevant for the task at hand and use them to find the optimal policy faster?</li>
+<li>Can it with enough experience and abstractions learn to compose a good prior/heuristic for the task at hand?</li>
+<li>Note that this understanding is also related to step 4.</li>
 </ul></li>
-<li>Many key ideas in RL are counterfactual reasoning
-<ul>
-<li>Off-policy learning is about learning from data generated by a different policy.</li>
-<li>Options are like do operations (interventions)</li>
-<li>Choosing between actions and options is like contrafactual reasoning.</li>
 </ul></li>
-<li>Using and verifying CI models could be the way to unify the spatial and temporal abstraction in RL.</li>
-</ul>
+<li>Planning is a mainstay of RL and we already have many good planning algorithms. However we might want to extend our paradigms of planning to include bootstrapping from heuristics and options.</li>
+<li><strong>Carry out the plan</strong>
+<ul>
+<li>THe agents can accomplish this using a suitable algorithm to learn the optimal policy for the task at hand.</li>
+<li>Here a good heuristic can speed up learning and one would prefer an algorithm that has a good sample efficiency - i.e.&nbsp;that learns efficiently from its past experience.</li>
+<li>However in many cases a good RL algorithm will find a good policy quickly even starting with a uniform random policy or optimistic initialization (a form of heuristic).</li>
+<li>However in this step I would imagine that letting the agent be in charge of the algorithm selection and the hyperparameter tuning might be hoist up the agent form just looking for an optimal policy to looking for abstraction and heuristics can be used to handle related task and environments. (think maze, ice maze, ice maze with holes, slippery maze, adding ghosts, adding vitamins, etc.)</li>
+</ul></li>
+<li>“Look back on your work”</li>
+</ol>
+<hr>
 </section>
+<section id="adapter" class="level3">
+<h3 class="anchored" data-anchor-id="adapter">Adapter:</h3>
+<p>I pointed out that there different representation for the state space and that some might be easier for abstractions, for transfer learning and for mapping to other tasks.</p>
+<p>If an agent can map the gird world to a turtle world it might be able to implement the finger on the right wall heuristic in the turtle world where this might not be as straightforward to implement in the grid world.</p>
+<p>The idea of marking the junctions with chalk might be implemented including a dictionary in the adapter for a mark at each location. This then becomes a small addition to the state space for the agent but makes the behavior more general and more likely to be useful for other tasks….</p>
 </section>
-<section id="game-theory" class="level2">
-<h2 class="anchored" data-anchor-id="game-theory">Game theory</h2>
-<p>For game theoretic settings reaching an equilibrium can also be form of learning as different equilibria encode different strategies which extend policy from RL.</p>
+<section id="grounding" class="level3">
+<h3 class="anchored" data-anchor-id="grounding">Grounding:</h3>
+<p>Another later of knowledge is grounding. Ideally the agent might look at the state and action space and extract useful abstractions and heuristics and experiences from its long term memory to bootstrap its learning algorithm.</p>
+<p>What we see though is that using an LLM can be a powerful way to extract common sense knowledge which may well be as good as any heuristic it might extract from its own experience.</p>
+<p>However theres is a disconnect between the knowledge in the LLM and the representation of the state and action space that environment provides as well as the policy or value function representation that the agent uses.</p>
+<p>I think that it might be fascinating to create an grounding adapter that lets the agent query an LLM but also perhaps share with it the nature of the state and action space and the policy representation and value function representation that the agent uses.</p>
+<p>The way this might work is the create embeddings for these constructs and fine tune the LLM to work with these embeddings. Alternatively the LLM might be trained to interoperate with these as tools and get grounding to the these via MCP and or SKILLs</p>
+<hr>
+</section>
+<section id="another-view-of-heuristics" class="level3">
+<h3 class="anchored" data-anchor-id="another-view-of-heuristics">Another view of heuristics:</h3>
+<hr>
+</section>
+<section id="partial-observability" class="level3">
+<h3 class="anchored" data-anchor-id="partial-observability">Partial Observability:</h3>
+<p>In the formal definition of a policy we require that at each state the policy specifies a distribution over actions and that an optimal policy prescribes the optimal action at each state.</p>
+<p>What if we only see a part of the state space? What if we are not familiar with the full action space? e.g.&nbsp;A nethack agent might be able to quaff some magical potions but it has not identified the bottles by name. So there is a risk drinking poison rather than the potion that gives us super strength? Experience suggest that waiting till the agent has identified the bottles or at least is able to survive the consequences of drinking poison it should wait before quaffing these potions.</p>
+<p>We might want to still conceive a partial policy that is defined over the part of the state space we know and the part of the action space we know. Regarding the rest we might want to reserve our judgement and not assign any action to it.</p>
+<p>Regarding the fog of war or partial observability. Being able to estimate the full state of the world sounds great until we realize it is an intractably large table that does not generalize at all.</p>
 
 
 </section>
+</section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>this suggest it might embody a spatio-temporal abstraction<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

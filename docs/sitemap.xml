@@ -98,7 +98,7 @@
   </url>
   <url>
     <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c3-w1.1.html</loc>
-    <lastmod>2026-03-11T16:41:22.981Z</lastmod>
+    <lastmod>2026-03-15T06:42:28.843Z</lastmod>
   </url>
   <url>
     <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c2-w1.html</loc>
@@ -107,5 +107,13 @@
   <url>
     <loc>https://orenbochman.github.io/notes-rl/posts/coursera/c1-w0.html</loc>
     <lastmod>2026-03-11T09:14:19.145Z</lastmod>
+  </url>
+  <url>
+    <loc>https://orenbochman.github.io/notes-rl/posts/blog/heuristics-for-rl/index.html</loc>
+    <lastmod>2026-03-15T10:24:32.984Z</lastmod>
+  </url>
+  <url>
+    <loc>https://orenbochman.github.io/notes-rl/posts/blog/generelization-in-rl/index.html</loc>
+    <lastmod>2026-03-15T14:36:25.261Z</lastmod>
   </url>
 </urlset>
