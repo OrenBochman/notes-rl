@@ -1,0 +1,167 @@
+---
+date: 2024-04-01
+lastmod: 2026-03-15
+title: Heuristics 
+subtitle: in ML and RL
+author: Oren Bochman
+draft: false
+categories: [Reinforcement Learning]
+keywords: [heuristics, generalization, abstraction, transfer learning]
+image: img/nlp-brain-wordcloud.jpg
+title-block-banner: /images/banner_black_3.jpg
+---
+
+![RL logo](img/logo.png){.column-margin} 
+
+![RL algorithms](img/alg_selector.png){.column-margin group="slides"}
+
+Today I'd like to meditate on heuristics in RL and how they can be used to speed up learning and create more generally capable agents.
+
+## A few Thoughts on Generalization and Discrimination in RL
+
+Heuristics are mental shortcuts, "rules of thumb," or intuitive strategies. Based on the RL specialization, I might define it as a minimal policy that has a high probability of getting the agent to its goal. Many agents can struggle for a long time (millions of steps) before they reach the goal even once, yet this is a necessary perquisite to evaluate the value function that is required for learning a good policy. Thus even a poor heuristic can speed the agents up by getting it to the goal more often and thus allowing it to learn a better policy faster.
+
+::: {#dfn-heuristic}
+### Heuristics
+A heuristic is a minimal stochastic policy that is sufficient to get the agent to its goal with high probability. 
+:::
+
+Note that as a strategy it is not optimal but possibly quite useful, because navigating a maze without a heuristic may take very long time while a heuristic would get you to your goal 
+
+::: {#exm-maze-island-heuristic}
+### Maze Runner Heuristic
+For instance in a maze which lacks islands a heuristic might be to always follow the right wall with your finger until you reach the goal.
+:::
+
+This heuristic would fail if the maze has its exit on an island but it should work well in other cases. If we think there are islands in the maze we might use a more complex heuristic, e.g.
+
+::: {#exm-maze-island-heuristic}
+### Maze Runner Heuristic with Islands
+- Always follow the right wall with your finger, but mark the other forks (to the left) with a chalk.
+- If you later pass the marked option to your right cross it out. 
+- If you pass it to your left again take it and cross it out.
+- If you reach the start again without reaching the goal, start again until you have marked all the options to the left. 
+:::
+
+This heuristic is more complex and may require multiple passes but should have a higher probability of eventually reaching the goal. 
+Note that the heuristic requires a (subtle change of state space) We need to be able to leave a mark, possibly a number at certain locations in the maze.
+
+A faster heuristic that might be even better might be to use a ball of yarn to allow us to backtrack to the last fork we took if we find ourself at a dead end or if we reach a junction that we have fully explored.
+
+::: {#exm-maze-island-heuristic}
+### Maze Runner Heuristic with Islands and Backtracking
+- Always follow the right wall with your finger, but mark the other forks (to the left) with a chalk.
+- If you later pass the marked option to your right cross it out. 
+- If you pass it to your left again take it and cross it out.
+- If you reach a dead end or a junction that you have fully explored, backtrack to the last fork you took and try a different route.
+- If you reach the start again without reaching the goal, start again until you have marked all the options to the left. 
+:::
+
+another idea that is often discussed in the context of maze solving is that if we have a hypothesis of where thee goal is located we may want to prefer explore routes from locations that are closer to the goal rather than ones that a further away. 
+
+::: {#exm-maze-proximity-heuristic}
+### Maze Runner Proximity Heuristic
+- Always follow the right wall with your finger, but mark the other forks (to the left) with a chalk.
+- If you later pass the marked option to your right cross it out. 
+- If you pass it to your left again take it and cross it out.
+- If you reach a dead end or a junction that you have fully explored, backtrack to the last fork you took and try a different route.
+- If you have a hypothesis of where the goal is located, backtrack to the location having unexplored routes at the location that is closest to the goal rather than ones that are further.
+- If you reach the start again without reaching the goal, start again until you have marked all the options to the left. 
+:::
+
+Now one more point the idea of a distance for a maze is tricky. While the euclidean distance might be better than no distance at all, as one gains more knowledge about the maze one might be able to derive a better distance metric say one based on the successor representation of the state space.
+
+
+Since the heuristic is a minimal policy it can often be improved by adding more rules or exceptions to it. However the main points I'd like to make is are:
+
+1. These heuristics policies are independent of the size of the maze. ^[this suggest it might embody a spatio-temporal abstraction].
+2. They are likely to be better than a random uninformed policy for almost any maze.
+
+So these strategies are more general than an $\pi^\star$ the optimal policy that solves a specific maze in the smallest number of steps.
+In light of both 1. and 2. we might want to learn such a heuristic policy for a specfic task and use it as a "prior" for our learning of the optimal policy for that task. 
+
+Making this more precise I would say that we could use the heuristic policy for off-policy learning of the optimal policy and that this would be faster than learning the optimal policy from the uniform random policy.
+
+Note: that this heuristic policy might also be useful for other maze based tasks, e.g. sokoban, which is a puzzle game that involves pushing boxes around a maze to reach a goal though it might require different heuristics for moving the boxes around. Nethack has many maze based levels so an agent equipped with a good maze heuristic might be able to navigate those levels faster. Packman is also a maze based game but here one has different goals and might want to use a different heuristic yet the same maze heuristic might be useful when if just needs to explore.
+
+### The how to solve it Heuristic
+
+In c.f. **How to Solve It** George Pólya suggests the following steps when solving a mathematical problem:
+
+1. First, you have to understand the problem.[2]
+2. After understanding, make a plan.[3]
+3. Carry out the plan.[4]
+4. Look back on your work.[5] How could it be better?
+5. If you cannot solve the proposed problem, try to solve first some related problem. 
+   Could you imagine a more accessible related problem?
+
+This is a very general heuristic for solving (mathematical) problems. Now lets consider how it might be reinterpreted in the context of RL:
+
+1. **Understanding the problem**
+    -   Understanding the state space and the action space. There may be different ways to encode the problem as an MDP which are more or less suitable for learning a good policy or are more similar to some problem we have already solved.
+    -   We may be able generalize faster (i.e. find spatio-temporal abstractions) if we can solve a sequence of simple to more complex environments.
+    -   Understanding the reward structure and the transition dynamics.
+    -   Understanding the goal and how to evaluate success.
+    -   Suppose the  agent can access previous experiences accross different environments and tasks, that understanding the problem might be about 
+        - Find if it is on a task and or environment that is has experienced.
+        - If the environment is familiar, can it identify the abstracttions that are most relevant for the task at hand and use them to find the optimal policy faster?
+        - Can it with enough experience and abstractions learn to compose a good prior/heuristic for the task at hand?
+        - Note that this understanding is also related to step 4.
+
+2.  Planning is a mainstay of RL and we already have many good planning algorithms. However we might want to extend our paradigms of planning to include bootstrapping from heuristics and options.
+3. **Carry out the plan** 
+    - THe agents can accomplish this using a suitable algorithm to learn the optimal policy for the task at hand. 
+    - Here a good heuristic can speed up learning and one would prefer an algorithm that has a good sample efficiency - i.e. that learns efficiently from its past experience.
+    - However in many cases a good RL algorithm will find a good policy quickly even starting with a uniform random policy or optimistic initialization (a form of heuristic).
+    - However in this step I would imagine that letting the agent be in charge of the algorithm selection and the hyperparameter tuning might be hoist up the agent form just looking for an optimal policy to looking for abstraction and heuristics can be used to handle related task and environments. (think maze, ice maze, ice maze with holes, slippery maze, adding ghosts, adding vitamins, etc.)
+4. "Look back on your work" 
+
+
+
+---
+
+### Adapter:
+
+I pointed out that there different representation for the state space and that some might be easier for abstractions, for transfer learning and for mapping to other tasks. 
+
+If an agent can map the gird world to a turtle world it might be able to implement the finger on the right wall heuristic in the turtle world where this might not be as straightforward to implement in the grid world.
+
+The idea of marking the junctions with chalk might be implemented including a dictionary in the adapter for a mark at each location. This then becomes a small addition to the state space for the agent but makes the behavior more general and more likely to be useful for other tasks....
+
+### Grounding:
+
+Another later of knowledge is grounding. Ideally the agent might look at the state and action space and extract useful abstractions and heuristics and experiences from its long term memory to bootstrap its learning algorithm.
+
+What we see though is that using an LLM can be a powerful way to extract common sense knowledge which may well be as good as any heuristic it might extract from its own experience.
+
+However theres is a disconnect between the knowledge in the LLM and the representation of the state and action space that environment provides as well as the policy or value function representation that the agent uses.
+
+I think that it might be fascinating to create an grounding adapter that lets the agent query an LLM but also perhaps share with it the nature of the state and action space and the policy representation and value function representation that the agent uses. 
+
+The way this might work is the create embeddings for these constructs and fine tune the LLM to work with these embeddings. Alternatively the LLM might be trained to interoperate with these as tools and get grounding to the these via MCP and or SKILLs
+
+
+---
+
+### Another view of heuristics:
+
+In some cases we have decomposition theorems that allow us to decompose some world view into two or more point of view. E.g. there bias-variance tradeoff, the wald decomposition of a time series into a deterministic and a stochastic component, PCA decomposition of a data set into a low dimensional subspace and a noise component, etc. 
+
+It may be that we can decompose a policy into heuristic components encoding ideas like optimism, curiosity, risk aversion, 
+
+"follow the right wall" and "backtrack to the last junction if you reach a dead end" and "prefer to explore routes that are closer to the goal".
+
+---
+
+### Partial Observability:
+
+In the formal definition of a policy we require that at each state the policy specifies a distribution over actions and that an optimal policy prescribes the optimal action at each state.
+
+What if we only see a part of the state space?
+What if we are not familiar with the full action space? e.g. A nethack agent might be able to quaff some magical potions but it has not identified the bottles by name. So there is a risk drinking poison rather than the potion that gives us super strength? Experience suggest that waiting till the agent has identified the bottles or at least is able to survive the consequences of drinking poison it should wait before quaffing these potions.
+
+We might want to still conceive a partial policy that is defined over the part of the state space we know and the part of the action space we know. Regarding the rest we might want to reserve our judgement and not assign any action to it. 
+
+Regarding the fog of war or partial observability. Being able to estimate the full state of the world sounds great until we realize it is an intractably large table that does not generalize at all.
+
+What happens in many cases is that agents need to learn a mixture of tactics and strategy. Tactics are more about situational awareness and emergency response or achieving subgoals. While strategy is more about long term planning and task fulfilment.

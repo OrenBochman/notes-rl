@@ -1,25 +1,12 @@
 ---
 date: 2024-04-01
 lastmod: 2024-04-01
-title: On-Policy Prediction with Approximation
-subtitle: Prediction and Control with Function Approximation
+title: abstractions in RL and ML 
+subtitle: in ML and RL
 author: Oren Bochman
 draft: false
-categories:
-    - Coursera
-    - Prediction and Control with Function Approximation
-    - Reinforcement Learning
-keywords:
-    - neural networks
-    - feature construction
-    - coarse coding
-    - feed-forward architecture
-    - activation functions
-    - deep networks
-    - online setting
-    - offline setting
-    - representation
-    - learning capacity
+categories: [Coursera, Reinforcement Learning]
+keywords: [neural networks, feature construction, coarse coding, feed-forward architecture, activation functions, deep networks, online setting, offline setting, representation, learning capacity]
 image: img/nlp-brain-wordcloud.jpg
 title-block-banner: /images/banner_black_3.jpg
 ---
@@ -28,13 +15,7 @@ title-block-banner: /images/banner_black_3.jpg
 
 ![RL algorithms](img/alg_selector.png){.column-margin group="slides"}
 
-Some of the notes I made in this course became a bit too long. 
-Rather than break the flow of the lesson I decided to move them to a separate file. 
-This is one of those longer notes.
-
-## A few Thought on Generalization and discrimination in RL
-
-There are a couple of issues on generalization.
+Today I want to meditate on abstractions in RL and ML and particularly how they may relate to transfer learning.
 
 ### How are generalization in ML is closely related to transfer learning in RL.
 
@@ -150,3 +131,22 @@ Bayesian Nonparametrics models and hierarchical model encode knowledge in some n
 ## Game theory 
 
 For game theoretic settings reaching an equilibrium can also be form of learning as different equilibria encode different strategies which extend policy from RL.
+
+
+--- 
+
+<!-- todo create posts on the following topics
+
+1. Successor representation and its use for generalization in RL
+1. kalman filter and it relation to Bellman equations and value function estimation in RL
+1. meta learning in rl
+1. options 
+1. counting models extending the beta-binomial to Dirichlet process 
+1. kalman filter and clustering for pixel segmentation and tracking in video games
+1. Doubly robust off-policy learning
+1. using contrafactual regret for off-policy learning and credit assignment in RL.
+    - using fully determined but partially observed synthetic data (where we can have exact regret)
+    - how it translates to partially observable problems (where we only know about what we see and need to guesstimate the regret of actions we don't see)
+1. social dilemmas and MARL
+
+-->
